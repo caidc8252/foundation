@@ -1,0 +1,61 @@
+/* ─────────────────────────────────────────────────────────────
+   Foundation · Tokens · Charts (L1)
+   Categorical 8 + sequential/diverging ramps + structural tokens +
+   categorical-soft tint pairs.
+
+   `@theme static` (not plain `@theme`) is REQUIRED: the categorical
+   palette is referenced only at RUNTIME (chart code injects
+   `--color-<series>: var(--color-chart-N)`), which Tailwind's class
+   scanner can't see — a plain `@theme` tree-shakes the "unused" ones
+   and chart-4+ silently vanish. `static` forces all of them out.
+   Dark overrides live in tokens/dark.css.
+   ───────────────────────────────────────────────────────────── */
+@theme static {
+  /* Categorical 8 — ordinal; always start at chart-1 and step.
+     Tuned for ≥3:1 distinguishability at 8px markers / 1.5px strokes. */
+  --color-chart-1: oklch(58% 0.18 262);   /* indigo — brand family */
+  --color-chart-2: oklch(64% 0.15 152);   /* teal-green */
+  --color-chart-3: oklch(64% 0.15 230);   /* sky-blue */
+  --color-chart-4: oklch(74% 0.15  70);   /* amber */
+  --color-chart-5: oklch(64% 0.17 320);   /* magenta */
+  --color-chart-6: oklch(62% 0.18  25);   /* red */
+  --color-chart-7: oklch(56% 0.10 200);   /* slate-blue */
+  --color-chart-8: oklch(64% 0.13 290);   /* violet */
+
+  /* Sequential ramp — heatmaps + density. 100 lightest → 700 darkest */
+  --color-chart-seq-100: oklch(95% 0.03 262);
+  --color-chart-seq-200: oklch(89% 0.06 262);
+  --color-chart-seq-300: oklch(82% 0.09 262);
+  --color-chart-seq-400: oklch(74% 0.12 262);
+  --color-chart-seq-500: oklch(66% 0.15 262);
+  --color-chart-seq-600: oklch(58% 0.17 262);
+  --color-chart-seq-700: oklch(50% 0.18 262);
+
+  /* Diverging ramp — variance vs target (neg ↔ neutral ↔ pos) */
+  --color-chart-div-neg: oklch(62% 0.15 25);
+  --color-chart-div-mid: oklch(80% 0.004 260);
+  --color-chart-div-pos: oklch(58% 0.18 262);
+
+  /* Structural — grid/axis/label/dim map onto the line/content tokens.
+     var()-based, so they follow dark mode through the cascade. */
+  --color-chart-grid:        var(--color-line-subtle);
+  --color-chart-axis:        var(--color-content-tertiary);
+  --color-chart-label:       var(--color-content-tertiary);
+  --color-chart-dim:         color-mix(in oklch, var(--color-content-tertiary) 35%, transparent);
+  --color-chart-tooltip-bg:  oklch(18% 0.01 270);
+  --color-chart-tooltip-fg:  oklch(99% 0 0);
+  --color-chart-zoom-fill:   color-mix(in oklch, var(--color-primary-700) 8%, transparent);
+  --color-chart-zoom-stroke: color-mix(in oklch, var(--color-primary-700) 60%, transparent);
+
+  /* Categorical soft — low-chroma tinted bg + readable same-hue ink, 6 hues.
+     For per-label identity tiles/labels picked by hashing content. Distinct
+     from chart-1..8 (saturated data-viz fills): these are pale surfaces meant
+     to sit behind text. Dark overrides in tokens/dark.css. */
+  --color-cat-1: oklch(96% 0.03 206);  --color-cat-1-fg: oklch(38% 0.08 206);  /* blue */
+  --color-cat-2: oklch(96% 0.03  32);  --color-cat-2-fg: oklch(38% 0.08  32);  /* orange */
+  --color-cat-3: oklch(96% 0.03 125);  --color-cat-3-fg: oklch(38% 0.08 125);  /* green */
+  --color-cat-4: oklch(96% 0.03 218);  --color-cat-4-fg: oklch(38% 0.08 218);  /* azure */
+  --color-cat-5: oklch(96% 0.03  84);  --color-cat-5-fg: oklch(38% 0.08  84);  /* lime */
+  --color-cat-6: oklch(96% 0.03   0);  --color-cat-6-fg: oklch(38% 0.08   0);  /* red */
+  --color-cat-line: oklch(93% 0.005 90);
+}

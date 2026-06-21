@@ -1,0 +1,28 @@
+/* ─────────────────────────────────────────────────────────────
+   Foundation · Tokens · Entry (L1)
+
+   The single source of truth for design-token VALUES. Consumed two ways:
+
+   • Next / @cloud/ui  →  @import "@cloud/foundation/tokens"  inside its own
+     globals, where Tailwind reads the `@theme` blocks and generates the
+     bg-*/text-*/border-*/shadow-* utilities. @cloud/ui keeps ONLY its
+     Tailwind glue (@utility z-*, @custom-variant dark, @layer base, the
+     @theme inline shadcn aliases, grid-auto-fit) — it no longer defines
+     token values.
+
+   • Artifact (self-contained HTML)  →  consumes the EMITTED, Tailwind-free
+     ../dist/tokens.inline.css (a flat :root {…} + [data-theme="dark"] {…}
+     block), inlined into <style>. Run `pnpm build` to regenerate; never
+     hand-edit dist/.
+
+   Order matters only for readability — @theme declarations merge regardless.
+   Keep this file import-only; put declarations in the layer files.
+   ───────────────────────────────────────────────────────────── */
+@import "./palette.css";
+@import "./surface.css";
+@import "./typography.css";
+@import "./elevation.css";
+@import "./motion.css";
+@import "./layout.css";
+@import "./chart.css";
+@import "./dark.css";

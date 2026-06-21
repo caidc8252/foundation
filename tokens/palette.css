@@ -1,0 +1,74 @@
+/* ─────────────────────────────────────────────────────────────
+   Foundation · Tokens · Palette (L1)
+   Raw color ramps + semantic color shortcuts. OKLCH throughout.
+   Single source of truth — extracted from @cloud/ui. Do not hardcode
+   color values in any consumer (Next utilities OR artifact CSS).
+   Dark-mode overrides live in tokens/dark.css.
+   ───────────────────────────────────────────────────────────── */
+@theme {
+  /* ─── Primary (CTA — midnight indigo) ─── */
+  --color-primary-50:  oklch(97% 0.012 262);
+  --color-primary-100: oklch(94% 0.025 262);
+  --color-primary-200: oklch(86% 0.06  262);
+  --color-primary-300: oklch(72% 0.10  262);
+  --color-primary-400: oklch(55% 0.14  262);
+  --color-primary-500: oklch(40% 0.14  262);
+  --color-primary-600: oklch(32% 0.10  262);
+  --color-primary-700: oklch(24% 0.06  262);  /* default CTA bg */
+  --color-primary-800: oklch(18% 0.04  262);
+  --color-primary-900: oklch(12% 0.025 262);
+
+  /* ─── Secondary (cool steel) ─── */
+  --color-secondary-50:  oklch(97% 0.005 250);
+  --color-secondary-100: oklch(94% 0.008 250);
+  --color-secondary-500: oklch(56% 0.02  250);
+  --color-secondary-700: oklch(38% 0.018 250);
+  --color-secondary-900: oklch(22% 0.012 250);
+
+  /* ─── Accent (interactive highlights) ─── */
+  --color-accent-50:  oklch(97% 0.02 265);
+  --color-accent-100: oklch(93% 0.05 265);
+  --color-accent-200: oklch(86% 0.10 265);
+  --color-accent-500: oklch(58% 0.22 270);
+  --color-accent-600: oklch(52% 0.24 272);
+  --color-accent-700: oklch(46% 0.24 274);
+
+  /* ─── Semantic ramps ─── */
+  --color-success-50:  oklch(96% 0.03 152);
+  --color-success-500: oklch(58% 0.14 152);
+  --color-success-700: oklch(46% 0.13 152);
+  --color-warning-50:  oklch(96.5% 0.04 80);
+  --color-warning-500: oklch(70% 0.16 70);
+  --color-warning-700: oklch(56% 0.15 60);
+  --color-error-50:    oklch(96% 0.04 25);
+  --color-error-500:   oklch(58% 0.20 25);
+  --color-error-700:   oklch(46% 0.19 25);
+  --color-info-50:     oklch(96% 0.03 230);
+  --color-info-500:    oklch(60% 0.14 230);
+  --color-info-700:    oklch(48% 0.13 230);
+
+  /* ─── Category hues (decorative labels — no semantic meaning) ─── */
+  --color-teal-50:    oklch(95% 0.04 190);
+  --color-teal-500:   oklch(60% 0.12 190);
+  --color-teal-700:   oklch(46% 0.12 190);
+  --color-violet-50:  oklch(95% 0.04 280);
+  --color-violet-500: oklch(58% 0.14 280);
+  --color-violet-700: oklch(40% 0.16 280);
+
+  /* ─── Semantic shortcuts: bg-success / bg-success-bg / text-success-strong ─── */
+  --color-success:        var(--color-success-500);
+  --color-success-bg:     var(--color-success-50);
+  --color-success-strong: var(--color-success-700);
+  --color-warning:        var(--color-warning-500);
+  --color-warning-bg:     var(--color-warning-50);
+  --color-warning-strong: var(--color-warning-700);
+  --color-error:          var(--color-error-500);
+  --color-error-bg:       var(--color-error-50);
+  --color-error-strong:   var(--color-error-700);
+  /* Danger button pressed state: error-700 nudged toward text. color-mix of
+     vars — adapts to dark mode automatically. */
+  --color-error-active:   color-mix(in oklch, var(--color-error-700) 82%, var(--color-content-primary) 18%);
+  --color-info:           var(--color-info-500);
+  --color-info-bg:        var(--color-info-50);
+  --color-info-strong:    var(--color-info-700);
+}

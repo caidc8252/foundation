@@ -1,0 +1,23 @@
+/* ─────────────────────────────────────────────────────────────
+   Foundation · Tokens · Motion (L1)
+   Durations + easing. The reduced-motion block zeroes durations so
+   any consumer that reads --duration-* respects the user preference
+   for free.
+   ───────────────────────────────────────────────────────────── */
+@theme {
+  --duration-instant: 80ms;
+  --duration-fast:    120ms;
+  --duration-normal:  200ms;
+  --duration-slow:    320ms;
+  --ease-standard:    cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized:  cubic-bezier(0.3, 0, 0, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-instant: 0ms;
+    --duration-fast:    0ms;
+    --duration-normal:  0ms;
+    --duration-slow:    0ms;
+  }
+}

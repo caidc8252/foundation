@@ -1,0 +1,45 @@
+/* ─────────────────────────────────────────────────────────────
+   Foundation · Tokens · Layout (L1)
+   Control sizing, container max-width, breakpoints, and the raw
+   spacing scale. The raw --space-* scale is for direct var()
+   consumption (e.g. layout Stack/Grid); it is intentionally NOT a
+   Tailwind utility namespace.
+   ───────────────────────────────────────────────────────────── */
+@theme {
+  /* ─── Control sizing → h-control-*, px-cx-* ─── */
+  --spacing-control-xs: 22px;
+  --spacing-control-sm: 28px;
+  --spacing-control-md: 36px;
+  --spacing-control-lg: 44px;
+  --spacing-cx-sm: 10px;
+  --spacing-cx-md: 14px;
+  --spacing-cx-lg: 18px;
+  --spacing-stat-card: 92px;
+
+  /* ─── Container max-widths → max-w-* ─── */
+  --container-content: 1280px; /* content max-width 1280 + 24px gutters */
+
+  /* ─── Breakpoints ─── */
+  --breakpoint-xs:  480px;
+  --breakpoint-sm:  640px;
+  --breakpoint-md:  768px;
+  --breakpoint-lg:  1024px;
+  --breakpoint-xl:  1280px;
+  --breakpoint-2xl: 1536px;
+}
+
+/* ─── Raw spacing scale — direct var() consumption only ─── */
+:root {
+  --space-0:  0;
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+}

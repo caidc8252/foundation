@@ -1,0 +1,120 @@
+/* ─────────────────────────────────────────────────────────────
+   Foundation · Tokens · Dark mode (L1)
+   Overrides ONLY the values that change in dark. [data-theme="dark"]
+   specificity (0,1,0) wins over the :root / @theme defaults. Tokens
+   defined with var()/color-mix in the light files (e.g. avatar,
+   state-selected, chart structural) follow automatically and are NOT
+   repeated here.
+   ───────────────────────────────────────────────────────────── */
+[data-theme="dark"], .dark {
+  --color-avatar-bg: oklch(30% 0.006 260);
+  --color-avatar-fg: oklch(84% 0.005 260);
+
+  --color-brand-mono:        oklch(86% 0.005 260);
+  --color-brand-mono-strong: oklch(96% 0.003 260);
+  --color-brand-mono-soft:   oklch(70% 0.006 260);
+
+  --color-primary-50:  oklch(20% 0.005 260);
+  --color-primary-100: oklch(26% 0.006 260);
+  --color-primary-200: oklch(34% 0.006 260);
+  --color-primary-300: oklch(50% 0.005 260);
+  --color-primary-400: oklch(66% 0.005 260);
+  --color-primary-500: oklch(78% 0.004 260);
+  --color-primary-600: oklch(92% 0.004 260);
+  --color-primary-700: oklch(88% 0.004 260);
+  --color-primary-800: oklch(82% 0.005 260);
+  --color-primary-900: oklch(74% 0.005 260);
+
+  --color-secondary-50:  oklch(22% 0.008 250);
+  --color-secondary-100: oklch(26% 0.010 250);
+  --color-secondary-500: oklch(60% 0.012 250);
+  --color-secondary-700: oklch(76% 0.012 250);
+  --color-secondary-900: oklch(92% 0.005 250);
+
+  --color-accent-50:  oklch(22% 0.05 264);
+  --color-accent-100: oklch(28% 0.08 264);
+  --color-accent-200: oklch(36% 0.12 264);
+  --color-accent-500: oklch(70% 0.13 264);
+  --color-accent-600: oklch(74% 0.12 264);
+  --color-accent-700: oklch(82% 0.10 264);
+
+  --color-success-50:  oklch(24% 0.05 152);
+  --color-success-500: oklch(68% 0.13 152);
+  --color-success-700: oklch(78% 0.11 152);
+  --color-warning-50:  oklch(26% 0.06 70);
+  --color-warning-500: oklch(76% 0.13 70);
+  --color-warning-700: oklch(84% 0.11 70);
+  --color-error-50:    oklch(24% 0.07 25);
+  --color-error-500:   oklch(68% 0.16 25);
+  --color-error-700:   oklch(78% 0.14 25);
+  --color-info-50:     oklch(24% 0.05 235);
+  --color-info-500:    oklch(70% 0.12 235);
+  --color-info-700:    oklch(80% 0.10 235);
+
+  --color-teal-50:    oklch(24% 0.05 190);
+  --color-teal-500:   oklch(70% 0.12 190);
+  --color-teal-700:   oklch(80% 0.10 190);
+  --color-violet-50:  oklch(24% 0.05 280);
+  --color-violet-500: oklch(70% 0.12 280);
+  --color-violet-700: oklch(80% 0.10 280);
+
+  --color-surface-1:       oklch(15% 0.005 270);
+  --color-surface-2:       oklch(18% 0.006 270);
+  --color-surface-3:       oklch(13% 0.005 270);
+  --color-surface-hover:   oklch(22% 0.008 270);
+  --color-surface-active:  oklch(26% 0.01  270);
+  --color-surface-overlay: oklch(0% 0 0 / 0.55);
+
+  --color-content-primary:    oklch(96% 0.005 270);
+  --color-content-secondary:  oklch(74% 0.008 270);
+  --color-content-tertiary:   oklch(58% 0.008 270);
+  --color-content-disabled:   oklch(42% 0.008 270);
+  --color-content-inverse:    oklch(18% 0.01  270);
+  --color-content-on-primary: oklch(15% 0.01  270);
+
+  --color-line-subtle:  oklch(22% 0.006 270);
+  --color-line-default: oklch(28% 0.008 270);
+  --color-line-strong:  oklch(38% 0.01  270);
+  --color-line-focus:   oklch(70% 0.13  262);
+
+  --shadow-1: 0 0 0 1px oklch(0% 0 0 / 0.5);
+  --shadow-2: 0 1px 2px oklch(0% 0 0 / 0.6);
+  --shadow-3: 0 4px 10px oklch(0% 0 0 / 0.6);
+  --shadow-4: 0 8px 18px oklch(0% 0 0 / 0.7);
+  --shadow-5: 0 24px 48px oklch(0% 0 0 / 0.75);
+  --shadow-cta: inset 0 1px 0 oklch(100% 0 0 / 0.12),
+                0 1px 2px oklch(0% 0 0 / 0.6);
+  --shadow-focus: 0 0 0 3px oklch(70% 0.13 264 / 0.40);
+
+  /* Charts · dark — same hues, lifted lightness for the dark canvas.
+     grid/axis/label/dim/zoom are var()-based → follow automatically. */
+  --color-chart-1: oklch(66% 0.14 262);
+  --color-chart-2: oklch(68% 0.12 152);
+  --color-chart-3: oklch(68% 0.12 230);
+  --color-chart-4: oklch(74% 0.12  70);
+  --color-chart-5: oklch(68% 0.13 320);
+  --color-chart-6: oklch(66% 0.14  25);
+  --color-chart-7: oklch(62% 0.09 200);
+  --color-chart-8: oklch(68% 0.11 290);
+  --color-chart-seq-100: oklch(30% 0.06 262);
+  --color-chart-seq-200: oklch(38% 0.09 262);
+  --color-chart-seq-300: oklch(46% 0.13 262);
+  --color-chart-seq-400: oklch(56% 0.16 262);
+  --color-chart-seq-500: oklch(66% 0.16 262);
+  --color-chart-seq-600: oklch(76% 0.13 262);
+  --color-chart-seq-700: oklch(86% 0.09 262);
+  --color-chart-div-neg: oklch(70% 0.14 25);
+  --color-chart-div-mid: oklch(46% 0.004 260);
+  --color-chart-div-pos: oklch(70% 0.16 262);
+  --color-chart-tooltip-bg: oklch(26% 0.006 260);
+  --color-chart-tooltip-fg: oklch(94% 0.003 260);
+
+  /* Categorical soft · dark — deeper tinted surface, lifted same-hue ink. */
+  --color-cat-1: oklch(30% 0.035 206); --color-cat-1-fg: oklch(80% 0.06 206);
+  --color-cat-2: oklch(30% 0.035  32); --color-cat-2-fg: oklch(80% 0.06  32);
+  --color-cat-3: oklch(30% 0.035 125); --color-cat-3-fg: oklch(80% 0.06 125);
+  --color-cat-4: oklch(30% 0.035 218); --color-cat-4-fg: oklch(80% 0.06 218);
+  --color-cat-5: oklch(30% 0.035  84); --color-cat-5-fg: oklch(80% 0.06  84);
+  --color-cat-6: oklch(30% 0.035   0); --color-cat-6-fg: oklch(80% 0.06   0);
+  --color-cat-line: oklch(20% 0.004 260);
+}

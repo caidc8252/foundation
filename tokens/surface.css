@@ -1,0 +1,39 @@
+/* ─────────────────────────────────────────────────────────────
+   Foundation · Tokens · Surface & Content (L1)
+   Surfaces, foreground content, borders/lines, avatar, brand mono.
+   Dark-mode overrides live in tokens/dark.css.
+   ───────────────────────────────────────────────────────────── */
+@theme {
+  /* ─── Surfaces · bg-surface-{1|2|3|hover|active|overlay} ─── */
+  --color-surface-1:       oklch(99%   0.003 90);
+  --color-surface-2:       oklch(100%  0     0);
+  --color-surface-3:       oklch(97.2% 0.004 90);
+  --color-surface-hover:   oklch(95.8% 0.005 90);
+  --color-surface-active:  oklch(93.5% 0.006 90);
+  --color-surface-overlay: oklch(15% 0.01 270 / 0.45);
+  /* Selected row/item surface. color-mix of vars — adapts to dark mode. */
+  --color-state-selected:  color-mix(in oklch, var(--color-primary-50) 70%, var(--color-surface-2) 30%);
+
+  /* ─── Content · text-content-{primary|secondary|tertiary|disabled|inverse|on-primary} ─── */
+  --color-content-primary:    oklch(18% 0.01  270);
+  --color-content-secondary:  oklch(42% 0.008 270);
+  --color-content-tertiary:   oklch(58% 0.006 270);
+  --color-content-disabled:   oklch(72% 0.005 270);
+  --color-content-inverse:    oklch(99% 0     0);
+  --color-content-on-primary: oklch(99% 0     0);
+
+  /* ─── Avatar · bg-avatar-bg / text-avatar-fg ─── */
+  --color-avatar-bg: var(--color-surface-3);
+  --color-avatar-fg: var(--color-content-secondary);
+
+  /* ─── Lines · border-line-{subtle|default|strong|focus} ─── */
+  --color-line-subtle:  oklch(93% 0.005 90);
+  --color-line-default: oklch(89% 0.005 90);
+  --color-line-strong:  oklch(80% 0.006 90);
+  --color-line-focus:   oklch(40% 0.14  262);
+
+  /* ─── Brand mono ─── */
+  --color-brand-mono:        oklch(22% 0.015 270);
+  --color-brand-mono-strong: oklch(14% 0.012 270);
+  --color-brand-mono-soft:   oklch(28% 0.02  270);
+}
