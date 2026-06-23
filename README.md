@@ -14,17 +14,28 @@ it can use.
 > theme — off-brand artifact work forks its own tokens. See
 > `governance/principles.md` §7.
 
-## The four layers
+## The layers
 
 | Layer | Lives in | What's shared | What stays per-consumer |
 |---|---|---|---|
 | **L1 · Tokens** | `tokens/` (+ emitted `dist/`) | the values | — |
 | **L2 · Primitives** | `primitives/` | contract (`*.md`) + reference CSS | React impl (Next) · bespoke HTML (artifact) |
+| **L2.5 · Composites** | `composites/` | contract (`*.md`) + reference CSS | React impl (Next) · bespoke HTML (artifact) |
 | **L3 · Patterns** | `patterns/` | named archetype structure | the page implementations |
 | **L4 · Governance** | `governance/` | the design law + token process | enforcement (lint vs checklist) |
 
 Below tokens, consumers share **contracts, not code** — React+Tailwind and
 self-contained HTML can't share components, but they answer to the same truth.
+
+**Primitives are atoms** (button, input, badge…); **composites are the building
+blocks a page is assembled from** (page-body, page-header, data-table, the
+list-filter family, pagination, empty-state, skeleton — plus the context-only
+`app-frame` shell prototypes render inside). A composite composes primitives +
+tokens; a **pattern composes composites**. The split is deliberate: granularity
+and "pick the blocks I need" live at the composite layer, while patterns stay
+coarse and few so a prototype and the production page read as the same screen.
+Composites mirror @cloud/ui's `layout/` + `list-filter/` + table families, so the
+parts are named the same on both sides.
 
 ## Layout
 
@@ -38,6 +49,8 @@ foundation/
     tokens.inline.css  flat :root{} + dark, paste into an artifact <style>
     tokens.json        { light, dark } maps for artifact JS
   primitives/        L2 — button.md … (contracts) + primitives.css (reference)
+  composites/        L2.5 — app-frame · page-body · page-header · data-table · list-filter ·
+                       summary-bar · pagination · empty-state · skeleton (contracts) + composites.css
   patterns/          L3 — list-page · detail-page · create-form (archetypes)
   governance/        L4 — principles · token-change · enforcement
 ```
@@ -61,10 +74,30 @@ the primitive reference classes:
 
 ```html
 <style>
-  /* paste dist/tokens.inline.css here */
-  /* paste primitives/primitives.css here */
+  /* paste dist/tokens.inline.css       here — token values first */
+  /* paste primitives/primitives.css    here — atoms next */
+  /* paste composites/composites.css    here — building blocks last (reuse atoms) */
 </style>
 ```
+
+Order matters: composites reuse primitive classes (`.btn`, `.input`), so the
+primitive CSS must come first.
+
+`primitives.css` opens with a `*{box-sizing:border-box}` baseline — the controls
+size with width/height + padding and require it. The Next app gets border-box
+from Tailwind Preflight; the artifact has no other reset, so the reference layer
+ships it. Don't drop or override it, or padded controls overflow their track
+(e.g. a search input spilling over the filter beside it).
+
+For a **page** prototype, render it inside the `app-frame` — the context-only
+shell mirroring `Layout`. The page sits in `.app-frame__main`, so it gets the
+production content width (`viewport − sidebar`), the real sticky `h-14` header,
+and `main` (not the window) as the scroll root — not a centered `max-width`
+column that deviates once shipped. The **port boundary is `.app-frame__main`'s
+contents**; the frame is discarded (the app already has `Layout`). The frame's
+`248 / 56 / 56` mirror `Layout`'s hardcoded consts — promoting those to shared
+foundation layout tokens that `Layout` consumes is the open single-source
+follow-up (it touches `packages/ui`, so it needs a deliberate go-ahead).
 
 Artifacts are frozen snapshots by nature (CSP, no external fetch). "Syncing" an
 artifact = re-inlining the current `dist/` — there is no live link, and that's
@@ -84,6 +117,10 @@ patch in a consumer. Full process: `governance/token-change.md`.
 
 - ✅ L1 tokens extracted from the live `@cloud/ui` and emitting cleanly.
 - ✅ L2 contract format set (`button.md`) + common primitives + `primitives.css`.
+- ✅ L2.5 composites for the list archetype — page-body · page-header · data-table ·
+  list-filter · summary-bar · pagination (incl. the `RichPagination` list footer) ·
+  empty-state · skeleton (contracts + `composites.css`), mirroring @cloud/ui's
+  `layout/` + `list-filter/` + table families.
 - ✅ L3 archetype stubs · ✅ L4 governance.
 - ⏳ **Not yet wired**: `@cloud/ui`'s `index.css` still defines its own token
   values; pointing it at `@cloud/foundation/tokens` (and verifying the compiled

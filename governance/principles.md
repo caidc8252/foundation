@@ -34,14 +34,23 @@ Font sizes snap to `--text-{2xs…5xl}`. There is no `text-[15px]`. Same for the
 control-height (`control-*`), spacing (`cx-*`, `space-*`), radius, and shadow
 ladders. The scales are the design; off-scale values read as accidents.
 
-## 5. The primitive contract is authoritative
+## 5. The component contract is authoritative — atoms and composites alike
 
-A primitive's variants/sizes/states/anatomy are defined once, in
-`foundation/primitives/<name>.md`. Both implementations answer to it: the
-`@cloud/ui` React component and the artifact-side `primitives.css`. When an
+A component's variants/sizes/states/anatomy are defined once: primitives in
+`foundation/primitives/<name>.md`, composites in `foundation/composites/<name>.md`.
+Both implementations answer to it: the `@cloud/ui` React component and the
+artifact-side reference CSS (`primitives.css` / `composites.css`). When an
 implementation diverges from the contract, the implementation is the bug.
-Don't re-skin a primitive to fake a new variant — propose the variant to the
-contract first.
+Don't re-skin to fake a new variant — propose the variant to the contract first.
+
+**Composites are the assembly unit, patterns are the recipe.** A reusable
+building block (page-body, page-header, data-table, the list-filter family,
+pagination, empty-state, skeleton) is a *composite* with its own contract — not a
+slice of a pattern. A page is assembled by choosing composites; the **pattern**
+(L3) fixes which composites appear and in what order. So a recurring part
+(page-body and page-header show up in list, detail, and create) lives **once** as
+a composite, never duplicated into each pattern. Don't subdivide patterns into "header + table" — that pushes
+granularity to the wrong layer and forfeits the pattern's ordering guarantee.
 
 ## 6. The four layers, and what crosses the consumer boundary
 
@@ -49,6 +58,7 @@ contract first.
 |---|---|---|
 | **Tokens** | the values | — |
 | **Primitives** | contract + reference CSS | React impl (Next) / bespoke HTML (artifact) |
+| **Composites** | contract + reference CSS | React impl (Next) / bespoke HTML (artifact) |
 | **Patterns** | named archetype structure | the actual page implementations |
 | **Governance** | this law + token process | the enforcement mechanism (lint vs checklist) |
 

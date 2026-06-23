@@ -2,45 +2,99 @@
 
 The default archetype for "a collection you browse, filter, and act on" (the most
 common portal screen). A pattern is a *named structure*, not an implementation —
-both consumers build it from primitives; this file fixes the anatomy and the
-ordering so a prototype and the production page read as the same screen.
+both consumers build it from composites; this file fixes the anatomy, the
+ordering, and the load-bearing decisions so a prototype and the production page
+read as the same screen. Reference implementation: `@cloud/ui`'s
+`docs/examples/list-page.tsx` (the style template).
 
 ## Anatomy (top → bottom)
 
 ```
-┌ page-header ─────────────────────────────────────────────┐
-│ title + count            [ secondary action ] [ primary ] │
-├ condition band ──────────────────────────────────────────┤
-│ [ search ] [ quick filters ]            [ advanced ▸ ]    │
-├ applied filters ─────────────────────────────────────────┤
-│ ⊗ chip   ⊗ chip   ⊗ chip                      clear all   │
-├ summary bar ─────────────────────────────────────────────┤
-│ N results · sorted by …                      [ density ]  │
-├ table ───────────────────────────────────────────────────┤
-│ selectable rows · sticky header · row actions on hover    │
-├ pagination ──────────────────────────────────────────────┘
-│ ‹ prev   1 2 3 …   next ›                  rows per page   │
+┌ page-header (full-bleed) ────────────────────────────────────┐
+│ Title + description              [ secondary ]  [ primary ]   │
+╞ page-body (gutters + stack) ═════════════════════════════════╡
+│ ┌ condition band ──────────────────────────────────────────┐ │
+│ │ [ 🔍 search ] [ quick filter ▾ ]            [ Search ]    │ │
+│ │ Filters:  ⊗ chip   ⊗ chip                     clear all   │ │
+│ └───────────────────────────────────────────────────────────┘ │
+│ ┌ list card (table-frame --flush) ─────────────────────────┐ │
+│ │ summary bar:  N customers …            [ Export ]   ◄ stick│ │
+│ │ ☐ CUSTOMER ▴   STATUS   REGISTERED   CITY   TAGS      ◄ stick│ │
+│ │   row …                                               › │ │
+│ │ ─ pagination: rows ▾  showing 1–25 of N     ‹ 1 2 3 › ── │ │
+│ └───────────────────────────────────────────────────────────┘ │
+└───────────────────────────────────────────────────────────────┘
 ```
+
+## Sticky model (the load-bearing decision)
+
+The condition band **scrolls away** — it is non-sticky by default. What stays
+docked at the scroll-root top is the list card's **summary bar** plus the
+**table column header**:
+
+- The list card is a `table-frame` in its **`--flush`** form (`overflow: clip`,
+  not the default `hidden`) — flush still rounds the corners but does **not**
+  establish a scroll container, so the sticky summary bar and header dock to the
+  page instead of being trapped inside the card.
+- The summary bar is sticky; the table uses a sticky header whose top offset is
+  the summary bar's height (`LIST_SUMMARY_BAR_HEIGHT = 48 = --space-12`) so the
+  two tile flush with no gap or overlap.
+- The card adds **no padding** — summary bar, table, and pagination each own
+  their own, and butt against the frame edges.
 
 ## Rules
 
-- **One primary action**, top-right (`Button` variant `primary`). Bulk/secondary
-  actions are `secondary`/`ghost`.
-- **Search is debounced**, filters apply immediately; both reflect into applied-filter
-  chips so the active query is always visible and removable.
-- **Empty, loading, error** are first-class states, not afterthoughts (see the
-  `empty` and `skeleton` primitives). Empty state invites the primary action.
-- **Selection** drives a bulk-action bar; selected row uses `state-selected` +
-  `shadow-row-selected`.
-- Container max-width `--container-content`; the table scrolls inside its own
-  `overflow-x` region, the page never scrolls horizontally.
+- **One primary action**, top-right in the page-header (`Button` variant
+  `primary`, e.g. "New customer"). The condition band's own Search button and the
+  summary bar's Export are `secondary`; bulk/row actions are `secondary`/`ghost`.
+  Icon-only actions are `ghost` / `ghost-danger` only.
+- **Search is debounced; filters apply immediately** — both reflect into
+  applied-filter chips so the active query is always visible and removable. The
+  filter apparatus runs a **draft → applied** state machine (`useListFilters`):
+  edits live in `draft`; `apply()` commits to `applied` (and resets to page 1);
+  chips reflect `applied`; `clearField` / `clearAll` remove them. When any filter
+  is applied, the summary-bar count label appends "matching filters".
+- **The whole row is the click target** (`onRowClick` opens the record). The
+  resting row carries only a passive trailing chevron (`content-tertiary`) — no
+  inline action buttons. (Use the data-table's hover `row-actions` slot only when
+  a row needs verbs the row-open doesn't cover.)
+- **Three text-column shapes**, and nothing else (keeps columns scannable):
+  1. **Two-line** — primary `text-sm`/medium/`content-primary` over a subline
+     `text-2xs`/`content-tertiary`; may lead with an avatar / initial tile
+     (`size-8`, `surface-3`, `rounded-lg`).
+  2. **Numeric / id / date** — always mono + `tabular-nums`, `content-secondary`
+     (the data-table `cell-num`); usually right-aligned so digits line up.
+  3. **Plain** — table default size, `content-secondary`, **no** mono.
+  Status renders a `Badge` (tonal, with `dot`); empty values render an em-dash
+  (`—`, `content-tertiary`), never a blank cell.
+- **Empty, loading, error** are first-class states. *Nothing-yet* invites the
+  page's primary verb; *no-results-for-filters* offers "clear filters", not
+  "create". A `skeleton` table fills the frame while loading.
+- **Selection** (when present) uses a leading checkbox column; the selected row
+  gets `state-selected` + a 2px primary left bar (`shadow-row-selected`) and
+  drives a bulk-action set that replaces the summary bar's idle actions.
+- Width is the shell's (`--container-content`); the **table** scrolls inside its
+  own `table-scroll` region — the page never scrolls horizontally.
 
 ## Building blocks
 
-Primitives: `Table`, `Button`, `Input`/search, `Badge` (status), `Checkbox`
-(selection), pagination. In `@cloud/ui` these are realized by the `layout/`
-(page-header, page-body) and `list-filter/` (search-input, filter-chip,
-advanced-filter-sheet, applied-filters, list-summary-bar) families; an artifact
-composes the same anatomy from `primitives.css`.
+A list page is **assembled from composites** (`../composites/`), each with its
+own contract — this pattern only fixes which appear and in what order:
 
-> First-draft stub — expand with concrete token/spacing specs as real list pages land.
+| Anatomy slot | Composite |
+|---|---|
+| shell (context, **not ported**) | [`app-frame`](../composites/app-frame.md) — the page renders inside `.app-frame__main`, giving it the true content width + scroll root |
+| header band (full-bleed) | [`page-header`](../composites/page-header.md) |
+| content region (gutters + stack) | [`page-body`](../composites/page-body.md) |
+| condition band + applied filters | [`list-filter`](../composites/list-filter.md) family (condition-band · search-input · filter-chip · applied-filters) + the `useListFilters` draft/applied state |
+| list card | a [`data-table`](../composites/data-table.md) `table-frame --flush` wrapping the next three |
+| summary bar (sticky) | [`summary-bar`](../composites/summary-bar.md) |
+| table (sticky header) | [`data-table`](../composites/data-table.md) (sort · selection · row-open · sticky header) |
+| pagination (rich footer) | [`pagination`](../composites/pagination.md) — `RichPagination`: rows-per-page + range summary + **simple** prev/next nav (current page only, no jump — the table constraint) |
+| empty / loading | [`empty-state`](../composites/empty-state.md) · [`skeleton`](../composites/skeleton.md) |
+
+Those composites in turn lean on primitives (`Button`, `Input`, `Badge`,
+`Select`, `Card`, `Checkbox`). In `@cloud/ui` they are the `layout/` +
+`list-filter/` + `ui/Table` families; an artifact composes the same anatomy from
+`composites.css` (on top of `primitives.css` + `dist/tokens.inline.css`). Same
+parts, same names, both sides.

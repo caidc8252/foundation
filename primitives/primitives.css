@@ -21,6 +21,18 @@
    theme-aware.
    ───────────────────────────────────────────────────────────── */
 
+/* ═══════════════════════════════ Baseline ═══════════════════════════════ */
+/* These primitives size with width/height AND padding together (.input /
+   .textarea are width:100% + inline padding; controls are fixed height +
+   padding). That only lays out correctly under border-box. The Next consumer
+   gets border-box from Tailwind Preflight; a self-contained artifact has no
+   other reset, so the reference layer must establish it here — otherwise the
+   host's content-box default makes a padded control overflow its track (a
+   width:100% search input spilling its padding OVER the filter beside it). This
+   is the one global rule the artifact side depends on: not a token, the box
+   model itself. */
+*, *::before, *::after { box-sizing: border-box; }
+
 /* ═══════════════════════════════ Button ═══════════════════════════════ */
 
 .btn {

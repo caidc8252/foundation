@@ -1,0 +1,22 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
+  "//": "Foundation adherence lint — ported from TOMS DS _adherence.oxlintrc.json, adapted to foundation. Catches off-token values in artifact-design prototypes authored as JS/TS/JSX/TSX. Extend it from the requirements space: { \"extends\": [\"node_modules/@cloud/foundation/.oxlintrc.json\"] }. NOTE: oxlint parses JS/TS, not raw .html — it sees string literals (className strings, styled values, inline-style objects), so it does NOT catch hardcoded values inside an .html <style> block. For pure static-HTML artifacts the same three rules apply by review (see governance/enforcement.md). Allowed-token registry: dist/adherence.tokens.json (generated from tokens/, run pnpm build).",
+  "plugins": ["react", "import"],
+  "rules": {
+    "no-restricted-syntax": [
+      "warn",
+      {
+        "selector": "Literal[value=/#[0-9a-fA-F]{3,8}\\b/]",
+        "message": "Raw hex color — use a foundation color token via var(--color-…). See governance/principles.md §1."
+      },
+      {
+        "selector": "Literal[value=/\\b\\d+px\\b/]",
+        "message": "Raw px value — snap to a foundation scale token via var() (--space-*, --text-*, --radius-*, --spacing-control-*). 1px hairline borders are exempt. See governance/principles.md §1 & §4."
+      },
+      {
+        "selector": "Literal[value=/font-family\\s*:\\s*(?!['\\\"]?(?:Geist|Geist Mono|var\\(--font))/i]",
+        "message": "Font not in the foundation. Use var(--font-sans) / var(--font-mono) (Geist · Geist Mono)."
+      }
+    ]
+  }
+}
