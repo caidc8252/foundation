@@ -1,0 +1,95 @@
+# Step Indicator · composite
+
+Horizontal progress rail for a multi-step flow (wizard): a row of numbered dots
+joined by connectors, each with a caption + title, showing what's done, where you
+are, and what's left. Display-only by default; opt-in click-to-jump-back.
+
+> **Contract scope.** This file is the cross-consumer *design contract*: the
+> per-state token recipe, anatomy, the navigation rule, a11y. React prop *types*
+> (`steps` / `current` / `onStepClick` / `maxNavigableStep`) live with `@cloud/ui`
+> + the `ui` skill. When the contract and an implementation disagree, the contract
+> is right and the implementation is the bug. Not to be confused with `Stepper`
+> (the numeric +/- spinbutton) — different component, similar name.
+
+## States
+
+There is no `variant` prop — a step's appearance is derived from its index vs.
+`current`: `index < current` → completed, `index === current` → active, else
+upcoming. State drives the **dot**, the **title** tone, and the **connector**
+trailing each step.
+
+| state | dot recipe | title recipe | connector (to the right) |
+|---|---|---|---|
+| `completed` | border `success`/25 · bg `success-bg` · text `success-strong` · glyph = check (or the step's own `icon`) | `text-sm`/500 · `content-secondary` | `success`/50 hairline |
+| `active` *(current)* | border `primary-700` · bg `primary-700` · text `content-on-primary` · 600 · `shadow-cta` | `text-sm`/600 · `content-primary` | `line-default` hairline |
+| `upcoming` | border `line-default` · bg `surface-3` · text `content-tertiary` · 500 | `text-sm`/500 · `content-secondary` | `line-default` hairline |
+
+The connector belongs to the step it trails and is omitted after the last step.
+A connector reads "done" (`success`/50) only when its **own** step index is `<
+current`; the connector out of the active step is still `line-default`.
+
+## Sizes
+
+Single size. Dot is a fixed 32px (`space-8`) circle; the in-dot glyph (check or
+the step's `icon`) defaults to 14px (`size-3.5`) and inherits the per-state text
+color via `currentColor`. No size modifier.
+
+## Anatomy
+
+```
+┌ step-indicator (ol, horizontal) ───────────────────────────────────────┐
+│  ┌ item ─────────────┐            ┌ item ─────────────┐                 │
+│  │ (●)  STEP 1        │━━━━━━━━━━━━│ (2)  STEP 2        │━━━━━ … (last:   │
+│  │ dot  Company       │ connector  │ dot  Contracts     │      no track) │
+│  └───────────────────┘            └───────────────────┘                 │
+└─────────────────────────────────────────────────────────────────────────┘
+  dot = circle w/ number | step icon | check(once completed)
+  text column = caption (optional, uppercase) over title
+```
+
+- **Dot** carries the ordinal (`index + 1`), or the step's own `icon`, or — once
+  completed — a check. An `icon` **wins in every state**: it persists through
+  completed (shown in success green, not replaced by the check), so keep the
+  ordinal legible via `caption`.
+- **Text column** stacks an optional `caption` (small, uppercase, `text-xs`/500,
+  `tracking-wide`, `content-tertiary`) over the `title` (`leading-tight`).
+- **Connector** is a 1px flex-grow track filling the gap to the next step; absent
+  after the last step (last item is `flex-none`, the rest are `flex-1` so the rail
+  spreads to fill its width).
+- The component renders **bare** (just the dot row + connectors) so it composes
+  anywhere; wrap it yourself for the card look (`border` `line-default` · bg
+  `surface-2` · `radius-xl` · `shadow-1` · `px-6 py-4`).
+
+## Accessibility
+
+- Renders as an ordered list (`<ol>` › `<li>` per step) — the steps are inherently
+  sequential. `data-state` mirrors completed/active/upcoming.
+- The active step's `<li>` carries `aria-current="step"`.
+- Connectors are decorative (`aria-hidden`).
+- When navigation is enabled, each reachable step is a real `<button type="button">`
+  (never a clickable `<div>`) with `focus-visible` `shadow-focus`; non-reachable
+  steps render as a plain `<div>` and are not focusable.
+
+## Navigation rule
+
+Display-only by default — advancing is driven by the surrounding wizard's
+Back / Continue buttons; the indicator just reflects `current`. Pass `onStepClick`
+to make visited steps clickable jump-back targets. `maxNavigableStep` (0-based,
+defaults to `current`) caps how far clicks reach — typically the furthest step the
+user has already visited. Steps at `index <= maxNavigable` become buttons; the rest
+stay inert. Without `onStepClick` nothing is navigable.
+
+## Implementations
+
+- **Next / @cloud/ui** — `import { StepIndicator } from "@cloud/ui"`. Props
+  `steps` (`{ label, caption?, icon? }[]`), `current`, optional `onStepClick` /
+  `maxNavigableStep`. State derivation, the icon-vs-check glyph swap, and which
+  steps are buttons are owned by the React implementation. Also exports
+  `stepDotVariants` for the dot recipe. API details: the `ui` skill.
+- **Artifact (self-contained HTML)** — `.step-indicator` (an `<ol>`) › `.step` per
+  item, modified by `.step--completed` / `.step--active` / `.step--upcoming`. Each
+  item holds `.step__dot` (with the number / icon / check), a `.step__text` column
+  (`.step__caption` + `.step__title`), and a trailing `.step__connector` (omit on
+  the last). The skin paints all three static states by class; **which** state a
+  step is in, and the click-to-jump behavior, are computed by the consumer (here,
+  by hand-setting the modifier). In `composites.css`.
