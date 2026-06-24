@@ -47,6 +47,9 @@ config-driven table — columns + rows — not hand-written cell markup.
 - **Sticky header** docks the column header to the scroll root; pair with a
   `--flush` frame and set its top offset to the summary bar's height so they tile.
   Wide tables scroll **inside `.table-scroll`** — the page never scrolls sideways.
+  That scroll root is `.app-frame__main` in the shell; a **frameless** page must
+  give its own `overflow-y:auto` root or drop `--sticky-head` + the `top:` offset
+  (see AGENTS.md "Two traps in a frameless page").
 - **Pagination is `simple`** — the list/table footer shows `‹ Prev · current page
   · Next ›` only (no numbered jump, no ellipsis); it is `RichPagination`, which is
   always simple. The total lives in its range summary. See `pagination.md`.

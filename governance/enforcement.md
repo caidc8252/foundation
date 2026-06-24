@@ -24,17 +24,36 @@ token values — it imports the foundation `@theme` source.
 
 ## Artifact-design (requirements space consumer)
 
-No AST lint can run on a self-contained HTML file, so enforcement is an authoring
-checklist (reviewed by eye / a design pass):
+The closed set an artifact may use — and where to find each piece — is the
+`AGENTS.md` at the repo root; the legal token/class/pattern names are enumerated
+in the generated `dist/catalog.md` (+ `dist/catalog.json`). Start there.
 
+No AST lint can run on a self-contained HTML file, so enforcement is part
+**runnable check**, part authoring checklist:
+
+```bash
+node scripts/check-artifact.mjs path/to/artifact.html   # or: pnpm check <file>
+```
+
+It reports usage outside the catalog — hardcoded colors, unknown `var(--…)`
+tokens, and classes that are neither a foundation class nor defined in the file's
+own `<style>`. The remaining items are an eye/design pass:
+
+- [ ] `node scripts/check-artifact.mjs <file>` is clean (no out-of-set tokens/colors;
+      reviewed each off-set class — page-local composition OK, off-brand component not).
 - [ ] Inlined the current `dist/tokens.inline.css`; no stale snapshot.
 - [ ] Every color/size/radius/shadow is `var(--token-…)` — zero hex/px literals
       for anything a token covers.
-- [ ] Primitives use the `primitives.css` classes (`.btn`, `.input`, …), matching
-      the contracts — not hand-rolled one-offs.
+- [ ] Primitives/composites use the `primitives.css` / `composites.css` classes
+      (`.btn`, `.input`, `.data-table`, …), matching the contracts — not hand-rolled one-offs.
 - [ ] Any visual not expressible from tokens/primitives is raised as a token-change
       proposal (`token-change.md`), not hardcoded.
 - [ ] Dark mode works by toggling `[data-theme="dark"]` — not by editing colors.
+- [ ] Frameless functional page is **width-locked**, never full-bleed:
+      `max-width: 1672px` (= `1920px` viewport − `248px` sidebar) +
+      `margin-inline: auto`. Width is fixed; height scrolls. Bounds the artifact
+      to the real content width so it previews well. (Use `.app-frame` only when
+      you want full production chrome.) See `AGENTS.md` → "Two traps in a frameless page".
 
 ## When the two disagree
 
