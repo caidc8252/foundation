@@ -55,7 +55,9 @@ foundation/
     tokens.json        { light, dark } maps for artifact JS
   primitives/        L2 — button.md … (contracts) + primitives.css (reference)
   composites/        L2.5 — app-frame · page-body · page-header · data-table · list-filter ·
-                       summary-bar · pagination · empty-state · skeleton (contracts) + composites.css
+                       summary-bar · pagination · empty-state · skeleton (list archetype) ·
+                       detail-header · kv-grid · section-card · feed-list · diff (detail archetype) ·
+                       option-card · product-card (+ product-grid) (contracts) + composites.css
   patterns/          L3 — list-page · detail-page · create-form (archetypes)
   governance/        L4 — principles · token-change · enforcement
 ```
@@ -126,6 +128,15 @@ patch in a consumer. Full process: `governance/token-change.md`.
   list-filter · summary-bar · pagination (incl. the `RichPagination` list footer) ·
   empty-state · skeleton (contracts + `composites.css`), mirroring @cloud/ui's
   `layout/` + `list-filter/` + table families.
+- ✅ L2.5 composites for the **detail archetype**, lifted from the carbon-admin
+  portal — detail-header · kv-grid · section-card · feed-list · diff, plus the
+  admin-shell option-card (contracts + `composites.css`). These back the
+  [`detail-page`](patterns/detail-page.md) pattern, which previously named a
+  KV grid + detail header it had no composite for.
+- ✅ L2.5 `product-card` (+ `product-grid`) — the storefront catalog tile from
+  the carbon-admin `shop-browse` screen: a card-grid catalog, the buyer-facing
+  cousin of the operator-facing `data-table` (the admin product *management*
+  list stays a `data-table`).
 - ✅ L3 archetype stubs · ✅ L4 governance.
 - ⏳ **Not yet wired**: `@cloud/ui`'s `index.css` still defines its own token
   values; pointing it at `@cloud/foundation/tokens` (and verifying the compiled

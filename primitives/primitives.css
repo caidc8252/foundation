@@ -1024,54 +1024,54 @@
 }
 
 /* ═══════════════════════════════ Calendar ═══════════════════════════════ */
-/* The base month grid date pickers build their popup on: a weekday header over a
-   6×7 day matrix with month navigation. Month navigation, day/range selection,
-   the label-vs-dropdown caption, roving arrow-key focus, and the RTL chevron flip
-   are react-day-picker behaviors — out of scope for this static skin. The
-   reference layer paints the resting surface, the cell grid, and one day in each
-   state; mark days with .calendar__day--today / --selected / --range-start /
-   --range-end / --range-middle / --outside / --disabled / --focused (the skin
-   can't observe live selection/focus). Two component-local customs key off
-   tokens: --cell-size (32px square, --space-8) and --cell-radius (--radius-full),
-   mirroring the source's [--cell-size]/[--cell-radius] customs. */
+/* The base month grid date pickers build their popup on: a flex header (prev /
+   caption / next), a single 7-column CSS grid that holds the weekday header row
+   PLUS the 6×7 day matrix on one uniform 2px gap, and an optional footer
+   (Clear / Today). Month navigation, day/range selection, the label-vs-dropdown
+   caption, roving arrow-key focus, and the RTL chevron flip are react-day-picker
+   behaviors — out of scope for this static skin. The reference layer paints the
+   resting surface, the grid, and one day in each state; mark days with
+   .calendar__day--today / --selected / --range-start / --range-end /
+   --range-middle / --outside / --disabled / --focused (the skin can't observe
+   live selection/focus). Two component-local customs key off tokens: --cell-size
+   (32px, --space-8) and --cell-radius (--radius-md — rounded-square day cells,
+   not circles). */
 
 .calendar {
-  --cell-size: var(--space-8);          /* 32px — source --cell-size:2rem */
-  --cell-radius: var(--radius-full);    /* source --cell-radius:var(--radius-full) */
-  position: relative;
+  --cell-size: var(--space-8);          /* 32px */
+  --cell-radius: var(--radius-md);      /* 6px — rounded-square day cells (not circles) */
   width: fit-content;
-  padding: var(--spacing-cx-md);        /* 14px — source p-3.5 */
+  padding: var(--space-3);              /* 12px */
   border: 1px solid var(--color-line-default);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-xl);      /* 12px */
   background-color: var(--color-surface-2);
+  box-shadow: var(--shadow-3);
   color: var(--color-content-primary);
   font-family: var(--font-sans);
 }
 
-/* Top nav row — pinned across the top, a prev/next button at each end. */
-.calendar__nav {
-  position: absolute;
-  inset-inline: 0;
-  top: 0;
+/* Header row — prev button · centered month/year caption · next button. */
+.calendar__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-1);
-  width: 100%;
+  margin-bottom: var(--space-2);        /* 8px */
 }
 
-/* Prev / next — 24px ghost icon button (source size-6). */
+/* Prev / next — 26px bordered icon button (light line, rounded square). */
 .calendar__nav-btn {
   display: inline-flex;
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: var(--space-6);   /* 24px — source size-6 */
-  height: var(--space-6);
-  border: 0;
+  width: 1.625rem;   /* 26px */
+  height: 1.625rem;
+  border: 1px solid var(--color-line-default);
   border-radius: var(--radius-md);
-  background-color: transparent;
+  background-color: var(--color-surface-2);
   color: var(--color-content-secondary);
+  font-size: var(--text-lg);            /* 16px chevron */
+  line-height: 1;
   cursor: pointer;
   user-select: none;
   transition: background-color 0.12s, color 0.12s;
@@ -1087,101 +1087,105 @@
   opacity: 0.5;
 }
 
-/* Month/year caption — centered, one cell-row tall. */
+/* Month/year caption — centered between the nav buttons. */
 .calendar__caption {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: var(--cell-size);
-  font-size: var(--text-sm);
-  font-weight: 500;
+  font-size: var(--text-md);            /* 14px */
+  font-weight: 600;
+  color: var(--color-content-primary);
   user-select: none;
 }
 
-/* Weekday header — seven equal-width day abbreviations. */
-.calendar__weekdays {
-  display: flex;
+/* Grid — one 7-column track holding the weekday header + all 42 day cells. */
+.calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, var(--cell-size));
+  gap: 2px;
 }
+
+/* Weekday header cell — small, semibold, letter-spaced, tertiary. */
 .calendar__weekday {
-  flex: 1 1 0;
-  border-radius: var(--cell-radius);
+  padding: 2px 0;
   color: var(--color-content-tertiary);   /* source text-muted-foreground */
-  font-size: var(--text-xs);
-  font-weight: 400;
+  font-size: var(--text-2xs);             /* 11px */
+  font-weight: 600;
+  letter-spacing: 0.04em;
   text-align: center;
   user-select: none;
 }
 
-/* One week — a flex row of seven square cells, gapped from the row above. */
-.calendar__week {
-  display: flex;
-  width: 100%;
-  margin-top: var(--space-2);   /* source mt-2 */
-}
-
-/* Day cell — square ghost button; selection state via the --* modifiers. */
+/* Day cell — borderless ghost button; selection state via the --* modifiers. */
 .calendar__day {
-  position: relative;
   display: flex;
-  flex: 1 1 0;
   align-items: center;
   justify-content: center;
-  aspect-ratio: 1 / 1;
-  min-width: var(--cell-size);
-  border: 1px solid transparent;
+  height: var(--cell-size);               /* 32px */
+  border: none;
   border-radius: var(--cell-radius);
   background-color: transparent;
   color: var(--color-content-primary);
   font-family: var(--font-sans);
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);              /* 12px */
   font-weight: 400;
+  font-variant-numeric: tabular-nums;
   line-height: 1;
   cursor: pointer;
   user-select: none;
   transition: background-color 0.12s, color 0.12s, box-shadow 0.12s;
   outline: none;
 }
-.calendar__day:hover:not(.calendar__day--disabled) {
+.calendar__day:hover:not(.calendar__day--disabled):not(.calendar__day--selected) {
   background-color: var(--color-surface-hover);
 }
 
-/* Today — resting fill, no border (source bg-surface-hover text-content-primary). */
+/* Today — outlined cell: a line-strong outline + bold text, no fill. */
 .calendar__day--today {
-  background-color: var(--color-surface-hover);
+  outline: 1px solid var(--color-line-strong);
   color: var(--color-content-primary);
+  font-weight: 700;
 }
 
-/* Selected single — primary fill. */
+/* Selected single — primary fill; overrides the today outline/bold when both. */
 .calendar__day--selected {
+  outline: none;
   background-color: var(--color-primary-700);
   color: var(--color-content-on-primary);
+  font-weight: 400;
 }
 
-/* Range caps — primary fill; outer side rounded, inner side square so the
-   middle track abuts. */
+/* Range caps — primary fill; outer side rounded, inner side square. The
+   box-shadow bridges the 2px grid gap so the track stays continuous. */
 .calendar__day--range-start {
+  outline: none;
   background-color: var(--color-primary-700);
   color: var(--color-content-on-primary);
+  font-weight: 400;
   border-start-end-radius: 0;
   border-end-end-radius: 0;
+  box-shadow: 2px 0 0 var(--color-primary-700);
 }
 .calendar__day--range-end {
+  outline: none;
   background-color: var(--color-primary-700);
   color: var(--color-content-on-primary);
+  font-weight: 400;
   border-start-start-radius: 0;
   border-end-start-radius: 0;
+  box-shadow: -2px 0 0 var(--color-primary-700);
 }
 
-/* Range middle — muted track, square corners, primary text. */
+/* Range middle — muted track, square corners; bridges both side gaps. */
 .calendar__day--range-middle {
+  outline: none;
   background-color: var(--color-surface-3);   /* source bg-muted */
   color: var(--color-content-primary);
   border-radius: 0;
+  box-shadow: -2px 0 0 var(--color-surface-3), 2px 0 0 var(--color-surface-3);
 }
 
 /* Outside (other-month) day — dimmed to tertiary. */
 .calendar__day--outside {
   color: var(--color-content-tertiary);   /* source text-muted-foreground */
+  opacity: 0.5;
 }
 
 /* Disabled day — tertiary + dimmed, not selectable. */
@@ -1197,11 +1201,29 @@
 }
 
 /* Focused day — ring lifts the cell above neighbors so the ring isn't clipped
-   (source group-data-focused: border-ring ring-2 ring-ring/50). */
+   (source group-data-focused: ring-2 ring-ring/50). */
 .calendar__day--focused {
   z-index: 1;
-  border-color: var(--color-line-focus);
   box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-line-focus) 50%, transparent);
+}
+
+/* Footer — optional Clear / Today action row. */
+.calendar__footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-line-default);
+}
+.calendar__link {
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--color-primary-700);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  cursor: pointer;
 }
 
 /* ═══════════════════════════════ Carousel ═══════════════════════════════ */
@@ -3047,6 +3069,16 @@
 /* Destructive row — delete-style actions. */
 .menu-item--destructive { color: var(--color-error-strong); }
 .menu-item--destructive:hover:not(:disabled) { background-color: var(--color-error-bg); }
+
+/* Leading icon — 14px (size-3.5), matching .dropdown-menu__item svg. Without
+   this, a raw <svg> (no width/height) in a .menu-item blows up to its intrinsic
+   size; the row sets a gap FOR an icon, so it must constrain it too. */
+.menu-item svg {
+  flex-shrink: 0;
+  width: calc(var(--space-4) - var(--space-1) / 2);   /* 14px (size-3.5) */
+  height: calc(var(--space-4) - var(--space-1) / 2);
+  pointer-events: none;
+}
 
 /* ═══════════════════════════════ Progress ═══════════════════════════════ */
 /* Determinate completion bar. No variant/size/state axis — the only visual

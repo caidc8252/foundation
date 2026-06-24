@@ -67,8 +67,14 @@ overflow menu or a `danger` button (see **Destructive actions** in Rules).
 
 ## Building blocks
 
-Primitives: `Card`, `Badge`, `Tabs`, `Button`, `Separator`, `Timeline` (activity),
-`Avatar`. `@cloud/ui`: `layout/` content-header + page-body; an artifact composes
-the same from `primitives.css` + the KV grid.
+Composites: [`detail-header`](../composites/detail-header.md) (the identity +
+status + meta + tab-strip band at the top), [`kv-grid`](../composites/kv-grid.md)
+(the Overview), [`section-card`](../composites/section-card.md) (each labelled
+section / collapsible panel), [`feed-list`](../composites/feed-list.md) or
+[`timeline`](../composites/timeline.md) (activity), and
+[`diff`](../composites/diff.md) (the confirm-change step). Primitives underneath:
+`Card`, `Badge`, `Tabs`, `Button`, `Separator`, `Avatar`. `@cloud/ui`: `layout/`
+content-header + page-body; an artifact composes the same from `primitives.css` +
+these composites.
 
 > First-draft stub — expand with concrete specs as real detail pages land.

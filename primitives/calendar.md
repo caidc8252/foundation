@@ -12,24 +12,27 @@ The base month grid — a weekday header over a 6×7 day matrix with month navig
 ## Anatomy
 
 ```
-┌ calendar ──────────────────────────────────────┐
-│ [‹]            June 2026             [›]        │  ← nav + month_caption
+┌ calendar (popover surface) ─────────────────────┐
+│ [‹]            June 2026             [›]   ← header
 │                                                  │
-│  Su  Mo  Tu  We  Th  Fr  Sa                      │  ← weekdays
-│  ──  ──  ──  ──  ──  ──  ──                      │
-│   1   2   3   4   5   6   7                      │  ← week (7 day cells)
-│   8   9  10  11  12  13  14                      │
-│  …                                               │
+│  Su  Mo  Tu  We  Th  Fr  Sa     ← weekday row    │
+│  31   1   2   3   4   5   6   ┐                   │
+│   7   8   9  10  11  12  13   │ one 7-col grid    │
+│   …                          ┘ (uniform 2px gap)  │
+│ ────────────────────────────────                 │
+│ Clear                      Today   ← footer (opt) │
 └──────────────────────────────────────────────────┘
 ```
 
-- **root** — a `w-fit` surface card (`surface-2` / `line-default` / `radius-xl` / `p-3.5`). Inside a card-content or popover-content slot the source drops its own background to transparent (the host surface shows through).
-- **nav** — absolutely positioned across the top; a previous + next icon button at each end.
-- **month_caption** — centered month/year label, one cell-row tall. Either a plain label (`captionLayout="label"`, default) or month/year **dropdowns** (`dropdown` layouts) — the dropdown trigger is a transparent native `<select>` overlaying the visible label.
-- **weekdays / weekday** — a flex row of seven equal-width day-of-week abbreviations.
-- **week / day** — each week is a flex row of seven `--cell-size` (32px) square cells; each cell holds one day button.
+- **root** — a `w-fit` popover surface (`surface-2` / `line-default` / `radius-xl` 12px / `shadow-3` / `p-3` 12px). Inside a host popover-content slot it drops its own border / shadow / background so the host surface shows through.
+- **header** — a flex row, `justify-between`: prev nav button · centered month/year caption · next nav button.
+- **month_caption** — `text-md` (14px) semibold (600) `content-primary` label, centered between the nav buttons. (In `dropdown` caption layouts it becomes month/year `<select>`s — `react-day-picker` behavior.)
+- **grid** — a **single** CSS grid, `repeat(7, --cell-size)` columns on a uniform **2px** gap, holding the seven weekday header cells *and* all 42 day cells together (not per-week flex rows).
+- **weekday** — day-of-week abbreviation; tiny (`text-2xs` 11px), semibold (600), letter-spaced, `content-tertiary`.
+- **day** — `--cell-size` (32px) tall ghost button, `--cell-radius` (6px) corners, `text-xs` (12px) `tabular-nums` so columns stay aligned.
+- **footer** *(optional)* — a flex row split between a *Clear* and a *Today* link button (`primary-700` text), divided from the grid by a 1px `line-default` top border.
 
-Two layout customs the grid is built on: `--cell-size: 2rem` (32px = `--space-8`) sizes every square, and `--cell-radius: var(--radius-full)` rounds day buttons and the range caps.
+Two layout customs the grid is built on: `--cell-size: var(--space-8)` (32px) sizes each cell, and `--cell-radius: var(--radius-md)` (6px) gives day buttons and the range caps a **rounded-square** shape — not circular. Cells sit on a uniform **2px** grid gap.
 
 ## Sizes
 
@@ -42,16 +45,16 @@ The day button is a `ghost`/`icon` button; selection state is driven by `data-*`
 | state | token recipe |
 |---|---|
 | default / hover | ghost button — transparent until hover `surface-hover`; text `content-primary` |
-| **today** | bg `surface-hover` · text `content-primary` (a resting fill, no border). When also selected, the rounding flattens so the range/selected fill reads. |
+| **today** | **outlined** — a 1px `line-strong` **outline** + **bold** (700) text, no fill. When also selected (or part of a range), the outline and bold drop so the filled `primary-700`/range state reads. |
 | **selected** (single) | bg `primary-700` · text `content-on-primary` · radius `--cell-radius` |
-| **range_start / range_end** | bg `primary-700` · text `content-on-primary`; the cap is rounded on its outer side, square on the inner (the `bg-muted` track bleeds toward the middle) |
-| **range_middle** | bg `surface-3` (`muted`) · text `content-primary` · square corners |
-| **outside** (other month, shown when `showOutsideDays`) | text `content-tertiary` (`muted-foreground`) |
+| **range_start / range_end** | bg `primary-700` · text `content-on-primary`; the cap is rounded on its outer side, square on the inner. A 2px `box-shadow` bridges the grid gap toward the middle so the track stays continuous. |
+| **range_middle** | bg `surface-3` (`muted`) · text `content-primary` · square corners; `box-shadow` bridges both side gaps |
+| **outside** (other month, shown when `showOutsideDays`) | text `content-tertiary` (`muted-foreground`) · `opacity-50` |
 | **disabled** | text `content-tertiary` · `opacity-50` · not selectable |
 | **hidden** | `visibility:hidden` (holds grid alignment) |
-| **focused** | ring around the focused cell — border `line-focus` + a 2px `line-focus`/50 ring; the cell lifts above neighbors (`z`) so the ring isn't clipped |
+| **focused** | a 2px `line-focus`/50 **box-shadow ring** around the cell; it lifts above neighbors (`z`) so the ring isn't clipped |
 
-Nav buttons: 24px (`size-6`) ghost icon buttons, `radius-md`, text `content-secondary`, hover `surface-hover`, `aria-disabled` → `opacity-50` (e.g. at a min/max month bound). The chevrons flip 180° under RTL.
+Nav buttons: 26px **bordered** icon buttons — 1px `line-default` border, `radius-md`, `surface-2` bg, a `text-lg` (16px) chevron in `content-secondary`, hover `surface-hover`, `aria-disabled` → `opacity-50` (e.g. at a min/max month bound). The chevrons flip 180° under RTL.
 
 ## Accessibility
 
@@ -63,4 +66,4 @@ Nav buttons: 24px (`size-6`) ghost icon buttons, `radius-md`, text `content-seco
 ## Implementations
 
 - **Next / @cloud/ui** — `import { Calendar } from "@cloud/ui"`. Wraps `react-day-picker`'s `DayPicker`; props pass through (`mode`, `selected`, `month`, `disabled`, `captionLayout`, `showOutsideDays`, `locale`, `buttonVariant` — default `ghost`). Day cells render via `CalendarDayButton` (a `Button variant="ghost" size="icon"`); nav uses `buttonVariants`. **Behavior — month/range/dropdown/roving-focus/RTL — is owned by `react-day-picker`; the reference CSS expresses the static skin only** (surface, cell grid, weekday/caption type, the selected/range/today/outside/disabled/focused day fills). Locale-aware date formatting comes from `_date-shared` (`useDateFormat`, `combineDisabledDays`) in the picker composites, not the bare Calendar. API details: the `ui` skill.
-- **Artifact (self-contained HTML)** — use `.calendar` › `.calendar__nav` (`.calendar__nav-btn`) + `.calendar__caption` + `.calendar__weekdays` (`.calendar__weekday`) + `.calendar__week` (`.calendar__day`), on top of the inlined `dist/tokens.inline.css`. Mark day state with `.calendar__day--today` / `--selected` / `--range-start` / `--range-end` / `--range-middle` / `--outside` / `--disabled` / `--focused` (the skin can't observe live selection/focus). Same `--cell-size`/`--cell-radius` customs, same `primary-700` selected fill and `surface-3` range track.
+- **Artifact (self-contained HTML)** — use `.calendar` › `.calendar__header` (`.calendar__nav-btn` × 2 flanking `.calendar__caption`) + `.calendar__grid` (seven `.calendar__weekday` then 42 `.calendar__day`, all direct grid children) + optional `.calendar__footer` (`.calendar__link` × 2), on top of the inlined `dist/tokens.inline.css`. Mark day state with `.calendar__day--today` / `--selected` / `--range-start` / `--range-end` / `--range-middle` / `--outside` / `--disabled` / `--focused` (the skin can't observe live selection/focus). Same `--cell-size`/`--cell-radius` (rounded-square, 6px) customs; `today` is an outlined+bold cell, `selected` the `primary-700` fill, and `--range-middle` the `surface-3` track. Inside a host `.popover`, set `border:0;border-radius:0;box-shadow:none` on `.calendar` so it doesn't double the host chrome.

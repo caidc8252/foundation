@@ -59,7 +59,7 @@ Width presets only — height is content-driven and capped (see States · overfl
 - **description** — `text-xs` / `content-secondary`, normal leading.
 - **close** — a 24px `radius-md` `content-tertiary` icon button (×); hover recipe above. Behaves like a `ghost` button but is part of the modal shell, not a `.btn`.
 - **body** — the scrolling region; `space-5` padding, `text-xs` / `content-secondary`. Rendered only when children are present.
-- **footer** — the action shelf; `surface-3` ground, top `line-subtle` hairline. Stacks reversed on mobile, right-aligned row on `sm`+. Holds `.btn`s (typically a `secondary`/`outline` cancel + a `primary` or `danger` confirm); for a destructive confirm prefer an `AlertDialog`.
+- **footer** — the action shelf; `surface-3` ground, top `line-subtle` hairline. Stacks reversed on mobile, right-aligned row on `sm`+. Holds `.btn`s (typically a `ghost` cancel + a `primary` or `danger` confirm); for a destructive confirm prefer an `AlertDialog`.
 
 ## Accessibility
 

@@ -31,6 +31,8 @@
   ],
   "scripts": {
     "build": "node emit/build.mjs",
-    "check": "node scripts/check-artifact.mjs"
+    "check": "node scripts/check-artifact.mjs",
+    "docs": "node emit/docs.mjs",
+    "docs:serve": "node emit/docs.mjs && python3 emit/serve.py 4000"
   }
 }

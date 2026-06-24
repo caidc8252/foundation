@@ -3,8 +3,11 @@
 
    L2.5 — the building blocks a page is ASSEMBLED from: page-body,
    page-header, data-table, the list-filter family (search / chips /
-   applied / band / summary bar), pagination, empty-state, skeleton. Atoms live in
-   ../primitives/primitives.css; whole-screen archetypes live in
+   applied / band / summary bar), pagination, empty-state, skeleton — plus the
+   detail-archetype + admin-shell set lifted from the carbon-admin portal:
+   detail-header, kv-grid, section-card, option-card, feed-list, diff,
+   plus the storefront catalog tile product-card (+ product-grid).
+   Atoms live in ../primitives/primitives.css; whole-screen archetypes live in
    ../patterns/*.md. A composite composes primitives + tokens; a pattern
    composes composites.
 
@@ -1414,4 +1417,599 @@
 .timeline__content > .timeline__actor {
   display: block;
   margin-top: var(--space-1);   /* 4px — source mt-1 */
+}
+
+/* ===== Portal-derived composites (carbon-admin coverage) ===== */
+/* The detail-archetype + admin-shell building blocks the TOMS Customer Admin
+   portal assembles its pages from, lifted to the shared layer: detail-header,
+   kv-grid, section-card, option-card, feed-list, diff, product-card. Same law —
+   every value a var(--token-*); flagged layout literals only. Several REUSE
+   existing parts rather than re-skin: detail-header docks a .tabs--line strip,
+   section-card extends .card + collapsible, option-card's indicator reuses the
+   .radio recipe, feed-list empties reuse .empty-state. */
+
+/* ═══════════════════════════ Detail header ═══════════════════════════ */
+/* The detail-page counterpart to .page-header: a full-bleed surface-2 band
+   docking under the app header, carrying one record's identity (back · logo ·
+   name + status · meta · chips), its action cluster (ONE primary, rightmost),
+   and — on its bottom edge — the .tabs--line strip that switches sub-views. The
+   tab strip is the TABS PRIMITIVE, not redefined here; this only docks it. */
+
+.detail-header {
+  background-color: var(--color-surface-2);
+  border-bottom: 1px solid var(--color-line-subtle);
+}
+.detail-header--sticky {
+  position: sticky;
+  top: 0;
+  z-index: 10;   /* band z-layer — z-index conventionally exempt */
+}
+.detail-header__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-3) var(--space-4);
+  padding-inline: var(--space-6);
+  padding-block: var(--space-4) var(--space-3);
+}
+/* icon-only ghost back button — reuses .btn--ghost; this only nudges it to align
+   with the title baseline and keeps it from shrinking. */
+.detail-header__back {
+  flex-shrink: 0;
+  margin-top: var(--space-1);
+}
+.detail-header__logo {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 3.5rem;   /* 56px logo — layout measure, no token (mirrors the header height) */
+  height: 3.5rem;
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface-3);
+  color: var(--color-content-secondary);
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  overflow: hidden;
+}
+.detail-header__logo img { width: 100%; height: 100%; object-fit: contain; }
+.detail-header__main { flex: 1; min-width: 0; }
+.detail-header__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--spacing-cx-sm);
+  font-family: var(--font-sans);
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  letter-spacing: -0.01em;   /* tracking-tight, matches the h1 */
+  color: var(--color-content-primary);
+}
+/* the name ellipsizes so trailing status badges stay on the title line */
+.detail-header__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.detail-header__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+  margin-top: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--color-content-secondary);
+}
+/* dot separator between meta facts (same recipe as the timeline time-row) */
+.detail-header__meta > * + *::before {
+  content: "·";
+  margin-inline-end: var(--space-3);
+  color: var(--color-content-tertiary);
+}
+.detail-header__chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--spacing-cx-sm);
+}
+.detail-header__actions {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+/* tab strip docked on the band's bottom edge: wraps a .tabs__list--line, flush
+   to the band's own hairline (no second border). */
+.detail-header__tabs {
+  margin-top: var(--space-3);
+  padding-inline: var(--space-6);
+}
+
+/* ═══════════════════════════ Key-value grid ═══════════════════════════ */
+/* The detail-page Overview: a <dl> of stacked label→value pairs whose column
+   count follows the CONTAINER (mirrors .grid-auto-fit-kv), not the viewport.
+   Labels are the muted axis, values carry the ink. A long value spans --full. */
+
+.kv-grid {
+  display: grid;
+  /* 16rem is the KV-cell wrap threshold — a layout measure named by use, tighter
+     than the 22rem section threshold; min(…,100%) keeps a cell from overflowing
+     a phone-width container. No token (same exemption as .grid-auto-fit-kv). */
+  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+  gap: var(--space-5) var(--space-8);
+  margin: 0;
+}
+.kv-grid__row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.kv-grid__row--full { grid-column: 1 / -1; }
+.kv-grid__row dt {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--color-content-tertiary);
+}
+.kv-grid__row dd {
+  margin: 0;
+  min-width: 0;
+  font-size: var(--text-sm);
+  color: var(--color-content-primary);
+  overflow-wrap: break-word;
+}
+
+/* ═══════════════════════════ Section card ═══════════════════════════ */
+/* A titled, optionally-collapsible content panel — the block a detail/settings
+   page divides into. Pure composition over .card (surface + header rule + slot
+   padding) and the collapsible behavior; this adds only the chevron, its
+   rotation, and the collapsed-state rule. Wear .card + .card__header +
+   .card__content as usual, then add .section-card on the root. */
+
+.section-card { /* the .card shell carries the surface; nothing to add at rest */ }
+/* collapsible header is a full-width button (reuses the .card__header padding) */
+.section-card__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  width: 100%;
+  border: 0;
+  background-color: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+.section-card__toggle:hover { background-color: var(--color-surface-hover); }
+.section-card__toggle:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
+.section-card__chevron {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: var(--space-6);
+  height: var(--space-6);
+  color: var(--color-content-tertiary);
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+.section-card__chevron svg { width: var(--space-4); height: var(--space-4); }
+/* closed — content hidden, chevron lifted, header rule dropped so the bar reads
+   as a single closed row. Set data-open on the root (the skin can't observe it). */
+.section-card[data-open="false"] .card__content { display: none; }
+.section-card[data-open="false"] .card__header { border-bottom-color: transparent; }
+.section-card[data-open="false"] .section-card__chevron { transform: rotate(-90deg); }
+@media (prefers-reduced-motion: reduce) {
+  .section-card__chevron { transition: none; }
+}
+
+/* ═══════════════════════════ Option card ═══════════════════════════ */
+/* A large clickable card that IS a radio/checkbox: the card is a <label> over a
+   visually-hidden native control, so selection + roving focus + group semantics
+   come from the control and the card only paints them. Selected beats hover with
+   the primary border + tint + soft ring (same recipe as .stat-card--selected). */
+
+.option-card {
+  position: relative;
+  display: flex;
+  gap: var(--spacing-cx-md);     /* 14px */
+  padding: var(--spacing-cx-lg); /* 18px */
+  border: 1px solid var(--color-line-default);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface-2);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-standard),
+              border-color var(--duration-fast) var(--ease-standard),
+              box-shadow var(--duration-fast) var(--ease-standard);
+}
+.option-card:hover:not(.option-card--selected) {
+  border-color: var(--color-line-strong);
+  background-color: var(--color-surface-hover);
+}
+/* the native radio/checkbox is hidden; the card is its label */
+.option-card__input {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0;
+  clip-path: inset(50%);
+  overflow: hidden;
+  white-space: nowrap;
+}
+.option-card:has(.option-card__input:focus-visible) { box-shadow: var(--shadow-focus); }
+.option-card:has(.option-card__input:disabled) { cursor: not-allowed; opacity: 0.5; }
+/* selected — primary border + tonal fill + soft primary ring; recolors the
+   indicator below. --selected is the static hook; :has(:checked) is the live one. */
+.option-card--selected,
+.option-card:has(.option-card__input:checked) {
+  border-color: var(--color-primary-700);
+  background-color: var(--color-primary-50);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-primary-500) 10%, transparent);
+}
+.option-card__icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: var(--space-10);   /* 40px */
+  height: var(--space-10);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface-3);
+  color: var(--color-content-secondary);
+}
+.option-card__body {
+  display: flex;          /* stack title over desc — they're often inline <span>s */
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  padding-inline-end: var(--space-5); /* 20px — keep text clear of the top-right check */
+}
+.option-card__title {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-content-primary);
+}
+.option-card__desc {
+  margin-top: var(--space-1);
+  font-size: var(--text-xs);
+  line-height: 1.5;
+  color: var(--color-content-secondary);
+}
+/* indicator — top-right; outline at rest, fills primary when selected. Use
+   radius-full for a radio dot, radius-sm (default) for a checkbox. */
+.option-card__check {
+  position: absolute;
+  top: var(--spacing-cx-md);
+  right: var(--spacing-cx-md);
+  display: grid;
+  place-items: center;
+  width: var(--space-5);   /* 20px */
+  height: var(--space-5);
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-2);
+  color: transparent;
+  transition: background-color var(--duration-fast) var(--ease-standard),
+              border-color var(--duration-fast) var(--ease-standard);
+}
+.option-card__check svg { width: var(--space-3); height: var(--space-3); }
+.option-card--selected .option-card__check,
+.option-card:has(.option-card__input:checked) .option-card__check {
+  border-color: var(--color-primary-700);
+  background-color: var(--color-primary-700);
+  color: var(--color-content-on-primary);
+}
+
+/* ═══════════════════════════ Feed list ═══════════════════════════ */
+/* A flat, hairline-separated inbox of event rows (notifications / approvals):
+   tone-coded icon | main (overline · title · body · actions) | trailing time.
+   The list cousin of the timeline — order is recency, not a connected rail, and
+   rows can carry actions. Sits inside one frame (a section-card's flush content
+   or a table-frame); empties render an .empty-state. Tone lives on the icon only
+   (same tone tokens as the timeline). */
+
+.feed-list { display: flex; flex-direction: column; }
+.feed-item {
+  display: grid;
+  grid-template-columns: var(--space-8) 1fr auto;   /* icon | main | trailing */
+  gap: var(--space-3);
+  align-items: start;
+  padding-inline: var(--space-5);
+  padding-block: var(--space-3);
+  border-bottom: 1px solid var(--color-line-subtle);
+}
+.feed-list > .feed-item:last-child { border-bottom: 0; }
+.feed-item__icon {
+  display: grid;
+  place-items: center;
+  width: var(--space-8);   /* 32px */
+  height: var(--space-8);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-3);
+  color: var(--color-content-secondary);
+}
+.feed-item__icon svg { width: var(--space-4); height: var(--space-4); }
+.feed-item__icon--info    { background-color: var(--color-info-bg);    color: var(--color-info-strong); }
+.feed-item__icon--success { background-color: var(--color-success-bg); color: var(--color-success-strong); }
+.feed-item__icon--warning { background-color: var(--color-warning-bg); color: var(--color-warning-strong); }
+.feed-item__icon--neutral { background-color: var(--color-surface-3);  color: var(--color-content-tertiary); }
+.feed-item__main { min-width: 0; }
+.feed-item__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-content-tertiary);
+}
+/* a mono code can ride the overline (e.g. a request id) — reset case + tracking */
+.feed-item__head code {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--color-content-secondary);
+}
+.feed-item__title {
+  margin-top: var(--space-1);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-content-primary);
+}
+.feed-item__body {
+  margin-top: var(--space-1);
+  font-size: var(--text-xs);
+  line-height: 1.5;
+  color: var(--color-content-secondary);
+}
+.feed-item__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+.feed-item__time {
+  font-size: var(--text-xs);
+  color: var(--color-content-tertiary);
+  white-space: nowrap;
+}
+/* unread vs read — the title weight/ink carries it (pair with a lead dot). */
+.feed-item--read .feed-item__title {
+  font-weight: 500;
+  color: var(--color-content-secondary);
+}
+
+/* ═══════════════════════════ Diff ═══════════════════════════ */
+/* A before→after comparison: old value struck + muted, an arrow, new value in
+   success ink. The reviewable core of any confirm-change flow (approval confirm,
+   audit entry, permission preview). Two layouts on one recipe: `block` (three
+   columns in a tinted box, for modals) and `--inline` (one mono line, for a feed
+   row / table cell). */
+
+.diff {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: var(--spacing-cx-md);
+  align-items: center;
+  padding: var(--spacing-cx-md);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-3);
+}
+.diff__label {
+  margin-bottom: var(--space-1);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-content-tertiary);
+}
+.diff__value {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-content-primary);
+  word-break: break-all;
+}
+/* old = struck + muted; new = the value the eye should land on (success ink) */
+.diff__col--old .diff__value {
+  color: var(--color-content-tertiary);
+  text-decoration: line-through;
+}
+.diff__col--new .diff__value { color: var(--color-success-strong); }
+.diff__arrow {
+  display: grid;
+  place-items: center;
+  color: var(--color-content-tertiary);
+}
+.diff__arrow svg { width: var(--space-4); height: var(--space-4); }
+/* inline — collapses to a single mono line (label old → new) for a row/cell */
+.diff--inline {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  grid-template-columns: none;
+  padding-block: var(--space-1);
+  padding-inline: var(--space-2);
+  background-color: transparent;
+}
+.diff--inline .diff__label { display: none; }
+
+/* ═══════════════════════════ Product card ═══════════════════════════ */
+/* A catalog tile — the storefront list's card cousin of the data-table row:
+   image panel (contained, with placeholder/glyph + optional status ribbon),
+   body (name · sku · clamped description · price-row · cta). The price-row pins
+   to the card bottom so tiles in a row align regardless of name length. Tile
+   them in .product-grid (auto-fill columns following the CONTAINER width). The
+   whole card is the click target; the CTA buttons are nested actions. */
+
+.product-grid {
+  display: grid;
+  /* ~300px min tile — a layout measure named by use (the catalog tile's
+     wrap threshold), no token; min(…,100%) keeps one tile from overflowing a
+     phone-width container. Same exemption as .grid-auto-fit-kv. */
+  grid-template-columns: repeat(auto-fill, minmax(min(18.75rem, 100%), 1fr));
+  gap: var(--space-6);
+}
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-line-default);
+  border-radius: var(--radius-2xl);
+  background-color: var(--color-surface-2);
+  box-shadow: var(--shadow-1);
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-standard),
+              box-shadow var(--duration-fast) var(--ease-standard),
+              transform var(--duration-fast) var(--ease-standard);
+}
+.product-card:hover {
+  border-color: var(--color-line-strong);
+  box-shadow: var(--shadow-2);
+  transform: translateY(-1px); /* 1px lift — layout nudge, no token */
+}
+.product-card:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
+
+/* Image panel — fixed height, contained (never crop a product shot), quiet
+   surface with a bottom hairline. */
+.product-card__image {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 9.375rem; /* 150px thumb — layout measure, no token */
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--color-line-subtle);
+  background-color: var(--color-surface-2);
+  overflow: hidden;
+}
+[data-theme="dark"] .product-card__image { background-color: var(--color-surface-3); }
+.product-card__image img { max-width: 100%; max-height: 100%; object-fit: contain; }
+/* Asset-less fallbacks: an emoji/character placeholder or a tinted glyph. */
+.product-card__placeholder {
+  font-size: var(--text-5xl);
+  opacity: 0.55;
+  color: var(--color-content-tertiary);
+}
+.product-card__glyph { width: 60%; max-width: var(--space-20); height: auto; color: var(--color-content-tertiary); }
+
+/* Diagonal status ribbon (Sample / New / Sale) — pinned across the top-right
+   corner. Tone sets the fill; text is always on-primary white. */
+.product-card__ribbon {
+  position: absolute;
+  top: var(--spacing-cx-md);
+  /* The band must be LONG enough (and centred ~29px in from the corner) that,
+     once rotated 45°, both ends overshoot the image edges and get clipped into a
+     clean diagonal band across the corner — a short band leaves a clipped stub.
+     130px width / -36px right are the portal-proven geometry; layout measures
+     (depend on the rotate math, not a token), same exemption as other dims. */
+  right: -2.25rem;   /* -36px */
+  width: 8.125rem;   /* 130px */
+  padding-block: var(--space-1);
+  transform: rotate(45deg);
+  text-align: center;
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-content-on-primary);
+  background-color: var(--color-primary-700);
+  box-shadow: var(--shadow-1);
+  pointer-events: none;
+}
+.product-card__ribbon--success { background-color: var(--color-success); }
+.product-card__ribbon--info    { background-color: var(--color-info); }
+.product-card__ribbon--warning { background-color: var(--color-warning); color: var(--color-content-on-primary); }
+
+.product-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1;
+  padding-inline: var(--spacing-cx-md);
+  padding-block: var(--spacing-cx-sm) var(--spacing-cx-md);
+}
+.product-card__name {
+  font-size: var(--text-md);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-content-primary);
+}
+.product-card__sku {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 500;
+  color: var(--color-content-tertiary);
+}
+/* one-line clamp — a catalog tile is scannable, the detail page carries full copy */
+.product-card__description {
+  font-size: var(--text-xs);
+  line-height: 1.4;
+  color: var(--color-content-secondary);
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+/* pinned to the bottom so price + cta align across a row */
+.product-card__price-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-block-start: auto;
+  padding-block-start: var(--spacing-cx-sm);
+}
+.product-card__price {
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-content-primary);
+}
+.product-card__options {
+  font-size: var(--text-xs);
+  color: var(--color-content-tertiary);
+}
+.product-card__cta {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-2);
+  margin-block-start: var(--space-2);
+}
+.product-card__cta > .btn { flex: 1; justify-content: center; } /* primary CTA fills the row */
+/* the icon add button — square, sized to the CTA height */
+.product-card__add {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--spacing-control-md); /* 36px — matches the md button height */
+  border: 1px solid var(--color-line-default);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface-2);
+  color: var(--color-content-primary);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-standard),
+              border-color var(--duration-fast) var(--ease-standard),
+              color var(--duration-fast) var(--ease-standard);
+}
+.product-card__add:hover {
+  background-color: var(--color-surface-3);
+  border-color: var(--color-line-strong);
+  color: var(--color-primary-700);
+}
+.product-card__add svg { width: var(--space-4); height: var(--space-4); }
+
+/* out of stock — the tile dims and its add CTA is disabled */
+.product-card--out-of-stock { opacity: 0.6; }
+.product-card--out-of-stock .product-card__add { cursor: not-allowed; opacity: 0.5; }
+@media (prefers-reduced-motion: reduce) {
+  .product-card { transition: none; }
+  .product-card:hover { transform: none; }
 }
