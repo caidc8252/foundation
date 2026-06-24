@@ -12,17 +12,25 @@
     "./tokens/*": "./tokens/*.css",
     "./tokens.inline.css": "./dist/tokens.inline.css",
     "./tokens.json": "./dist/tokens.json",
-    "./primitives.css": "./primitives/primitives.css"
+    "./primitives.css": "./primitives/primitives.css",
+    "./composites.css": "./composites/composites.css",
+    "./catalog.json": "./dist/catalog.json",
+    "./catalog.md": "./dist/catalog.md"
   },
   "files": [
     "tokens",
     "dist",
     "primitives",
+    "composites",
     "patterns",
     "governance",
+    "scripts",
+    "AGENTS.md",
+    "CLAUDE.md",
     "README.md"
   ],
   "scripts": {
-    "build": "node emit/build.mjs"
+    "build": "node emit/build.mjs",
+    "check": "node scripts/check-artifact.mjs"
   }
 }

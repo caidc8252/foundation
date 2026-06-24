@@ -10,6 +10,11 @@ and drifting apart. Token values, primitive contracts, pattern archetypes, and
 the design law are defined **here, once**; each consumer reads them in the form
 it can use.
 
+> **Building an artifact (esp. with an AI agent)?** Read [`AGENTS.md`](AGENTS.md) —
+> the closed set you may use and how to find each piece fast. The legal token /
+> class / pattern names are enumerated in the generated [`dist/catalog.md`](dist/catalog.md)
+> (machine mirror: `dist/catalog.json`); validate with `node scripts/check-artifact.mjs <file>`.
+
 > Scope: **one brand**, same-brand prototype→production pipeline. Not a generic
 > theme — off-brand artifact work forks its own tokens. See
 > `governance/principles.md` §7.

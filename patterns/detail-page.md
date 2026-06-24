@@ -3,6 +3,11 @@
 "One record, read-mostly, with actions." The archetype you reach a list page's
 row into. Named structure, not implementation.
 
+> 📐 **Copyable example** · [`detail-page.html`](./detail-page.html) — the full anatomy
+> assembled from composites (breadcrumb → header with status chips → overview KV grid →
+> tabs → activity timeline), ready to copy and modify. It **links** the reference CSS so
+> it never forks; inline the blocks to ship it as an artifact. All examples: [`index.html`](./index.html).
+
 ## Anatomy
 
 ```
@@ -29,6 +34,36 @@ row into. Named structure, not implementation.
 - **Destructive actions** live behind the overflow menu or a `danger` button, never
   as a bare primary.
 - Sensitive fields render masked by default; reveal is an audited action.
+
+## Variants & optional slots
+
+**Variants** — the layout decision for the body.
+
+- `overview` — 1–2 core blocks, laid out directly (no tabs).
+- `tabbed` — multiple peer blocks become a `Tabs` set (line variant). One page
+  with tab state, not one route per tab (see **Tabs vs sections** in Rules).
+- `sub-route` — when a sub-view is heavy, has independent permissions, or needs a
+  deep-link, split it into its own route and **record the reason**. This is the
+  one case where a detail "tab" becomes a real route.
+
+**Overview structure** — `overview` = a **main card** (the KV grid, via
+`grid-auto-fit-kv`) **+ an optional right rail**. The rail stacks `stat-card`s
+(key metrics) and/or an **amount-summary** (subtotal/fee lines + an emphasized
+total, right-aligned mono) for order/invoice-style records.
+
+- ⚠️ Foundation has no dedicated `amount-summary` composite yet — known gap.
+  Compose it from `Separator` + mono KV for now; don't invent classes.
+
+**Detail head** — optional leading **back button** (ghost icon + a left chevron,
+`aria-label` required, sharing the head's baseline with the right-side actions),
+then identity/title, status chip(s), meta, actions.
+
+**Actions** — the detail page is where the shared action vocabulary concentrates;
+see [`actions.md`](./actions.md). **copy** (copy an ID/key, ghost icon),
+**inline-edit** (a KV row toggles display↔input with save/cancel), **transition**
+(status flip / approve-reject; destructive directions confirm), **picker**
+(relate/assign via Combobox or a Modal list). Destructive actions stay behind the
+overflow menu or a `danger` button (see **Destructive actions** in Rules).
 
 ## Building blocks
 

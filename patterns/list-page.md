@@ -7,6 +7,12 @@ ordering, and the load-bearing decisions so a prototype and the production page
 read as the same screen. Reference implementation: `@cloud/ui`'s
 `docs/examples/list-page.tsx` (the style template).
 
+> 📐 **Copyable example** · [`list-page.html`](./list-page.html) — the full anatomy
+> assembled from composites (shell → header → condition band → list card with sticky
+> summary bar, sticky-head table, rich pagination; empty/loading swap snippets
+> included), ready to copy and modify. It **links** the reference CSS so it never
+> forks; inline the blocks to ship it as an artifact. All examples: [`index.html`](./index.html).
+
 ## Anatomy (top → bottom)
 
 ```
@@ -75,6 +81,49 @@ docked at the scroll-root top is the list card's **summary bar** plus the
   drives a bulk-action set that replaces the summary bar's idle actions.
 - Width is the shell's (`--container-content`); the **table** scrolls inside its
   own `table-scroll` region — the page never scrolls horizontally.
+
+## Variants & optional slots
+
+The anatomy above is the `simple` default; the archetype stretches to denser
+screens through a few variants and slots. A variant changes how filtering or
+navigation is shaped; an optional slot is a band that renders **only when
+needed** — absent, the page reads exactly as the default.
+
+**Variants**
+
+- **`simple`** — few filters carried inline in the condition band (the default the
+  anatomy above describes).
+- **`advanced-filter`** — when filter dimensions outgrow the toolbar, the rare ones
+  move into an **Advanced filter sheet** opened from a toolbar trigger (the
+  [`list-filter`](../composites/list-filter.md) family's advanced trigger + sheet).
+  The inline toolbar keeps only the common filters; everything still reflects into
+  the same applied-filter chips.
+- **`queue`** — a row of **status-segment tabs** above the list (All / Pending /
+  Approved …) whose selection drives the applied filter. These segment tabs are
+  list-level navigation — they re-scope the collection — and are distinct from a
+  detail page's content tabs (which switch panes within one record).
+
+**Optional slots** (in anatomy order — each renders only when needed)
+
+- **page-banner** — a status `Alert` (info / warning / error) directly under the
+  page-header, for state that gates the whole collection (e.g. "verification
+  pending"). Not a filter result; a page-level notice.
+- **segment tabs** — the `queue` variant's status segments (see above), sitting
+  between page-header and condition band.
+- **metric-strip** — a top row of KPIs (a horizontal `stat-grid` of `stat-card`s)
+  above the condition band, summarizing the collection. Horizontal here, distinct
+  from a detail page's vertical stat rail.
+- **row → detail peek** — clicking a row may open a side **drawer / sheet**
+  quick-detail (overview + a KV subset) instead of navigating away; the full
+  detail page stays the deep-link target for the record.
+
+**Actions** — the list surfaces verbs from the shared vocabulary in
+[`actions.md`](./actions.md). A **secondary** action (e.g. Export) lives in exactly
+**one** place — the summary bar (acting on the current filtered result) **or** the
+page header, never both; the header keeps its single primary CTA. A **batch**
+action set appears on selection: selecting rows replaces the summary bar's idle
+actions with a bulk-action set (selection count + bulk verbs), and destructive
+verbs route through a confirm.
 
 ## Building blocks
 

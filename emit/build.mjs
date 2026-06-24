@@ -18,7 +18,7 @@
 
    Generated files — never hand-edit dist/. Re-run `pnpm build`.
    ───────────────────────────────────────────────────────────── */
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
@@ -79,6 +79,165 @@ const dark = collect(stripComments(readFileSync(join(root, "tokens", "dark.css")
 
 writeFileSync(join(dist, "tokens.json"), JSON.stringify({ light, dark }, null, 2) + "\n");
 
+// ── 3. dist/catalog.json + dist/catalog.md ─────────────────────
+// The CLOSED SET an artifact may use, assembled FROM the sources so it can't
+// drift: token names (from the light map above), the exact class whitelist
+// (from the two reference CSS files), and a per-component index (one row per
+// contract *.md). Regenerated every build — never hand-maintained.
+
+// 3a. Exact class whitelist from a reference CSS file. Strip comments, then
+// remove every rule body (repeat for nested @media/@keyframes) so only selector
+// text remains — every `.x` left is a real, usable class.
+const cssClassNames = (file) => {
+  let css = stripComments(readFileSync(file, "utf8"));
+  let prev;
+  do { prev = css; css = css.replace(/\{[^{}]*\}/g, " "); } while (css !== prev);
+  const set = new Set();
+  for (const m of css.matchAll(/\.(-?[A-Za-z_][\w-]*)/g)) set.add(m[1]);
+  return set;
+};
+const allClasses = [
+  ...new Set([
+    ...cssClassNames(join(root, "primitives", "primitives.css")),
+    ...cssClassNames(join(root, "composites", "composites.css")),
+  ]),
+].sort();
+
+// 3b. Per-component index from each contract *.md.
+const firstSentence = (body) => {
+  // Join the first prose paragraph's wrapped lines, then clip to one sentence.
+  let buf = "";
+  for (const raw of body.split("\n")) {
+    const line = raw.trim();
+    if (!line || line.startsWith("#") || line.startsWith(">") || line.startsWith("```") || line.startsWith("|")) {
+      if (buf) break;
+      continue;
+    }
+    buf += (buf ? " " : "") + line;
+    if (/[.。](\s|$)/.test(buf)) break;
+  }
+  const text = buf
+    .replace(/`([^`]*)`/g, "$1")
+    .replace(/\*\*?([^*]*)\*\*?/g, "$1")
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1");
+  const m = text.match(/^(.*?[.。])(\s|$)/);
+  return (m ? m[1] : text).trim();
+};
+// Classes named in the "Artifact" implementation note — the human-written
+// per-component list (the exact whole-set lives in `classes`).
+const contractClasses = (md) => {
+  const i = md.indexOf("Artifact");
+  const scope = i === -1 ? md : md.slice(i);
+  const out = [];
+  for (const m of scope.matchAll(/`(\.[A-Za-z_][\w-]*|--[A-Za-z_][\w-]*)`/g)) {
+    // Keep classes (`.x`) and modifier suffixes (`--x`), but drop bare token
+    // names the prose happens to cite (e.g. `--space-12`) — they aren't classes.
+    if (m[1].startsWith("--") && light[m[1].slice(2)] !== undefined) continue;
+    if (!out.includes(m[1])) out.push(m[1]);
+  }
+  return out;
+};
+const readComponents = (layer, dir) =>
+  readdirSync(join(root, dir))
+    .filter((f) => f.endsWith(".md"))
+    .sort()
+    .map((f) => {
+      const name = f.replace(/\.md$/, "");
+      const md = readFileSync(join(root, dir, f), "utf8");
+      const h1 = (md.match(/^#\s+(.+)$/m) || [, name])[1].trim();
+      const body = md.slice(md.indexOf("\n", md.search(/^#\s/m)) + 1);
+      return {
+        layer,
+        name,
+        title: h1,
+        summary: firstSentence(body),
+        contract: `${dir}/${f}`,
+        example: existsSync(join(root, dir, `${name}.html`)) ? `${dir}/${name}.html` : null,
+        // Patterns compose composites (listed in their contract), not raw classes.
+        classes: layer === "pattern" ? [] : contractClasses(md),
+      };
+    });
+const primitives = readComponents("primitive", "primitives");
+const composites = readComponents("composite", "composites");
+const patterns = readComponents("pattern", "patterns");
+const tokenNames = Object.keys(light).sort();
+
+const catalog = {
+  generatedBy: "foundation/emit/build.mjs — DO NOT EDIT. Re-run `pnpm build`.",
+  rule: "CLOSED SET for same-brand artifacts. Anything not here → governance/token-change.md.",
+  tokens: tokenNames,
+  classes: allClasses,
+  primitives,
+  composites,
+  patterns,
+};
+writeFileSync(join(dist, "catalog.json"), JSON.stringify(catalog, null, 2) + "\n");
+
+// 3c. The human/agent-readable mirror.
+const esc = (s) => s.replace(/\|/g, "\\|");
+const rows = (list) =>
+  list
+    .map((c) => {
+      const cls = c.classes.length ? c.classes.map((x) => `\`${x}\``).join(" ") : "—";
+      const links = `[contract](../${c.contract})` + (c.example ? ` · [example](../${c.example})` : "");
+      return `| \`${c.name}\` | ${esc(c.summary)} | ${esc(cls)} | ${links} |`;
+    })
+    .join("\n");
+const tokenGroups = {};
+for (const t of tokenNames) (tokenGroups[t.split("-")[0]] ||= []).push(t);
+const tokenLines = Object.keys(tokenGroups)
+  .sort()
+  .map((g) => `- **${g}** (${tokenGroups[g].length}) — ${tokenGroups[g].map((t) => `\`--${t}\``).join(" ")}`)
+  .join("\n");
+
+const catalogMd = `# foundation · catalog — GENERATED, do not edit
+
+> Rebuilt from the sources by \`pnpm build\` (machine mirror: \`catalog.json\`).
+> This is the **closed set** a same-brand artifact may use. Anything not listed
+> here is a contract gap → propose it via \`governance/token-change.md\` (tokens)
+> or a primitive/composite contract PR. **Do not** hardcode hex/px or hand-roll a
+> component that isn't here.
+>
+> Check an artifact against this set: \`node scripts/check-artifact.mjs <file.html>\`
+
+## L1 · Tokens (${tokenNames.length})
+
+Inline \`dist/tokens.inline.css\`, then reference as \`var(--name)\`. Values live in
+that file / \`tokens.json\`; these are the legal **names**, grouped by prefix:
+
+${tokenLines}
+
+## L2 · Primitives (${primitives.length}) — atoms
+
+Classes in \`primitives/primitives.css\` (on top of the inlined tokens).
+
+| component | use | classes (main; full set in \`catalog.json\`) | links |
+|---|---|---|---|
+${rows(primitives)}
+
+## L2.5 · Composites (${composites.length}) — page building blocks
+
+Classes in \`composites/composites.css\` (load after primitives — they reuse \`.btn\`/\`.input\`/…).
+
+| component | use | classes (main; full set in \`catalog.json\`) | links |
+|---|---|---|---|
+${rows(composites)}
+
+## L3 · Patterns (${patterns.length}) — assembled archetypes
+
+A pattern is a named structure built from composites; copy its \`example\` and edit.
+
+| pattern | use | composites used (see contract) | links |
+|---|---|---|---|
+${rows(patterns)}
+`;
+writeFileSync(join(dist, "catalog.md"), catalogMd);
+
 const count = (o) => Object.keys(o).length;
 console.log(`foundation: emitted dist/tokens.inline.css (${inlineCss.length} bytes)`);
 console.log(`foundation: emitted dist/tokens.json (light ${count(light)} / dark ${count(dark)} tokens)`);
+console.log(
+  `foundation: emitted dist/catalog.json + catalog.md ` +
+    `(${primitives.length} primitives, ${composites.length} composites, ${patterns.length} patterns, ` +
+    `${allClasses.length} classes, ${tokenNames.length} tokens)`,
+);

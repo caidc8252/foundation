@@ -1,0 +1,233 @@
+<!--
+  Pattern · Create wizard — copyable example
+  ─────────────────────────────────────────────────────────────────────────────
+  Companion to ./create-wizard.md (the contract — when the two disagree, the .md wins).
+  Copy this file and edit the markup to build a real multi-step create flow:
+  a page-header with a ghost Cancel, a step-indicator rail, the CURRENT step's
+  form-section cards beside an optional sticky summary rail, and a Back/Continue
+  footer. The completion ("done") state is included below as a commented swap.
+  Just one step (or two, no branching)? Use the single-step form instead — that is
+  its own pattern: ./create-form.md (./create-form.html).
+
+  HOW THE STYLES LOAD
+    This file LINKS the reference CSS (relative to patterns/), so edits to tokens,
+    primitives, or composites flow straight through — no forked copy that can drift.
+    Order is load-bearing:  tokens → primitives → composites.
+    To ship as a self-contained artifact (CSP, no external fetch), inline those
+    three blocks into a <style> instead — see README "How each consumer uses it".
+
+  WHAT YOU PORT
+    .app-frame is CONTEXT ONLY — not ported. The page is everything inside
+    .app-frame__main (the .page-header + .page-body).
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pattern · Create wizard — foundation example</title>
+
+<link rel="stylesheet" href="../dist/tokens.inline.css">
+<link rel="stylesheet" href="../primitives/primitives.css">
+<link rel="stylesheet" href="../composites/composites.css">
+
+<style>
+  /* Page-local composition — NOT new design vocabulary. All values are tokens. */
+
+  /* The wizard CENTERS (not full-bleed): cap the measure and center the column. */
+  .wizard-page { max-width: 56rem; margin-inline: auto; width: 100%; }
+
+  /* One Field unit per row; consistent vertical rhythm between fields. */
+  .form-stack { display: flex; flex-direction: column; gap: var(--space-4); }
+  /* Selects in a form span the row (the toolbar default is fit-content). */
+  .form-stack .select { width: 100%; }
+  /* Two fields side by side on wider widths. */
+  .form-row { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
+
+  .form-title { font-size: var(--text-md); font-weight: 600; color: var(--color-content-primary); }
+  .group-label { font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-content-tertiary); margin-bottom: var(--space-1); }
+
+  /* Wrap the bare step-indicator for the card look (per step-indicator.md). */
+  .stepper-card { border: 1px solid var(--color-line-default); background-color: var(--color-surface-2); border-radius: var(--radius-xl); box-shadow: var(--shadow-1); padding: var(--space-4) var(--space-6); }
+
+  /* Body row: the step's form-section cards (flex-1) beside the optional rail. */
+  .wizard-cols { display: flex; align-items: flex-start; gap: var(--space-6); }
+  .wizard-main { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: var(--space-6); }
+
+  /* Optional summary rail — sticky, fixed width, recaps entered values as a dl. */
+  .summary-rail { flex: 0 0 18rem; position: sticky; top: var(--space-6); }
+  .summary-rail__title { font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-content-tertiary); }
+  .summary-dl { display: grid; grid-template-columns: auto 1fr; gap: var(--space-1) var(--space-4); margin: 0; }
+  .summary-dl dt { font-size: var(--text-sm); color: var(--color-content-tertiary); }
+  .summary-dl dd { margin: 0; font-size: var(--text-sm); color: var(--color-content-primary); text-align: right; }
+  /* Unfilled value = em-dash, never blank (set the dd text to "—" and add this). */
+  .summary-dl dd.is-empty { color: var(--color-content-tertiary); }
+
+  /* Wizard footer: ghost Back left, primary Continue (or the verb) right. */
+  .wizard-footer { display: flex; align-items: center; gap: var(--space-2); }
+  .wizard-footer__spacer { margin-left: auto; }
+
+  .field-check { display: flex; align-items: flex-start; gap: var(--space-2); }
+  .field-check__text { font-size: var(--text-sm); color: var(--color-content-primary); }
+
+  /* Done state: centered success card. */
+  .wizard-done { max-width: 28rem; margin-inline: auto; text-align: center; }
+  .wizard-done__icon { display: grid; place-items: center; width: var(--space-16); height: var(--space-16); margin-inline: auto; border-radius: var(--radius-full); background-color: var(--color-success-bg); color: var(--color-success-strong); }
+  .wizard-done__icon svg { width: var(--space-8); height: var(--space-8); }
+  .wizard-done__title { font-size: var(--text-lg); font-weight: 600; color: var(--color-content-primary); }
+  .wizard-done__text { font-size: var(--text-sm); color: var(--color-content-secondary); }
+</style>
+
+<div class="app-frame">
+  <!-- ░░░ CONTEXT ONLY — the shell. Not ported. ░░░ -->
+  <aside class="app-frame__sidebar">
+    <div class="app-frame__brand">◆ Acme Portal</div>
+    <nav class="app-frame__nav">
+      <span class="app-frame__nav-label">Workspace</span>
+      <a class="app-frame__nav-item app-frame__nav-item--active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+        Customers
+      </a>
+      <a class="app-frame__nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        Orders
+      </a>
+    </nav>
+  </aside>
+
+  <div class="app-frame__col">
+    <header class="app-frame__header">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb__list">
+          <li class="breadcrumb__item"><a class="breadcrumb__link">Customers</a></li>
+          <li class="breadcrumb__separator" aria-hidden="true">/</li>
+          <li class="breadcrumb__item"><span class="breadcrumb__page" aria-current="page">New customer</span></li>
+        </ol>
+      </nav>
+      <span class="app-frame__spacer"></span>
+      <div class="app-frame__avatar">JD</div>
+    </header>
+
+    <main class="app-frame__main">
+      <!-- ════════════════ PAGE — port everything below ════════════════ -->
+
+      <!-- header: title + a single GHOST Cancel (exit without committing) -->
+      <header class="page-header">
+        <div class="page-header__bar wizard-page">
+          <div class="page-header__titles">
+            <div class="page-header__heading"><h1 class="page-header__title">New customer</h1></div>
+            <p class="page-header__description">A multi-step create flow — Back never loses what you entered.</p>
+          </div>
+          <div class="page-header__actions">
+            <button class="btn btn--ghost" type="button">Cancel</button>
+          </div>
+        </div>
+      </header>
+
+      <div class="page-body">
+
+        <!-- steps: step-indicator (bare ol) wrapped for the card look. State is set
+             per-item by hand: completed (check) → active → upcoming. Connector
+             omitted on the last step. -->
+        <div class="stepper-card wizard-page">
+          <ol class="step-indicator">
+            <li class="step step--completed">
+              <span class="step__body">
+                <span class="step__dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+                <span class="step__text"><span class="step__caption">Step 1</span><span class="step__title">Details</span></span>
+              </span>
+              <span class="step__connector"></span>
+            </li>
+            <li class="step step--active" aria-current="step">
+              <span class="step__body">
+                <span class="step__dot">2</span>
+                <span class="step__text"><span class="step__caption">Step 2</span><span class="step__title">Terms</span></span>
+              </span>
+              <span class="step__connector"></span>
+            </li>
+            <li class="step step--upcoming">
+              <span class="step__body">
+                <span class="step__dot">3</span>
+                <span class="step__text"><span class="step__caption">Step 3</span><span class="step__title">Review</span></span>
+              </span>
+            </li>
+          </ol>
+        </div>
+
+        <!-- body + optional summary rail, side by side -->
+        <div class="wizard-cols wizard-page">
+
+          <!-- CURRENT STEP — one or more form-section cards (one Card per concern) -->
+          <div class="wizard-main">
+            <form class="card" onsubmit="return false">
+              <div class="card__header"><span class="form-title">Terms &amp; billing</span></div>
+              <div class="card__content form-stack">
+                <div>
+                  <div class="group-label">Billing cycle</div>
+                  <div class="form-stack" style="gap:var(--space-2)" role="radiogroup" aria-label="Billing cycle">
+                    <label class="field-check"><input class="radio" type="radio" name="cycle" checked><span class="field-check__text">Annual — 2 months free</span></label>
+                    <label class="field-check"><input class="radio" type="radio" name="cycle"><span class="field-check__text">Monthly</span></label>
+                  </div>
+                </div>
+                <div class="field-check">
+                  <input id="w-terms" class="checkbox" type="checkbox">
+                  <label class="field-check__text" for="w-terms">I accept the master services agreement and data-processing terms.</label>
+                </div>
+              </div>
+
+              <!-- nav footer: ghost Back left (disabled on step 1, never hidden),
+                   primary Continue right. On the LAST step the primary becomes the
+                   contextual verb — see the swap comment. -->
+              <div class="card__footer wizard-footer">
+                <button class="btn btn--ghost" type="button">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                  Back
+                </button>
+                <span class="wizard-footer__spacer"></span>
+                <button class="btn btn--primary" type="button">
+                  Continue
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
+                <!-- ┄┄┄ LAST STEP — the primary becomes the contextual verb and commits: ┄┄┄
+                <button class="btn btn--primary" type="button">Create customer</button>
+                ┄┄┄ -->
+              </div>
+            </form>
+          </div>
+
+          <!-- OPTIONAL summary rail — all-or-nothing across steps. A dl of entered
+               values; an unfilled value renders an em-dash (—), never a blank.
+               Delete this <aside> if the wizard has no rail. -->
+          <aside class="card summary-rail">
+            <div class="card__header"><span class="summary-rail__title">What you've entered</span></div>
+            <div class="card__content">
+              <dl class="summary-dl">
+                <dt>Name</dt><dd>Acme Robotics</dd>
+                <dt>Plan</dt><dd>Enterprise</dd>
+                <dt>Region</dt><dd>APAC</dd>
+                <dt>Billing email</dt><dd>dana@acme-robotics.example</dd>
+                <dt>Cycle</dt><dd class="is-empty">—</dd>
+              </dl>
+            </div>
+          </aside>
+
+        </div>
+
+        <!-- ┄┄┄ SWAP: DONE — after commit, replace the .wizard-cols block above with
+                  this centered success card + a single primary CTA to the new record. ┄┄┄
+        <div class="card wizard-done">
+          <div class="card__content form-stack" style="align-items:center; gap:var(--space-4)">
+            <div class="wizard-done__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </div>
+            <div>
+              <div class="wizard-done__title">Customer created</div>
+              <p class="wizard-done__text">Acme Robotics is set up and ready. You can start adding orders now.</p>
+            </div>
+            <button class="btn btn--primary" type="button">Go to customer</button>
+          </div>
+        </div>
+        ┄┄┄ -->
+
+      </div>
+      <!-- ════════════════ /PAGE ════════════════ -->
+    </main>
+  </div>
+</div>

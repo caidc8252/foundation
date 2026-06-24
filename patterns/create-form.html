@@ -1,0 +1,153 @@
+<!--
+  Pattern · Create / edit form — copyable example
+  ─────────────────────────────────────────────────────────────────────────────
+  Companion to ./create-form.md (the contract — when the two disagree, the .md wins).
+  Copy this file and edit the markup to build a real single-step create/edit form:
+  a centered card of Field units with a cancel/submit footer. Long forms group
+  their fields into labelled section cards by concern (one Card per concern).
+  Need ≥3 steps or branching? Reach for the multi-step wizard instead — that is
+  its own pattern now: ./create-wizard.md (./create-wizard.html).
+
+  HOW THE STYLES LOAD
+    This file LINKS the reference CSS (relative to patterns/), so edits to tokens,
+    primitives, or composites flow straight through — no forked copy that can drift.
+    Order is load-bearing:  tokens → primitives → composites.
+    To ship as a self-contained artifact (CSP, no external fetch), inline those
+    three blocks into a <style> instead — see README "How each consumer uses it".
+
+  WHAT YOU PORT
+    .app-frame is CONTEXT ONLY — not ported. The page is everything inside
+    .app-frame__main (the .page-header + .page-body).
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pattern · Create / edit form — foundation example</title>
+
+<link rel="stylesheet" href="../dist/tokens.inline.css">
+<link rel="stylesheet" href="../primitives/primitives.css">
+<link rel="stylesheet" href="../composites/composites.css">
+
+<style>
+  /* Page-local composition — NOT new design vocabulary. All values are tokens. */
+
+  /* Forms CENTER (not full-bleed): cap the measure and center the column. */
+  .form-page { max-width: 42rem; margin-inline: auto; width: 100%; }
+
+  /* One Field unit per row; consistent vertical rhythm between fields. */
+  .form-stack { display: flex; flex-direction: column; gap: var(--space-4); }
+  /* Selects in a form span the row (the toolbar default is fit-content). */
+  .form-stack .select { width: 100%; }
+  /* Two fields side by side on wider widths. */
+  .form-row { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
+
+  .form-title { font-size: var(--text-md); font-weight: 600; color: var(--color-content-primary); }
+
+  /* card footer holds the actions; submit is rightmost. */
+  .form-footer { justify-content: flex-end; gap: var(--space-2); }
+
+  .field-check { display: flex; align-items: flex-start; gap: var(--space-2); }
+  .field-check__text { font-size: var(--text-sm); color: var(--color-content-primary); }
+</style>
+
+<div class="app-frame">
+  <!-- ░░░ CONTEXT ONLY — the shell. Not ported. ░░░ -->
+  <aside class="app-frame__sidebar">
+    <div class="app-frame__brand">◆ Acme Portal</div>
+    <nav class="app-frame__nav">
+      <span class="app-frame__nav-label">Workspace</span>
+      <a class="app-frame__nav-item app-frame__nav-item--active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+        Customers
+      </a>
+      <a class="app-frame__nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        Orders
+      </a>
+    </nav>
+  </aside>
+
+  <div class="app-frame__col">
+    <header class="app-frame__header">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb__list">
+          <li class="breadcrumb__item"><a class="breadcrumb__link">Customers</a></li>
+          <li class="breadcrumb__separator" aria-hidden="true">/</li>
+          <li class="breadcrumb__item"><span class="breadcrumb__page" aria-current="page">New customer</span></li>
+        </ol>
+      </nav>
+      <span class="app-frame__spacer"></span>
+      <div class="app-frame__avatar">JD</div>
+    </header>
+
+    <main class="app-frame__main">
+      <!-- ════════════════ PAGE — port everything below ════════════════ -->
+      <header class="page-header">
+        <div class="page-header__bar">
+          <div class="page-header__titles">
+            <div class="page-header__heading"><h1 class="page-header__title">New customer</h1></div>
+            <p class="page-header__description">A single-step create/edit form — a centered card of fields with a cancel/submit footer.</p>
+          </div>
+        </div>
+      </header>
+
+      <div class="page-body">
+
+        <!-- ───────────── SINGLE-STEP FORM (≤ ~8 fields, no branching) ─────────────
+             Long forms group fields into labelled section cards by concern — one
+             Card per concern (Identity, Billing, …) — not one flat list. -->
+        <form class="card form-page" onsubmit="return false">
+          <div class="card__header"><span class="form-title">Customer details</span></div>
+
+          <div class="card__content form-stack">
+            <!-- One Field = label + control + help/error, vertically stacked -->
+            <div class="field">
+              <label class="label" for="f-name">Company name <span class="field__required">*</span></label>
+              <input id="f-name" class="input" type="text" placeholder="Acme Robotics" value="Acme Robotics">
+            </div>
+
+            <div class="form-row">
+              <div class="field">
+                <label class="label" for="f-plan">Plan</label>
+                <select id="f-plan" class="select">
+                  <option>Growth</option><option selected>Enterprise</option><option>Trial</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="label" for="f-region">Region</label>
+                <select id="f-region" class="select">
+                  <option>APAC</option><option>EMEA</option><option>Americas</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- invalid field: control carries aria-invalid; error REPLACES hint, in the interface's voice -->
+            <div class="field">
+              <label class="label" for="f-email">Billing email <span class="field__required">*</span></label>
+              <input id="f-email" class="input" type="email" value="dana@acme" aria-invalid="true">
+              <p class="field__error" role="alert">Enter a valid email address, e.g. dana@acme-robotics.example</p>
+            </div>
+
+            <div class="field">
+              <label class="label" for="f-notes">Notes</label>
+              <textarea id="f-notes" class="textarea" placeholder="Anything the team should know…"></textarea>
+              <p class="field__hint">Optional — internal only, never shown to the customer.</p>
+            </div>
+
+            <div class="field-check">
+              <input id="f-welcome" class="checkbox" type="checkbox" checked>
+              <label class="field-check__text" for="f-welcome">Send a welcome email when the account is created</label>
+            </div>
+          </div>
+
+          <!-- footer: actions right-aligned; submit SAYS WHAT IT DOES (not "Submit") -->
+          <div class="card__footer form-footer">
+            <button class="btn btn--secondary" type="button">Cancel</button>
+            <button class="btn btn--primary" type="submit">Create customer</button>
+          </div>
+        </form>
+
+      </div>
+      <!-- ════════════════ /PAGE ════════════════ -->
+    </main>
+  </div>
+</div>
