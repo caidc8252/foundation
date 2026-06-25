@@ -4,6 +4,14 @@
   Companion to ./detail-page.md (the contract — when the two disagree, the .md wins).
   Copy this file and edit the markup to build a real detail screen.
 
+  Mirrors packages/ui/docs/examples/pattern/detail-page.tsx:
+    - NO in-page breadcrumb.
+    - A detail-header BAND (not page-header): back button → logo → name+status+meta
+      → actions, with an OPTIONAL tab strip docked on the band's BOTTOM edge.
+    - Tabs are OPTIONAL: a single-section detail screen drops .detail-header__tabs
+      (and the panels/script) and stacks its sections straight in .page-body.
+      When present, the tab CONTENT lives in .page-body; Overview is the first tab.
+
   HOW THE STYLES LOAD
     This file LINKS the reference CSS (relative to patterns/), so edits to tokens,
     primitives, or composites flow straight through — no forked copy that can drift.
@@ -13,7 +21,7 @@
 
   WHAT YOU PORT
     .app-frame is CONTEXT ONLY — not ported. The page is everything inside
-    .app-frame__main (breadcrumb + .page-header + .page-body).
+    .app-frame__main (the .detail-header band + .page-body).
 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -26,9 +34,6 @@
 <style>
   /* Page-local composition — NOT new design vocabulary. All values are tokens. */
 
-  /* breadcrumb band sits above the page-header (anatomy: breadcrumbs → header) */
-  .detail-crumbs { padding: var(--space-4) var(--space-6) 0; }
-
   /* Overview = a key-value grid. Columns follow CONTAINER width via .grid-auto-fit-kv
      (the contract forbids a hand-written repeat(auto-fit,…)); this only sets the gap. */
   .kv-grid { gap: var(--space-5) var(--space-6); }
@@ -39,6 +44,10 @@
   .kv__value--reveal { display: inline-flex; align-items: center; gap: var(--space-2); }
 
   .section-title { font-size: var(--text-sm); font-weight: 600; color: var(--color-content-primary); }
+
+  /* Meta-row icon sizing (the dot separators come from .detail-header__meta itself). */
+  .detail-header__meta svg { width: var(--space-3); height: var(--space-3); vertical-align: -1px; }
+  .detail-header__meta .meta-item { display: inline-flex; align-items: center; gap: var(--space-1); }
 </style>
 
 <div class="app-frame">
@@ -80,28 +89,38 @@
     <main class="app-frame__main">
       <!-- ════════════════ PAGE — port everything below ════════════════ -->
 
-      <!-- breadcrumbs (first anatomy element — path only, never repeats the title) -->
-      <nav class="detail-crumbs" aria-label="breadcrumb">
-        <ol class="breadcrumb__list">
-          <li class="breadcrumb__item"><a class="breadcrumb__link">Customers</a></li>
-          <li class="breadcrumb__separator" aria-hidden="true">/</li>
-          <li class="breadcrumb__item"><span class="breadcrumb__page" aria-current="page">Acme Robotics</span></li>
-        </ol>
-      </nav>
+      <!-- detail-header BAND (full-bleed) — back · logo · name+status+meta · actions,
+           with the tab strip docked on the band's BOTTOM edge (below the name).
+           NO breadcrumb here: the path lives in the app shell, not the page. -->
+      <header class="detail-header">
+        <div class="detail-header__bar">
+          <!-- back button: icon-only ghost, first in the bar; returns to the list -->
+          <button class="btn btn--ghost btn--icon detail-header__back" type="button" aria-label="Back to customers">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
 
-      <!-- page-header — name + status chips (SHOWN, not editable here). Destructive lives in ⋯ / a danger button. -->
-      <header class="page-header">
-        <div class="page-header__bar">
-          <div class="page-header__titles">
-            <div class="page-header__heading">
-              <h1 class="page-header__title">Acme Robotics</h1>
-              <!-- multi-axis status = separate chips -->
+          <span class="detail-header__logo">A</span>
+
+          <div class="detail-header__main">
+            <div class="detail-header__title">
+              <span class="detail-header__name">Acme Robotics</span>
+              <!-- multi-axis status = separate chips, SHOWN not editable here -->
               <span class="badge badge--success"><span class="badge__dot"></span>Active</span>
               <span class="badge badge--info">Enterprise</span>
             </div>
-            <p class="page-header__description">Customer #C-10293 · Singapore · since 2021</p>
+            <!-- meta row: dot-joined facts (the · separators are inserted by the composite). ids are mono. -->
+            <div class="detail-header__meta">
+              <span class="meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>
+                Customer since 2021
+              </span>
+              <span class="meta-item kv__value--mono">#C-10293</span>
+              <span class="meta-item">Singapore · APAC</span>
+            </div>
           </div>
-          <div class="page-header__actions">
+
+          <!-- actions: ONE primary (rightmost); Edit secondary; destructive behind ⋯ -->
+          <div class="detail-header__actions">
             <button class="btn btn--secondary" type="button">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
               Edit
@@ -112,113 +131,181 @@
             <button class="btn btn--primary" type="button">New order</button>
           </div>
         </div>
+
+        <!-- OPTIONAL tab strip docked on the band's bottom edge (tabs PRIMITIVE, --line
+             variant). Tab content lives below in .page-body. Single-section screen?
+             Delete this whole .detail-header__tabs block (and the extra panels + the
+             script) and stack the sections straight in .page-body. -->
+        <div class="detail-header__tabs">
+          <div class="tabs__list tabs__list--line" role="tablist" aria-label="Customer detail sections">
+            <button class="tabs__trigger tabs__trigger--active" type="button" role="tab" aria-selected="true"  aria-controls="panel-overview" data-tab="overview">Overview</button>
+            <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false" aria-controls="panel-activity" data-tab="activity">Activity</button>
+            <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false" aria-controls="panel-orders"   data-tab="orders">Orders</button>
+            <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false" aria-controls="panel-settings" data-tab="settings">Settings</button>
+          </div>
+        </div>
       </header>
 
-      <!-- page-body -->
+      <!-- page-body: the active tab's content (gutters + stack) -->
       <div class="page-body">
 
-        <!-- Overview = key-value grid (grid-auto-fit-kv: columns follow the card's width) -->
-        <section class="card">
-          <div class="card__header"><h2 class="section-title">Overview</h2></div>
-          <div class="card__content">
-            <div class="grid-auto-fit-kv kv-grid">
-              <div class="kv"><span class="kv__label">Account ID</span><span class="kv__value kv__value--mono">C-10293</span></div>
-              <div class="kv"><span class="kv__label">Plan</span><span class="kv__value">Enterprise (annual)</span></div>
-              <div class="kv"><span class="kv__label">Primary contact</span><span class="kv__value">Dana Okafor</span></div>
-              <div class="kv"><span class="kv__label">Email</span><span class="kv__value">dana@acme-robotics.example</span></div>
-              <div class="kv"><span class="kv__label">Region</span><span class="kv__value">APAC · Singapore</span></div>
-              <div class="kv"><span class="kv__label">Lifetime value</span><span class="kv__value kv__value--mono">$48,200</span></div>
-              <div class="kv"><span class="kv__label">Renews</span><span class="kv__value kv__value--mono">Jan 1, 2027</span></div>
-              <!-- sensitive field: masked by default; reveal is an audited action -->
-              <div class="kv">
-                <span class="kv__label">Billing card</span>
-                <span class="kv__value kv__value--reveal">
-                  <span class="kv__value--mono">•••• •••• •••• 4242</span>
-                  <button class="btn btn--ghost btn--xs" type="button">Reveal</button>
-                </span>
+        <!-- ── Overview tab (KV grid; columns follow the card's width) ── -->
+        <section class="tabs__content" role="tabpanel" id="panel-overview" data-panel="overview">
+          <div class="card">
+            <div class="card__header"><h2 class="section-title">Overview</h2></div>
+            <div class="card__content">
+              <div class="grid-auto-fit-kv kv-grid">
+                <div class="kv"><span class="kv__label">Account ID</span><span class="kv__value kv__value--mono">C-10293</span></div>
+                <div class="kv"><span class="kv__label">Plan</span><span class="kv__value">Enterprise (annual)</span></div>
+                <div class="kv"><span class="kv__label">Primary contact</span><span class="kv__value">Dana Okafor</span></div>
+                <div class="kv"><span class="kv__label">Email</span><span class="kv__value">dana@acme-robotics.example</span></div>
+                <div class="kv"><span class="kv__label">Region</span><span class="kv__value">APAC · Singapore</span></div>
+                <div class="kv"><span class="kv__label">Lifetime value</span><span class="kv__value kv__value--mono">$48,200</span></div>
+                <div class="kv"><span class="kv__label">Renews</span><span class="kv__value kv__value--mono">Jan 1, 2027</span></div>
+                <!-- sensitive field: masked by default; reveal is an audited action -->
+                <div class="kv">
+                  <span class="kv__label">Billing card</span>
+                  <span class="kv__value kv__value--reveal">
+                    <span class="kv__value--mono">•••• •••• •••• 4242</span>
+                    <button class="btn btn--ghost btn--xs" type="button">Reveal</button>
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        <!-- Tabs — only when sub-views are genuinely independent + substantial.
-             ONE page with tab state, not one route per tab. Mark the open trigger --active. -->
-        <div class="tabs">
-          <div class="tabs__list tabs__list--line" role="tablist">
-            <button class="tabs__trigger tabs__trigger--active" type="button" role="tab" aria-selected="true">Activity</button>
-            <button class="tabs__trigger" type="button" role="tab" aria-selected="false">Orders</button>
-            <button class="tabs__trigger" type="button" role="tab" aria-selected="false">Settings</button>
+        <!-- ── Activity tab (display-only timeline) ── -->
+        <section class="tabs__content" role="tabpanel" id="panel-activity" data-panel="activity" hidden>
+          <div class="card">
+            <div class="card__header"><h2 class="section-title">Activity</h2></div>
+            <div class="card__content">
+              <ul class="timeline">
+                <li class="timeline__item">
+                  <div class="timeline__marker timeline__marker--icon timeline__marker--success">
+                    <div class="timeline__marker-node">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                    </div>
+                    <div class="timeline__rail"></div>
+                  </div>
+                  <div class="timeline__content">
+                    <div class="timeline__header">
+                      <span class="timeline__title">Order SO-2026-0184 delivered</span>
+                      <time class="timeline__time" datetime="2026-05-09">May 9, 2026</time>
+                    </div>
+                    <p class="timeline__description">5 terminals shipped to the Singapore warehouse and signed for.</p>
+                    <span class="timeline__actor">system</span>
+                  </div>
+                </li>
+                <li class="timeline__item">
+                  <div class="timeline__marker timeline__marker--icon timeline__marker--primary">
+                    <div class="timeline__marker-node">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    </div>
+                    <div class="timeline__rail"></div>
+                  </div>
+                  <div class="timeline__content">
+                    <div class="timeline__header">
+                      <span class="timeline__title">Support note added</span>
+                      <time class="timeline__time" datetime="2026-05-02">May 2, 2026</time>
+                    </div>
+                    <p class="timeline__description">Customer requested a firmware rollback on two devices; scheduled for next window.</p>
+                    <span class="timeline__actor">casey.m</span>
+                  </div>
+                </li>
+                <li class="timeline__item">
+                  <div class="timeline__marker timeline__marker--dot timeline__marker--neutral">
+                    <div class="timeline__marker-node"><span class="timeline__marker-dot"></span></div>
+                    <div class="timeline__rail"></div>
+                  </div>
+                  <div class="timeline__content">
+                    <div class="timeline__header">
+                      <span class="timeline__title">Plan upgraded to Enterprise</span>
+                      <time class="timeline__time" datetime="2026-04-12">Apr 12, 2026</time>
+                    </div>
+                    <p class="timeline__description">Moved from Growth to Enterprise (annual billing).</p>
+                    <span class="timeline__actor">dana.o</span>
+                  </div>
+                </li>
+                <li class="timeline__item timeline__item--last">
+                  <div class="timeline__marker timeline__marker--dot timeline__marker--neutral">
+                    <div class="timeline__marker-node"><span class="timeline__marker-dot"></span></div>
+                    <div class="timeline__rail"></div>
+                  </div>
+                  <div class="timeline__content">
+                    <div class="timeline__header">
+                      <span class="timeline__title">Account created</span>
+                      <time class="timeline__time" datetime="2021-06-18">Jun 18, 2021</time>
+                    </div>
+                    <p class="timeline__description">Onboarded via self-serve signup.</p>
+                    <span class="timeline__actor">system</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </div>
+        </section>
 
-          <div class="tabs__content" role="tabpanel">
-            <!-- Activity = a display-only timeline -->
-            <ul class="timeline">
-              <li class="timeline__item">
-                <div class="timeline__marker timeline__marker--icon timeline__marker--success">
-                  <div class="timeline__marker-node">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-                  </div>
-                  <div class="timeline__rail"></div>
+        <!-- ── Orders tab (empty state) ── -->
+        <section class="tabs__content" role="tabpanel" id="panel-orders" data-panel="orders" hidden>
+          <div class="card">
+            <div class="card__content">
+              <div class="empty-state">
+                <div class="empty-state__icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
                 </div>
-                <div class="timeline__content">
-                  <div class="timeline__header">
-                    <span class="timeline__title">Order SO-2026-0184 delivered</span>
-                    <time class="timeline__time" datetime="2026-05-09">May 9, 2026</time>
-                  </div>
-                  <p class="timeline__description">5 terminals shipped to the Singapore warehouse and signed for.</p>
-                  <span class="timeline__actor">system</span>
-                </div>
-              </li>
-              <li class="timeline__item">
-                <div class="timeline__marker timeline__marker--icon timeline__marker--primary">
-                  <div class="timeline__marker-node">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                  </div>
-                  <div class="timeline__rail"></div>
-                </div>
-                <div class="timeline__content">
-                  <div class="timeline__header">
-                    <span class="timeline__title">Support note added</span>
-                    <time class="timeline__time" datetime="2026-05-02">May 2, 2026</time>
-                  </div>
-                  <p class="timeline__description">Customer requested a firmware rollback on two devices; scheduled for next window.</p>
-                  <span class="timeline__actor">casey.m</span>
-                </div>
-              </li>
-              <li class="timeline__item">
-                <div class="timeline__marker timeline__marker--dot timeline__marker--neutral">
-                  <div class="timeline__marker-node"><span class="timeline__marker-dot"></span></div>
-                  <div class="timeline__rail"></div>
-                </div>
-                <div class="timeline__content">
-                  <div class="timeline__header">
-                    <span class="timeline__title">Plan upgraded to Enterprise</span>
-                    <time class="timeline__time" datetime="2026-04-12">Apr 12, 2026</time>
-                  </div>
-                  <p class="timeline__description">Moved from Growth to Enterprise (annual billing).</p>
-                  <span class="timeline__actor">dana.o</span>
-                </div>
-              </li>
-              <li class="timeline__item timeline__item--last">
-                <div class="timeline__marker timeline__marker--dot timeline__marker--neutral">
-                  <div class="timeline__marker-node"><span class="timeline__marker-dot"></span></div>
-                  <div class="timeline__rail"></div>
-                </div>
-                <div class="timeline__content">
-                  <div class="timeline__header">
-                    <span class="timeline__title">Account created</span>
-                    <time class="timeline__time" datetime="2021-06-18">Jun 18, 2021</time>
-                  </div>
-                  <p class="timeline__description">Onboarded via self-serve signup.</p>
-                  <span class="timeline__actor">system</span>
-                </div>
-              </li>
-            </ul>
+                <div class="empty-state__title">No orders yet</div>
+                <p class="empty-state__description">When this customer places an order it will appear here.</p>
+                <div class="empty-state__action"><button class="btn btn--primary" type="button">New order</button></div>
+              </div>
+            </div>
           </div>
-        </div>
+        </section>
+
+        <!-- ── Settings tab (empty state placeholder) ── -->
+        <section class="tabs__content" role="tabpanel" id="panel-settings" data-panel="settings" hidden>
+          <div class="card">
+            <div class="card__content">
+              <div class="empty-state">
+                <div class="empty-state__icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                </div>
+                <div class="empty-state__title">Nothing to configure yet</div>
+                <p class="empty-state__description">Account-level settings for this customer will live here.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
       </div>
 
       <!-- ════════════════ /PAGE ════════════════ -->
     </main>
   </div>
 </div>
+
+<script>
+  /* Static tab switching — pure presentation (in @cloud/ui this is the Tabs primitive's
+     base-ui behavior). Uses style.display so component display rules can't override it. */
+  (function () {
+    var triggers = document.querySelectorAll('.detail-header__tabs .tabs__trigger');
+    var panels   = document.querySelectorAll('.tabs__content[data-panel]');
+
+    function activate(name) {
+      triggers.forEach(function (t) {
+        var on = t.getAttribute('data-tab') === name;
+        t.classList.toggle('tabs__trigger--active', on);
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      panels.forEach(function (p) {
+        var on = p.getAttribute('data-panel') === name;
+        p.style.display = on ? '' : 'none';
+        if (on) { p.removeAttribute('hidden'); } else { p.setAttribute('hidden', ''); }
+      });
+    }
+
+    triggers.forEach(function (t) {
+      t.addEventListener('click', function () { activate(t.getAttribute('data-tab')); });
+    });
+  })();
+</script>

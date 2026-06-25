@@ -4,23 +4,43 @@
 row into. Named structure, not implementation.
 
 > 📐 **Copyable example** · [`detail-page.html`](./detail-page.html) — the full anatomy
-> assembled from composites (breadcrumb → header with status chips → overview KV grid →
-> tabs → activity timeline), ready to copy and modify. It **links** the reference CSS so
-> it never forks; inline the blocks to ship it as an artifact. All examples: [`index.html`](./index.html).
+> assembled from composites (detail-header band with back button + status chips + meta +
+> docked tabs → tab content: Overview KV grid, Activity timeline, empty states), ready to
+> copy and modify. It **links** the reference CSS so it never forks; inline the blocks to
+> ship it as an artifact. All examples: [`index.html`](./index.html).
 
 ## Anatomy
 
 ```
-┌ breadcrumbs ─────────────────────────────────────────────┐
-├ page-header ─────────────────────────────────────────────┤
-│ name + status chip(s)        [ edit ] [ ⋯ ] [ primary ]   │
-├ overview (KV grid) ──────────────────────────────────────┤
-│ label   value     label   value     label   value        │
-│ (grid-auto-fit-kv — columns follow container width)       │
-├ section / tabs ──────────────────────────────────────────┤
-│ Activity · Related · Settings …                           │
-└──────────────────────────────────────────────────────────┘
+┌ detail-header band (full-bleed surface-2, NO breadcrumb) ─────────────────┐
+│ [‹] 〔logo〕 name 〔status〕〔status〕        [ edit ] [ ⋯ ] [ primary ]      │
+│              id · region · created … (meta row)                           │
+│ ┌ tabs — OPTIONAL — line variant, docked on the band's bottom edge ────┐  │
+│ │ Overview   Activity   Orders   Settings                              │  │
+│ └────────────────────────────────────────────────────────────────────────┘  │
+╞ page-body (gutters + stack) ══════════════════════════════════════════════╡
+│ tabbed → the ACTIVE tab's content (Overview = a KV grid via               │
+│          grid-auto-fit-kv; other tabs hold sections / timeline / empty).  │
+│ no tabs → the body's sections stacked directly (Overview KV grid first).  │
+└────────────────────────────────────────────────────────────────────────────┘
 ```
+
+- **No in-page breadcrumb.** The path lives in the app shell's header, not the
+  page. The page begins with the `detail-header` band.
+- **Tabs are OPTIONAL.** Use them only when sub-views are genuinely independent
+  and substantial (the `tabbed` variant); a single-section screen omits them (the
+  `overview` variant) and the band is just identity + meta + actions. **When
+  present**, the tab strip docks flush on the band's bottom edge **below** the
+  name + meta — never as a separate block in `page-body`; `Overview` is the first
+  tab and tab *content* renders in `page-body`. (Mirrors `detail-page.tsx`.)
+- **A back button is mandatory** — an icon-only ghost button (`‹`), first in the
+  bar, returning to the list the record was reached from.
+- **Every other header slot is business-driven** — same rule as
+  [`detail-header`](../composites/detail-header.md) and
+  [`page-header`](../composites/page-header.md): only the **name** is always
+  present; the logo, status badges, meta facts, and the actions are each included
+  per the record's needs. **At most one primary action**, rightmost — a read-only
+  record may have none.
 
 ## Rules
 
@@ -28,9 +48,13 @@ row into. Named structure, not implementation.
   (buttons / menu), each confirmed. Render multi-axis status as separate chips.
 - **Tabs vs sections** — use tabs only when sub-views are genuinely independent
   and each is substantial; otherwise stack labelled sections on one page. A detail
-  screen is ONE page with tab state, not one route per tab.
+  screen is ONE page with tab state, not one route per tab. When tabs are used,
+  they dock in the **`detail-header` band** (below the name), not in `page-body`.
 - **Overview is a key-value grid** via `grid-auto-fit-kv` (no hand-written
   `repeat(auto-fit,…)`); labels `text-content-tertiary`, values `content-primary`.
+- **At most one primary action**, rightmost (mirrors `detail-header` /
+  `page-header`) — a read-only record may have none, never two; everything else is
+  `secondary` / `ghost`.
 - **Destructive actions** live behind the overflow menu or a `danger` button, never
   as a bare primary.
 - Sensitive fields render masked by default; reveal is an audited action.
@@ -54,7 +78,7 @@ total, right-aligned mono) for order/invoice-style records.
 - ⚠️ Foundation has no dedicated `amount-summary` composite yet — known gap.
   Compose it from `Separator` + mono KV for now; don't invent classes.
 
-**Detail head** — optional leading **back button** (ghost icon + a left chevron,
+**Detail head** — a mandatory leading **back button** (ghost icon + a left chevron,
 `aria-label` required, sharing the head's baseline with the right-side actions),
 then identity/title, status chip(s), meta, actions.
 
