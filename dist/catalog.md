@@ -85,7 +85,7 @@ Classes in `primitives/primitives.css` (on top of the inlined tokens).
 | `toggle` | A press-toggle button with on/off (pressed) state. | `.toggle` `.toggle-group` | [contract](../primitives/toggle.md) |
 | `tooltip` | A short text hint shown on hover/focus of a trigger. | `.tooltip` `.tooltip__arrow` | [contract](../primitives/tooltip.md) |
 
-## L2.5 · Composites (26) — page building blocks
+## L2.5 · Composites (25) — page building blocks
 
 Classes in `composites/composites.css` (load after primitives — they reuse `.btn`/`.input`/…).
 
@@ -98,7 +98,6 @@ Classes in `composites/composites.css` (load after primitives — they reuse `.b
 | `diff` | A compact before → after comparison: the old value struck through, an arrow, the new value highlighted. | `.diff` `.diff__col--old` `.diff__arrow` `.diff__col--new` `.diff__label` `.diff__value` `.diff--inline` | [contract](../composites/diff.md) |
 | `empty-state` | What a collection shows when it has nothing — a first-class state, not blank space. | `.empty-state` `.empty-state__icon` `.empty-state__title` `.empty-state__description` `.empty-state__action` `.btn--primary` | [contract](../composites/empty-state.md) |
 | `feed-list` | A vertical list of event rows — each a tone-coded icon, a heading line, a body, and a right-aligned time, with optional row actions. | `.feed-list` `.feed-item` `.feed-item__icon` `--info` `--success` `--warning` `--neutral` `.feed-item__main` `.feed-item__time` `.empty-state` | [contract](../composites/feed-list.md) |
-| `key-value` | Read-only KV field system for detail / overview pages (DS 2.0 §detail fields). | `.kv-grid` `.key-value` `--wide` `.key-value__label` `.key-value__value` `--empty` `--mono` | [contract](../composites/key-value.md) |
 | `kv-grid` | The overview block of a detail screen: a record's attributes as label → value pairs, laid out as a description list that flows into more columns as its container widens. | `.kv-grid` `.kv-grid__row` `--full` `.grid-auto-fit-kv` | [contract](../composites/kv-grid.md) |
 | `list-filter` | The "quick bar + applied chips" filtering apparatus of a list page. | `.condition-band` `.condition-band__toolbar` `.search-input` `.select` `.condition-band__spacer` `.applied-filters` `.applied-filters__label` `.filter-chip` | [contract](../composites/list-filter.md) |
 | `load-more` | The append-on-click footer beneath a list/table: an optional summary line, a load-more button (or an end marker once exhausted), and an optional progress bar. | `.load-more` `.load-more__summary` `.load-more__end` `.progress` `.load-more__progress` | [contract](../composites/load-more.md) |

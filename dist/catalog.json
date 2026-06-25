@@ -1762,23 +1762,6 @@
     },
     {
       "layer": "composite",
-      "name": "key-value",
-      "title": "Key-Value · composite",
-      "summary": "Read-only KV field system for detail / overview pages (DS 2.0 §detail fields).",
-      "contract": "composites/key-value.md",
-      "example": null,
-      "classes": [
-        ".kv-grid",
-        ".key-value",
-        "--wide",
-        ".key-value__label",
-        ".key-value__value",
-        "--empty",
-        "--mono"
-      ]
-    },
-    {
-      "layer": "composite",
       "name": "kv-grid",
       "title": "Key-value grid · composite",
       "summary": "The overview block of a detail screen: a record's attributes as label → value pairs, laid out as a description list that flows into more columns as its container widens.",
