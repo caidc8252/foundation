@@ -54,6 +54,7 @@ removable there.
 | additional `form-section` cards | no | the form is long enough to split into per-concern cards (Identity, Billing, …) |
 | per-section `description` | no | a section's purpose isn't obvious from its header |
 | secondary header action (beyond Cancel) | no | a genuine page-level secondary verb exists — Cancel is not "secondary" in this sense |
+| preview / summary rail (**full page only**) | no | a long full-page form benefits from a sticky side recap / live preview of what's being entered (a `dl`); a modal form never carries one |
 
 ## Variants
 
@@ -84,8 +85,14 @@ The variant drives the primary verb in the (required) header actions slot:
   when the form is long enough to warrant splitting.
 - **Validation** is Zod-backed on the Next side; the form mirrors the same rules.
   Disable submit only while pending, not to express invalid (show field errors).
-- Modal for short forms (≤ ~8 fields, no branching); full page otherwise. ≥3 steps
-  or branching → the wizard pattern, not this one.
+- **Carrier by field count** — modal for short forms (≤ ~8 fields, no branching); a
+  full page otherwise. The **wizard** escalation (≥3 steps / branching) is
+  **create-only**: an **edit never becomes a wizard** — it stays a single surface
+  (modal or one page) so the user jumps to a field and saves.
+- **Optional preview / summary rail (full-page only).** A long full-page form may
+  carry a sticky right rail that recaps entered values or previews the result (a
+  `dl`; mechanism borrowed from the wizard's summary rail). All-or-nothing across the
+  form; a modal form never has one (it's short by definition).
 
 ## Known gaps
 

@@ -90,6 +90,14 @@ when this record's job calls for it.
   list row. *The list navigates, the detail page mutates* (see
   [`list-page.md`](./list-page.md)): Edit is a `secondary` (or the single primary),
   Delete sits behind the `⋯` overflow / a `danger` button → confirm.
+- **Editing is launched, never in-place — and it's the `create-form` pattern.** The
+  detail page stays read-only; an Edit verb (the core-record *master edit*, or a
+  per-tab sub-entity edit) **launches** a `create-form`, the carrier chosen by
+  **field count**: few (≤ ~8, no branching) → a `Modal`; many → an **edit sub-page**
+  (a `sub-route`). Master edit and in-tab sub-edits follow the same rule. **Editing
+  never uses a wizard** (multi-step is a *create* concern). A single value may still
+  use **inline-edit** in the overview; this rule covers editing the record's fields
+  broadly.
 - Sensitive fields render masked by default; reveal is an audited action.
 
 ## Variants & optional slots
