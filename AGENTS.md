@@ -5,6 +5,20 @@ prototype) using `@cloud/foundation`. This file is the contract for doing that
 correctly. The design law is in `governance/principles.md`; this is the operating
 manual.
 
+## What the foundation is — and is not
+
+`@cloud/foundation` is a **normative design specification**: it states the rules
+**in force**, in the present tense, as the settled law both consumers — the React
+`@cloud/ui` app and self-contained artifacts — answer to. When a contract and an
+implementation disagree, the **contract wins**.
+
+It is **not** a development log, changelog, roadmap, or scratchpad. Write only what
+**exists and is in force** — never `deferred` / `future` / "coming later" /
+speculative entries. If a rule isn't real yet it does not belong here; add it when it
+becomes real. (A *real, current* constraint — a primitive a pattern needs that does
+not exist yet — is part of "what is" and is stated plainly; a speculative future
+feature is not.)
+
 ## The closed set — you may use ONLY these four layers
 
 There is **no fifth source**. Everything an artifact renders comes from here:

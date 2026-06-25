@@ -39,9 +39,8 @@ where it lands, and whether it confirms — those are not per-screen choices.
   text button or a `ghost-danger` icon — and still opens **a confirm dialog** as the
   safety gate. Don't dilute it to a neutral control to avoid red; destructive is meant
   to look destructive.
-- **Irreversible actions MUST confirm.** revoke / terminate / delete always go through an
-  `AlertDialog`. High-risk ones (e.g. delete-a-tenant) may require **typing a confirm
-  word** before the Confirm button enables.
+- **Irreversible actions MUST confirm.** revoke / terminate / delete always go through a
+  confirm dialog — never fire silently (see **Confirmation tiers**).
 - **One carrier per row.** A row exposes its verbs as inline **icons** *or* a single
   **kebab** (`⋯`) menu — never both. Pick icons when there are ≤2 frequent verbs;
   collapse to a kebab past that.
@@ -56,3 +55,22 @@ where it lands, and whether it confirms — those are not per-screen choices.
 - **Every icon-only control needs a name.** An `aria-label` (and/or a tooltip) on every
   icon-only button — the single exception being a **passive trailing row chevron**, which
   is decorative (the row itself is the click target) and is `aria-hidden`.
+
+## Confirmation tiers
+
+A confirm's friction tracks the action's **risk**, not its kind:
+
+- **No dialog** — a reversible, low-risk action just runs; a success `toast` is the only
+  feedback. Don't gate reversible actions behind a dialog (it trains click-through), and
+  there is **no Undo** affordance.
+- **Simple confirm** — irreversible but contained (delete a record, remove a member): an
+  `AlertDialog` — a consequence line + `outline` Cancel + `danger` Confirm, no input, no
+  escape.
+- **Confirm with input** — the action must capture context (a reject reason, a suspend
+  note): an `AlertDialog` can't hold a field, so use a **hardened `Modal`**
+  (`closeOnOverlay` + `closeOnEscape` off, keeping the forced choice) with the field + a
+  `danger` / `primary` Confirm.
+
+**Carrier rule** — input-less confirm → `AlertDialog`; a confirm that must capture input
+→ a hardened `Modal`. The Confirm is `danger` for destructive actions; the copy names
+the consequence and the affected object.
