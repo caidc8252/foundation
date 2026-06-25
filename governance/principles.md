@@ -114,3 +114,37 @@ included only when this page's job calls for it.
   slots are marked removable in the example and listed as optional in the contract.
 - **At most one primary action — never a required one** (see `page-header` /
   `detail-header`). A read-only page may have none.
+
+## 10. Semantic color has a scope
+
+Color carries meaning here; spend it on meaning, not decoration.
+
+- **Status colors** (`success` / `warning` / `error` / `info`, with their `-bg` /
+  `-strong`) appear only on status carriers — `badge`, inline validation, alerts.
+  Never a page or card background wash, never decorative.
+- A `badge`'s semantic `tone` encodes **only** status or severity. Informational /
+  category / plain-display fields (plan tier, type, category, a bare label) use
+  `tone="neutral"` — never borrow a semantic tone, or a categorical chart color,
+  to tint or distinguish a non-status field.
+- `accent-*` is for data-visualization emphasis and AI markers only — never a
+  button surface or an ordinary status.
+- No gradients or decorative background images on application screens. Dark mode
+  comes only from the `[data-theme="dark"]` same-name variables (principle 2),
+  never a hand-tuned color.
+
+## 11. Typography is functional
+
+Beyond the closed scale (principle 4), weight and family carry rules too:
+
+- Weight is limited to `400` / `500` / `600`. `700` is rare emphasis; `300` /
+  `800` / `900` are off-system.
+- **Data-readable text** — identifiers, timestamps, amounts, counts, versions —
+  uses `font-mono` + `tabular-nums` so digits align and codes read unambiguously.
+  Prose and labels use the sans family.
+
+## 12. Rows align on a shared baseline
+
+Within a row — a table row, list item, header band, detail-head — the leading
+label/title and the trailing actions sit on one horizontal centerline. Exception:
+when the leading content is genuinely multi-line (title + sub-line + meta), the
+trailing actions align to the **first** line, not the block center.

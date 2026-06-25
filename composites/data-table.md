@@ -70,6 +70,22 @@ config-driven table — columns + rows — not hand-written cell markup.
 - **Empty / loading** are not the table's job to invent — render `empty-state`
   in place of rows, or a `skeleton` table while loading.
 
+## Column recipes
+
+Common column shapes — compose cell content from tokens; never invent an
+off-scale type/color pairing.
+
+| column | recipe |
+|---|---|
+| **two-line text** (primary + sub, e.g. name + id) | `.cell-2line` (`min-w-0`): main `.cell-2line__main` `text-sm` / `500` / `content-primary` truncate · sub `.cell-2line__sub` `text-2xs` / `content-tertiary` truncate. A leading `object-tile` / logo → `gap-3`. |
+| **numeric / date / id** | `font-mono` `tabular-nums` `content-secondary`, right-aligned (`.cell-num` + `.cell-right`) so digits line up. |
+| **plain text** | table default size + `content-secondary`. |
+| **tag / multi-badge set** | one wrapping row of `badge`s — `flex flex-wrap gap-1` (`.cell-tags`). |
+| **trailing arrow** (row is a navigation target) | right-aligned passive `ChevronRight` in `content-tertiary` (`.cell-chevron`); the **whole row** is the click target — no inline buttons. If the row needs inline actions, drop the arrow and use a row-action column instead. |
+
+- **Empty value** — render an em-dash `—` in `content-tertiary` (`.cell-empty`), never a blank cell.
+- A stable new column type (progress, risk level…) is a shared column component, not a per-page restyle — propose it rather than hand-rolling cell markup.
+
 ## Implementations
 
 - **Next / @cloud/ui** — `Table<R>` with `columns` / `rows` / `rowKey`; variants
@@ -77,7 +93,8 @@ config-driven table — columns + rows — not hand-written cell markup.
   `rowState`. Prefer the typed config over manual `<table>`. `ui` skill → data-display.
 - **Artifact** — `.table-frame` › `.table-scroll` › `table.data-table` with
   `--compact`/`--spacious`, `--sticky-head`, `--sticky-col`, `--striped`; cells
-  `.cell-num`/`.cell-right`, `.row-actions`, `.col-select`. In `composites.css`.
+  `.cell-num`/`.cell-right`/`.cell-2line`/`.cell-tags`/`.cell-chevron`/`.cell-empty`,
+  `.row-actions`, `.col-select`. In `composites.css`.
   `--sticky-head` th carry their own opaque `surface-3` background (a pinned th
   detaches from the thead's, so rows would otherwise bleed through); when paired
   with a sticky summary bar, give the th a `top` equal to the bar's height

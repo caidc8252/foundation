@@ -88,6 +88,10 @@ artifact, inline them: CSP blocks external fetches.)
   (`.app-frame` remains available when you instead want full production chrome —
   sidebar + header — see [`composites/app-frame.md`](composites/app-frame.md).)
 - Dark mode is a `[data-theme="dark"]` toggle — never edit color values.
+- **Every wrapper `div` must earn its place** — it exists to group spacing,
+  establish a scroll/flex context, or constrain width. A wrapper with a single
+  child whose classes could move onto that child is dead weight; drop it
+  (`.card` / `.btn` / `.input` roots all accept a `class`).
 
 ## Two traps in a frameless page
 

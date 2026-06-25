@@ -332,6 +332,26 @@
 }
 .data-table .cell-right { text-align: right; }
 .data-table .cell-center { text-align: center; }
+/* Two-line text column: primary line over a muted sub-line; min-w-0 so it truncates. */
+.data-table .cell-2line { display: flex; flex-direction: column; min-width: 0; }
+.data-table .cell-2line__main {
+  font-size: var(--text-sm); font-weight: 500; color: var(--color-content-primary);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.data-table .cell-2line__sub {
+  font-size: var(--text-2xs); color: var(--color-content-tertiary);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+/* Tag / multi-badge set: one wrapping row of badges. */
+.data-table .cell-tags { display: flex; flex-wrap: wrap; gap: var(--space-1); }
+/* Trailing passive arrow (the row is the navigation target). 14px = size-3.5 via half-step calc. */
+.data-table .cell-chevron { color: var(--color-content-tertiary); }
+.data-table .cell-chevron svg {
+  width: calc(var(--space-4) - var(--space-1) / 2);
+  height: calc(var(--space-4) - var(--space-1) / 2);
+}
+/* Empty value: em-dash in a muted tone. */
+.data-table .cell-empty { color: var(--color-content-tertiary); }
 
 /* Row interaction + states (mirror @cloud/ui rowState). */
 .data-table tbody tr {

@@ -58,6 +58,7 @@ No size prop — fixed height `h-5` (20px), `text-xs`, `font-medium`, `px-2`. In
 ## Notes
 
 - **Use `tone`, not `variant`, for status** (order state, health, severity). `variant` is for non-semantic chrome and compat. The two interact: `tone` selects a base variant via an internal map (`neutral→secondary`, `success→default`, `warning→outline`, `error→destructive`, `info→secondary`) then overlays its own colors.
+- **Semantic `tone` is for status / severity only.** Informational / category / plain-display fields (plan tier, type, category, a bare label) use `tone="neutral"` — never borrow a semantic tone (or a categorical color) to tint or distinguish a non-status field. (See `principles.md` §10.)
 - `shape="tag"` switches to monospace + `radius-sm` — intended for code-like tokens/IDs, not prose labels.
 - The implementation's `bg-primary` / `text-primary-foreground` / `text-destructive` are shadcn aliases mapping to `primary-700` / `content-on-primary` / `error` in this token system.
 
