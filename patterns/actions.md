@@ -22,7 +22,7 @@ where it lands, and whether it confirms — those are not per-screen choices.
 
 | action | intent | carrier (variant + surface) | lands in (pattern slots) | confirm / tone |
 |---|---|---|---|---|
-| **confirm-danger** | destructive confirm — delete / remove / revoke | a `ghost-danger` **icon** button *or* a `danger` **text** button → opens an `AlertDialog` (outline **Cancel** + danger **Confirm**) | list row · detail head · section rows | always confirms; **danger** tone lives on the dialog's Confirm, not on a wall of red |
+| **confirm-danger** | destructive confirm — delete / remove / revoke | a `ghost-danger` **icon** button *or* a `danger` **text** button → opens an `AlertDialog` (outline **Cancel** + danger **Confirm**) | list row · detail head · section rows | always confirms; the trigger carries `danger` tone (icon or text), and the dialog's Confirm is `danger` too |
 | **secondary-action** | a secondary tool action (e.g. Export, Columns) | a `secondary` button + a leading icon | list **summary bar** *or* page **header** — exactly **one** place | none; neutral tone |
 | **batch-action** | act on a multi-select | a selection-count label + a bulk **button group** in the `summary-bar` (e.g. secondary Assign, ghost-danger Delete) | list summary (replaces the idle actions on select) | destructive verbs route through **confirm-danger**; otherwise neutral |
 | **transition** | status flip / approve–reject | a status **button** or a `dropdown-menu` of statuses; destructive directions use `danger` + a confirm (or a reject-reason dialog) | detail head · section rows | confirm on destructive / service-interrupting directions; neutral on safe ones |
@@ -32,12 +32,13 @@ where it lands, and whether it confirms — those are not per-screen choices.
 
 ## Rules
 
-- **Danger tone is reserved.** `danger` / `ghost-danger` skins are for actions that take
-  effect **directly** and are **service-interrupting or irreversible** (suspend, revoke,
-  terminate). Everything reversible stays neutral (`secondary` / `ghost`).
-- **Delete is the exception** — a delete control is a **neutral icon** (the trash glyph,
-  `ghost` / `ghost-danger`) that opens **a confirm dialog**. The dialog is the safety
-  gate, so the column isn't a wall of red; the only red is the dialog's Confirm.
+- **Danger tone marks destructive verbs.** `danger` / `ghost-danger` skins are for
+  **destructive** actions — delete / remove / revoke / suspend / terminate.
+  Everything reversible / routine stays neutral (`secondary` / `ghost`).
+- **Delete reads as destructive.** A delete control carries `danger` tone — a `danger`
+  text button or a `ghost-danger` icon — and still opens **a confirm dialog** as the
+  safety gate. Don't dilute it to a neutral control to avoid red; destructive is meant
+  to look destructive.
 - **Irreversible actions MUST confirm.** revoke / terminate / delete always go through an
   `AlertDialog`. High-risk ones (e.g. delete-a-tenant) may require **typing a confirm
   word** before the Confirm button enables.
