@@ -90,8 +90,18 @@
 
     <main class="app-frame__main">
       <!-- ════════════════ PAGE — port everything below ════════════════ -->
+      <!--
+        REQUIRED CORE vs OPTIONAL SLOTS (see list-page.md §"Required core / optional
+        slots" + governance principle #9 — Patterns are frameworks). A pattern
+        guarantees structure + ordering, NOT that every slot is present. This example
+        is fully-dressed; copying it does NOT mean keeping every band.
+          REQUIRED CORE (delete neither): page-header  +  results card (summary bar · table · pagination).
+          OPTIONAL (delete per business need): condition band (below), and — not shown
+            here, add in anatomy order when needed — status banner, segment tabs (queue),
+            metric strip, row peek-drawer, the summary bar's Export.
+      -->
 
-      <!-- page-header (full-bleed, OUTSIDE page-body) -->
+      <!-- ■ REQUIRED CORE — page-header (full-bleed, OUTSIDE page-body). Title required; primary action optional. -->
       <header class="page-header">
         <div class="page-header__bar">
           <div class="page-header__titles">
@@ -115,7 +125,10 @@
       <!-- page-body (gutters + space-6 stack) -->
       <div class="page-body">
 
-        <!-- condition band — scrolls away (NOT sticky). Search input → quick filters → Search button -->
+        <!-- OPTIONAL slot — delete this whole .condition-band if this list needs no filtering.
+             It is NOT part of the required core; a list with no search/filters omits it entirely
+             and the page reads as a bare header + results card.
+             condition band — scrolls away (NOT sticky). Search input → quick filters → Search button -->
         <div class="condition-band">
           <div class="condition-band__toolbar">
             <div class="search-input">
@@ -142,8 +155,10 @@
             <button class="btn btn--ghost btn--xs" type="button" id="clear-all-btn">Clear all</button>
           </div>
         </div>
+        <!-- /OPTIONAL condition band -->
 
-        <!-- list card = table-frame --flush wrapping summary-bar + table + pagination.
+        <!-- ■ REQUIRED CORE — results card = table-frame --flush wrapping summary-bar + table + pagination
+             (the count bar, table, and pagination are the results block's required internals; keep all three).
              --flush rounds the corners WITHOUT trapping the sticky parts inside the card. -->
         <div class="table-frame table-frame--flush">
 
@@ -151,6 +166,7 @@
           <div class="summary-bar">
             <div class="summary-bar__count"><strong>1,248</strong> customers <span id="filter-suffix"></span></div>
             <div class="summary-bar__actions">
+              <!-- OPTIONAL slot — delete Export if the filtered result needs no export (a secondary action) -->
               <button class="btn btn--secondary btn--sm" type="button">Export</button>
               <button class="btn btn--secondary btn--sm" type="button">Columns</button>
             </div>
@@ -320,6 +336,7 @@
           <div class="skeleton-row"><span class="skeleton skeleton--line"></span><span class="skeleton skeleton--line"></span><span class="skeleton skeleton--line"></span></div>
           -->
         </div>
+        <!-- /REQUIRED CORE results card -->
       </div>
 
       <!-- ════════════════ /PAGE ════════════════ -->

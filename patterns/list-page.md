@@ -19,29 +19,63 @@ read as the same screen. Reference implementation: `@cloud/ui`'s
 
 ## Anatomy (top → bottom)
 
+The diagram shows a **fully-dressed** instance — every band a list page *can*
+carry. Only two are the required core (marked `■`); the rest are optional
+(marked `○`, with a trailing `?`) and render only when this list's job calls for
+them. See "Required core / optional slots" below for the exact split.
+
 ```
-┌ page-header (full-bleed) ────────────────────────────────────┐
-│ Title  [count?]                  [secondary?]  [ primary ]   │
+┌ ■ page-header (full-bleed) ──────────────────────────────────┐
+│ Title  [count?]                  [secondary?]  [ primary? ]  │
 │ [description?]                                               │
 ╞ page-body (gutters + stack) ═════════════════════════════════╡
-│ ┌ condition band ──────────────────────────────────────────┐ │
+│ ○ [banner?]  status Alert gating the whole collection        │
+│ ○ [segment tabs?]  All / Pending / Approved … (queue)        │
+│ ○ [metric strip?]  KPI stat-cards summarizing the collection │
+│ ┌ ○ condition band? ───────────────────────────────────────┐ │
 │ │ [ 🔍 search ] [ quick filter ▾ ] [ Search ]    [Advanced?]│ │
 │ │ Filters:  ⊗ chip   ⊗ chip  clear all                      │ │
 │ └───────────────────────────────────────────────────────────┘ │
-│ ┌ list card (table-frame --flush) ─────────────────────────┐ │
-│ │ summary bar:  N customers …            [ Export ]   ◄ stick│ │
+│ ┌ ■ results card (table-frame --flush) ────────────────────┐ │
+│ │ summary bar:  N customers …            [ Export? ]   ◄ stick│ │
 │ │ ☐ CUSTOMER ▴   STATUS   REGISTERED   CITY   TAGS      ◄ stick│ │
-│ │   row …                                               › │ │
+│ │   row …  (row click → ○ peek-drawer?)                 › │ │
 │ │ ─ pagination: rows ▾  showing 1–25 of N     ‹ 1 2 3 › ── │ │
 │ └───────────────────────────────────────────────────────────┘ │
 └───────────────────────────────────────────────────────────────┘
+   ■ required core   ○ optional — included per business need
 ```
+
+## Required core / optional slots
+
+A list page is a **framework**, not a filled-in screen (governance principle
+[#9 — *Patterns are frameworks*](../governance/principles.md#9-patterns-are-frameworks--a-minimal-required-core-everything-else-optional)):
+it guarantees the structure and ordering above, never that every band is
+present. The split below is authoritative against the blueprint registry's
+`required` field (`@cloud/ui`'s `docs/registry/blueprints.ts`) — mirror it, don't
+re-derive it. Only the **header** and the **results card** are the minimal
+required core; everything else is included only when this list's job calls for
+it. A list with no filtering, no banner, no tabs, and no KPIs — just a header and
+a table — is still a complete, correct list page.
+
+| slot | required? | include when |
+|---|---|---|
+| `page-header` (title + at-most-one primary action) | **yes** | always — names the collection; title required, primary action optional (a read-only list has none) |
+| results card — summary/count bar · table · pagination | **yes** | always — the count bar, table, and pagination are the results block's required internals |
+| status `banner` (Alert under the header) | no | a page-level state gates the whole collection (e.g. "verification pending") |
+| segment tabs (the `queue` variant) | no | the collection is browsed by status/queue and tabs re-scope it (All / Pending / …) |
+| `metric-strip` (top KPI row) | no | a few collection-level KPIs are worth surfacing above the list |
+| condition band (search + quick filters + applied chips) | no | this list needs filtering — **omit it entirely for a list with no filters** |
+| Advanced filter trigger + drawer (the `advanced-filter` variant) | no | filter dimensions outgrow the inline toolbar and need a sheet |
+| row → peek-drawer (row click opens a side quick-detail) | no | a quick look at a row is useful without leaving the list |
+| summary-bar `Export` (a secondary action) | no | the current filtered result is worth exporting |
 
 ## Sticky model (the load-bearing decision)
 
-The condition band **scrolls away** — it is non-sticky by default. What stays
-docked at the scroll-root top is the list card's **summary bar** plus the
-**table column header**:
+The condition band (when present) **scrolls away** — it is non-sticky. What
+stays docked at the scroll-root top is the results card's **summary bar** plus
+the **table column header** (these belong to the required core, so they dock
+whether or not a condition band sits above them):
 
 - The list card is a `table-frame` in its **`--flush`** form (`overflow: clip`,
   not the default `hidden`) — flush still rounds the corners but does **not**
@@ -55,9 +89,10 @@ docked at the scroll-root top is the list card's **summary bar** plus the
 
 ## Rules
 
-- **At most one primary action**, top-right in the page-header (`Button` variant
-  `primary`, e.g. "New customer") — present when the list supports creating a
-  record, omitted for read-only / reference lists. The condition band's Search button, the
+- **At most one primary action — never a required one**, top-right in the
+  page-header (`Button` variant `primary`, e.g. "New customer") — present when the
+  list supports creating a record, omitted for read-only / reference lists. The
+  condition band's Search button (when a condition band is present), the
   Advanced filter trigger, and the summary bar's Export are all `secondary`;
   bulk/row actions are `secondary`/`ghost`. Advanced is pushed to the far right
   of the toolbar by `condition-band__spacer` — visually separated from the
@@ -75,8 +110,10 @@ docked at the scroll-root top is the list card's **summary bar** plus the
   - *Secondary action* (`page-header__actions` secondary `Button`): a page-level
     secondary verb (e.g. "Import"). Omit when no such verb exists for this
     collection; the primary CTA stands alone.
-- **Search is debounced; filters apply immediately** — both reflect into
-  applied-filter chips so the active query is always visible and removable. The
+- **Search is debounced; filters apply immediately** — *when the condition band
+  is present* (it is an optional slot — omit it for a list with no filtering).
+  Both reflect into applied-filter chips so the active query is always visible
+  and removable. The
   filter apparatus runs a **draft → applied** state machine (`useListFilters`):
   edits live in `draft`; `apply()` commits to `applied` (and resets to page 1);
   chips reflect `applied`; `clearField` / `clearAll` remove them. When any filter
@@ -105,15 +142,19 @@ docked at the scroll-root top is the list card's **summary bar** plus the
 
 ## Variants & optional slots
 
-The anatomy above is the `simple` default; the archetype stretches to denser
-screens through a few variants and slots. A variant changes how filtering or
-navigation is shaped; an optional slot is a band that renders **only when
-needed** — absent, the page reads exactly as the default.
+The required core is fixed (see "Required core / optional slots" above); the
+archetype then stretches to denser screens through a few variants and the
+optional slots already enumerated in that table. A variant changes how filtering
+or navigation is *shaped*; an optional slot is a band that renders **only when
+needed** — absent, the page reads exactly as a bare header + results card. The
+list below restates the optional slots with the extra detail each needs.
 
 **Variants**
 
-- **`simple`** — few filters carried inline in the condition band (the default the
-  anatomy above describes).
+- **`simple`** — when filtering is needed, a few filters are carried inline in the
+  condition band (the shape the anatomy diagram illustrates). A list that needs
+  no filtering at all drops the condition band entirely and is still a `simple`
+  list page.
 - **`advanced-filter`** — when filter dimensions outgrow the toolbar, the rare ones
   move into an **Advanced filter sheet** opened from a toolbar trigger (the
   [`list-filter`](../composites/list-filter.md) family's advanced trigger + sheet).

@@ -33,14 +33,41 @@ row into. Named structure, not implementation.
   present**, the tab strip docks flush on the band's bottom edge **below** the
   name + meta — never as a separate block in `page-body`; `Overview` is the first
   tab and tab *content* renders in `page-body`. (Mirrors `detail-page.tsx`.)
-- **A back button is mandatory** — an icon-only ghost button (`‹`), first in the
-  bar, returning to the list the record was reached from.
+- **A back button is OPTIONAL** — an icon-only ghost button (`‹`), first in the
+  bar when present, returning to the list the record was reached from. Include it
+  when the record was reached from a list; otherwise the app shell carries
+  navigation and the band opens straight on the identity (matches
+  [`detail-header`](../composites/detail-header.md), which lists Back as optional).
 - **Every other header slot is business-driven** — same rule as
   [`detail-header`](../composites/detail-header.md) and
   [`page-header`](../composites/page-header.md): only the **name** is always
   present; the logo, status badges, meta facts, and the actions are each included
   per the record's needs. **At most one primary action**, rightmost — a read-only
   record may have none.
+
+### Required core vs. optional slots
+
+A detail page is a **framework**, not a filled-in template (governance principle
+[#9](../governance/principles.md) — *patterns are frameworks*). It guarantees the
+structure + ordering above; it does **not** guarantee every slot is present. The
+**required core** is just two slots — the identity in the head, and a body. The
+populated [`detail-page.html`](./detail-page.html) shows one fully-dressed instance;
+copying it does **not** mean keeping every slot. Include each optional slot only
+when this record's job calls for it. (Mirrors the `required` field in `@cloud/ui`'s
+`docs/registry/blueprints.ts`, the source of truth.)
+
+| slot | required? | include when |
+|---|---|---|
+| detail-head band | **yes** | always — the page begins with the head band |
+| → title / name (within the head) | **yes** | always — the only required slot inside the head |
+| body (Overview kv-grid **or** a tab-set) | **yes** | always — an Overview block (its required main is a kv-grid) or a tab-set |
+| back button | no | the record was reached from a list to return to; else the shell carries navigation |
+| status badge(s) | no | the record has a status worth surfacing up top (shown, not editable) |
+| meta row | no | id / region / dates / counts are useful at a glance |
+| header actions | no | a verb applies to this record (Edit / a single primary / overflow) |
+| tabs (the `tabbed` variant) | no | sub-views are genuinely independent and substantial; the `overview` variant omits them |
+| right rail (stat cards / amount summary) | no | the overview has key metrics or an order/invoice-style total to surface |
+| status banner | no | a record-wide condition needs an inline callout (e.g. suspended, past-due) |
 
 ## Rules
 
@@ -78,9 +105,11 @@ total, right-aligned mono) for order/invoice-style records.
 - ⚠️ Foundation has no dedicated `amount-summary` composite yet — known gap.
   Compose it from `Separator` + mono KV for now; don't invent classes.
 
-**Detail head** — a mandatory leading **back button** (ghost icon + a left chevron,
-`aria-label` required, sharing the head's baseline with the right-side actions),
-then identity/title, status chip(s), meta, actions.
+**Detail head** — the **title/name** is the only required slot. An OPTIONAL
+leading **back button** (ghost icon + a left chevron, `aria-label` required,
+sharing the head's baseline with the right-side actions) precedes it **when the
+record was reached from a list**; everything else — logo, status chip(s), meta,
+actions — is included per the record's needs (see the slot table under Anatomy).
 
 **Actions** — the detail page is where the shared action vocabulary concentrates;
 see [`actions.md`](./actions.md). **copy** (copy an ID/key, ghost icon),

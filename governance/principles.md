@@ -89,3 +89,29 @@ across the prototype→production boundary is correct precisely because both sid
 are the same product. It is **not** a generic theme for off-brand work — an
 artifact that wants a deliberately different identity should not consume these
 tokens; it forks its own. (See the project decision: same-brand pipeline.)
+
+## 9. Patterns are frameworks — a minimal required core, everything else optional
+
+A pattern (L3) is a **framework**, not a filled-in page. It guarantees *structure
+and ordering* — which slots exist and in what sequence — never that every slot is
+present. Each pattern declares a **minimal required core**: the few slots without
+which the screen stops being that screen. Every other slot is **optional**,
+included only when this page's job calls for it.
+
+- The required core per page is authoritative in the blueprint registry's
+  `required` field (`@cloud/ui`'s `docs/registry/blueprints.ts`); a foundation
+  pattern's "required core / optional slots" demarcation must match it. Today:
+  - **list** — required: `page-header` + results card (count bar · table ·
+    pagination); optional: status banner, segment tabs, condition band
+    (search/filter), metric strip, row peek-drawer.
+  - **detail** — required: detail-head (identity/title) + body (overview *or*
+    tabs); optional: back button, status, meta, actions, right rail, banner.
+  - **create-form** — required: sticky header + ≥1 `form-section` (with fields);
+    optional: status banner, file-upload, extra sections, description.
+  - **create-wizard** — required: header + step indicator + step body + nav
+    (Back/Continue); optional: summary rail, done state.
+- **A populated example is not a checklist.** Each `*.html` example shows one
+  fully-dressed instance; copying it does not mean keeping every slot. Optional
+  slots are marked removable in the example and listed as optional in the contract.
+- **At most one primary action — never a required one** (see `page-header` /
+  `detail-header`). A read-only page may have none.

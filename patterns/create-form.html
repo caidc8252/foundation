@@ -81,13 +81,25 @@
 
     <main class="app-frame__main">
       <!-- ════════════════ PAGE — port everything below ════════════════ -->
+      <!--
+        REQUIRED CORE (do not drop): the sticky page-header (title + ghost Cancel +
+        primary Create/Save) AND at least one form-section card of fields below.
+        Everything marked OPTIONAL is removable per the page's job — copying this
+        fully-dressed example does NOT mean keeping every slot.
+        See create-form.md "Slots" + governance principle #9 (patterns are frameworks).
+      -->
       <header class="page-header page-header--sticky">
         <div class="page-header__bar">
           <div class="page-header__titles">
             <div class="page-header__heading"><h1 class="page-header__title">New customer</h1></div>
+            <!-- OPTIONAL: header description — drop when the title alone is self-explanatory. -->
             <p class="page-header__description">A single-step create/edit form — a centered card of fields, actions in the sticky header.</p>
           </div>
           <div class="page-header__actions">
+            <!-- REQUIRED: ghost Cancel + primary Create/Save. The primary verb follows
+                 the variant: "Create customer" (create) / "Save changes" (edit).
+                 A SECONDARY header action beyond Cancel is OPTIONAL — add one only for a
+                 genuine page-level secondary verb. -->
             <button class="btn btn--secondary" type="button">Cancel</button>
             <button class="btn btn--primary" type="submit" form="create-form">Create customer</button>
           </div>
@@ -96,10 +108,26 @@
 
       <div class="page-body">
 
+        <!-- OPTIONAL: status banner (alert under the header) — render only when a
+             record-level status/notice must be surfaced before the fields. Removable.
+        <div class="alert alert--info" role="status">
+          <p class="alert__title">Trial account</p>
+          <p class="alert__description">This customer is in trial until 30 Jun.</p>
+        </div>
+        -->
+
+        <!-- OPTIONAL: file-upload block (dropzone) inside the body — render only when the
+             form captures a file/attachment. No Dropzone primitive exists yet (see
+             create-form.md "Known gaps"); do not hand-roll dropzone classes. Removable. -->
+
         <!-- ───────────── SINGLE-STEP FORM (≤ ~8 fields, no branching) ─────────────
-             Long forms group fields into labelled section cards by concern — one
-             Card per concern (Identity, Billing, …) — not one flat list. -->
+             REQUIRED CORE: at least one form-section card (this one). Long forms group
+             fields into labelled section cards by concern — one Card per concern
+             (Identity, Billing, …) — not one flat list. The FIRST card is required;
+             any further section cards are OPTIONAL (see the commented stub below). -->
         <form id="create-form" class="card form-page" onsubmit="return false">
+          <!-- REQUIRED: a section header. OPTIONAL: a per-section description below it,
+               added only when the section's purpose isn't obvious from its header. -->
           <div class="card__header"><span class="form-title">Customer details</span></div>
 
           <div class="card__content form-stack">
@@ -144,6 +172,14 @@
           </div>
 
         </form>
+
+        <!-- OPTIONAL: additional form-section cards beyond the first — add one per extra
+             concern only when the form is long enough to split. Removable.
+        <section class="card form-page">
+          <div class="card__header"><span class="form-title">Billing</span></div>
+          <div class="card__content form-stack"> … Field units … </div>
+        </section>
+        -->
 
       </div>
       <!-- ════════════════ /PAGE ════════════════ -->

@@ -34,16 +34,22 @@ structure, not implementation.
        └───────────────────────────────────┘
 ```
 
-## Slots
+## Slots — required core vs. driven by the flow's job
 
-| slot | what it holds |
-|---|---|
-| **header** | the page title + a single **ghost** Cancel (exit without committing). |
-| **steps** | the `step-indicator` rail — what's done, where you are, what's left. Stretches **full-width** inside `page-body`. |
-| **body** | the current step's content: one or more **form-section** cards (one `Card` per concern) of `Field`s. Also full-width; individual cards may have their own internal max-width but the layout column is not capped. |
-| **nav** | the footer: right-aligned **ghost Back** (hidden on step 1) **+ primary Continue**; the last step's primary is the contextual verb. |
-| **summary** | *(optional)* a sticky right rail recapping entered values as a `dl`. |
-| **done** | the post-commit completion state: a centered success card + a primary CTA. |
+A wizard is a **framework**, not a filled-in page (governance principle #9 —
+[`../governance/principles.md`](../governance/principles.md)): it guarantees the
+*structure and ordering* of the steps, never that every slot is present. The
+**required core** is four slots — without them this stops being a wizard. The
+summary rail and the done state are **optional**, included per business need.
+
+| slot | required? | include when |
+|---|---|---|
+| **header** | **yes** | always — the page title + a single **ghost** Cancel (exit without committing). No primary lives here; the commit verb is in **nav**. |
+| **steps** | **yes** | always — the `step-indicator` rail (done · here · left). Stretches **full-width** inside `page-body`. |
+| **body** | **yes** | always (repeatable) — the current step's **form-section** card(s) (one `Card` per concern) of `Field`s. Full-width; a card may cap its own internal width but the layout column is not capped. |
+| **nav** | **yes** | always — the footer: right-aligned **ghost Back** (hidden on step 1) **+ primary Continue**; the last step's primary is the contextual commit verb. |
+| **summary rail** | no | a recap of entered values earns its place — a sticky right rail (`dl`). All-or-nothing across steps when present (see Rules). |
+| **done** | no | the flow ends on a confirmation screen rather than redirecting — a centered success card + a primary CTA. |
 
 ## Rules
 

@@ -159,7 +159,20 @@
 
     <main class="app-frame__main">
       <!-- ════════════════ PAGE — port everything below ════════════════ -->
+      <!--
+        REQUIRED CORE vs OPTIONAL SLOTS (see list-page.md §"Required core / optional
+        slots" + governance principle #9 — Patterns are frameworks). A pattern
+        guarantees structure + ordering, NOT that every slot is present. This example
+        is fully-dressed; copying it does NOT mean keeping every band.
+          REQUIRED CORE (delete neither): page-header  +  results card (summary bar · table · pagination).
+          OPTIONAL (delete per business need): condition band + the Advanced filter
+            trigger & drawer it controls (this is the advanced-filter VARIANT — drop it
+            for a list that needs no advanced filtering); and — not shown here, add in
+            anatomy order when needed — status banner, segment tabs (queue), metric strip,
+            row peek-drawer, the summary bar's Export.
+      -->
 
+      <!-- ■ REQUIRED CORE — page-header (full-bleed). Title required; primary action optional. -->
       <header class="page-header">
         <div class="page-header__bar">
           <div class="page-header__titles">
@@ -181,7 +194,11 @@
 
       <div class="page-body">
 
-        <!-- condition band: search → quick-filters → Search → spacer → [Advanced ▸] (secondary, pushed right) -->
+        <!-- OPTIONAL slot — delete this whole .condition-band if this list needs no filtering.
+             It is NOT part of the required core. In THIS variant it also carries the Advanced
+             trigger (#adv-trigger) that opens the drawer at the bottom of the file; dropping the
+             condition band means dropping that trigger and the matching #adv-overlay/#adv-panel too.
+             condition band: search → quick-filters → Search → spacer → [Advanced ▸] (secondary, pushed right) -->
         <div class="condition-band">
           <div class="condition-band__toolbar">
             <div class="search-input">
@@ -207,7 +224,10 @@
               Search
             </button>
             <span class="condition-band__spacer"></span>
-            <!-- Advanced: secondary, pushed right by spacer — visually separated from primary filter flow -->
+            <!-- OPTIONAL slot (the advanced-filter VARIANT) — delete this Advanced trigger
+                 (and the #adv-overlay/#adv-panel drawer near the end of the file) when all
+                 filter dimensions fit inline in the toolbar.
+                 Advanced: secondary, pushed right by spacer — visually separated from primary filter flow -->
             <button class="btn btn--secondary" type="button" id="adv-trigger" aria-haspopup="dialog" aria-expanded="false">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
               Advanced
@@ -221,12 +241,15 @@
             <button class="btn btn--ghost btn--xs" type="button" id="clear-all-btn">Clear all</button>
           </div>
         </div>
+        <!-- /OPTIONAL condition band -->
 
-        <!-- list card -->
+        <!-- ■ REQUIRED CORE — results card = table-frame --flush wrapping summary-bar + table + pagination
+             (the count bar, table, and pagination are the results block's required internals; keep all three). -->
         <div class="table-frame table-frame--flush">
           <div class="summary-bar">
             <div class="summary-bar__count"><strong id="result-count">1,248</strong> customers <span id="filter-suffix"></span></div>
             <div class="summary-bar__actions">
+              <!-- OPTIONAL slot — delete Export if the filtered result needs no export (a secondary action) -->
               <button class="btn btn--secondary btn--sm" type="button">Export</button>
               <button class="btn btn--secondary btn--sm" type="button">Columns</button>
             </div>
@@ -362,6 +385,7 @@
             </div>
           </div>
         </div>
+        <!-- /REQUIRED CORE results card -->
       </div>
 
       <!-- ════════════════ /PAGE ════════════════ -->
@@ -370,6 +394,9 @@
 </div>
 
 <!-- ════════════════════════════════════════════════════════════════
+     OPTIONAL slot (the advanced-filter VARIANT) — delete this entire sheet
+     (#adv-overlay + #adv-panel) together with the #adv-trigger above when a
+     list needs no advanced filtering. It is NOT part of the required core.
      ADVANCED FILTER SHEET
      Drawer (right) — outside the page tree so fixed positioning is relative
      to the viewport, not any transformed ancestor.
