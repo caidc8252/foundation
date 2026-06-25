@@ -98,6 +98,11 @@ when this record's job calls for it.
   never uses a wizard** (multi-step is a *create* concern). A single value may still
   use **inline-edit** in the overview; this rule covers editing the record's fields
   broadly.
+- **On return from an edit: backfill, and restore the tab.** Saving (or cancelling)
+  closes the modal / leaves the edit sub-page, and the detail simply **backfills**
+  the updated values — no change-highlight, scroll-to, or flash. An edit launched
+  from a tab **returns to that same tab** (tab state is preserved, never reset to
+  Overview), so the user lands exactly where they left.
 - Sensitive fields render masked by default; reveal is an audited action.
 
 ## Variants & optional slots
