@@ -40,8 +40,10 @@ config-driven table — columns + rows — not hand-written cell markup.
 - **Selection** uses a leading checkbox column; the selected row gets
   `state-selected` background + a 2px primary left bar (`shadow-row-selected`),
   and drives a bulk-action bar (in the summary bar / page header).
-- **Row actions** sit at the row end and **appear on hover / focus-within** — they
-  don't clutter the resting row. Icon-only → `ghost` / `ghost-danger` only.
+- **Row actions** sit at the row end and **appear on hover / focus-within** by
+  default — they don't clutter the resting row. Icon-only → `ghost` / `ghost-danger`
+  only. (A pattern may pin them **always-visible** for its rows — `list-page` does;
+  see that contract.)
 - **Numeric / id columns** render mono + tabular (`.cell-num`) and usually
   right-align so digits line up.
 - **Sticky header** docks the column header to the scroll root; pair with a

@@ -117,10 +117,23 @@ whether or not a condition band sits above them):
   edits live in `draft`; `apply()` commits to `applied` (and resets to page 1);
   chips reflect `applied`; `clearField` / `clearAll` remove them. When any filter
   is applied, the summary-bar count label appends "matching filters".
-- **The whole row is the click target** (`onRowClick` opens the record). The
-  resting row carries only a passive trailing chevron (`content-tertiary`) — no
-  inline action buttons. (Use the data-table's hover `row-actions` slot only when
-  a row needs verbs the row-open doesn't cover.)
+- **The whole row is the click target → it navigates to the record's detail page**
+  (`onRowClick`). This is the load-bearing IA rule: **the list navigates; the detail
+  page mutates.** The resting row carries only the leading select checkbox and a
+  passive trailing chevron (`content-tertiary`) — **no inline edit / delete**. A
+  record's single-row verbs (Edit, Delete, status changes) live on the
+  [detail page](./detail-page.md)'s `detail-header` actions, never on the list row;
+  the list's only mutation path is **bulk** (selection → summary-bar `batch-action`).
+  A side **peek-drawer** is the *optional* alternative to full navigation (see
+  optional slots), not a home for row verbs.
+- **Inline row actions are opt-in, and always-visible when present.** Add per-row
+  verbs to the list only when a specific requirement emphasizes single-row quick ops
+  (e.g. a high-throughput triage queue). Then — overriding the
+  [`data-table`](../composites/data-table.md) hover default **for this pattern** —
+  they render **always-visible** at the row end (not hover-reveal), composed per
+  [`actions.md`](./actions.md): ≤2 frequent verbs → inline icons, ≥3 → a single `⋯`
+  menu; Delete is a `ghost-danger` icon → a `confirm-danger` dialog; every action
+  `stopPropagation`s so it never triggers the row's navigate-to-detail.
 - **Three text-column shapes**, and nothing else (keeps columns scannable):
   1. **Two-line** — primary `text-sm`/medium/`content-primary` over a subline
      `text-2xs`/`content-tertiary`; may lead with an avatar / initial tile

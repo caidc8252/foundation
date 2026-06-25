@@ -191,6 +191,13 @@
                 </tr>
               </thead>
               <tbody>
+                <!-- ROW MODEL — the list navigates, the detail page mutates:
+                     each row's whole surface is the click target → the record's detail
+                     PAGE; the resting row carries ONLY the leading select checkbox (for
+                     bulk) + a passive trailing chevron. NO inline edit/delete here — a
+                     record's single-row verbs live on the detail page; multi-row ops go
+                     through the summary-bar batch-action. Add always-visible row actions
+                     here only if a later requirement emphasizes single-row quick ops. -->
                 <!-- selected row: tinted bg + 2px primary left bar (via aria-selected) -->
                 <tr class="is-clickable" aria-selected="true">
                   <td class="col-select"><input class="checkbox" type="checkbox" checked aria-label="Select Acme Robotics"></td>

@@ -44,6 +44,13 @@ where it lands, and whether it confirms — those are not per-screen choices.
 - **One carrier per row.** A row exposes its verbs as inline **icons** *or* a single
   **kebab** (`⋯`) menu — never both. Pick icons when there are ≤2 frequent verbs;
   collapse to a kebab past that.
+- **List rows navigate; mutations default to the detail page.** A list row's job is
+  to open the record (click → its detail page) — *the list navigates, the detail page
+  mutates.* By default a list row carries **no** edit / delete / `transition`; those
+  land on the **detail head** ([`detail-page`](./detail-page.md)), and multi-row ops on
+  the list **summary bar** (`batch-action`). Put verbs on a **list row** only when a
+  requirement emphasizes single-row quick ops; when present they are
+  **always-visible** (the `list-page` override), not hover-reveal.
 - **Every icon-only control needs a name.** An `aria-label` (and/or a tooltip) on every
   icon-only button — the single exception being a **passive trailing row chevron**, which
   is decorative (the row itself is the click target) and is `aria-hidden`.

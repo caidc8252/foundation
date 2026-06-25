@@ -83,6 +83,11 @@ when this record's job calls for it.
   `secondary` / `ghost`.
 - **Destructive actions** live behind the overflow menu or a `danger` button, never
   as a bare primary.
+- **The detail page is where a record mutates.** Edit, Delete, and status changes for
+  a record reached from a list live in the `detail-header` actions here — not on the
+  list row. *The list navigates, the detail page mutates* (see
+  [`list-page.md`](./list-page.md)): Edit is a `secondary` (or the single primary),
+  Delete sits behind the `⋯` overflow / a `danger` button → confirm.
 - Sensitive fields render masked by default; reveal is an audited action.
 
 ## Variants & optional slots
