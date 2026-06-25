@@ -166,9 +166,11 @@
           <div class="summary-bar">
             <div class="summary-bar__count"><strong>1,248</strong> customers <span id="filter-suffix"></span></div>
             <div class="summary-bar__actions">
-              <!-- OPTIONAL slot — delete Export if the filtered result needs no export (a secondary action) -->
+              <!-- Business-driven slot: list-level secondary actions, included only per need.
+                   Export is the common one — delete it if the filtered result needs no export.
+                   There is NO default "Columns"/column-manager action (the system has no such
+                   composite); add a list-level verb here only when this list actually needs it. -->
               <button class="btn btn--secondary btn--sm" type="button">Export</button>
-              <button class="btn btn--secondary btn--sm" type="button">Columns</button>
             </div>
           </div>
 

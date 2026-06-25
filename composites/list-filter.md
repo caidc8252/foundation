@@ -30,8 +30,12 @@ right edge — `condition-band__spacer`.)
 
 ## Rules
 
-- **Search is debounced; filters apply immediately.** Both reflect into
-  applied-filter chips, so the active query is always **visible and removable**.
+- **Search + filters submit on the Search button — not on change.** Typing in the
+  search field or picking a quick filter only edits a **draft**; nothing runs until
+  the user clicks **Search** (Enter in the field also submits), which commits the
+  whole draft and resets to page 1. Removing a chip (✕) or **clear all** acts on the
+  already-applied query and **re-runs immediately** (no Search click). Every applied
+  criterion still shows as a removable chip, so the active query is always **visible**.
 - **Applied-filters reserves no space when empty** — it renders null, not an empty
   bar. The label is `text-xs` / `content-tertiary`; "clear all" is a `ghost` `xs`
   button.

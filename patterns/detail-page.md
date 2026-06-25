@@ -13,7 +13,7 @@ row into. Named structure, not implementation.
 
 ```
 ┌ detail-header band (full-bleed surface-2, NO breadcrumb) ─────────────────┐
-│ [‹] 〔logo〕 name 〔status〕〔status〕        [ edit ] [ ⋯ ] [ primary ]      │
+│ [‹] 〔logo〕 name 〔status〕〔status〕     [ edit? ] [ ⋯? ] [ primary? ]      │
 │              id · region · created … (meta row)                           │
 │ ┌ tabs — OPTIONAL — line variant, docked on the band's bottom edge ────┐  │
 │ │ Overview   Activity   Orders   Settings                              │  │
@@ -81,8 +81,10 @@ when this record's job calls for it.
 - **At most one primary action**, rightmost (mirrors `detail-header` /
   `page-header`) — a read-only record may have none, never two; everything else is
   `secondary` / `ghost`.
-- **Destructive actions** live behind the overflow menu or a `danger` button, never
-  as a bare primary.
+- **Destructive actions** live behind the `⋯` overflow menu or a `danger` button,
+  never as a bare primary. The `⋯` overflow is shown **only when** there are
+  destructive or surplus secondary verbs to collapse into it — **never render an
+  empty `⋯`**; a header with just Edit + a primary has none.
 - **The detail page is where a record mutates.** Edit, Delete, and status changes for
   a record reached from a list live in the `detail-header` actions here — not on the
   list row. *The list navigates, the detail page mutates* (see

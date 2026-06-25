@@ -19,7 +19,7 @@ exactly this band at the top of its anatomy.
 
 ```
 ┌ detail-header (full-bleed surface-2 band, hairline bottom edge) ────────────┐
-│ [‹] 〔logo〕 Name  〔status〕〔status〕          [ secondary ] [ ⋯ ] [ primary ] │
+│ [‹] 〔logo〕 Name  〔status〕〔status〕       [ secondary? ] [ ⋯? ] [ primary? ] │
 │              id · mono · 〔copy〕 · created 3d ago · 12 members               │
 │              〔chip〕 〔chip〕                                                  │
 │ ┌ tabs (line variant, on the band's bottom edge) ─────────────────────────┐ │
@@ -35,7 +35,10 @@ exactly this band at the top of its anatomy.
 - **Main** — the `title` (one `h1`) with optional inline **status badges**
   (`Badge`), a one-line **meta row** (mono ids, a `copy` affordance, dot-joined
   facts), and an optional **chip row** beneath.
-- **Actions** — the action cluster, same rule as `page-header`.
+- **Actions** — the action cluster, **business-driven** (same rule as
+  `page-header`): include only the verbs this record needs. The `⋯` overflow is
+  present **only when** there are destructive / surplus secondary verbs to collapse
+  into it — never render an empty `⋯`.
 - **Tabs** — the `tabs` primitive (`--line` variant) docked on the band's bottom
   edge, NOT a second component. Render the strip only when sub-views are
   genuinely independent (see the detail-page pattern's "tabs vs sections" rule).
@@ -46,7 +49,9 @@ exactly this band at the top of its anatomy.
   have none, but it never has two. Everything else is `secondary` / `ghost`;
   destructive actions live behind the `⋯` overflow menu or a `danger`
   button — never a bare primary (mirrors `page-header` and the detail-page
-  pattern).
+  pattern). The `⋯` overflow appears **only when** there are destructive or surplus
+  secondary verbs to collapse into it; a header with just (say) Edit + a primary
+  shows **no** `⋯` — don't render an empty overflow.
 - **Status is shown, not edited here.** Multi-axis status renders as separate
   badges; a status *change* is an explicit, confirmed action, not a toggle on the
   chip.

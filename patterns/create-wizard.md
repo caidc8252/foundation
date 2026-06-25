@@ -44,7 +44,7 @@ summary rail and the done state are **optional**, included per business need.
 
 | slot | required? | include when |
 |---|---|---|
-| **header** | **yes** | always — the page title + a single **ghost** Cancel (exit without committing). No primary lives here; the commit verb is in **nav**. |
+| **header** | **yes** | always — the page title + a single **secondary** Cancel (exit without committing). No primary lives here; the commit verb is in **nav**. |
 | **steps** | **yes** | always — the `step-indicator` rail (done · here · left). Stretches **full-width** inside `page-body`. |
 | **body** | **yes** | always (repeatable) — the current step's **form-section** card(s) (one `Card` per concern) of `Field`s. Full-width; a card may cap its own internal width but the layout column is not capped. |
 | **nav** | **yes** | always — the footer: right-aligned **ghost Back** (hidden on step 1) **+ primary Continue**; the last step's primary is the contextual commit verb. |

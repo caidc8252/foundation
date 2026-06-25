@@ -109,14 +109,18 @@ whether or not a condition band sits above them):
   - *Secondary action* (`page-header__actions` secondary `Button`): a page-level
     secondary verb (e.g. "Import"). Omit when no such verb exists for this
     collection; the primary CTA stands alone.
-- **Search is debounced; filters apply immediately** — *when the condition band
-  is present* (it is an optional slot — omit it for a list with no filtering).
-  Both reflect into applied-filter chips so the active query is always visible
-  and removable. The
-  filter apparatus runs a **draft → applied** state machine (`useListFilters`):
-  edits live in `draft`; `apply()` commits to `applied` (and resets to page 1);
-  chips reflect `applied`; `clearField` / `clearAll` remove them. When any filter
-  is applied, the summary-bar count label appends "matching filters".
+- **Search and filters submit on the Search button — not on change** — *when the
+  condition band is present* (it is an optional slot — omit it for a list with no
+  filtering). Typing in the search field or picking a quick filter only edits a
+  **draft**; nothing runs until the user clicks **Search** (Enter in the search
+  field also submits). The filter apparatus runs a **draft → applied** state
+  machine (`useListFilters`): edits live in `draft`; `apply()` — the **Search
+  button** — commits the whole draft to `applied` and resets to page 1; chips
+  reflect `applied`. Removing a chip (`clearField`) or **Clear all** (`clearAll`)
+  acts on the applied query and **re-runs immediately** (no Search click needed).
+  Every applied criterion shows as a removable chip so the active query is always
+  visible. When any filter is applied, the summary-bar count label appends
+  "matching filters".
 - **The whole row is the click target → it navigates to the record's detail page**
   (`onRowClick`). This is the load-bearing IA rule: **the list navigates; the detail
   page mutates.** The resting row carries only the leading select checkbox and a

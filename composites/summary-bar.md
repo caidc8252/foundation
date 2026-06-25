@@ -11,7 +11,7 @@ the list-level actions (Export, bulk ops). Mirrors @cloud/ui
 
 ```
 ┌ summary-bar (h = 48) ────────────────────────────────────────┐
-│ 1,248 results · sorted by name        [ Export ] [ Columns ] │
+│ 1,248 results · sorted by name                   [ Export? ] │
 └───────────────────────────────────────────────────────────────┘
 ```
 
@@ -23,8 +23,14 @@ the list-level actions (Export, bulk ops). Mirrors @cloud/ui
 - **Count is mono + tabular + `content-primary`**; the trailing label
   ("results · sorted by …") is `content-secondary`. The number must not reflow as
   it updates.
-- **Right slot** holds list-level actions and, when rows are selected, the
-  **bulk-action set** (the selection count + bulk verbs replace the idle actions).
+- **Right slot is business-driven** — it carries only the list-level secondary
+  actions this list actually needs, included per need (it is **not** a fixed set).
+  `Export` is the common one, present when the filtered result is worth exporting.
+  There is **no default "Columns" / column-manager action** — the system ships no
+  such composite, so don't invent one. A secondary action lives in exactly one
+  place — here **or** the page header, never both (see
+  [`list-page.md`](../patterns/list-page.md)). When rows are selected, the
+  **bulk-action set** (selection count + bulk verbs) replaces the idle actions.
 - **Sticky contract** — when sticky, the host frame must use `overflow: clip`
   (`.table-frame--flush`), not the default `hidden`, or the sticky bar is trapped
   and scrolls away with the body.

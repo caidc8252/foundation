@@ -128,9 +128,11 @@
             </div>
           </div>
 
-          <!-- OPTIONAL — header actions. Include only the verbs this record needs;
-               a read-only record may have none. At most ONE primary (rightmost);
-               Edit secondary; destructive behind ⋯.
+          <!-- OPTIONAL — header actions, business-driven. Include only the verbs this
+               record needs; a read-only record has none. At most ONE primary (rightmost);
+               Edit is secondary. Destructive (Delete / revoke) and any surplus secondary
+               verbs go behind a ⋯ dropdown-menu — added ONLY when such verbs exist; do
+               NOT render an empty ⋯ (see actions.md / dropdown-menu.md).
                This is where a record MUTATES — Edit/Delete/status for a record reached
                from a list live HERE, not on the list row (the list navigates, the
                detail page mutates). See ./list-page.md. -->
@@ -139,10 +141,10 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
               Edit
             </button>
-            <button class="btn btn--ghost btn--icon" type="button" aria-label="More actions">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
-            </button>
             <button class="btn btn--primary" type="button">New order</button>
+            <!-- ┄┄ When the record HAS destructive/overflow verbs, collapse them into a ⋯
+                 dropdown-menu here (rightmost) — e.g. Delete → confirm. Omitted here
+                 because this record's only verbs are Edit + New order. ┄┄ -->
           </div>
         </div>
 
