@@ -52,7 +52,23 @@ slice of a pattern. A page is assembled by choosing composites; the **pattern**
 a composite, never duplicated into each pattern. Don't subdivide patterns into "header + table" — that pushes
 granularity to the wrong layer and forfeits the pattern's ordering guarantee.
 
-## 6. The four layers, and what crosses the consumer boundary
+## 6. `page-body` children are full-width by default
+
+The `page-body` composite provides gutters and vertical stack spacing; it does
+**not** constrain or center the page's content column — that is the app shell's
+job. Every direct child of `page-body` (step indicator, table card, columns row,
+nav row, overview grid, …) fills the full available width the shell allows.
+
+- **Never** apply a `max-width` + `margin-inline: auto` centering wrapper to a
+  layout-structural slot inside `page-body`. Width is the shell's responsibility.
+- An **individual content element** (e.g. a narrow single-step form card) may
+  constrain its own width as a content-level choice — but the layout column it
+  lives in still fills full width. The constraint belongs on the element, not on
+  a structural wrapper.
+- Violating this causes the pattern to silently diverge from the production page,
+  where the shell already controls the content width.
+
+## 7. The four layers, and what crosses the consumer boundary
 
 | Layer | Shared substance (in foundation) | Stays consumer-specific |
 |---|---|---|
@@ -66,7 +82,7 @@ Below tokens, consumers share *contracts*, never *code*. That is by design:
 React+Tailwind and self-contained HTML cannot share components — but they can,
 and must, share the same design truth.
 
-## 7. Same-brand scope
+## 8. Same-brand scope
 
 This foundation encodes ONE brand (the product design system). Sharing tokens
 across the prototype→production boundary is correct precisely because both sides

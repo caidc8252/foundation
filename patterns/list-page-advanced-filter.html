@@ -1,37 +1,28 @@
 <!--
-  Pattern · List page — copyable example
+  Pattern · List page (advanced-filter variant) — copyable example
   ─────────────────────────────────────────────────────────────────────────────
-  Companion to ./list-page.md (the contract — when the two disagree, the .md wins).
-  Copy this file and edit the markup to build a real list screen. Everything you
-  see is composed from foundation's reference layers — no bespoke component CSS.
+  Companion to ./list-page.md §"Variants / advanced-filter".
+  Demonstrates the full advanced-filter anatomy:
+    • condition-band toolbar  →  search · quick-filters · Search · spacer · [Advanced ▸]
+    • [Advanced ▸] opens a RIGHT-side drawer (filter sheet) with additional criteria
+    • Apply → drawer closes, results reflected as applied-filter chips
+    • Chip ✕ removes individual filter; "Clear all" removes all; Reset clears the sheet
+  Interaction is plain vanilla JS so the HTML is copy-pasteable; no framework needed.
 
-  HOW THE STYLES LOAD
-    This file LINKS the reference CSS (relative to patterns/), so edits to tokens,
-    primitives, or composites flow straight through — there is no forked copy that
-    can drift (that is the whole point of this repo). Order is load-bearing:
-        tokens  →  primitives  →  composites      (composites reuse .btn/.input/…)
-    To ship as a self-contained artifact (CSP, no external fetch), inline those
-    three blocks into a <style> instead — see README "How each consumer uses it".
-
-  WHAT YOU PORT
-    .app-frame is CONTEXT ONLY — it mirrors Layout so the page renders at the true
-    content width with the real scroll root. You do NOT port it. The page is
-    everything inside .app-frame__main (the .page-header + .page-body below).
+  HOW THE STYLES LOAD — same as list-page.html: links the reference CSS.
+  To ship as a self-contained artifact inline the three blocks into a <style>.
 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pattern · List page — foundation example</title>
+<title>Pattern · List page — advanced filter variant</title>
 
 <link rel="stylesheet" href="../dist/tokens.inline.css">
 <link rel="stylesheet" href="../primitives/primitives.css">
 <link rel="stylesheet" href="../composites/composites.css">
 
 <style>
-  /* Page-local composition — NOT new design vocabulary, just how this screen's
-     cell content stacks. All values are tokens; restyle or drop freely. */
+  /* ── Page-local composition (same as list-page.html) ── */
 
-  /* Two-line text column (rule §"three text-column shapes"): name over subline,
-     led by a square initial tile. */
   .cell-lead { display: flex; align-items: center; gap: var(--space-3); }
   .cell-lead__tile {
     display: grid; place-items: center; flex-shrink: 0;
@@ -43,14 +34,96 @@
   }
   .cell-lead__name { font-size: var(--text-sm); font-weight: 500; color: var(--color-content-primary); }
   .cell-lead__sub  { font-size: var(--text-2xs); color: var(--color-content-tertiary); }
-
-  /* Passive trailing chevron — the row IS the click target; no inline buttons at rest. */
   .cell-chevron { color: var(--color-content-tertiary); }
   .cell-chevron svg { width: var(--space-4); height: var(--space-4); }
+
+  /* ── Drawer body — scrollable middle section between header and footer ── */
+  .drawer__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  /* ── Filter group — a labelled block of controls inside the sheet ── */
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  .filter-group__label {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--color-content-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .filter-group__row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .filter-group__row .input { flex: 1; min-width: 0; }
+  .filter-group__sep {
+    font-size: var(--text-xs);
+    color: var(--color-content-tertiary);
+    white-space: nowrap;
+  }
+
+  /* ── Checkbox list inside a filter group ── */
+  .check-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .check-list__item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--color-content-primary);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  /* ── Drawer close button — top-right corner of the header ── */
+  .drawer__close {
+    position: absolute;
+    top: var(--space-3);
+    right: var(--space-3);
+  }
+
+  /* ── Drawer header: relative so close btn positions against it ── */
+  .drawer__header { position: relative; padding-right: var(--space-10); }
+
+  /* ── Drawer footer: side-by-side actions ── */
+  .drawer__footer {
+    flex-direction: row;
+    justify-content: flex-end;
+    border-top: 1px solid var(--color-line-subtle);
+  }
+
+  /* ── Overlay + panel hide/show ── */
+  .drawer-overlay,
+  .drawer {
+    display: none;
+  }
+  .drawer-overlay.is-open,
+  .drawer.is-open {
+    display: block;   /* overlay */
+  }
+  .drawer.is-open {
+    display: flex;    /* panel must be flex for body scroll + footer push */
+  }
+
+  /* Prevent body scroll when sheet is open */
+  body.sheet-open { overflow: hidden; }
 </style>
 
 <div class="app-frame">
-  <!-- ░░░ CONTEXT ONLY — the shell. Not ported (the app already has Layout). ░░░ -->
+  <!-- ░░░ CONTEXT ONLY — the shell. Not ported. ░░░ -->
   <aside class="app-frame__sidebar">
     <div class="app-frame__brand">◆ Acme Portal</div>
     <nav class="app-frame__nav">
@@ -62,10 +135,6 @@
       <a class="app-frame__nav-item">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
         Orders
-      </a>
-      <a class="app-frame__nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
-        Products
       </a>
       <span class="app-frame__nav-label">Account</span>
       <a class="app-frame__nav-item">
@@ -91,7 +160,6 @@
     <main class="app-frame__main">
       <!-- ════════════════ PAGE — port everything below ════════════════ -->
 
-      <!-- page-header (full-bleed, OUTSIDE page-body) -->
       <header class="page-header">
         <div class="page-header__bar">
           <div class="page-header__titles">
@@ -101,7 +169,6 @@
             </div>
             <p class="page-header__description">Browse, filter, and manage customer accounts.</p>
           </div>
-          <!-- exactly ONE primary, rightmost; everything else secondary/ghost -->
           <div class="page-header__actions">
             <button class="btn btn--secondary" type="button">Import</button>
             <button class="btn btn--primary" type="button">
@@ -112,10 +179,9 @@
         </div>
       </header>
 
-      <!-- page-body (gutters + space-6 stack) -->
       <div class="page-body">
 
-        <!-- condition band — scrolls away (NOT sticky). Search input → quick filters → Search button -->
+        <!-- condition band: search → quick-filters → Search → spacer → [Advanced ▸] (secondary, pushed right) -->
         <div class="condition-band">
           <div class="condition-band__toolbar">
             <div class="search-input">
@@ -124,39 +190,48 @@
               </span>
               <input class="input" id="search-input" type="search" placeholder="Search customers…" aria-label="Search customers">
             </div>
-            <select class="select" aria-label="Status">
-              <option>All statuses</option><option>Active</option><option>Trial</option><option>Suspended</option>
+            <select class="select" aria-label="Status" id="qs-status">
+              <option value="">All statuses</option>
+              <option>Active</option>
+              <option>Trial</option>
+              <option>Suspended</option>
             </select>
-            <select class="select" aria-label="Region">
-              <option>All regions</option><option>APAC</option><option>EMEA</option><option>Americas</option>
+            <select class="select" aria-label="Region" id="qs-region">
+              <option value="">All regions</option>
+              <option>APAC</option>
+              <option>EMEA</option>
+              <option>Americas</option>
             </select>
             <button class="btn btn--secondary" id="search-btn" type="button">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
               Search
             </button>
+            <span class="condition-band__spacer"></span>
+            <!-- Advanced: secondary, pushed right by spacer — visually separated from primary filter flow -->
+            <button class="btn btn--secondary" type="button" id="adv-trigger" aria-haspopup="dialog" aria-expanded="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
+              Advanced
+            </button>
           </div>
 
-          <!-- applied-filters: JS-driven. Renders only when ≥1 chip is active. -->
+          <!-- applied-filters: render only when ≥1 chip; clear-all flows inline after chips -->
           <div class="applied-filters" id="applied-filters" style="display:none">
-            <!-- label + chips inserted by JS before the Clear all button -->
+            <span class="applied-filters__label">Filters:</span>
+            <!-- chips injected here by JS -->
             <button class="btn btn--ghost btn--xs" type="button" id="clear-all-btn">Clear all</button>
           </div>
         </div>
 
-        <!-- list card = table-frame --flush wrapping summary-bar + table + pagination.
-             --flush rounds the corners WITHOUT trapping the sticky parts inside the card. -->
+        <!-- list card -->
         <div class="table-frame table-frame--flush">
-
-          <!-- summary bar (sticky) — count appends "matching filters" when any filter is applied -->
           <div class="summary-bar">
-            <div class="summary-bar__count"><strong>1,248</strong> customers <span id="filter-suffix"></span></div>
+            <div class="summary-bar__count"><strong id="result-count">1,248</strong> customers <span id="filter-suffix"></span></div>
             <div class="summary-bar__actions">
               <button class="btn btn--secondary btn--sm" type="button">Export</button>
               <button class="btn btn--secondary btn--sm" type="button">Columns</button>
             </div>
           </div>
 
-          <!-- table (sticky header docks under the summary bar) -->
           <div class="table-scroll">
             <table class="data-table list-table">
               <thead>
@@ -175,9 +250,8 @@
                 </tr>
               </thead>
               <tbody>
-                <!-- selected row: tinted bg + 2px primary left bar (via aria-selected) -->
-                <tr class="is-clickable" aria-selected="true">
-                  <td class="col-select"><input class="checkbox" type="checkbox" checked aria-label="Select Acme Robotics"></td>
+                <tr class="is-clickable">
+                  <td class="col-select"><input class="checkbox" type="checkbox" aria-label="Select Acme Robotics"></td>
                   <td>
                     <div class="cell-lead">
                       <span class="cell-lead__tile">AR</span>
@@ -240,7 +314,6 @@
                   </td>
                   <td><span class="badge badge--error"><span class="badge__dot"></span>Suspended</span></td>
                   <td class="cell-num">Mar 22, 2026</td>
-                  <!-- empty value renders an em-dash, never a blank cell -->
                   <td class="cell-chevron">—</td>
                   <td class="cell-num cell-right">$0</td>
                   <td class="cell-right cell-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
@@ -266,8 +339,6 @@
             </table>
           </div>
 
-          <!-- RichPagination footer: range summary on the left, SIMPLE prev/current/next on the right.
-               Tables NEVER use numbered jump targets — the current page is a display, not a button. -->
           <div class="pagination">
             <div class="pagination__info">
               <div class="pagination__rows">
@@ -290,35 +361,6 @@
               </button>
             </div>
           </div>
-
-          <!-- ┄┄┄ SWAP: NO-RESULTS-FOR-FILTERS — replace .table-scroll + .pagination above with this.
-                    Offers "clear filters", NOT "create" (the user just over-filtered). ┄┄┄
-          <div class="empty-state">
-            <div class="empty-state__icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            </div>
-            <div class="empty-state__title">No customers match these filters</div>
-            <p class="empty-state__description">Try widening your search, or clear the active filters to see everyone.</p>
-            <div class="empty-state__action"><button class="btn btn--secondary" type="button">Clear filters</button></div>
-          </div>
-          -->
-
-          <!-- ┄┄┄ SWAP: NOTHING-YET (cold start) — invites the page's PRIMARY verb. ┄┄┄
-          <div class="empty-state">
-            <div class="empty-state__icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-            </div>
-            <div class="empty-state__title">No customers yet</div>
-            <p class="empty-state__description">Add your first customer to start tracking orders and activity.</p>
-            <div class="empty-state__action"><button class="btn btn--primary" type="button">New customer</button></div>
-          </div>
-          -->
-
-          <!-- ┄┄┄ SWAP: LOADING — a skeleton table fills the frame (same box as the loaded one). ┄┄┄
-          <div class="skeleton-row"><span class="skeleton skeleton--line"></span><span class="skeleton skeleton--line"></span><span class="skeleton skeleton--line"></span></div>
-          <div class="skeleton-row"><span class="skeleton skeleton--line"></span><span class="skeleton skeleton--line"></span><span class="skeleton skeleton--line"></span></div>
-          <div class="skeleton-row"><span class="skeleton skeleton--line"></span><span class="skeleton skeleton--line"></span><span class="skeleton skeleton--line"></span></div>
-          -->
         </div>
       </div>
 
@@ -327,33 +369,147 @@
   </div>
 </div>
 
+<!-- ════════════════════════════════════════════════════════════════
+     ADVANCED FILTER SHEET
+     Drawer (right) — outside the page tree so fixed positioning is relative
+     to the viewport, not any transformed ancestor.
+     Structure: overlay (scrim) + panel (.drawer .drawer--right)
+  ════════════════════════════════════════════════════════════════ -->
+
+<!-- Scrim — clicking it closes the sheet -->
+<div class="drawer-overlay" id="adv-overlay" role="presentation"></div>
+
+<!-- Panel -->
+<div class="drawer drawer--right" id="adv-panel" role="dialog" aria-modal="true" aria-labelledby="adv-title">
+
+  <!-- Header -->
+  <div class="drawer__header">
+    <div class="drawer__title" id="adv-title">Advanced filters</div>
+    <div class="drawer__description">Narrow results with additional criteria. Changes apply when you click "Apply".</div>
+    <button class="btn btn--ghost btn--icon btn--sm drawer__close" type="button" id="adv-close" aria-label="Close advanced filters">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <!-- Body — scrollable filter groups -->
+  <div class="drawer__body">
+
+    <!-- Registration date range -->
+    <div class="filter-group">
+      <div class="filter-group__label">Registration date</div>
+      <div class="filter-group__row">
+        <input class="input" type="date" id="adv-reg-from" aria-label="Registered from">
+        <span class="filter-group__sep">to</span>
+        <input class="input" type="date" id="adv-reg-to" aria-label="Registered to">
+      </div>
+    </div>
+
+    <!-- Lifetime value range -->
+    <div class="filter-group">
+      <div class="filter-group__label">Lifetime value (USD)</div>
+      <div class="filter-group__row">
+        <input class="input" type="number" id="adv-ltv-min" placeholder="Min" min="0" aria-label="Minimum lifetime value">
+        <span class="filter-group__sep">–</span>
+        <input class="input" type="number" id="adv-ltv-max" placeholder="Max" min="0" aria-label="Maximum lifetime value">
+      </div>
+    </div>
+
+    <!-- Tags — multi-select via checkboxes -->
+    <div class="filter-group">
+      <div class="filter-group__label">Tags</div>
+      <div class="check-list">
+        <label class="check-list__item">
+          <input class="checkbox" type="checkbox" name="adv-tag" value="Enterprise"> Enterprise
+        </label>
+        <label class="check-list__item">
+          <input class="checkbox" type="checkbox" name="adv-tag" value="SMB"> SMB
+        </label>
+        <label class="check-list__item">
+          <input class="checkbox" type="checkbox" name="adv-tag" value="Startup"> Startup
+        </label>
+        <label class="check-list__item">
+          <input class="checkbox" type="checkbox" name="adv-tag" value="Agency"> Agency
+        </label>
+      </div>
+    </div>
+
+    <!-- Last activity -->
+    <div class="filter-group">
+      <div class="filter-group__label">Last activity</div>
+      <select class="select" id="adv-activity" aria-label="Last activity">
+        <option value="">Any time</option>
+        <option value="7">Within 7 days</option>
+        <option value="30">Within 30 days</option>
+        <option value="90">Within 90 days</option>
+        <option value="180">Within 180 days</option>
+      </select>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="drawer__footer">
+    <button class="btn btn--ghost" type="button" id="adv-reset">Reset</button>
+    <button class="btn btn--primary" type="button" id="adv-apply">Apply filters</button>
+  </div>
+</div>
+
+<!-- ════════════════ Interaction ════════════════ -->
 <script>
 (function () {
   'use strict';
 
   var searchInput  = document.getElementById('search-input');
   var searchBtn    = document.getElementById('search-btn');
+  var trigger      = document.getElementById('adv-trigger');
+  var overlay      = document.getElementById('adv-overlay');
+  var panel        = document.getElementById('adv-panel');
+  var closeBtn     = document.getElementById('adv-close');
+  var resetBtn     = document.getElementById('adv-reset');
+  var applyBtn     = document.getElementById('adv-apply');
   var appliedRow   = document.getElementById('applied-filters');
   var clearAllBtn  = document.getElementById('clear-all-btn');
-  var filterSuffix = document.getElementById('filter-suffix');
-
-  // Initial chips (mirrors the example's pre-applied quick-filters)
-  var chips = [
-    { key: 'status', label: 'Status: Active' },
-    { key: 'region', label: 'Region: APAC' }
-  ];
+  var suffix       = document.getElementById('filter-suffix');
 
   var X_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>';
 
+  // ── Open / close sheet ────────────────────────────────────────
+
+  function openSheet() {
+    overlay.classList.add('is-open');
+    panel.classList.add('is-open');
+    document.body.classList.add('sheet-open');
+    trigger.setAttribute('aria-expanded', 'true');
+    closeBtn.focus();
+  }
+
+  function closeSheet() {
+    overlay.classList.remove('is-open');
+    panel.classList.remove('is-open');
+    document.body.classList.remove('sheet-open');
+    trigger.setAttribute('aria-expanded', 'false');
+    trigger.focus();
+  }
+
+  trigger.addEventListener('click', openSheet);
+  overlay.addEventListener('click', closeSheet);
+  closeBtn.addEventListener('click', closeSheet);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && panel.classList.contains('is-open')) closeSheet();
+  });
+
+  // ── Chips ─────────────────────────────────────────────────────
+
+  var activeFilters = [];
+
   function renderChips() {
-    // Clear everything before the Clear all button
     while (appliedRow.firstChild !== clearAllBtn) {
       appliedRow.removeChild(appliedRow.firstChild);
     }
 
-    if (chips.length === 0) {
+    if (activeFilters.length === 0) {
       appliedRow.style.display = 'none';
-      filterSuffix.textContent = '';
+      suffix.textContent = '';
       return;
     }
 
@@ -362,7 +518,7 @@
     label.textContent = 'Filters:';
     appliedRow.insertBefore(label, clearAllBtn);
 
-    chips.forEach(function (chip) {
+    activeFilters.forEach(function (chip) {
       var span = document.createElement('span');
       span.className = 'filter-chip';
       span.textContent = chip.label;
@@ -374,7 +530,7 @@
       removeBtn.innerHTML = X_SVG;
       removeBtn.addEventListener('click', function () {
         if (chip.key === 'search') searchInput.value = '';
-        chips = chips.filter(function (c) { return c.key !== chip.key; });
+        activeFilters = activeFilters.filter(function (f) { return f.key !== chip.key; });
         renderChips();
       });
 
@@ -383,17 +539,22 @@
     });
 
     appliedRow.style.display = '';
-    filterSuffix.textContent = '· matching filters';
+    suffix.textContent = '· matching filters';
   }
 
-  renderChips();
+  clearAllBtn.addEventListener('click', function () {
+    activeFilters = [];
+    searchInput.value = '';
+    renderChips();
+    resetForm();
+  });
 
   // ── Search ────────────────────────────────────────────────────
 
   function doSearch() {
     var val = searchInput.value.trim();
-    chips = chips.filter(function (c) { return c.key !== 'search'; });
-    if (val) chips.push({ key: 'search', label: 'Search: ' + val });
+    activeFilters = activeFilters.filter(function (f) { return f.key !== 'search'; });
+    if (val) activeFilters.push({ key: 'search', label: 'Search: ' + val });
     renderChips();
   }
 
@@ -402,12 +563,52 @@
     if (e.key === 'Enter') doSearch();
   });
 
-  // ── Clear all ─────────────────────────────────────────────────
+  // ── Apply advanced filters ────────────────────────────────────
 
-  clearAllBtn.addEventListener('click', function () {
-    chips = [];
-    searchInput.value = '';
+  applyBtn.addEventListener('click', function () {
+    var newFilters = [];
+
+    var regFrom = document.getElementById('adv-reg-from').value;
+    var regTo   = document.getElementById('adv-reg-to').value;
+    if (regFrom || regTo) {
+      newFilters.push({ key: 'reg-range', label: 'Registered: ' + (regFrom || '…') + ' → ' + (regTo || '…') });
+    }
+
+    var ltvMin = document.getElementById('adv-ltv-min').value;
+    var ltvMax = document.getElementById('adv-ltv-max').value;
+    if (ltvMin || ltvMax) {
+      newFilters.push({ key: 'ltv-range', label: 'LTV: ' + (ltvMin ? '$' + Number(ltvMin).toLocaleString() : '…') + ' – ' + (ltvMax ? '$' + Number(ltvMax).toLocaleString() : '…') });
+    }
+
+    var tags = Array.from(document.querySelectorAll('[name="adv-tag"]:checked')).map(function (cb) { return cb.value; });
+    if (tags.length) {
+      newFilters.push({ key: 'tags', label: 'Tags: ' + tags.join(', ') });
+    }
+
+    var activity = document.getElementById('adv-activity');
+    if (activity.value) {
+      newFilters.push({ key: 'activity', label: activity.options[activity.selectedIndex].text });
+    }
+
+    // Keep search + quick-filter chips; replace advanced keys
+    var ADV_KEYS = ['reg-range', 'ltv-range', 'tags', 'activity'];
+    activeFilters = activeFilters.filter(function (f) { return !ADV_KEYS.includes(f.key); }).concat(newFilters);
     renderChips();
+    closeSheet();
   });
+
+  // ── Reset form ────────────────────────────────────────────────
+
+  function resetForm() {
+    document.getElementById('adv-reg-from').value = '';
+    document.getElementById('adv-reg-to').value   = '';
+    document.getElementById('adv-ltv-min').value  = '';
+    document.getElementById('adv-ltv-max').value  = '';
+    document.querySelectorAll('[name="adv-tag"]').forEach(function (cb) { cb.checked = false; });
+    document.getElementById('adv-activity').value = '';
+  }
+
+  resetBtn.addEventListener('click', resetForm);
+
 })();
 </script>

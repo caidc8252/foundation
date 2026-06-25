@@ -109,17 +109,15 @@
   border-color: var(--color-line-strong);
 }
 
-.btn--tertiary {
-  background-color: var(--color-surface-3);
-  color: var(--color-content-primary);
-}
-.btn--tertiary:hover:not(:disabled) { background-color: var(--color-surface-hover); }
-
+/* DS 2.0: tertiary / outline / soft variants removed — fold into ghost / secondary.
+   Kept as no-op stubs so old artifact HTML doesn't hard-break; use ghost / secondary for new code. */
+.btn--tertiary,
 .btn--outline {
-  background-color: var(--color-surface-1);
+  background-color: var(--color-surface-2);
   color: var(--color-content-primary);
   border-color: var(--color-line-default);
 }
+.btn--tertiary:hover:not(:disabled),
 .btn--outline:hover:not(:disabled) { background-color: var(--color-surface-hover); }
 
 .btn--ghost {
@@ -129,11 +127,13 @@
 .btn--ghost:hover:not(:disabled) { background-color: var(--color-surface-hover); }
 .btn--ghost:active:not(:disabled) { background-color: var(--color-surface-active); }
 
+/* DS 2.0: soft removed — no direct replacement; use secondary or primary. */
 .btn--soft {
-  background-color: var(--color-primary-50);
-  color: var(--color-primary-700);
+  background-color: var(--color-surface-2);
+  color: var(--color-content-primary);
+  border-color: var(--color-line-default);
 }
-.btn--soft:hover:not(:disabled) { background-color: var(--color-primary-100); }
+.btn--soft:hover:not(:disabled) { background-color: var(--color-surface-hover); }
 
 .btn--danger {
   background-color: var(--color-error);
@@ -170,7 +170,7 @@
 .btn--sm {
   height: var(--spacing-control-sm);
   padding-inline: var(--spacing-cx-sm);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);   /* DS 2.0: text-sm deprecated → text-md */
 }
 .btn--md {
   height: var(--spacing-control-md);
@@ -213,7 +213,7 @@
 .input::placeholder { color: var(--color-content-tertiary); }
 .input:focus-visible {
   border-color: var(--color-line-focus);
-  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-line-focus) 30%, transparent);
+  box-shadow: var(--shadow-focus);   /* DS 2.0: unified focus ring */
 }
 .input:read-only {
   background-color: var(--color-surface-3);
@@ -288,7 +288,7 @@
 .textarea::placeholder { color: var(--color-content-tertiary); }
 .textarea:focus-visible {
   border-color: var(--color-line-focus);
-  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-line-focus) 30%, transparent);
+  box-shadow: var(--shadow-focus);   /* DS 2.0: unified focus ring */
 }
 .textarea:disabled {
   cursor: not-allowed;
@@ -324,7 +324,7 @@
 .select:hover { border-color: var(--color-line-strong); }
 .select:focus-visible {
   border-color: var(--color-line-focus);
-  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-line-focus) 30%, transparent);
+  box-shadow: var(--shadow-focus);   /* DS 2.0: unified focus ring */
 }
 .select:disabled {
   cursor: not-allowed;
@@ -523,6 +523,12 @@
   border-radius: var(--radius-full);
   background-color: currentColor;
   transform: scale(0.75);
+}
+
+/* Badge · focus (DS 2.0: unified shadow-focus ring) */
+.badge:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
 }
 
 /* ═══════════════════════════════ Card ═══════════════════════════════ */
@@ -2496,7 +2502,7 @@
 /* Group-owned focus ring (the inner control is borderless, so its focus lifts here). */
 .input-group:has(.input-group__control:focus-visible) {
   border-color: var(--color-line-focus);
-  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-line-focus) 50%, transparent);
+  box-shadow: var(--shadow-focus);   /* DS 2.0: unified focus ring */
 }
 /* Group-owned invalid ring. */
 .input-group:has(.input-group__control[aria-invalid="true"]),
@@ -3705,7 +3711,8 @@
 
 /* ── line variant trigger — underline indicator ── */
 .tabs__list--line .tabs__trigger {
-  padding: var(--spacing-cx-sm);   /* 12px-ish both axes (source px/py-3) */
+  height: var(--spacing-control-lg);   /* DS 2.0: fixed 44px (spec ~42 snapped to control scale) */
+  padding-inline: var(--spacing-cx-sm);   /* 12px-ish (source px-3) */
   margin-bottom: -1px;   /* overlap the list hairline */
   border-top-left-radius: var(--radius-md);
   border-top-right-radius: var(--radius-md);
@@ -4183,3 +4190,160 @@
   background-color: var(--color-content-primary);
   transform: translateX(-50%) rotate(45deg);
 }
+
+/* ═══════════════════════════════ Dropzone ═══════════════════════════════ */
+/* Presentation-only file-select zone with drag-and-drop affordance. Emits
+   picked files; never performs the upload — the host wires @cloud/storage and
+   feeds per-file status/progress back via FileRow. CSP-safe; no network code. */
+
+.dropzone {
+  display: flex;
+  min-height: 128px;   /* layout constant — no sizing token expresses a drop-zone floor */
+  cursor: pointer;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border-radius: var(--radius-xl);
+  border: 1px dashed var(--color-line-default);
+  background-color: var(--color-surface-2);
+  padding-inline: var(--space-6);
+  padding-block: var(--space-8);
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  color: var(--color-content-tertiary);
+  transition: border-color var(--duration-fast) var(--ease-standard),
+              background-color var(--duration-fast) var(--ease-standard);
+  outline: none;
+}
+.dropzone:hover { background-color: var(--color-surface-hover); }
+
+/* Drag-active: primary accent border + primary-50 tint */
+.dropzone--drag {
+  border-color: var(--color-primary-500);
+  background-color: var(--color-primary-50);
+}
+
+.dropzone--disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.dropzone--disabled:hover { background-color: var(--color-surface-2); }
+
+/* File list — the <ul> container that holds FileRow items below the zone. */
+.file-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+/* Single file row — surface-2 card with icon / name / size / status / remove. */
+.file-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-line-subtle);
+  background-color: var(--color-surface-2);
+  padding-inline: var(--space-3);
+  padding-block: var(--space-2);
+}
+
+/* Generic file glyph — leading icon slot */
+.file-row__icon {
+  flex-shrink: 0;
+  color: var(--color-content-tertiary);
+  width: var(--space-4);
+  height: var(--space-4);
+}
+
+/* Body: name row + optional progress/error */
+.file-row__body {
+  min-width: 0;
+  flex: 1;
+}
+.file-row__name-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.file-row__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--text-md);
+  color: var(--color-content-primary);
+}
+.file-row__size {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-content-tertiary);
+}
+.file-row__error {
+  margin-top: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--color-error-strong);
+}
+
+/* Trailing status glyph */
+.file-row__status {
+  flex-shrink: 0;
+  width: var(--space-4);
+  height: var(--space-4);
+}
+.file-row__status--done  { color: var(--color-success-strong); }
+.file-row__status--error { color: var(--color-error-strong); }
+
+/* ═══════════════════════════════ Object Tile ═══════════════════════════════ */
+/* Square, filled entity/object identity mark — for companies, apps, device
+   models, etc. Consolidates the old InitialsTile + ColorTile: one tile that
+   shows a glyph icon, name-derived initials, or a short code, on a neutral
+   avatar surface or a categorical content-hashed tint. Always square + radius-lg.
+   Distinct from Avatar (circular, image-based). aria-hidden by design. */
+
+.object-tile {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-line-subtle);
+  font-family: var(--font-sans);
+  font-weight: 600;
+}
+
+/* sizes — sm 32 / md 40 (default) / lg 48 */
+.object-tile--sm { width: var(--space-8);  height: var(--space-8);  font-size: var(--text-xs); }
+.object-tile--md { width: var(--space-10); height: var(--space-10); font-size: var(--text-md); }
+.object-tile--lg { width: var(--space-12); height: var(--space-12); font-size: var(--text-lg); }
+
+/* neutral tone — avatar surface + subtle border */
+.object-tile--neutral {
+  background-color: var(--color-avatar-bg);
+  color: var(--color-avatar-fg);
+  border-color: var(--color-line-subtle);
+}
+
+/* categorical tones — content-hashed from the cat-1..6 palette */
+.object-tile--cat-1 { background-color: var(--color-cat-1); color: var(--color-cat-1-fg); border-color: var(--color-cat-line); }
+.object-tile--cat-2 { background-color: var(--color-cat-2); color: var(--color-cat-2-fg); border-color: var(--color-cat-line); }
+.object-tile--cat-3 { background-color: var(--color-cat-3); color: var(--color-cat-3-fg); border-color: var(--color-cat-line); }
+.object-tile--cat-4 { background-color: var(--color-cat-4); color: var(--color-cat-4-fg); border-color: var(--color-cat-line); }
+.object-tile--cat-5 { background-color: var(--color-cat-5); color: var(--color-cat-5-fg); border-color: var(--color-cat-line); }
+.object-tile--cat-6 { background-color: var(--color-cat-6); color: var(--color-cat-6-fg); border-color: var(--color-cat-line); }
+
+/* Icon slot — a glyph node centered in the tile; sizes step with the tile. */
+.object-tile__icon {
+  display: grid;
+  place-items: center;
+}
+.object-tile--sm .object-tile__icon { width: var(--space-4);  height: var(--space-4); }
+.object-tile--md .object-tile__icon { width: var(--space-5);  height: var(--space-5); }
+.object-tile--lg .object-tile__icon { width: var(--space-6);  height: var(--space-6); }

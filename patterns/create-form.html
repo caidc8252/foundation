@@ -3,8 +3,9 @@
   ─────────────────────────────────────────────────────────────────────────────
   Companion to ./create-form.md (the contract — when the two disagree, the .md wins).
   Copy this file and edit the markup to build a real single-step create/edit form:
-  a centered card of Field units with a cancel/submit footer. Long forms group
-  their fields into labelled section cards by concern (one Card per concern).
+  a sticky page-header carrying Cancel + Create/Save on the right, a centered card
+  of Field units (no bottom footer). Long forms group their fields into labelled
+  section cards by concern (one Card per concern).
   Need ≥3 steps or branching? Reach for the multi-step wizard instead — that is
   its own pattern now: ./create-wizard.md (./create-wizard.html).
 
@@ -42,8 +43,7 @@
 
   .form-title { font-size: var(--text-md); font-weight: 600; color: var(--color-content-primary); }
 
-  /* card footer holds the actions; submit is rightmost. */
-  .form-footer { justify-content: flex-end; gap: var(--space-2); }
+  /* (no form-footer — actions live in the sticky page-header) */
 
   .field-check { display: flex; align-items: flex-start; gap: var(--space-2); }
   .field-check__text { font-size: var(--text-sm); color: var(--color-content-primary); }
@@ -81,11 +81,15 @@
 
     <main class="app-frame__main">
       <!-- ════════════════ PAGE — port everything below ════════════════ -->
-      <header class="page-header">
+      <header class="page-header page-header--sticky">
         <div class="page-header__bar">
           <div class="page-header__titles">
             <div class="page-header__heading"><h1 class="page-header__title">New customer</h1></div>
-            <p class="page-header__description">A single-step create/edit form — a centered card of fields with a cancel/submit footer.</p>
+            <p class="page-header__description">A single-step create/edit form — a centered card of fields, actions in the sticky header.</p>
+          </div>
+          <div class="page-header__actions">
+            <button class="btn btn--secondary" type="button">Cancel</button>
+            <button class="btn btn--primary" type="submit" form="create-form">Create customer</button>
           </div>
         </div>
       </header>
@@ -95,7 +99,7 @@
         <!-- ───────────── SINGLE-STEP FORM (≤ ~8 fields, no branching) ─────────────
              Long forms group fields into labelled section cards by concern — one
              Card per concern (Identity, Billing, …) — not one flat list. -->
-        <form class="card form-page" onsubmit="return false">
+        <form id="create-form" class="card form-page" onsubmit="return false">
           <div class="card__header"><span class="form-title">Customer details</span></div>
 
           <div class="card__content form-stack">
@@ -139,11 +143,6 @@
             </div>
           </div>
 
-          <!-- footer: actions right-aligned; submit SAYS WHAT IT DOES (not "Submit") -->
-          <div class="card__footer form-footer">
-            <button class="btn btn--secondary" type="button">Cancel</button>
-            <button class="btn btn--primary" type="submit">Create customer</button>
-          </div>
         </form>
 
       </div>

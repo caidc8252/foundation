@@ -11,21 +11,26 @@ A clickable action. The primary way to trigger a mutation, submit, or navigate-a
 
 ## Variants
 
+DS 2.0 canonical set — six variants only. All other class names are compat stubs (see below).
+
 | variant | use | token recipe |
 |---|---|---|
 | `primary` *(default)* | the one main action on a surface | bg `primary-700` · text `content-on-primary` · `shadow-cta` · hover `primary-600` · active `primary-800` |
 | `secondary` | neutral action beside a primary | bg `surface-2` · text `content-primary` · border `line-default` · `shadow-1` · hover `surface-hover` + border `line-strong` |
-| `tertiary` | low-emphasis filled action | bg `surface-3` · text `content-primary` · hover `surface-hover` |
-| `outline` | bordered, transparent fill | border `line-default` · bg `background` · hover `surface-hover` |
 | `ghost` | toolbar / icon actions, no chrome until hover | hover bg `surface-hover` · active `surface-active` |
-| `subtle` | text-only until hover | text `content-secondary` · hover bg `surface-hover` + text `content-primary` |
-| `soft` | tonal low-emphasis CTA | bg `primary-50` · text `primary-700` · hover `primary-100` |
-| `soft-success` `soft-warning` `soft-danger` `soft-info` | tonal action inside an inline alert ("Retry") | bg `{semantic}-bg` · text `{semantic}-strong` · hover `brightness-95` |
 | `danger` | destructive primary (Delete, Terminate) | bg `error` · text `content-inverse` · `shadow-cta` · hover `error-strong` · active `error-active` |
 | `ghost-danger` | destructive icon/low-emphasis action | text `error` · hover bg `error-bg` + text `error-strong` |
 | `link` | inline text link styled as a button | text `primary-500` · hover underline · no height/padding |
 
 > Aliases kept for compat: `default` = `primary`, `destructive` = `danger`.
+
+### Compat stubs (deprecated — do not use in new work)
+
+| class | maps to | note |
+|---|---|---|
+| `.btn--tertiary` | `secondary` behavior | DS 2.0: filled low-emphasis merged into secondary |
+| `.btn--outline` | `secondary` behavior | DS 2.0: bordered transparent merged into secondary |
+| `.btn--soft` | `secondary` behavior | DS 2.0: tonal primary removed; no direct replacement |
 
 ## Sizes
 

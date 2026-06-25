@@ -7,21 +7,26 @@ ordering, and the load-bearing decisions so a prototype and the production page
 read as the same screen. Reference implementation: `@cloud/ui`'s
 `docs/examples/list-page.tsx` (the style template).
 
-> 📐 **Copyable example** · [`list-page.html`](./list-page.html) — the full anatomy
-> assembled from composites (shell → header → condition band → list card with sticky
-> summary bar, sticky-head table, rich pagination; empty/loading swap snippets
-> included), ready to copy and modify. It **links** the reference CSS so it never
-> forks; inline the blocks to ship it as an artifact. All examples: [`index.html`](./index.html).
+> 📐 **Copyable examples**
+> - [`list-page.html`](./list-page.html) — the `simple` variant: full anatomy assembled
+>   from composites (shell → header → condition band → list card with sticky summary bar,
+>   sticky-head table, rich pagination; empty/loading swap snippets included).
+> - [`list-page-advanced-filter.html`](./list-page-advanced-filter.html) — the
+>   `advanced-filter` variant: adds an Advanced (secondary) trigger that opens a
+>   right-side drawer sheet; fully interactive (Apply → chips, chip ✕, Clear all, Escape/overlay dismiss).
+>
+> Both **link** the reference CSS so they never fork; inline the blocks to ship as an artifact. All examples: [`index.html`](./index.html).
 
 ## Anatomy (top → bottom)
 
 ```
 ┌ page-header (full-bleed) ────────────────────────────────────┐
-│ Title + description              [ secondary ]  [ primary ]   │
+│ Title  [count?]                  [secondary?]  [ primary ]   │
+│ [description?]                                               │
 ╞ page-body (gutters + stack) ═════════════════════════════════╡
 │ ┌ condition band ──────────────────────────────────────────┐ │
-│ │ [ 🔍 search ] [ quick filter ▾ ]            [ Search ]    │ │
-│ │ Filters:  ⊗ chip   ⊗ chip                     clear all   │ │
+│ │ [ 🔍 search ] [ quick filter ▾ ] [ Search ]    [Advanced?]│ │
+│ │ Filters:  ⊗ chip   ⊗ chip  clear all                      │ │
 │ └───────────────────────────────────────────────────────────┘ │
 │ ┌ list card (table-frame --flush) ─────────────────────────┐ │
 │ │ summary bar:  N customers …            [ Export ]   ◄ stick│ │
@@ -51,9 +56,22 @@ docked at the scroll-root top is the list card's **summary bar** plus the
 ## Rules
 
 - **One primary action**, top-right in the page-header (`Button` variant
-  `primary`, e.g. "New customer"). The condition band's own Search button and the
-  summary bar's Export are `secondary`; bulk/row actions are `secondary`/`ghost`.
-  Icon-only actions are `ghost` / `ghost-danger` only.
+  `primary`, e.g. "New customer"). The condition band's Search button, the
+  Advanced filter trigger, and the summary bar's Export are all `secondary`;
+  bulk/row actions are `secondary`/`ghost`. Advanced is pushed to the far right
+  of the toolbar by `condition-band__spacer` — visually separated from the
+  primary filter flow, signalling it is the less-common path.
+  Icon-only actions are `ghost` / `ghost-danger` only. The Advanced trigger is
+  **optional** — omit it when all filter dimensions fit comfortably in the
+  toolbar; add it only when extra criteria need a sheet (`advanced-filter` variant).
+- **Page-header optional slots** — two slots in the header are non-required:
+  - *Count* (`page-header__count`): a live total beside the title (e.g. "1,248").
+    Omit when the collection size is not meaningful at a glance or is expensive to
+    compute. When present it mirrors the summary bar's count and should update
+    together.
+  - *Secondary action* (`page-header__actions` secondary `Button`): a page-level
+    secondary verb (e.g. "Import"). Omit when no such verb exists for this
+    collection; the primary CTA stands alone.
 - **Search is debounced; filters apply immediately** — both reflect into
   applied-filter chips so the active query is always visible and removable. The
   filter apparatus runs a **draft → applied** state machine (`useListFilters`):

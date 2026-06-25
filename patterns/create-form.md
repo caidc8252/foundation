@@ -11,17 +11,19 @@ commit. Named structure, not implementation.
 ## Anatomy — single step (modal or page)
 
 ```
-┌ header ──────────────────────────────────────────────────┐
-│ title                                              [ ✕ ]   │
+┌ header (sticky) ─────────────────────────────────────────┐
+│ title                         [ cancel ] [ create/save ]  │
 ├ body ────────────────────────────────────────────────────┤
 │ Field: label                                              │
 │        [ input ]                                          │
 │        help / error                                       │
 │ … grouped into labelled section cards when long …        │
-├ footer ──────────────────────────────────────────────────┤
-│                                  [ cancel ] [ submit ]    │
 └──────────────────────────────────────────────────────────┘
 ```
+
+The page-header sticks to the top of the viewport as the user scrolls through a long
+form. Cancel and the primary action (Create / Save changes) sit in the header's
+actions slot — there is **no separate footer row**.
 
 The multi-step wizard (≥3 steps, stage dependencies, or branching) is now its own
 pattern → [`create-wizard.md`](./create-wizard.md).

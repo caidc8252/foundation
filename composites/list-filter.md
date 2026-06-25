@@ -23,8 +23,8 @@ right edge — `condition-band__spacer`.)
 
 ```
 ┌ condition-band ──────────────────────────────────────────────┐
-│ [🔍 search        ]  [ quick filter ▾ ]          [ Advanced ▸ ]│  toolbar
-│ Filters:  ⊗ Status: Active   ⊗ Region: APAC        clear all   │  applied (or absent)
+│ [🔍 search        ]  [ quick filter ▾ ]  [ Search ]  Advanced ▸│  toolbar
+│ Filters:  ⊗ Status: Active   ⊗ Region: APAC  clear all        │  applied (or absent)
 └───────────────────────────────────────────────────────────────┘
 ```
 
@@ -40,7 +40,7 @@ right edge — `condition-band__spacer`.)
   hit-target, not a glyph in text.
 - **Search field width is bounded** (`max-inline-size: 16rem`) so the toolbar
   doesn't become one giant input; it `flex:1` up to that cap.
-- One canonical order in the toolbar: search → quick filters → (spacer) → advanced.
+- One canonical order in the toolbar: search input → quick filters → **Search button** → (spacer) → Advanced. The Search button sits with the filters it submits, not at the far end. Advanced is `secondary` and pushed right by the spacer — the spatial separation signals it is the less-common path without changing its visual weight.
 
 ## Implementations
 
@@ -49,7 +49,7 @@ right edge — `condition-band__spacer`.)
   `AdvancedFilterSheet`. Copy via the `ui.listFilter` i18n namespace; pair with the
   `useListFilters` hook. `ui` skill.
 - **Artifact** — `.condition-band` › `.condition-band__toolbar` (holding
-  `.search-input` › `.search-input__icon` + `.input`, plus `.select`/`.btn`, and
-  `.condition-band__spacer` before the advanced `.btn`) + `.applied-filters`
-  (`.applied-filters__label` + `.filter-chip`s + a `.btn--ghost.btn--xs`). In
-  `composites.css`.
+  `.search-input`, `.select` quick-filters, `btn--secondary` Search button, then
+  `.condition-band__spacer`, then the Advanced `btn--secondary`) + `.applied-filters`
+  (`.applied-filters__label` + `.filter-chip`s + a `.btn--ghost.btn--xs` clear-all
+  that **flows inline after the chips**, not pushed right). In `composites.css`.
