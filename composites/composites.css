@@ -370,15 +370,14 @@
 
 /* Selection / action column helpers */
 .data-table .col-select { width: var(--space-12); } /* 48px checkbox column */
+/* Row actions are ALWAYS visible — a table with an action column is operated in
+   place, so its verbs are never hidden behind hover. (Hover-reveal is a LIST
+   affordance for info-first, self-authored list-items, not a table behavior.) */
 .data-table .row-actions {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  opacity: 0;
-  transition: opacity var(--duration-fast) var(--ease-standard);
 }
-.data-table tbody tr:hover .row-actions,
-.data-table tbody tr:focus-within .row-actions { opacity: 1; }
 
 /* ═══════════════════════════ Pagination ═══════════════════════════ */
 /* Tables/lists use the SIMPLE nav: prev + current-page DISPLAY (.pagination__current,

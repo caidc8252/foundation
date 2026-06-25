@@ -132,10 +132,10 @@ whether or not a condition band sits above them):
   optional slots), not a home for row verbs.
 - **Inline row actions are opt-in, and always-visible when present.** Add per-row
   verbs to the list only when a specific requirement emphasizes single-row quick ops
-  (e.g. a high-throughput triage queue). Then — overriding the
-  [`data-table`](../composites/data-table.md) hover default **for this pattern** —
-  they render **always-visible** at the row end (not hover-reveal) as **`xs` text
-  buttons** (not the icon-only ghost default), composed per
+  (e.g. a high-throughput triage queue). They render **always-visible** at the row
+  end — the [`data-table`](../composites/data-table.md) default (a table action
+  column is never hover-hidden) — as **`xs` text buttons** (not the icon-only ghost
+  default), composed per
   [`actions.md`](./actions.md): ≤2 verbs → one inline button each — a `secondary`
   **Edit** + a `danger` **Delete** — ≥3 → a single `⋯` menu. Non-destructive verbs are
   `secondary`; **Delete keeps the `danger` variant** and opens a `confirm-danger`
