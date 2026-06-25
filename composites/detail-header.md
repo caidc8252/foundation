@@ -42,8 +42,9 @@ exactly this band at the top of its anatomy.
 
 ## Rules
 
-- **Exactly one primary action**, rightmost. Everything else is `secondary` /
-  `ghost`; destructive actions live behind the `⋯` overflow menu or a `danger`
+- **At most one primary action**, rightmost when present — a read-only record may
+  have none, but it never has two. Everything else is `secondary` / `ghost`;
+  destructive actions live behind the `⋯` overflow menu or a `danger`
   button — never a bare primary (mirrors `page-header` and the detail-page
   pattern).
 - **Status is shown, not edited here.** Multi-axis status renders as separate
@@ -83,8 +84,8 @@ Cross-consumer guards:
   below gets `page-body`'s gutters.
 - **Non-token measure**: the logo is 56px → `size-14` (a default utility, not
   arbitrary). Everything else is tokens.
-- ONE primary action, rightmost; destructive behind the overflow menu or a
-  `danger` button.
+- At most one primary action, rightmost; destructive behind the overflow menu or
+  a `danger` button.
 
 ## Implementations
 

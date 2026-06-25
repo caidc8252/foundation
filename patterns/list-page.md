@@ -55,8 +55,9 @@ docked at the scroll-root top is the list card's **summary bar** plus the
 
 ## Rules
 
-- **One primary action**, top-right in the page-header (`Button` variant
-  `primary`, e.g. "New customer"). The condition band's Search button, the
+- **At most one primary action**, top-right in the page-header (`Button` variant
+  `primary`, e.g. "New customer") — present when the list supports creating a
+  record, omitted for read-only / reference lists. The condition band's Search button, the
   Advanced filter trigger, and the summary bar's Export are all `secondary`;
   bulk/row actions are `secondary`/`ghost`. Advanced is pushed to the far right
   of the toolbar by `condition-band__spacer` — visually separated from the
@@ -64,7 +65,9 @@ docked at the scroll-root top is the list card's **summary bar** plus the
   Icon-only actions are `ghost` / `ghost-danger` only. The Advanced trigger is
   **optional** — omit it when all filter dimensions fit comfortably in the
   toolbar; add it only when extra criteria need a sheet (`advanced-filter` variant).
-- **Page-header optional slots** — two slots in the header are non-required:
+- **Page-header slots are business-driven** — only the title is required; every
+  other slot is included per this list's job (see the
+  [`page-header`](../composites/page-header.md) slot table). Most relevant here:
   - *Count* (`page-header__count`): a live total beside the title (e.g. "1,248").
     Omit when the collection size is not meaningful at a glance or is expensive to
     compute. When present it mirrors the summary bar's count and should update
