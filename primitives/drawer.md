@@ -17,8 +17,8 @@ The single variant axis is **direction** — which edge the panel docks to. It d
 |---|---|---|
 | `bottom` *(default)* | mobile bottom-sheet; the canonical use | docked bottom, full-width · `max-height: 80vh` · top gap `space-24` (96px) · round top `radius-xl` · top border `line-default` · shows the drag handle |
 | `top` | notification / command sheet from the top | docked top, full-width · `max-height: 80vh` · bottom gap `space-24` · round bottom `radius-xl` · bottom border `line-default` |
-| `left` | nav / filter side panel (LTR start edge) | docked left, full-height · `width: 75%` · round right `radius-xl` · right border `line-default` |
-| `right` | detail / inspector side panel (LTR end edge) | docked right, full-height · `width: 75%` · round left `radius-xl` · left border `line-default` |
+| `left` | nav / filter side panel (LTR start edge) | docked left, full-height · `width: min(560px, 90vw)` · round right `radius-xl` · right border `line-default` |
+| `right` | detail / inspector side panel (LTR end edge) | docked right, full-height · `width: min(560px, 90vw)` · round left `radius-xl` · left border `line-default` |
 
 All four share the panel surface recipe: bg `surface-2` · text `content-primary` · `text-sm` · `shadow-1`.
 
@@ -27,9 +27,9 @@ All four share the panel surface recipe: bg `surface-2` · text `content-primary
 No discrete size tokens. The docked axis is fixed and the cross axis is content-driven (`height: auto`, `flex-direction: column`):
 
 - **bottom / top** — span the full inline axis; height grows with content, capped at `80vh`, with a `space-24` (96px) breathing gap on the far edge so the scrim still shows.
-- **left / right** — span the full block axis (`inset-y-0`); width is `75%` of the viewport.
+- **left / right** — span the full block axis (`inset-y-0`); width is `min(560px, 90vw)` — capped at a readable 560px, shrinking to 90vw on narrow viewports.
 
-(`80vh` and `75%` are viewport math — conventionally exempt, no token expresses them.)
+(`80vh` / `90vw` are viewport math, and the `560px` readable cap is conventionally exempt — no token expresses them.)
 
 ## States
 

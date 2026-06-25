@@ -288,9 +288,9 @@
   font-size: var(--text-xs);
   font-weight: 500;              /* DS 2.0: semibold → medium */
   text-transform: uppercase;     /* DS 2.0: added */
+  letter-spacing: 0.06em;        /* DS 2.0: tracking-overline (em metric, no token) */
   text-align: left;
   color: var(--color-content-tertiary);
-  white-space: nowrap;
 }
 /* Sortable header: clickable cluster, chevron reveals on hover. */
 .data-table th .th-sort {
@@ -304,7 +304,19 @@
   cursor: pointer;
 }
 .data-table th .th-sort:hover { color: var(--color-content-primary); }
-.data-table th .th-sort svg { width: var(--space-3); height: var(--space-3); }
+/* 14px chevron (= @cloud/ui size-3.5) via the half-step calc convention. */
+.data-table th .th-sort svg {
+  width: calc(var(--space-4) - var(--space-1) / 2);
+  height: calc(var(--space-4) - var(--space-1) / 2);
+}
+/* Active sort = primary-tinted chevron; sortable-but-unsorted chevron hides
+   until the header is hovered, then reveals at 60% (@cloud/ui parity). */
+.data-table th .th-sort__icon--active { color: var(--color-primary-700); }
+.data-table th .th-sort__icon--idle {
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-standard);
+}
+.data-table th .th-sort:hover .th-sort__icon--idle { opacity: 0.6; }
 
 .data-table td {
   padding-inline: var(--space-4);
@@ -1558,6 +1570,8 @@
 .kv-grid__row dt {
   font-size: var(--text-xs);
   font-weight: 500;
+  text-transform: uppercase;     /* DS 2.0: overline label */
+  letter-spacing: 0.06em;        /* DS 2.0: tracking-overline (em metric, no token) */
   color: var(--color-content-tertiary);
 }
 .kv-grid__row dd {

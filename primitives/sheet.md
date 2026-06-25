@@ -16,12 +16,12 @@ The single variant axis is **side** (`data-side`) — which edge the panel docks
 
 | side | use | token recipe |
 |---|---|---|
-| `right` *(default)* | detail / inspector / form drawer (LTR end edge) | `inset-y-0 right-0` · full-height · `width: 60%` · left border `line-default` |
-| `left` | nav / filter side panel (LTR start edge) | `inset-y-0 left-0` · full-height · `width: 75%` · right border `line-default` |
+| `right` *(default)* | detail / inspector / form drawer (LTR end edge) | `inset-y-0 right-0` · full-height · `width: min(560px, 90vw)` · left border `line-default` |
+| `left` | nav / filter side panel (LTR start edge) | `inset-y-0 left-0` · full-height · `width: min(560px, 90vw)` · right border `line-default` |
 | `top` | notification / command sheet from the top | `inset-x-0 top-0` · full-width · `height: auto` · bottom border `line-default` |
 | `bottom` | bottom-sheet / mobile action surface | `inset-x-0 bottom-0` · full-width · `height: auto` · top border `line-default` |
 
-Unlike Modal/Drawer the Sheet has **square corners** (docks flush to the edge, no rounded inner corner) and **no drag handle** — dismissal is the close button, scrim click, or Escape (impl-owned). The widths (`60%` / `75%`) and `height: auto` are viewport math — conventionally exempt, no token expresses them.
+Unlike Modal/Drawer the Sheet has **square corners** (docks flush to the edge, no rounded inner corner) and **no drag handle** — dismissal is the close button, scrim click, or Escape (impl-owned). The side widths (`min(560px, 90vw)`, a readable 560px cap) and `height: auto` are viewport math — conventionally exempt, no token expresses them.
 
 ## States
 

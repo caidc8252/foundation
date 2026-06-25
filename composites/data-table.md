@@ -33,7 +33,7 @@ config-driven table — columns + rows — not hand-written cell markup.
 
 - **Framed appearance** — wrap in `.table-frame` (rounded-xl + `line-default`
   border + `surface-2` + `shadow-1`, corners clipped). Header is `surface-3`,
-  `text-xs` / weight 600 / `content-tertiary`.
+  `text-xs` / weight 500 / UPPERCASE / `tracking-overline` / `content-tertiary`.
 - **Sort** is tri-state per column: unsorted → asc → desc → unsorted. The active
   column shows a primary-tinted chevron; sortable-but-inactive reveals a dim
   chevron on hover.

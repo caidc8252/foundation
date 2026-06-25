@@ -761,6 +761,8 @@
     "tabs__trigger--active",
     "textarea",
     "th-sort",
+    "th-sort__icon--active",
+    "th-sort__icon--idle",
     "theme-toggle",
     "timeline",
     "timeline--compact",

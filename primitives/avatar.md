@@ -29,7 +29,7 @@ Single visual variant — a circular (`radius-full`) chip that clips its content
 ## States
 
 - **image present** — the `__image` slot renders `object-cover`, filling the circle; the fallback sits beneath and is covered.
-- **image missing / loading / errored** — the `__fallback` slot shows: filled `brand-mono` ground with `content-inverse` initials, `font-semibold`. (Decision of when to show the fallback is base-ui's, see Implementations.)
+- **image missing / loading / errored** — the `__fallback` slot shows: filled neutral `avatar-bg` ground with `avatar-fg` initials, `font-semibold`. (Decision of when to show the fallback is base-ui's, see Implementations.)
 - No hover / focus / disabled / invalid on the chip itself — Avatar is presentational. If it is wrapped in an interactive control (button/link), that wrapper owns those states.
 - **selectable text** — disabled (`user-select:none`); the chip is an icon, not copyable text.
 
@@ -38,7 +38,7 @@ Single visual variant — a circular (`radius-full`) chip that clips its content
 ```
 .avatar (circle, overflow:hidden, size from --size)
 ├── .avatar__image     img, object-cover, fills the circle (shown when loaded)
-└── .avatar__fallback  initials on brand-mono ground (shown otherwise)
+└── .avatar__fallback  initials on neutral avatar-bg ground (shown otherwise)
 ```
 
 `AvatarGroup` stacks several avatars with a negative inline gap so they overlap, each ringed in the page `background` (→ `surface-1`) to read as separated tokens. Used for participant / member lists.

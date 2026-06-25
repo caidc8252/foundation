@@ -921,7 +921,7 @@
   object-fit: cover;
 }
 
-/* Fallback slot — initials on the brand-mono ground (source recipe). */
+/* Fallback slot — initials on the neutral avatar ground (DS 2.0: avatar-bg/fg, not brand-mono). */
 .avatar__fallback {
   display: flex;
   align-items: center;
@@ -929,8 +929,8 @@
   width: 100%;
   height: 100%;
   border-radius: var(--radius-full);
-  background-color: var(--color-brand-mono);
-  color: var(--color-content-inverse);
+  background-color: var(--color-avatar-bg);
+  color: var(--color-avatar-fg);
   font-family: var(--font-sans);
   font-size: var(--text-xs);          /* sm/md fallback type */
   font-weight: 600;
@@ -2104,8 +2104,8 @@
    edge slide, drag-to-dismiss + snap points, focus trap, scroll lock, and
    portalling are vaul (React) behaviors — out of scope for this static skin.
    The reference layer paints the resting OPEN drawer (scrim + panel + slots);
-   the consumer drives visibility. The 80vh height cap and 75% side width are
-   viewport math (vh/percent), conventionally exempt. The scrim is a literal
+   the consumer drives visibility. The 80vh height cap and the min(560px, 90vw)
+   side width (readable 560px cap) are viewport math, conventionally exempt. The scrim is a literal
    black/10 in the source, not the surface-overlay token Modal uses — kept
    theme-aware via color-mix here (see drawer.md notes: token-change wish). */
 
@@ -2155,7 +2155,7 @@
 .drawer--left {
   inset-block: 0;
   left: 0;
-  width: 75%;                           /* source w-3/4 */
+  width: min(560px, 90vw);              /* DS 2.0: readable side cap (≤560px, else 90vw) */
   border-top-right-radius: var(--radius-xl);
   border-bottom-right-radius: var(--radius-xl);
   border-right-width: 1px;
@@ -2163,7 +2163,7 @@
 .drawer--right {
   inset-block: 0;
   right: 0;
-  width: 75%;                           /* source w-3/4 */
+  width: min(560px, 90vw);              /* DS 2.0: readable side cap (≤560px, else 90vw) */
   border-top-left-radius: var(--radius-xl);
   border-bottom-left-radius: var(--radius-xl);
   border-left-width: 1px;
@@ -3373,14 +3373,14 @@
   inset-block: 0;
   right: 0;
   height: 100%;
-  width: 60%;   /* source w-[60%] — viewport math */
+  width: min(560px, 90vw);   /* DS 2.0: readable side cap (≤560px, else 90vw) */
   border-left: 1px solid var(--color-line-default);
 }
 .sheet--left {
   inset-block: 0;
   left: 0;
   height: 100%;
-  width: 75%;   /* source w-3/4 — viewport math */
+  width: min(560px, 90vw);   /* DS 2.0: readable side cap (≤560px, else 90vw) */
   border-right: 1px solid var(--color-line-default);
 }
 .sheet--top {
