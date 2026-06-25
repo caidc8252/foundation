@@ -32,7 +32,7 @@ row into. Named structure, not implementation.
   `overview` variant) and the band is just identity + meta + actions. **When
   present**, the tab strip docks flush on the band's bottom edge **below** the
   name + meta — never as a separate block in `page-body`; `Overview` is the first
-  tab and tab *content* renders in `page-body`. (Mirrors `detail-page.tsx`.)
+  tab and tab *content* renders in `page-body`.
 - **A back button is OPTIONAL** — an icon-only ghost button (`‹`), first in the
   bar when present, returning to the list the record was reached from. Include it
   when the record was reached from a list; otherwise the app shell carries
@@ -53,8 +53,7 @@ structure + ordering above; it does **not** guarantee every slot is present. The
 **required core** is just two slots — the identity in the head, and a body. The
 populated [`detail-page.html`](./detail-page.html) shows one fully-dressed instance;
 copying it does **not** mean keeping every slot. Include each optional slot only
-when this record's job calls for it. (Mirrors the `required` field in `@cloud/ui`'s
-`docs/registry/blueprints.ts`, the source of truth.)
+when this record's job calls for it.
 
 | slot | required? | include when |
 |---|---|---|

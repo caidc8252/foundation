@@ -98,9 +98,8 @@ present. Each pattern declares a **minimal required core**: the few slots withou
 which the screen stops being that screen. Every other slot is **optional**,
 included only when this page's job calls for it.
 
-- The required core per page is authoritative in the blueprint registry's
-  `required` field (`@cloud/ui`'s `docs/registry/blueprints.ts`); a foundation
-  pattern's "required core / optional slots" demarcation must match it. Today:
+- Each pattern's contract declares its required core in a "required core /
+  optional slots" table; that table is the authoritative split. Today:
   - **list** — required: `page-header` + results card (count bar · table ·
     pagination); optional: status banner, segment tabs, condition band
     (search/filter), metric strip, row peek-drawer.

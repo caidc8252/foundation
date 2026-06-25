@@ -4,8 +4,8 @@ The default archetype for "a collection you browse, filter, and act on" (the mos
 common portal screen). A pattern is a *named structure*, not an implementation —
 both consumers build it from composites; this file fixes the anatomy, the
 ordering, and the load-bearing decisions so a prototype and the production page
-read as the same screen. Reference implementation: `@cloud/ui`'s
-`docs/examples/list-page.tsx` (the style template).
+read as the same screen. Reference implementation: the `@cloud/ui` list-page
+example (the style template — see the `ui` skill).
 
 > 📐 **Copyable examples**
 > - [`list-page.html`](./list-page.html) — the `simple` variant: full anatomy assembled
@@ -51,9 +51,8 @@ them. See "Required core / optional slots" below for the exact split.
 A list page is a **framework**, not a filled-in screen (governance principle
 [#9 — *Patterns are frameworks*](../governance/principles.md#9-patterns-are-frameworks--a-minimal-required-core-everything-else-optional)):
 it guarantees the structure and ordering above, never that every band is
-present. The split below is authoritative against the blueprint registry's
-`required` field (`@cloud/ui`'s `docs/registry/blueprints.ts`) — mirror it, don't
-re-derive it. Only the **header** and the **results card** are the minimal
+present. The split below is authoritative — this contract declares it; treat it
+as the source of truth, don't re-derive it elsewhere. Only the **header** and the **results card** are the minimal
 required core; everything else is included only when this list's job calls for
 it. A list with no filtering, no banner, no tabs, and no KPIs — just a header and
 a table — is still a complete, correct list page.

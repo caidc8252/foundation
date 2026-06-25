@@ -64,5 +64,5 @@ Two slots: the pill **track** (root) and the circular **thumb**. The thumb is `p
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Switch } from "@cloud/ui"`. base-ui `Switch` (Root + Thumb) under the hood; prop `size` (`"sm" | "default"`). Toggle behavior (checked state, keyboard, `aria-checked`) is owned by the React/base-ui implementation; the contract and reference CSS express the static skin only. API details: the `ui` skill. For a labeled field use `ToggleSwitch` (`toggles.tsx`).
+- **Next / @cloud/ui** — `import { Switch } from "@cloud/ui"`. base-ui `Switch` (Root + Thumb) under the hood; prop `size` (`"sm" | "default"`). Toggle behavior (checked state, keyboard, `aria-checked`) is owned by the React/base-ui implementation; the contract and reference CSS express the static skin only. API details: the `ui` skill. For a labeled field use `ToggleSwitch`.
 - **Artifact (self-contained HTML)** — use `.switch` (+ `.switch--sm`) on the track with a `.switch__thumb` child, toggled via a `[data-checked]` / `[aria-checked="true"]` attribute, on top of the inlined `dist/tokens.inline.css`. Same fill recipe (`line-strong` ↔ `primary-700` + `shadow-cta`) and travel. There is no native HTML switch element, so the artifact drives state via the attribute rather than `:checked`.

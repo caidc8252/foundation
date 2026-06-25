@@ -87,7 +87,7 @@ states: see `calendar.md`.
 
 - **Missing i18n keys.** The source reads `ui.datePicker.placeholder.dateTimeRange`,
   `ui.datePicker.rangeStart`, and `ui.datePicker.rangeEnd`, but those keys are absent
-  from `packages/ui/messages/{en,zh-CN,ja}.json` (only `date`/`range`/`dateTime`
+  from the message catalog (only `date`/`range`/`dateTime`
   placeholders + `clear`/`ok` exist). Until the messages are backfilled the
   placeholder and the Start/End labels fall back to the raw key string. Flagged for
   the message catalog, not a CSS/contract concern.

@@ -70,7 +70,7 @@ implies `step=1`); these are browser behaviors, not skin.
 ## Notes
 
 - **Missing i18n key.** The source reads `ui.datePicker.placeholder.time`, but that
-  key is absent from `packages/ui/messages/{en,zh-CN,ja}.json` (only `date`/`range`/
+  key is absent from the message catalog (only `date`/`range`/
   `dateTime` placeholders exist). Until backfilled the placeholder falls back to the
   raw key string. Flagged for the message catalog, not a CSS/contract concern.
 - **No new block.** Because this primitive is an `Input` with affix slots, the

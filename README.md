@@ -104,7 +104,7 @@ column that deviates once shipped. The **port boundary is `.app-frame__main`'s
 contents**; the frame is discarded (the app already has `Layout`). The frame's
 `248 / 56 / 56` mirror `Layout`'s hardcoded consts — promoting those to shared
 foundation layout tokens that `Layout` consumes is the open single-source
-follow-up (it touches `packages/ui`, so it needs a deliberate go-ahead).
+follow-up (it reaches into the consumer's component package, so it needs a deliberate go-ahead).
 
 Artifacts are frozen snapshots by nature (CSP, no external fetch). "Syncing" an
 artifact = re-inlining the current `dist/` — there is no live link, and that's
