@@ -22,6 +22,13 @@ space. Also covers no-results-for-filters and (with a different icon/verb) error
 - **The empty state invites the page's primary action** — same verb as the page
   header's primary button ("Register terminal"). A dead end with no next step is
   the failure mode this prevents.
+- **The empty-state CTA is the only on-screen copy of that verb in its container,
+  and the copy it echoes is the distant page header.** The duplicate reads fine on a
+  list page only because the two sit far apart — page top vs. table body. If the
+  empty state lives inside a card/section whose *own* header already carries that
+  action (a section-card header, a wizard step card), do **not** render both: keep
+  the action in the header **or** in the empty state, never both. The same verb in
+  two buttons inches apart is the failure mode here.
 - **Distinguish the two empties.** *Nothing-yet* (cold start) → invite creation.
   *No-results-for-filters* → offer "clear filters", not "create". Don't show a
   create CTA when the user just over-filtered.

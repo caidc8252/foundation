@@ -209,7 +209,12 @@ list below restates the optional slots with the extra detail each needs.
 **Actions** — the list surfaces verbs from the shared vocabulary in
 [`actions.md`](./actions.md). A **secondary** action (e.g. Export) lives in exactly
 **one** place — the summary bar (acting on the current filtered result) **or** the
-page header, never both; the header keeps its single primary CTA. A **batch**
+page header, never both; the header keeps its single primary CTA. The **primary**
+verb may legitimately render twice — once in the page header, once in the
+*nothing-yet* empty state — but **only** because those two sit far apart (page top
+vs. table body). Never duplicate it across a *co-located* pair: a section/card
+header and that same section's empty state must not both carry the verb — pick one
+(see [`empty-state.md`](../composites/empty-state.md)). A **batch**
 action set appears on selection: selecting rows replaces the summary bar's idle
 actions with a bulk-action set (selection count + bulk verbs), and destructive
 verbs route through a confirm.
