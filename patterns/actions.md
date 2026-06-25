@@ -50,7 +50,8 @@ where it lands, and whether it confirms — those are not per-screen choices.
   land on the **detail head** ([`detail-page`](./detail-page.md)), and multi-row ops on
   the list **summary bar** (`batch-action`). Put verbs on a **list row** only when a
   requirement emphasizes single-row quick ops; when present they are
-  **always-visible** (the `list-page` override), not hover-reveal.
+  **always-visible `xs` buttons** (the `list-page` override) — `secondary` for the
+  action, `danger` for a Delete that opens a `confirm-danger` dialog — not hover-reveal icons.
 - **Every icon-only control needs a name.** An `aria-label` (and/or a tooltip) on every
   icon-only button — the single exception being a **passive trailing row chevron**, which
   is decorative (the row itself is the click target) and is `aria-hidden`.

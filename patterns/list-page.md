@@ -130,10 +130,13 @@ whether or not a condition band sits above them):
   verbs to the list only when a specific requirement emphasizes single-row quick ops
   (e.g. a high-throughput triage queue). Then — overriding the
   [`data-table`](../composites/data-table.md) hover default **for this pattern** —
-  they render **always-visible** at the row end (not hover-reveal), composed per
-  [`actions.md`](./actions.md): ≤2 frequent verbs → inline icons, ≥3 → a single `⋯`
-  menu; Delete is a `ghost-danger` icon → a `confirm-danger` dialog; every action
-  `stopPropagation`s so it never triggers the row's navigate-to-detail.
+  they render **always-visible** at the row end (not hover-reveal) as **`xs` text
+  buttons** (not the icon-only ghost default), composed per
+  [`actions.md`](./actions.md): ≤2 verbs → one inline button each — a `secondary`
+  **Edit** + a `danger` **Delete** — ≥3 → a single `⋯` menu. Non-destructive verbs are
+  `secondary`; **Delete keeps the `danger` variant** and opens a `confirm-danger`
+  dialog. All row buttons are size `xs`; every action `stopPropagation`s so it never
+  triggers the row's navigate-to-detail.
 - **Three text-column shapes**, and nothing else (keeps columns scannable):
   1. **Two-line** — primary `text-sm`/medium/`content-primary` over a subline
      `text-2xs`/`content-tertiary`; may lead with an avatar / initial tile
