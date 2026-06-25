@@ -65,6 +65,20 @@ summary rail and the done state are **optional**, included per business need.
 - **The summary rail is all-or-nothing across steps** — show it on every step or
   none; it never blinks in and out. It's a `dl` of entered values; an unfilled value
   renders an **em-dash** (`—`), never a blank or a guess.
+- **A step that collects a list of sub-entities (line items — contracts, members,
+  addresses, …) has exactly ONE "Add" affordance at a time.** Shape of such a step:
+  an `empty-state` → the collected items as an **editable / removable list or
+  `data-table`** (each item carries its own Edit / Delete) → one way to add the
+  next. Pick the add carrier by **field count** (reuse the create-form rule in
+  [`detail-page.md`](./detail-page.md) → "Editing is launched…"): a small sub-entity
+  (≤ ~8 fields, no branching) → an **inline add-form**; many fields / conditional
+  sub-config → a `Modal` (or its own sub-step). **Never two "Add" buttons:** an
+  inline add-form commits with a single primary **Add** that appends to the list —
+  there is no separate "open" button; a deferred form is opened by **Add &lt;item&gt;**
+  and commits *inside* with **Add / Save** — the opener is not also shown. Conditional
+  fields (e.g. billing that appears only for one type) live **inside** the add-form,
+  revealed by the type control. Adding an item is **not** "Continue" — the wizard's
+  own Back/Continue still governs step navigation.
 - **Footer**: right-aligned **ghost Back + primary Continue**. The primary advances
   ("Continue"); on the **last step** it becomes the contextual verb
   ("Create customer") and commits. One primary only.

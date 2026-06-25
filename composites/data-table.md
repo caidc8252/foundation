@@ -37,16 +37,25 @@ config-driven table — columns + rows — not hand-written cell markup.
 - **Sort** is tri-state per column: unsorted → asc → desc → unsorted. The active
   column shows a primary-tinted chevron; sortable-but-inactive reveals a dim
   chevron on hover.
-- **Selection** uses a leading checkbox column; the selected row gets
-  `state-selected` background + a 2px primary left bar (`shadow-row-selected`),
+- **Selection is opt-in** — add the leading `col-select` checkbox column **only
+  when the table supports multi-row (bulk) operations**; a table with no bulk ops
+  has **no checkbox column** (never a default). When present, the selected row
+  gets `state-selected` background + a 2px primary left bar (`shadow-row-selected`),
   and drives a bulk-action bar (in the summary bar / page header).
 - **Row actions** sit at the row end and are **always visible** — a table with an
   action column is operated in place, so its verbs are never hidden behind hover.
-  Icon-only → `ghost` / `ghost-danger` only. **Hover-reveal is not a table
-  behavior**: it belongs to an info-first **list** (a self-authored `list-item`
-  whose actions stay out of the way until hover), not a `data-table` action column.
-  (A list whose rows are primarily a **navigation** target carries no action column
-  at all — just a trailing chevron; the row click navigates — see `list-page`.)
+  **Hover-reveal is not a table behavior**: it belongs to an info-first **list** (a
+  self-authored `list-item` whose actions stay out of the way until hover), not a
+  `data-table` action column. (A list whose rows are primarily a **navigation**
+  target carries no action column at all — just a trailing chevron; the row click
+  navigates — see `list-page`.)
+- **Row-action variant: a text verb is `secondary`, never bare `ghost`.** An
+  always-visible row action must read as a button at rest, so a **text** row verb is
+  a `secondary` `xs` button — a **destructive** one (delete / terminate / revoke) is
+  `danger` and confirms. Reserve `ghost` / `ghost-danger` for **icon-only** row
+  actions. A `ghost` *text* verb reads as a link, not a control — don't use it for
+  row actions. Past ~2 verbs, collapse to a single `⋯` menu (one carrier per row).
+  (Mirrors [`actions.md`](../patterns/actions.md) and the `list-page` row recipe.)
 - **Numeric / id columns** render mono + tabular (`.cell-num`) and usually
   right-align so digits line up.
 - **Sticky header** docks the column header to the scroll root; pair with a

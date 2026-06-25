@@ -78,12 +78,28 @@ when this record's job calls for it.
   they dock in the **`detail-header` band** (below the name), not in `page-body`.
 - **Overview is a key-value grid** via `grid-auto-fit-kv` (no hand-written
   `repeat(auto-fit,…)`); labels `text-content-tertiary`, values `content-primary`.
+- **A section that lists a collection is a `section-card` wrapping a `data-table`** —
+  the one consistent block for every record-list section / tab (contracts, operators,
+  members, devices, …). The shape is fixed:
+  `section-card` › `card__header` ( **title** · optional **count** · **at most one**
+  action — the section's add / primary verb ) › `card__content` › `data-table`
+  (row actions **always-visible** per [`data-table`](../composites/data-table.md);
+  an `empty-state` in place of rows when the collection is empty). The count +
+  action live in the **section-card header**, *not* a `summary-bar` — the
+  [`summary-bar`](../composites/summary-bar.md) belongs to the list page, not a
+  detail section. Multiple such sections in one tab **stack vertically** (e.g.
+  Operators = an accounts `section-card` + a pending-invitations `section-card`).
+  Don't hand-roll a different card/table shape per tab — every collection section
+  reads the same.
 - **At most one primary action**, rightmost (mirrors `detail-header` /
   `page-header`) — a read-only record may have none, never two; everything else is
   `secondary` / `ghost`.
 - **Destructive actions** live behind the `⋯` overflow menu or a `danger` button,
-  never as a bare primary. The `⋯` overflow is shown **only when** there are
-  destructive or surplus secondary verbs to collapse into it — **never render an
+  never as a bare primary. In the `⋯` overflow the rows are **`dropdown-menu`
+  items** (`.dropdown-menu__item`; Delete = the `--destructive` variant) — **never
+  `.btn` buttons inside the menu** (a `danger` *button* is the alternative carrier,
+  not a button placed in the menu). The `⋯` overflow is shown **only when** there
+  are destructive or surplus secondary verbs to collapse into it — **never render an
   empty `⋯`**; a header with just Edit + a primary has none.
 - **The detail page is where a record mutates.** Edit, Delete, and status changes for
   a record reached from a list live in the `detail-header` actions here — not on the

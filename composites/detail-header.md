@@ -19,9 +19,8 @@ exactly this band at the top of its anatomy.
 
 ```
 ┌ detail-header (full-bleed surface-2 band, hairline bottom edge) ────────────┐
-│ [‹] 〔logo〕 Name  〔status〕〔status〕       [ secondary? ] [ ⋯? ] [ primary? ] │
+│ [‹] 〔logo〕 Name 〔status〕 〔chip〕 〔chip〕   [ secondary? ] [ ⋯? ] [ primary? ] │
 │              id · mono · 〔copy〕 · created 3d ago · 12 members               │
-│              〔chip〕 〔chip〕                                                  │
 │ ┌ tabs (line variant, on the band's bottom edge) ─────────────────────────┐ │
 │ │ Overview   Activity   Members   Settings                                │ │
 │ └─────────────────────────────────────────────────────────────────────────┘ │
@@ -32,9 +31,11 @@ exactly this band at the top of its anatomy.
   first in the bar. Returns to the list it was reached from.
 - **Logo / avatar** — optional 56px square (entity logo) or an `Avatar` /
   `InitialsTile` primitive. Omit for records with no visual identity.
-- **Main** — the `title` (one `h1`) with optional inline **status badges**
-  (`Badge`), a one-line **meta row** (mono ids, a `copy` affordance, dot-joined
-  facts), and an optional **chip row** beneath.
+- **Main** — at most **two lines**: (1) the `title` (one `h1` `name`) with optional
+  inline **status badges** and **category chips** (`Badge`s) on the *same* line —
+  the name ellipsizes so trailing badges / chips survive; (2) a one-line **meta row**
+  (mono ids, a `copy` affordance, dot-joined facts). **Never a third stacked line** —
+  chips share the title line, they do not get their own row.
 - **Actions** — the action cluster, **business-driven** (same rule as
   `page-header`): include only the verbs this record needs. The `⋯` overflow is
   present **only when** there are destructive / surplus secondary verbs to collapse
@@ -45,13 +46,21 @@ exactly this band at the top of its anatomy.
 
 ## Rules
 
+- **Identity is at most two lines.** Line 1 = `name` + **status badges** + **category
+  chips**, all inline (the name ellipsizes first so trailing badges / chips survive);
+  line 2 = the **meta row**. Chips never take a third stacked line — they ride the
+  title line with the status badges. Keep the band compact: don't add a row.
 - **At most one primary action**, rightmost when present — a read-only record may
   have none, but it never has two. Everything else is `secondary` / `ghost`;
-  destructive actions live behind the `⋯` overflow menu or a `danger`
+  destructive actions live behind the `⋯` overflow menu **or** a `danger`
   button — never a bare primary (mirrors `page-header` and the detail-page
-  pattern). The `⋯` overflow appears **only when** there are destructive or surplus
-  secondary verbs to collapse into it; a header with just (say) Edit + a primary
-  shows **no** `⋯` — don't render an empty overflow.
+  pattern). When it's the `⋯` overflow, the menu is a `dropdown-menu` and its rows
+  are **`.dropdown-menu__item`** (Delete = the `--destructive` variant — `error`
+  text, not a fill) — **never `.btn` buttons inside the menu**; the `danger` *button*
+  is the alternative carrier, used **instead of** a menu, not within it. The `⋯`
+  overflow appears **only when** there are destructive or surplus secondary verbs to
+  collapse into it; a header with just (say) Edit + a primary shows **no** `⋯` —
+  don't render an empty overflow.
 - **Status is shown, not edited here.** Multi-axis status renders as separate
   badges; a status *change* is an explicit, confirmed action, not a toggle on the
   chip.

@@ -44,6 +44,11 @@ where it lands, and whether it confirms — those are not per-screen choices.
 - **One carrier per row.** A row exposes its verbs as inline **icons** *or* a single
   **kebab** (`⋯`) menu — never both. Pick icons when there are ≤2 frequent verbs;
   collapse to a kebab past that.
+- **A menu row is a menu item, not a button.** Inside a `⋯` / `dropdown-menu`, verbs
+  are `.dropdown-menu__item` rows (destructive → the `--destructive` variant,
+  `error` text) — **never `.btn`** (`secondary` / `danger` / `ghost`) buttons. The
+  `danger`/`ghost-danger` **button** in `confirm-danger` is the *standalone* trigger
+  (used instead of a menu), not something you place inside a menu.
 - **List rows navigate; mutations default to the detail page.** A list row's job is
   to open the record (click → its detail page) — *the list navigates, the detail page
   mutates.* By default a list row carries **no** edit / delete / `transition`; those
@@ -55,6 +60,12 @@ where it lands, and whether it confirms — those are not per-screen choices.
 - **Every icon-only control needs a name.** An `aria-label` (and/or a tooltip) on every
   icon-only button — the single exception being a **passive trailing row chevron**, which
   is decorative (the row itself is the click target) and is `aria-hidden`.
+- **Add-to-list shows one "Add" at a time.** When a flow collects a list of
+  sub-entities (line items), an inline add-form commits with a single primary **Add**
+  that appends; a deferred add-form is opened by **Add &lt;item&gt;** and commits *inside*
+  with **Add / Save** — never an "open" button and a "commit" button that both read
+  **Add**. The collected items render as an editable/removable list. See
+  [`create-wizard.md`](./create-wizard.md).
 
 ## Confirmation tiers
 

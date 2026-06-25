@@ -1510,12 +1510,13 @@
   margin-inline-end: var(--space-3);
   color: var(--color-content-tertiary);
 }
+/* Category chips ride the title line (inline group), not a stacked third row —
+   the identity is capped at two lines (title+badges+chips, then meta). Place
+   .detail-header__chips INSIDE .detail-header__title, after the status badges. */
 .detail-header__chips {
-  display: flex;
-  flex-wrap: wrap;
+  display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  margin-top: var(--spacing-cx-sm);
 }
 .detail-header__actions {
   display: flex;
@@ -1527,7 +1528,9 @@
 /* tab strip docked on the band's bottom edge: wraps a .tabs__list--line, flush
    to the band's own hairline (no second border). */
 .detail-header__tabs {
-  margin-top: var(--space-3);
+  /* No top margin: the bar already pads its bottom (`padding-block … space-3`),
+     so a margin here doubled the gap. The bar's bottom padding is the only
+     separation — the tab strip docks tight to the band's bottom edge. */
   padding-inline: var(--space-6);
 }
 

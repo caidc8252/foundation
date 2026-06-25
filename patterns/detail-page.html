@@ -113,7 +113,9 @@
               <!-- OPTIONAL — status badge(s). Multi-axis status = separate chips,
                    SHOWN not editable here. Delete if the record has no status to surface. -->
               <span class="badge badge--success"><span class="badge__dot"></span>Active</span>
-              <span class="badge badge--info">Enterprise</span>
+              <!-- category chip (plan tier) rides the SAME title line — neutral, no dot
+                   (tonal badges are reserved for status; category/type = neutral). -->
+              <span class="badge badge--neutral">Enterprise</span>
             </div>
             <!-- OPTIONAL — meta row: dot-joined facts (the · separators are inserted by
                  the composite). ids are mono. Delete the whole .detail-header__meta if

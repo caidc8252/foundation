@@ -72,6 +72,13 @@ content (popup surface)
 
 ## Notes
 
+- **A menu row is a `.dropdown-menu__item`, never a `.btn`.** Rows use the item
+  recipe above — `default`, or the `destructive` variant
+  (`.dropdown-menu__item--destructive`, `error-strong` text) for Delete / Revoke.
+  Do **not** drop a `secondary` / `danger` / `ghost` **button** inside a menu: that
+  is the "re-skin via className" this contract forbids, and it renders a stray
+  control where a quiet menu row belongs. (A standalone `danger` **button** is the
+  *alternative* carrier — used **instead of** a menu, not within one.)
 - **min-width is hardcoded** in the source: content `min-w-[240px]`, sub-content `min-w-[160px]`. No sizing token expresses these popup widths. The reference CSS keeps them as raw px and flags a token-change wish here (a `--popup-width-*` / menu-min-width token would close the gap — same wish noted in hover-card.md).
 - The source's `bg-border` (separator) and `text-muted-foreground` (shortcut) are shadcn aliases; they resolve to `line-default` and `content-tertiary` in this token system.
 - Action `item` uses `text-xs` (12px) while `checkbox-item` / `radio-item` use `text-sm` (13px) — kept faithfully; do not normalize them.

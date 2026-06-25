@@ -67,6 +67,7 @@ a table — is still a complete, correct list page.
 | condition band (search + quick filters + applied chips) | no | this list needs filtering — **omit it entirely for a list with no filters** |
 | Advanced filter trigger + drawer (the `advanced-filter` variant) | no | filter dimensions outgrow the inline toolbar and need a sheet |
 | row → peek-drawer (row click opens a side quick-detail) | no | a quick look at a row is useful without leaving the list |
+| selection (leading `col-select` checkbox column + bulk-action set) | no | the list supports **multi-row / bulk operations** — **omit the checkbox column entirely** for a list with no bulk ops |
 | summary-bar `Export` (a secondary action) | no | the current filtered result is worth exporting |
 
 ## Sticky model (the load-bearing decision)
@@ -93,7 +94,7 @@ whether or not a condition band sits above them):
   list supports creating a record, omitted for read-only / reference lists. The
   condition band's Search button (when a condition band is present), the
   Advanced filter trigger, and the summary bar's Export are all `secondary`;
-  bulk/row actions are `secondary`/`ghost`. Advanced is pushed to the far right
+  bulk/row actions are `secondary` (destructive `danger`). Advanced is pushed to the far right
   of the toolbar by `condition-band__spacer` — visually separated from the
   primary filter flow, signalling it is the less-common path.
   Icon-only actions are `ghost` / `ghost-danger` only. The Advanced trigger is
@@ -148,14 +149,21 @@ whether or not a condition band sits above them):
   2. **Numeric / id / date** — always mono + `tabular-nums`, `content-secondary`
      (the data-table `cell-num`); usually right-aligned so digits line up.
   3. **Plain** — table default size, `content-secondary`, **no** mono.
-  Status renders a `Badge` (tonal, with `dot`); empty values render an em-dash
-  (`—`, `content-tertiary`), never a blank cell.
+  **Badges encode meaning by kind:** a **status** value renders a *tonal* `Badge`
+  (`success` / `warning` / `error` / `info`, with a `dot`); a **category / type /
+  tag** value (e.g. plan, contract type, labels — single or multiple) renders a
+  **`neutral`** `Badge` (no `dot`), so a category column never reads as a status.
+  Tonal / colored badges are **reserved for status**. Empty values render an
+  em-dash (`—`, `content-tertiary`), never a blank cell.
 - **Empty, loading, error** are first-class states. *Nothing-yet* invites the
   page's primary verb; *no-results-for-filters* offers "clear filters", not
   "create". A `skeleton` table fills the frame while loading.
-- **Selection** (when present) uses a leading checkbox column; the selected row
-  gets `state-selected` + a 2px primary left bar (`shadow-row-selected`) and
-  drives a bulk-action set that replaces the summary bar's idle actions.
+- **Selection is opt-in / business-driven** — add the leading `col-select`
+  checkbox column **only when the list supports multi-row (bulk) operations**; a
+  list with no bulk ops carries **no checkbox column** (never add one by default).
+  When present, the selected row gets `state-selected` + a 2px primary left bar
+  (`shadow-row-selected`) and drives a bulk-action set that replaces the summary
+  bar's idle actions.
 - Width is the shell's (`--container-content`); the **table** scrolls inside its
   own `table-scroll` region — the page never scrolls horizontally.
 

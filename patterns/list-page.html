@@ -179,7 +179,6 @@
             <table class="data-table list-table">
               <thead>
                 <tr>
-                  <th class="col-select"><input class="checkbox" type="checkbox" aria-label="Select all"></th>
                   <th>Customer</th>
                   <th>Status</th>
                   <th>
@@ -195,15 +194,17 @@
               <tbody>
                 <!-- ROW MODEL — the list navigates, the detail page mutates:
                      each row's whole surface is the click target → the record's detail
-                     PAGE; the resting row carries ONLY the leading select checkbox (for
-                     bulk) + a passive trailing chevron. NO inline edit/delete here — a
-                     record's single-row verbs live on the detail page; multi-row ops go
-                     through the summary-bar batch-action. Add always-visible row actions
-                     here only if a later requirement emphasizes single-row quick ops —
-                     xs buttons: a secondary Edit + a danger Delete (>=3 verbs -> a kebab menu). -->
-                <!-- selected row: tinted bg + 2px primary left bar (via aria-selected) -->
-                <tr class="is-clickable" aria-selected="true">
-                  <td class="col-select"><input class="checkbox" type="checkbox" checked aria-label="Select Acme Robotics"></td>
+                     PAGE; the resting row carries ONLY a passive trailing chevron. NO inline
+                     edit/delete here — a record's single-row verbs live on the detail page.
+                     SELECTION is OPT-IN (business-driven): only when the list supports bulk
+                     operations, add a leading `col-select` checkbox column (select-all th + a
+                     per-row checkbox); the selected row then gets aria-selected (tinted bg +
+                     2px primary bar) and drives the summary-bar batch-action set. This
+                     customer list has no bulk ops, so it carries NO checkbox column.
+                     Add always-visible row actions only if a later requirement emphasizes
+                     single-row quick ops — xs buttons: a secondary Edit + a danger Delete
+                     (>=3 verbs -> a kebab menu). -->
+                <tr class="is-clickable">
                   <td>
                     <div class="cell-lead">
                       <span class="cell-lead__tile">AR</span>
@@ -220,7 +221,6 @@
                   <td class="cell-right cell-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
                 </tr>
                 <tr class="is-clickable">
-                  <td class="col-select"><input class="checkbox" type="checkbox" aria-label="Select Brightleaf Retail"></td>
                   <td>
                     <div class="cell-lead">
                       <span class="cell-lead__tile">BR</span>
@@ -237,7 +237,6 @@
                   <td class="cell-right cell-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
                 </tr>
                 <tr class="is-clickable">
-                  <td class="col-select"><input class="checkbox" type="checkbox" aria-label="Select Northwind Commerce"></td>
                   <td>
                     <div class="cell-lead">
                       <span class="cell-lead__tile">NC</span>
@@ -254,7 +253,6 @@
                   <td class="cell-right cell-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
                 </tr>
                 <tr class="is-clickable">
-                  <td class="col-select"><input class="checkbox" type="checkbox" aria-label="Select Helios Payments"></td>
                   <td>
                     <div class="cell-lead">
                       <span class="cell-lead__tile">HP</span>
@@ -272,7 +270,6 @@
                   <td class="cell-right cell-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
                 </tr>
                 <tr class="is-clickable">
-                  <td class="col-select"><input class="checkbox" type="checkbox" aria-label="Select Vertex Logistics"></td>
                   <td>
                     <div class="cell-lead">
                       <span class="cell-lead__tile">VL</span>

@@ -29,7 +29,11 @@ detail and settings screens, the same way `stepper` is named for its
   optional right-aligned `CardAction`. When collapsible, the whole header is the
   toggle and carries a trailing chevron.
 - **Content** — `CardContent`; holds whatever the section is (a `kv-grid`, a
-  `data-table` via the header's `flush` slot, a form, a `feed-list`…).
+  `data-table` via the header's `flush` slot, a form, a `feed-list`…). On a
+  **detail page**, a section that lists a collection is the canonical
+  `section-card` + `data-table` block — header = title · count · at-most-one action,
+  content = the table — repeated identically per tab. See
+  [`detail-page.md`](../patterns/detail-page.md).
 
 ## Rules
 
