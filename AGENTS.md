@@ -52,6 +52,20 @@ design vocabulary. The examples in `patterns/*.html` show the line.
 
 ## How to assemble the page
 
+Preferred path: start from a pattern example and let the builder make the
+self-contained artifact:
+
+```bash
+node scripts/build-artifact.mjs --list
+node scripts/build-artifact.mjs --pattern list-page --out artifacts/customers.html --title "Customers"
+```
+
+The builder copies the page inside `.app-frame__main`, wraps it in the required
+frameless `max-width: 1672px` shell, inlines the three CSS layers in the correct
+order, adds the frameless `[hidden]` guard, and runs
+`check-artifact.mjs --strict` against the output. Use this before hand-editing;
+then re-run the strict check after edits.
+
 Inline the three CSS layers into one `<style>`, **in this order** (composites
 reuse `.btn`/`.input`, so primitives must come first):
 
@@ -106,10 +120,29 @@ vocabulary — they stay inside the closed set.
 1. **[`dist/catalog.md`](dist/catalog.md)** — one row per primitive/composite/
    pattern: what it's for, its classes, and links to its **contract** (`.md`) and,
    for patterns, a copyable **example** (`.html`). Start here.
-2. **The contract** (`primitives/<x>.md` · `composites/<x>.md` · `patterns/<x>.md`)
+2. **[`patterns/router.json`](patterns/router.json)** — the machine-readable
+   intent router for AI generation. Use it to map a natural-language request to a
+   catalog pattern and a `build-artifact` example (`builderPattern`). Example:
+   "注册界面" / "sign up" routes to `create-form`; "客户管理" / "management table"
+   routes to `list-page`.
+3. **[`composites/schema.json`](composites/schema.json)** — the machine-readable
+   composite plan surface for AI generation. Use it after choosing a pattern to
+   decide which composites to configure, which slots are required, which slots
+   are optional, and which class names are legal for that composite. The schema
+   does not replace contracts; it keeps AI planning aligned with them.
+4. **The contract** (`primitives/<x>.md` · `composites/<x>.md` · `patterns/<x>.md`)
    — anatomy, rules, states, and the exact "Artifact" class recipe. The contract
    wins over any implementation.
-3. **The example** (`patterns/<x>.html`) — copy it and edit the markup.
+5. **The example** (`patterns/<x>.html`) — copy it and edit the markup.
+
+AI generation flow:
+
+1. Interpret the user's request with `patterns/router.json` and choose one route.
+2. Run `build-artifact.mjs` with the route's `builderPattern`.
+3. Read the route's pattern contract/example for ordering and required core.
+4. Read `composites/schema.json` for the composites used by that route.
+5. Configure each composite through its required/optional slots.
+6. Edit the generated artifact, then run `check-artifact.mjs --strict`.
 
 ## Check your work
 
@@ -117,6 +150,17 @@ vocabulary — they stay inside the closed set.
 node scripts/check-artifact.mjs path/to/your-artifact.html
 ```
 
+Run it against the shipped artifact directly — even when the three foundation CSS
+layers are inlined. The checker ignores those known layer bodies and scans only
+the authored markup/page-local CSS for drift.
+
+For AI-generated pages, use the strict gate:
+
+```bash
+node scripts/check-artifact.mjs --strict path/to/your-artifact.html
+```
+
 Reports anything outside the closed set: hardcoded colors, unknown `var(--…)`
-tokens, and classes that are neither foundation nor locally defined. This is the
-runnable form of the `governance/enforcement.md` checklist.
+tokens, and classes that are neither foundation nor locally defined. In default
+mode, off-set classes are review warnings; in `--strict`, they fail the check.
+This is the runnable form of the `governance/enforcement.md` checklist.

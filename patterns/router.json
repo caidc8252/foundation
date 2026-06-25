@@ -1,0 +1,158 @@
+{
+  "version": 1,
+  "purpose": "Machine-readable intent router for AI artifact generation. Routes natural-language page requests to a catalog pattern and a build-artifact example.",
+  "routes": {
+    "actions": {
+      "pattern": "actions",
+      "builderPattern": "actions",
+      "contract": "patterns/actions.md",
+      "example": "patterns/actions.html",
+      "intent": "A reference or sandbox page for page actions: confirm delete, export, bulk action, status transition, relation picker, inline edit, copy id.",
+      "chooseWhen": [
+        "The user asks to demonstrate action behavior rather than a full business screen.",
+        "The request is about delete confirmation, export, bulk operations, status change, copy, inline edit, or relation assignment."
+      ],
+      "avoidWhen": [
+        "The user asks for a full list, detail, create, edit, or wizard page."
+      ],
+      "keywords": ["action", "actions", "delete", "confirm", "bulk", "export", "copy", "status change", "inline edit", "操作", "删除确认", "批量", "导出"],
+      "exampleRequests": ["Show action patterns", "做一个删除确认示例", "展示批量操作"],
+      "defaultTitle": "Actions",
+      "outputNameHints": ["actions", "action-patterns"],
+      "composites": ["diff", "empty-state"],
+      "clarifyIf": []
+    },
+    "create-form": {
+      "pattern": "create-form",
+      "builderPattern": "create-form",
+      "contract": "patterns/create-form.md",
+      "example": "patterns/create-form.html",
+      "intent": "Single-step form for creating, registering, editing, or capturing one record.",
+      "chooseWhen": [
+        "The request says register, sign up, create account, create record, new record, edit, settings form, profile form, or a simple form.",
+        "The flow has one step or two simple sections and no branching or review-before-commit requirement.",
+        "The user asks for a registration interface without saying multi-step onboarding."
+      ],
+      "avoidWhen": [
+        "There are three or more steps.",
+        "The flow has branching, staged dependencies, or a required review step.",
+        "The user asks to browse or manage a collection."
+      ],
+      "keywords": ["register", "registration", "sign up", "signup", "create account", "create", "new", "edit", "form", "profile", "settings", "注册", "注册界面", "报名", "创建", "新增", "编辑", "表单"],
+      "exampleRequests": ["请帮我做一个注册界面", "Create a user registration page", "做一个新增客户表单", "Build an edit profile form"],
+      "defaultTitle": "Create record",
+      "outputNameHints": ["register", "signup", "create", "new-record", "edit"],
+      "composites": ["page-header", "page-body", "section-card"],
+      "clarifyIf": [
+        "The request mentions registration but also says onboarding, review, approval, or multiple stages."
+      ]
+    },
+    "create-wizard": {
+      "pattern": "create-wizard",
+      "builderPattern": "create-wizard",
+      "contract": "patterns/create-wizard.md",
+      "example": "patterns/create-wizard.html",
+      "intent": "Multi-step create flow with stages, dependencies, branching, summary rail, or review-before-commit.",
+      "chooseWhen": [
+        "The request says wizard, multi-step, onboarding, setup flow, guided create, review, staged entry, or branching.",
+        "The flow has three or more steps.",
+        "The user needs a review step before commit or a confirmation done state."
+      ],
+      "avoidWhen": [
+        "The request is a short single-step registration or edit form.",
+        "The request is an edit flow; edits stay create-form, not wizard."
+      ],
+      "keywords": ["wizard", "multi-step", "multistep", "onboarding", "setup", "guided", "review", "steps", "flow", "向导", "多步", "入驻", "引导", "流程", "复核", "分步"],
+      "exampleRequests": ["做一个企业入驻向导", "Create a multi-step onboarding flow", "做一个带复核步骤的新增流程"],
+      "defaultTitle": "Create record",
+      "outputNameHints": ["wizard", "onboarding", "setup"],
+      "composites": ["page-header", "page-body", "step-indicator", "section-card", "summary-bar"],
+      "clarifyIf": [
+        "The request says onboarding but only lists a few fields and no stages."
+      ]
+    },
+    "detail-page": {
+      "pattern": "detail-page",
+      "builderPattern": "detail-page",
+      "contract": "patterns/detail-page.md",
+      "example": "patterns/detail-page.html",
+      "intent": "Read-mostly page for one record with identity, metadata, overview fields, activity, tabs, and record-level actions.",
+      "chooseWhen": [
+        "The request asks for profile, detail, overview, record page, account page, customer detail, order detail, or read-only facts about one entity.",
+        "The page is reached from a list row and actions mutate that one record."
+      ],
+      "avoidWhen": [
+        "The request is primarily about browsing many records.",
+        "The request is primarily about entering a new record."
+      ],
+      "keywords": ["detail", "details", "profile", "overview", "record", "account", "customer detail", "order detail", "详情", "资料页", "概览", "档案", "账户页"],
+      "exampleRequests": ["做一个客户详情页", "Create an account profile page", "Build an order detail page"],
+      "defaultTitle": "Record detail",
+      "outputNameHints": ["detail", "profile", "overview"],
+      "composites": ["detail-header", "page-body", "kv-grid", "section-card", "timeline", "empty-state", "diff"],
+      "clarifyIf": [
+        "The request says customer page but does not say whether it is a list or one customer's profile."
+      ]
+    },
+    "list-page": {
+      "pattern": "list-page",
+      "builderPattern": "list-page",
+      "contract": "patterns/list-page.md",
+      "example": "patterns/list-page.html",
+      "intent": "Collection page for browsing, filtering, selecting, and acting on many records.",
+      "chooseWhen": [
+        "The request says list, management page, table, browse, filter, search, directory, index, customers, orders, invoices, users, or records.",
+        "The page's primary object is a collection, not one record."
+      ],
+      "avoidWhen": [
+        "The request asks for one record detail or a single form.",
+        "The request needs a large advanced filter sheet; use list-page-advanced-filter route."
+      ],
+      "keywords": ["list", "table", "management", "manage", "browse", "filter", "search", "directory", "index", "customers", "orders", "users", "invoices", "列表", "管理", "表格", "筛选", "搜索", "客户管理", "订单管理"],
+      "exampleRequests": ["做一个客户管理页面", "Create an orders list", "Build a user management table"],
+      "defaultTitle": "Records",
+      "outputNameHints": ["list", "management", "records"],
+      "composites": ["page-header", "page-body", "list-filter", "summary-bar", "data-table", "pagination", "empty-state", "skeleton"],
+      "clarifyIf": [
+        "The request says management page but could mean a dashboard rather than a table."
+      ]
+    },
+    "list-page-advanced-filter": {
+      "pattern": "list-page",
+      "builderPattern": "list-page-advanced-filter",
+      "contract": "patterns/list-page.md",
+      "example": "patterns/list-page-advanced-filter.html",
+      "intent": "List page variant for collections whose filters outgrow the inline toolbar and need an advanced filter sheet.",
+      "chooseWhen": [
+        "The request asks for a list/table page with many filter dimensions.",
+        "The user mentions advanced filters, filter drawer, filter sheet, saved criteria, date ranges, or many optional filters."
+      ],
+      "avoidWhen": [
+        "The list only needs search plus one or two quick filters."
+      ],
+      "keywords": ["advanced filter", "filter drawer", "filter sheet", "many filters", "date range", "criteria", "高级筛选", "筛选抽屉", "筛选面板", "多条件", "日期范围"],
+      "exampleRequests": ["做一个带高级筛选的客户列表", "Create an invoice list with a filter drawer"],
+      "defaultTitle": "Records",
+      "outputNameHints": ["advanced-list", "filtered-list"],
+      "composites": ["page-header", "page-body", "list-filter", "summary-bar", "data-table", "pagination", "empty-state"],
+      "clarifyIf": [
+        "The request says advanced but does not identify any extra filters."
+      ]
+    }
+  },
+  "decisionOrder": [
+    "If the user explicitly asks for advanced filtering on a collection, choose list-page-advanced-filter.",
+    "If the user asks for many records, a management table, browsing, filtering, or search over a collection, choose list-page.",
+    "If the user asks for one record's profile, detail, overview, or activity, choose detail-page.",
+    "If the user asks for multi-step onboarding, setup, branching, or review-before-commit, choose create-wizard.",
+    "If the user asks for registration, signup, create, edit, settings, or a simple form, choose create-form.",
+    "If the user asks to demonstrate page actions themselves, choose actions."
+  ],
+  "aiFlow": [
+    "Read this router and choose one route.",
+    "Use route.builderPattern with scripts/build-artifact.mjs.",
+    "Read route.contract and composites/schema.json for slot configuration.",
+    "Edit the generated artifact for business content.",
+    "Run scripts/check-artifact.mjs --strict on the output."
+  ]
+}

@@ -90,6 +90,33 @@ the primitive reference classes:
 Order matters: composites reuse primitive classes (`.btn`, `.input`), so the
 primitive CSS must come first.
 
+For pattern-based pages, start with the builder instead of copying by hand:
+
+```bash
+node scripts/build-artifact.mjs --list
+node scripts/build-artifact.mjs --pattern list-page --out artifacts/customers.html --title "Customers"
+```
+
+It ports the page inside `.app-frame__main`, inlines the three CSS layers, wraps
+the result in the frameless artifact shell, and runs the strict artifact check.
+
+AI generation can also read `composites/schema.json` after choosing a pattern.
+That schema lists each composite's intent, required/optional slots, legal classes,
+and artifact recipe. Keep it aligned with the catalog:
+
+```bash
+node scripts/check-composite-schema.mjs
+```
+
+For natural-language requests, read `patterns/router.json` first. It maps intent
+phrases like "registration", "multi-step onboarding", "customer management", and
+"detail page" to a catalog pattern plus the `build-artifact` example to start
+from. Keep it aligned with the catalog, examples, and composite schema:
+
+```bash
+node scripts/check-pattern-router.mjs
+```
+
 `primitives.css` opens with a `*{box-sizing:border-box}` baseline — the controls
 size with width/height + padding and require it. The Next app gets border-box
 from Tailwind Preflight; the artifact has no other reset, so the reference layer

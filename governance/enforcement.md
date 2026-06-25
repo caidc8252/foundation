@@ -32,15 +32,30 @@ No AST lint can run on a self-contained HTML file, so enforcement is part
 **runnable check**, part authoring checklist:
 
 ```bash
+node scripts/build-artifact.mjs --pattern list-page --out path/to/artifact.html
 node scripts/check-artifact.mjs path/to/artifact.html   # or: pnpm check <file>
+node scripts/check-artifact.mjs --strict path/to/artifact.html
 ```
+
+`build-artifact.mjs` is the preferred starting point for AI-generated pages: it
+ports the page content from a pattern example, inlines the current foundation CSS
+layers, applies the frameless width-lock shell, and runs the strict checker.
+After hand edits, run the strict checker again.
 
 It reports usage outside the catalog — hardcoded colors, unknown `var(--…)`
 tokens, and classes that are neither a foundation class nor defined in the file's
-own `<style>`. The remaining items are an eye/design pass:
+own page-local `<style>`. It can check the shipped self-contained artifact
+directly: when `dist/tokens.inline.css`, `primitives/primitives.css`, and
+`composites/composites.css` are inlined, those known layer bodies are ignored so
+their token values do not count as hardcoded artifact colors. In default mode,
+off-set classes are review warnings; `--strict` makes them hard violations and is
+the recommended gate for AI-generated artifacts.
 
-- [ ] `node scripts/check-artifact.mjs <file>` is clean (no out-of-set tokens/colors;
-      reviewed each off-set class — page-local composition OK, off-brand component not).
+The remaining items are an eye/design pass:
+
+- [ ] `node scripts/check-artifact.mjs --strict <file>` is clean (no out-of-set
+      tokens/colors/classes; page-local composition classes must be defined in
+      the artifact's own `<style>`).
 - [ ] Inlined the current `dist/tokens.inline.css`; no stale snapshot.
 - [ ] Every color/size/radius/shadow is `var(--token-…)` — zero hex/px literals
       for anything a token covers.
