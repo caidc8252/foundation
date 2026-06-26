@@ -60,8 +60,8 @@ node scripts/build-artifact.mjs --list
 node scripts/build-artifact.mjs --pattern list-page --out artifacts/customers.html --title "Customers"
 ```
 
-The builder copies the page inside `.app-frame__main`, wraps it in the required
-frameless `max-width: 1672px` shell, inlines the three CSS layers in the correct
+The builder copies the page inside `.app-frame__main`, wraps it in the frameless
+full-width shell, inlines the three CSS layers in the correct
 order, adds the frameless `[hidden]` guard, and runs
 `check-artifact.mjs --strict` against the output. Use this before hand-editing;
 then re-run the strict check after edits.
@@ -81,17 +81,12 @@ reuse `.btn`/`.input`, so primitives must come first):
 those same files so edits flow through live — see the README. For a shipped
 artifact, inline them: CSP blocks external fetches.)
 
-- **A frameless page MUST hard-lock its width — never full-bleed.** These
-  artifacts are standalone functional pages with **no `.app-frame` chrome**. So
-  the content doesn't run edge-to-edge (which previews badly and overstates the
-  real reading width), cap the page and center it: `max-width: 1672px` — the
-  production content width, a **`1920px` viewport minus the `248px` sidebar**
-  (`SIDEBAR_WIDTH`) — plus `margin-inline: auto`. **Width is fixed; height
-  scrolls** — the page grows downward and the window scrolls. The width lock is
-  non-negotiable; the height is free. (`.app-frame` remains available when
-  you instead want full production chrome — sidebar + header — see
-  [`composites/app-frame.md`](composites/app-frame.md); but the default for a
-  functional page is frameless + locked width.)
+- **A frameless page is full-width — no max-width lock.** These artifacts are
+  standalone functional pages with **no `.app-frame` chrome**; the content fills
+  the viewport width (the `.artifact-shell` sets `width: 100%`, no `max-width`).
+  **Height scrolls** — the page grows downward and the window scrolls.
+  (`.app-frame` remains available when you instead want full production chrome —
+  sidebar + header — see [`composites/app-frame.md`](composites/app-frame.md).)
 - Dark mode is a `[data-theme="dark"]` toggle — never edit color values.
 
 ## Two traps in a frameless page

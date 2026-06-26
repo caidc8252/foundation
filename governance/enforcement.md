@@ -64,11 +64,9 @@ The remaining items are an eye/design pass:
 - [ ] Any visual not expressible from tokens/primitives is raised as a token-change
       proposal (`token-change.md`), not hardcoded.
 - [ ] Dark mode works by toggling `[data-theme="dark"]` — not by editing colors.
-- [ ] Frameless functional page is **width-locked**, never full-bleed:
-      `max-width: 1672px` (= `1920px` viewport − `248px` sidebar) +
-      `margin-inline: auto`. Width is fixed; height scrolls. Bounds the artifact
-      to the real content width so it previews well. (Use `.app-frame` only when
-      you want full production chrome.) See `AGENTS.md` → "Two traps in a frameless page".
+- [ ] Frameless functional page is **full-width** — the `.artifact-shell` sets
+      `width: 100%` with no `max-width` lock. Height scrolls. (Use `.app-frame`
+      only when you want full production chrome.) See `AGENTS.md` → "Two traps in a frameless page".
 
 ## When the two disagree
 

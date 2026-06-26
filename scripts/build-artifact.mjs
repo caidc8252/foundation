@@ -131,8 +131,7 @@ body {
 }
 
 .artifact-shell {
-  max-width: 1672px;
-  margin-inline: auto;
+  width: 100%;
   min-height: 100vh;
   background-color: var(--color-surface-1);
 }
