@@ -51,7 +51,7 @@ the destructive-action policy — light confirm (a popover/quick confirm) vs.
 | View details | `eye` | 查看详情（轻量入口弹窗） | neutral | — | — | — |
 | Copy | `copy` | 复制 ID / 链接等 | neutral | — | — | — |
 | Lock / Unlock | `lock` / `lock-open` | 锁定 / 解锁 | neutral | 可逆 | 互配 | 轻确认 |
-| Suspend / Resume | `pause` / `play` | 暂停 / 恢复 | danger / neutral | 可逆 | 互配 | 轻确认 |
+| Suspend / Resume | `circle-pause` / `circle-play` | 暂停 / 恢复 | danger / neutral | 可逆 | 互配 | 轻确认 |
 | Link / Unlink | `link` / `unlink` | 关联 / 取消关联两实体（tooltip 表明关联对象） | neutral | 可逆 | 互配 | 轻确认 |
 | Cancel | `x` | 取消进行中 / 待处理项 | danger | — | — | 轻确认 |
 | Revoke | `ban` | 作废凭证 / 令牌 | danger | 不可逆 | — | **确认 + requireText** |
