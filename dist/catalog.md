@@ -25,7 +25,21 @@ that file / `tokens.json`; these are the legal **names**, grouped by prefix:
 - **spacing** (8) — `--spacing-control-lg` `--spacing-control-md` `--spacing-control-sm` `--spacing-control-xs` `--spacing-cx-lg` `--spacing-cx-md` `--spacing-cx-sm` `--spacing-stat-card`
 - **text** (10) — `--text-2xl` `--text-2xs` `--text-3xl` `--text-4xl` `--text-5xl` `--text-lg` `--text-md` `--text-sm` `--text-xl` `--text-xs`
 
-## L2 · Primitives (53) — atoms
+## L1.5 · Icons (1737, Lucide lucide-static@1.21.0)
+
+Icons are inline Lucide SVGs — raw material like tokens, **not** a class layer
+(CSP blocks any icon font / sprite / CDN, so each icon is inlined). The full set
+is not listed here; **never hand-write a path or invent a name** — query it and
+paste the exact markup:
+
+- find a name by meaning (English tags): `node scripts/icon/icon.mjs search <intent>`
+- get the exact `<svg>`: `node scripts/icon/icon.mjs get <name>`
+
+Every icon carries `data-lucide="<name>"` as its first attribute. The checker
+rejects unknown names and altered paths; that same attribute is the Next.js
+`lucide-react` bridge. Rules + React mapping: [`primitives/icon.md`](../primitives/icon.md).
+
+## L2 · Primitives (54) — atoms
 
 Classes in `primitives/primitives.css` (on top of the inlined tokens).
 
@@ -57,6 +71,7 @@ Classes in `primitives/primitives.css` (on top of the inlined tokens).
 | `dropzone` | Presentation-only file-select zone with drag-and-drop affordance. | `.dropzone` `.dropzone--drag` `.dropzone--disabled` `.file-list` `.file-row` | [contract](../primitives/dropzone.md) |
 | `field` | The form-row wrapper. | `.field__required` | [contract](../primitives/field.md) |
 | `hover-card` | A rich popover that opens on hover (and keyboard focus) over a trigger — for preview cards and detail popovers. | `.hover-card` | [contract](../primitives/hover-card.md) |
+| `icon` | An inline Lucide SVG used as a glyph inside another control or beside text. | — | [contract](../primitives/icon.md) |
 | `initials-tile` | A square, neutral identity tile that derives its initials from a name — a logo / icon placeholder for companies, apps, and people when no image exists. | — | [contract](../primitives/initials-tile.md) |
 | `input-group` | A single-border container that fuses an Input/Textarea with leading/trailing addons (icons, text affixes, action buttons, keyboard hints). | `.input-group` `.input-group__addon` `--inline-start` `--inline-end` `--block-start` `--block-end` `.input-group__text` `.input-group__control` `.btn` `.btn--ghost` `.btn--xs` `.btn--icon` | [contract](../primitives/input-group.md) |
 | `input-otp` | A segmented one-time-code / verification-code input: a row of single-character slots the user types a PIN/OTP into, optionally split into groups by a separator. | `.input-otp` `.input-otp__group` `.input-otp__slot` `.input-otp__slot--active` `.input-otp__caret` `.input-otp__separator` | [contract](../primitives/input-otp.md) |

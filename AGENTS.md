@@ -34,6 +34,15 @@ There is **no fifth source**. Everything an artifact renders comes from here:
 and **[`dist/catalog.json`](dist/catalog.json)** (machine). If a token name, a
 class, or a pattern is not in the catalog, **it is not part of this system.**
 
+**Icons** are the one other piece of raw material — inline **Lucide** SVGs, like
+token *values* rather than a component layer. They have no class; you obtain one
+by name and paste its exact `<svg>`. The set is full Lucide (pinned in
+`scripts/icon/data/VERSION`); the rules and the React mapping live in
+[`primitives/icon.md`](primitives/icon.md). **Never hand-write an icon path or
+invent a name** — `node scripts/icon/icon.mjs search <intent>` then
+`get <name>`. Every icon carries `data-lucide="<name>"` first; the checker
+rejects unknown names and altered paths.
+
 ## The rule
 
 > Use a token / primitive class / composite class for **everything they cover**.
@@ -141,7 +150,12 @@ AI generation flow:
 3. Read the route's pattern contract/example for ordering and required core.
 4. Read `composites/schema.json` for the composites used by that route.
 5. Configure each composite through its required/optional slots.
-6. Edit the generated artifact, then run `check-artifact.mjs --strict`.
+6. For any icon, `scripts/icon/icon.mjs search <english intent>` → `get <name>`;
+   paste the exact `<svg>` (keep `data-lucide` first). Never hand-write paths. If
+   nothing fits, try other English words; after three misses, report the gap to a
+   human. Never run `icon.mjs`'s `refresh` or change the pinned Lucide version —
+   that is a human maintainer decision.
+7. Edit the generated artifact, then run `check-artifact.mjs --strict`.
 
 ## Check your work
 

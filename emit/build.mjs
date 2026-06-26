@@ -21,6 +21,7 @@
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { ICON_NAMES, VERSION as ICON_VERSION } from "../scripts/icon/registry.mjs";
 
 // Order is readability-only; declarations merge regardless.
 const LAYERS = [
@@ -214,6 +215,20 @@ Inline \`dist/tokens.inline.css\`, then reference as \`var(--name)\`. Values liv
 that file / \`tokens.json\`; these are the legal **names**, grouped by prefix:
 
 ${tokenLines}
+
+## L1.5 · Icons (${ICON_NAMES.length}, Lucide ${ICON_VERSION})
+
+Icons are inline Lucide SVGs — raw material like tokens, **not** a class layer
+(CSP blocks any icon font / sprite / CDN, so each icon is inlined). The full set
+is not listed here; **never hand-write a path or invent a name** — query it and
+paste the exact markup:
+
+- find a name by meaning (English tags): \`node scripts/icon/icon.mjs search <intent>\`
+- get the exact \`<svg>\`: \`node scripts/icon/icon.mjs get <name>\`
+
+Every icon carries \`data-lucide="<name>"\` as its first attribute. The checker
+rejects unknown names and altered paths; that same attribute is the Next.js
+\`lucide-react\` bridge. Rules + React mapping: [\`primitives/icon.md\`](../primitives/icon.md).
 
 ## L2 · Primitives (${primitives.length}) — atoms
 

@@ -27,6 +27,7 @@
 import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { hasIcon, bodyMatches, VERSION as ICON_VERSION } from "./icon/registry.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const catalogPath = join(root, "dist", "catalog.json");
@@ -137,6 +138,28 @@ const tokenRefsFromAuthored = (text) => {
   return refs;
 };
 
+// Inline Lucide icons. Every icon must carry `data-lucide="<name>"`: the name
+// must be a real Lucide icon (no invented names) and the pasted body must be
+// that icon's real geometry (no hand-edited / hallucinated paths). An
+// icon-shaped <svg> with no data-lucide is un-mappable to lucide-react — warn.
+const iconFindingsFromMarkup = (markup) => {
+  const unknown = new Set();
+  const mismatch = new Set();
+  let untagged = 0;
+  for (const m of markup.matchAll(/<svg\b([^>]*)>([\s\S]*?)<\/svg\s*>/gi)) {
+    const [openAttrs, inner] = [m[1], m[2]];
+    const dl = openAttrs.match(/data-lucide\s*=\s*(?:"([^"]*)"|'([^']*)')/i);
+    if (dl) {
+      const name = dl[1] ?? dl[2];
+      if (!hasIcon(name)) unknown.add(name);
+      else if (!bodyMatches(name, inner)) mismatch.add(name);
+    } else if (/viewBox\s*=\s*["']0 0 24 24["']/.test(openAttrs)) {
+      untagged++;
+    }
+  }
+  return { unknown: [...unknown].sort(), mismatch: [...mismatch].sort(), untagged };
+};
+
 const hardcodedColorsFromAuthored = (text) => {
   const stripped = stripCssComments(text);
   const colorLiterals = [
@@ -175,7 +198,15 @@ for (const file of files) {
   //    stroke="currentColor", so any hex / raw color function is a literal.
   const hardColors = hardcodedColorsFromAuthored(authored);
 
-  const hard = unknownTokens.length + hardColors.length + (strict ? offSetClasses.length : 0);
+  // 4. Inline Lucide icons: unknown names always fail; altered paths fail in
+  //    strict (warn otherwise); untagged icon-shaped svgs always warn.
+  const icons = iconFindingsFromMarkup(markup);
+
+  const hard =
+    unknownTokens.length +
+    hardColors.length +
+    icons.unknown.length +
+    (strict ? offSetClasses.length + icons.mismatch.length : 0);
   hardTotal += hard;
 
   console.log(`\n● ${file}`);
@@ -189,6 +220,16 @@ for (const file of files) {
   if (unknownTokens.length) console.log(`    ✗ not a foundation token: ${unknownTokens.map((t) => "--" + t).join(", ")}`);
   console.log(`  colors:  ${hardColors.length} hardcoded literal(s)`);
   if (hardColors.length) console.log(`    ✗ use a token, not a literal: ${hardColors.join(", ")}`);
+  const iconBad = icons.unknown.length + icons.mismatch.length + icons.untagged;
+  console.log(`  icons:   ${iconBad === 0 ? "ok" : `${iconBad} issue(s)`} (Lucide ${ICON_VERSION})`);
+  if (icons.unknown.length)
+    console.log(`    ✗ not a Lucide icon (run icon.mjs search): ${icons.unknown.join(", ")}`);
+  if (icons.mismatch.length) {
+    const marker = strict ? "✗" : "⚠ review:";
+    console.log(`    ${marker} altered icon path — re-fetch with icon.mjs get: ${icons.mismatch.join(", ")}`);
+  }
+  if (icons.untagged)
+    console.log(`    ⚠ review: ${icons.untagged} icon-shaped <svg> with no data-lucide (un-mappable to lucide-react)`);
   const passText = strict
     ? "PASS (strict: no out-of-set tokens, hardcoded colors, or off-set classes)"
     : "PASS (no out-of-set tokens, no hardcoded colors)";

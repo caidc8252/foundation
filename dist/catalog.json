@@ -1240,6 +1240,15 @@
     },
     {
       "layer": "primitive",
+      "name": "icon",
+      "title": "Icon",
+      "summary": "An inline Lucide SVG used as a glyph inside another control or beside text.",
+      "contract": "primitives/icon.md",
+      "example": null,
+      "classes": []
+    },
+    {
+      "layer": "primitive",
       "name": "initials-tile",
       "title": "InitialsTile",
       "summary": "A square, neutral identity tile that derives its initials from a name — a logo / icon placeholder for companies, apps, and people when no image exists.",
