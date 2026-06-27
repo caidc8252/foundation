@@ -1671,8 +1671,8 @@
    the primary border + tint + soft ring (same recipe as .stat-card--selected). */
 
 .option-card {
-  position: relative;
   display: flex;
+  align-items: flex-start;  /* leading indicator aligns with top of body */
   gap: var(--spacing-cx-md);     /* 14px */
   padding: var(--spacing-cx-lg); /* 18px */
   border: 1px solid var(--color-line-default);
@@ -1721,7 +1721,6 @@
   flex-direction: column;
   flex: 1;
   min-width: 0;
-  padding-inline-end: var(--space-5); /* 20px — keep text clear of the top-right check */
 }
 .option-card__title {
   font-size: var(--text-sm);
@@ -1734,29 +1733,52 @@
   line-height: 1.5;
   color: var(--color-content-secondary);
 }
-/* indicator — top-right; outline at rest, fills primary when selected. Use
-   radius-full for a radio dot, radius-sm (default) for a checkbox. */
+/* indicator — leading (left) edge, vertically centered with first line of content.
+   Default variant = checkbox (radius-sm, svg check mark).
+   Add .option-card--radio on the card for single-select groups: indicator becomes
+   a radio dot (radius-full, inner dot via pseudo-element, no svg needed). */
 .option-card__check {
-  position: absolute;
-  top: var(--spacing-cx-md);
-  right: var(--spacing-cx-md);
+  flex-shrink: 0;
   display: grid;
   place-items: center;
   width: var(--space-5);   /* 20px */
   height: var(--space-5);
   border: 1px solid var(--color-line-strong);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-sm); /* checkbox shape by default */
   background-color: var(--color-surface-2);
   color: transparent;
+  margin-top: 1px; /* optical alignment with title cap-height */
   transition: background-color var(--duration-fast) var(--ease-standard),
               border-color var(--duration-fast) var(--ease-standard);
 }
 .option-card__check svg { width: var(--space-3); height: var(--space-3); }
+/* radio variant — round indicator, inner dot instead of svg check */
+.option-card--radio .option-card__check {
+  border-radius: var(--radius-full);
+}
+/* radio dot shown when selected: a centered pseudo-element circle */
+.option-card--radio .option-card__check::after {
+  content: '';
+  display: block;
+  width: var(--space-2);   /* 8px inner dot */
+  height: var(--space-2);
+  border-radius: var(--radius-full);
+  background-color: transparent;
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+/* hide the svg check in radio mode; the ::after dot is the indicator */
+.option-card--radio .option-card__check svg { display: none; }
+/* selected state — both variants fill primary */
 .option-card--selected .option-card__check,
 .option-card:has(.option-card__input:checked) .option-card__check {
   border-color: var(--color-primary-700);
   background-color: var(--color-primary-700);
   color: var(--color-content-on-primary);
+}
+/* radio: reveal the inner dot when selected */
+.option-card--radio.option-card--selected .option-card__check::after,
+.option-card--radio:has(.option-card__input:checked) .option-card__check::after {
+  background-color: var(--color-content-on-primary);
 }
 
 /* ═══════════════════════════ Feed list ═══════════════════════════ */

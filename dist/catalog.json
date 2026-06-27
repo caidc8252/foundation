@@ -612,6 +612,7 @@
     "object-tile--sm",
     "object-tile__icon",
     "option-card",
+    "option-card--radio",
     "option-card--selected",
     "option-card__body",
     "option-card__check",
@@ -1872,10 +1873,11 @@
       "classes": [
         ".option-card",
         "--selected",
-        ".radio",
+        ".option-card__check",
         ".option-card__icon",
         ".option-card__body",
-        ".option-card__check"
+        ".option-card__input",
+        ".option-card--radio"
       ]
     },
     {

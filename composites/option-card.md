@@ -17,17 +17,20 @@ radio/checkbox behavior, not a `cursor-pointer` div.
 ## Anatomy
 
 ```
-┌ option-card (selected) ───────────────────────── [✓] ┐   ← check / radio indicator, top-right
-│ ┌────┐  ISV partner                                   │
-│ │ 🧩 │  Builds and lists apps on the marketplace.      │
-│ └────┘                                                 │
+┌ option-card (selected) ────────────────────────────── ┐
+│ [●] ┌────┐  ISV partner                               │
+│     │ 🧩 │  Builds and lists apps on the marketplace. │
+│     └────┘                                            │
 └────────────────────────────────────────────────────────┘
-   ▲ icon tile        ▲ title + description
+  ▲     ▲ icon tile   ▲ title + description
+  indicator (leading)
 ```
 
-- **Indicator** — top-right; a radio dot (single-select) or a checkbox
-  (multi-select). Reflects, doesn't replace, the underlying control's state.
-- **Icon** — optional leading tile (tonal), sized ~40px.
+- **Indicator** — **leading (left) edge**, vertically aligned with the title's
+  cap-height. A **radio dot** (`radius-full`, inner dot) for single-select; a
+  **checkbox** (`radius-sm`, svg check) for multi-select. Add `.option-card--radio`
+  on the card element for single-select groups; the default is checkbox.
+- **Icon** — optional tonal tile, sized ~40px.
 - **Body** — `title` (`text-sm`, weight 600) over an optional `description`
   (`text-xs`, `content-secondary`).
 
@@ -39,8 +42,12 @@ radio/checkbox behavior, not a `cursor-pointer` div.
 - **Selected beats hover** — chosen cards take a `primary-700` border, a
   `primary-50` fill, and a soft primary ring; hover on an unselected card only
   lifts the border to `line-strong`. (Same selected recipe as `stat-card`.)
-- **One indicator style per group** — radio dots for single-select, checkboxes
-  for multi; don't mix within a group.
+- **One indicator style per group** — radio dots (`.option-card--radio`) for
+  single-select, checkboxes (default) for multi; don't mix within a group.
+- **Indicator is leading** — the `__check` element is the first child in the
+  flex row, before the icon and body. It is `flex-shrink: 0` and aligned to the
+  title's cap-height via a 1px top margin. No absolute positioning; no body
+  `padding-inline-end` reserve is needed.
 - Keep the body to a title + one short description line — an option card is a
   choice, not a content card.
 
@@ -70,10 +77,9 @@ structural, not numeric**:
 - **The body is a vertical stack** (`flex-col`): title *over* description. Inline
   children (`<span>`) collapse onto one line unless the body forces a column —
   don't let the icon/text row's `flex` leak into the text column.
-- **Reserve space for the indicator.** If the check is positioned absolutely
-  (top-right), the text column must reserve ~`space-5` inline-end so a long title
-  doesn't run under it. Or lay the indicator out as a normal trailing flex item —
-  then no reserve is needed. Don't leave it absolute *and* unreserved.
+- **No space reservation needed.** The indicator is a normal leading flex item
+  (`flex-shrink: 0`), not absolutely positioned — the body column naturally fills
+  the remaining width. Do not add `padding-inline-end` to `__body`.
 - **It is a real control**, not a clickable div: a `<label>` wrapping a native
   radio/checkbox (or `RadioGroupItem`/`Checkbox`). Selection + focus come from the
   input's state (`:checked` / `data-state` / `has-[]`), never a JS-toggled class.
@@ -86,6 +92,9 @@ structural, not numeric**:
   `Checkbox` with a `Label`; the selected/focus styling keys off the control's
   `data-state`. See the `ui` skill.
 - **Artifact** — `.option-card` (a `<label>`, `--selected` / `[data-selected]`)
-  wrapping a visually-hidden `.radio` / checkbox, with `.option-card__icon`,
-  `.option-card__body` (`__title` / `__desc`), and `.option-card__check`
-  (the indicator). In `composites.css`; the indicator reuses the `.radio` recipe.
+  wrapping a visually-hidden input (`type="radio"` or `type="checkbox"`), with
+  `.option-card__check` **(leading, first child)**, `.option-card__icon` (optional),
+  `.option-card__body` (`__title` / `__desc`), and `.option-card__input`
+  (the hidden control). Add `.option-card--radio` on the card for single-select
+  groups (round dot); omit it for multi-select (square checkbox, default). In
+  `composites.css`.
