@@ -1841,6 +1841,8 @@
         ".condition-band",
         ".condition-band__toolbar",
         ".search-input",
+        ".search-input__icon",
+        ".input",
         ".select",
         ".condition-band__spacer",
         ".applied-filters",

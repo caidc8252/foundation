@@ -12,7 +12,7 @@ The "quick bar + applied chips" filtering apparatus of a list page. One family
 | part | what it is |
 |---|---|
 | **condition-band** | the shell: a toolbar row stacked over the applied-filter row |
-| **search-input** | quick-bar text search, leading magnifier, fixed max width, Enter triggers |
+| **search-input** | quick-bar text search: a `.search-input` wrapping a `.search-input__icon` (leading magnifier — **wrap the `<svg>`, never drop it bare into `.search-input`**) + the `.input` field. Fixed max width, Enter triggers |
 | **filter-chip** | one active, removable filter (label + ✕) |
 | **applied-filters** | the row of chips + a "clear all"; renders nothing when empty |
 
@@ -26,6 +26,21 @@ right edge — `condition-band__spacer`.)
 │ [🔍 search        ]  [ quick filter ▾ ]  [ Search ]  Advanced ▸│  toolbar
 │ Filters:  ⊗ Status: Active   ⊗ Region: APAC  clear all        │  applied (or absent)
 └───────────────────────────────────────────────────────────────┘
+```
+
+### Search-input — exact structure (copy this; don't hand-roll)
+
+The leading magnifier is a **wrapped** element (`.search-input__icon`), never a bare
+`<svg>` dropped into `.search-input` — a bare svg renders unsized and floods the bar.
+Artifact markup:
+
+```html
+<div class="search-input">
+  <span class="search-input__icon">
+    <svg data-lucide="search" viewBox="0 0 24 24" …></svg>
+  </span>
+  <input class="input" type="search" placeholder="Search…">
+</div>
 ```
 
 ## Rules
@@ -53,7 +68,7 @@ right edge — `condition-band__spacer`.)
   `AdvancedFilterSheet`. Copy via the `ui.listFilter` i18n namespace; pair with the
   `useListFilters` hook. `ui` skill.
 - **Artifact** — `.condition-band` › `.condition-band__toolbar` (holding
-  `.search-input`, `.select` quick-filters, `btn--secondary` Search button, then
+  `.search-input` (› `.search-input__icon` + `.input`), `.select` quick-filters, `btn--secondary` Search button, then
   `.condition-band__spacer`, then the Advanced `btn--secondary`) + `.applied-filters`
   (`.applied-filters__label` + `.filter-chip`s + a `.btn--ghost.btn--xs` clear-all
   that **flows inline after the chips**, not pushed right). In `composites.css`.
