@@ -46,7 +46,7 @@ where it lands, and whether it confirms — those are not per-screen choices.
   collapse to a kebab past that.
 - **A menu row is a menu item, not a button.** Inside a `⋯` / `dropdown-menu`, verbs
   are `.dropdown-menu__item` rows (destructive → the `--destructive` variant,
-  `error` text) — **never `.btn`** (`secondary` / `danger` / `ghost`) buttons. The
+  `error-strong` text) — **never `.btn`** (`secondary` / `danger` / `ghost`) buttons. The
   `danger`/`ghost-danger` **button** in `confirm-danger` is the *standalone* trigger
   (used instead of a menu), not something you place inside a menu.
 - **List rows navigate; mutations default to the detail page.** A list row's job is

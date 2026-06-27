@@ -186,7 +186,11 @@ list below restates the optional slots with the extra detail each needs.
   move into an **Advanced filter sheet** opened from a toolbar trigger (the
   [`list-filter`](../composites/list-filter.md) family's advanced trigger + sheet).
   The inline toolbar keeps only the common filters; everything still reflects into
-  the same applied-filter chips.
+  the same applied-filter chips. The sheet is a **[`sheet`](../primitives/sheet.md)**
+  primitive (`.sheet` / `.sheet--right` / `.sheet__header` / `.sheet__footer`);
+  the [`drawer`](../primitives/drawer.md) primitive (`.drawer` / `.drawer--right`)
+  is an equivalent alternative — both are governed. The copyable example
+  (`list-page-advanced-filter.html`) uses `.drawer--right` for its panel.
 - **`queue`** — a row of **status-segment tabs** above the list (All / Pending /
   Approved …) whose selection drives the applied filter. These segment tabs are
   list-level navigation — they re-scope the collection — and are distinct from a

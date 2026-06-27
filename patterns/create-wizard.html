@@ -57,7 +57,11 @@
   /* dl is a flex column; each row is its own flex div so dt width is per-row. */
   .summary-dl { display: flex; flex-direction: column; gap: var(--space-2); font-size: var(--text-xs); }
   .summary-row { display: flex; gap: var(--space-3); }
-  .summary-row dt { width: 5rem; flex-shrink: 0; color: var(--color-content-tertiary); }
+  .summary-row dt { width: 5rem; flex-shrink: 0; color: var(--color-content-tertiary);
+    text-transform: uppercase;   /* kv-grid recipe: mandatory UPPERCASE */
+    letter-spacing: 0.06em;      /* overline tracking */
+    font-weight: 500;            /* kv-grid label weight */
+  }
   .summary-row dd { min-width: 0; flex: 1; word-break: break-word; color: var(--color-content-primary); margin: 0; }
   .summary-row dd.is-empty { color: var(--color-content-tertiary); }
 
@@ -73,6 +77,14 @@
   .review-kv dt { font-size: var(--text-sm); color: var(--color-content-tertiary); }
   .review-kv dd { font-size: var(--text-sm); color: var(--color-content-primary); margin: 0; }
   .review-kv dd.is-empty { color: var(--color-content-tertiary); }
+
+  /* Line-item collector: compact inline add-form + item list. */
+  .line-item-form { display: flex; gap: var(--space-2); align-items: flex-end; flex-wrap: wrap; }
+  .line-item-form .field { flex: 1 1 10rem; margin: 0; }
+  .line-item-list { display: flex; flex-direction: column; gap: var(--space-1); margin-top: var(--space-4); }
+  .line-item-row { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-3); border: 1px solid var(--color-line-subtle); border-radius: var(--radius-md); background: var(--color-surface-1); }
+  .line-item-row__label { flex: 1; font-size: var(--text-sm); color: var(--color-content-primary); }
+  .line-item-row__sub { font-size: var(--text-xs); color: var(--color-content-tertiary); margin-left: var(--space-2); }
 
   /* Done state: centered success card. */
   .wizard-done { max-width: 28rem; margin-inline: auto; text-align: center; }
@@ -154,7 +166,14 @@
             <li class="step step--upcoming" id="step-item-2">
               <span class="step__body">
                 <span class="step__dot" id="step-dot-2">3</span>
-                <span class="step__text"><span class="step__caption">Step 3</span><span class="step__title">Review</span></span>
+                <span class="step__text"><span class="step__caption">Step 3</span><span class="step__title">Contacts</span></span>
+              </span>
+              <span class="step__connector"></span>
+            </li>
+            <li class="step step--upcoming" id="step-item-3">
+              <span class="step__body">
+                <span class="step__dot" id="step-dot-3">4</span>
+                <span class="step__text"><span class="step__caption">Step 4</span><span class="step__title">Review</span></span>
               </span>
             </li>
           </ol>
@@ -232,8 +251,45 @@
               </form>
             </div>
 
-            <!-- ── Step 3: Review & confirm ── -->
+            <!-- ── Step 3: Contacts (line-item collector) ── -->
+            <!-- CW2: demonstrates the line-item / add-to-list step shape.
+                 Rules (create-wizard.md:73-86 + actions.md:63-68):
+                 • One "Add" affordance at a time — never two buttons that both read "Add".
+                 • Empty → empty-state; has items → editable/removable list + one inline add-form.
+                 • Inline add-form (≤8 fields, no branching) commits with a single primary Add.
+                 • This Add appends to the list; it is NOT the wizard's Continue. -->
             <div id="step-content-2" hidden>
+              <div class="card">
+                <div class="card__header"><span class="form-title">Contacts</span></div>
+                <div class="card__content form-stack">
+                  <!-- Inline add-form: single primary Add that appends to list (no separate "open" button). -->
+                  <div class="line-item-form" id="contact-add-form" aria-label="Add a contact">
+                    <div class="field">
+                      <label class="label" for="f-contact-name">Name</label>
+                      <input id="f-contact-name" class="input" type="text" placeholder="Full name" autocomplete="off">
+                    </div>
+                    <div class="field">
+                      <label class="label" for="f-contact-email">Email</label>
+                      <input id="f-contact-email" class="input" type="email" placeholder="name@company.example" autocomplete="off">
+                    </div>
+                    <!-- EXACTLY ONE primary Add — no secondary "open" button alongside it. -->
+                    <button id="btn-add-contact" class="btn btn--primary" type="button" style="flex-shrink:0;align-self:flex-end">Add</button>
+                  </div>
+                  <p class="field__error" role="alert" id="err-contact" hidden>Enter a name and valid email to add a contact</p>
+
+                  <!-- Empty state (shown when no contacts added yet). -->
+                  <div id="contacts-empty" class="empty-state">
+                    <p class="empty-state__description">No contacts added yet. Use the form above to add the first one.</p>
+                  </div>
+
+                  <!-- Item list (hidden until at least one item exists). -->
+                  <div id="contacts-list" class="line-item-list" hidden aria-label="Added contacts" aria-live="polite"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Step 4: Review & confirm ── -->
+            <div id="step-content-3" hidden>
               <div class="card">
                 <div class="card__header"><span class="form-title">Review &amp; confirm</span></div>
                 <div class="card__content" id="review-content">
@@ -271,6 +327,7 @@
                 <div class="summary-row"><dt>Email</dt><dd id="s-email" class="is-empty">—</dd></div>
                 <div class="summary-row"><dt>Cycle</dt><dd id="s-cycle">Annual</dd></div>
                 <div class="summary-row"><dt>Terms</dt><dd id="s-terms" class="is-empty">—</dd></div>
+                <div class="summary-row"><dt>Contacts</dt><dd id="s-contacts" class="is-empty">—</dd></div>
               </dl>
             </div>
           </aside>
@@ -308,7 +365,8 @@
   function hide(el) { el.style.display = 'none'; }
 
   var step = 0;
-  var data = { name: '', plan: 'Enterprise', region: 'APAC', email: '', cycle: 'annual', terms: false };
+  var TOTAL_STEPS = 4; /* CW2: 4 steps — Details · Terms · Contacts (line-item) · Review */
+  var data = { name: '', plan: 'Enterprise', region: 'APAC', email: '', cycle: 'annual', terms: false, contacts: [] };
 
   var CHECK = '<svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
   var NEXT  = '<svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>';
@@ -320,10 +378,14 @@
   var doneState  = document.getElementById('done-state');
 
   /* ── Step indicator ── */
+  /* CW3 (branching): if the flow branches (e.g. skipping Contacts for an account type),
+     call updateIndicator() after inserting/removing a step from the DOM and updating TOTAL_STEPS.
+     The rail reflects only the actual path taken — never show a removed step as upcoming. */
   function updateIndicator() {
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < TOTAL_STEPS; i++) {
       var item = document.getElementById('step-item-' + i);
       var dot  = document.getElementById('step-dot-'  + i);
+      if (!item) continue;
       if (i < step) {
         item.className = 'step step--completed';
         item.removeAttribute('aria-current');
@@ -342,8 +404,9 @@
 
   /* ── Step panels ── */
   function updatePanels() {
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < TOTAL_STEPS; i++) {
       var panel = document.getElementById('step-content-' + i);
+      if (!panel) continue;
       if (i === step) show(panel); else hide(panel);
     }
   }
@@ -351,7 +414,7 @@
   /* ── Nav buttons ── */
   function updateNav() {
     if (step === 0) { hide(btnBack); } else { show(btnBack); }
-    btnNext.innerHTML = (step === 2) ? CHECK + ' Create customer' : 'Continue ' + NEXT;
+    btnNext.innerHTML = (step === TOTAL_STEPS - 1) ? CHECK + ' Create customer' : 'Continue ' + NEXT;
   }
 
   /* ── Summary rail ── */
@@ -362,21 +425,25 @@
     else      { dd.textContent = val;  dd.classList.remove('is-empty'); }
   }
   function updateSummary() {
-    setSummaryRow('s-name',   data.name);
-    setSummaryRow('s-plan',   data.plan);
-    setSummaryRow('s-region', data.region);
-    setSummaryRow('s-email',  data.email);
-    setSummaryRow('s-cycle',  data.cycle === 'annual' ? 'Annual' : 'Monthly');
-    setSummaryRow('s-terms',  data.terms ? 'Accepted' : '');
+    setSummaryRow('s-name',     data.name);
+    setSummaryRow('s-plan',     data.plan);
+    setSummaryRow('s-region',   data.region);
+    setSummaryRow('s-email',    data.email);
+    setSummaryRow('s-cycle',    data.cycle === 'annual' ? 'Annual' : 'Monthly');
+    setSummaryRow('s-terms',    data.terms ? 'Accepted' : '');
+    setSummaryRow('s-contacts', data.contacts.length ? data.contacts.length + (data.contacts.length === 1 ? ' contact' : ' contacts') : '');
   }
 
-  /* ── Review content (step 3) ── */
+  /* ── Review content (step 4) ── */
   function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function kv(label, val) {
     return '<dt>' + label + '</dt><dd>' + (val ? esc(val) : '<span class="is-empty">—</span>') + '</dd>';
   }
   function renderReview() {
     var cycle = data.cycle === 'annual' ? 'Annual (2 months free)' : 'Monthly';
+    var contactsHtml = data.contacts.length
+      ? data.contacts.map(function(c) { return '<li style="font-size:var(--text-sm)">' + esc(c.name) + ' &lt;' + esc(c.email) + '&gt;</li>'; }).join('')
+      : '<li><span class="is-empty">—</span></li>';
     document.getElementById('review-content').innerHTML =
       '<div class="review-section">' +
         '<div class="group-label">Customer details</div>' +
@@ -391,6 +458,10 @@
           kv('Billing cycle', cycle) +
           '<dt>Terms</dt><dd>' + (data.terms ? 'Accepted' : '<span class="is-empty">—</span>') + '</dd>' +
         '</dl>' +
+      '</div>' +
+      '<div class="review-section">' +
+        '<div class="group-label">Contacts</div>' +
+        '<ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:var(--space-1)">' + contactsHtml + '</ul>' +
       '</div>';
   }
 
@@ -412,11 +483,14 @@
   }
 
   /* ── Render ── */
+  /* CW3 (branching): insert/remove a step panel + step-item-N in the DOM, then call
+     render() — the rail reflects the actual path. Example: if account type === 'Partner'
+     inject a step-content-2b panel and a matching step-item; bump TOTAL_STEPS. */
   function render() {
     updateIndicator();
     updatePanels();
     updateNav();
-    if (step === 2) renderReview();
+    if (step === TOTAL_STEPS - 1) renderReview();
     updateSummary();
   }
 
@@ -424,7 +498,8 @@
   btnNext.addEventListener('click', function() {
     if (step === 0 && !validateStep0()) return;
     if (step === 1 && !validateStep1()) return;
-    if (step === 2) {
+    /* Step 2 (Contacts) has no required validation — contacts are optional. */
+    if (step === TOTAL_STEPS - 1) {
       var label = data.name.trim() || 'Customer';
       document.getElementById('done-title').textContent = label + ' created';
       document.getElementById('done-text').textContent  = label + ' is set up and ready. You can start adding orders now.';
@@ -447,6 +522,48 @@
     r.addEventListener('change', function(e) { data.cycle = e.target.value; updateSummary(); });
   });
   document.getElementById('f-terms').addEventListener('change', function(e) { data.terms = e.target.checked; updateSummary(); });
+
+  /* ── Contact line-item add / remove (CW2) ── */
+  function renderContactList() {
+    var listEl   = document.getElementById('contacts-list');
+    var emptyEl  = document.getElementById('contacts-empty');
+    if (data.contacts.length === 0) {
+      hide(listEl); show(emptyEl);
+      listEl.innerHTML = '';
+    } else {
+      hide(emptyEl); show(listEl);
+      listEl.innerHTML = data.contacts.map(function(c, idx) {
+        return '<div class="line-item-row">' +
+          '<span class="line-item-row__label">' + esc(c.name) + '<span class="line-item-row__sub">' + esc(c.email) + '</span></span>' +
+          '<button class="btn btn--ghost btn--xs" type="button" aria-label="Remove ' + esc(c.name) + '" data-remove="' + idx + '">Remove</button>' +
+          '</div>';
+      }).join('');
+    }
+    updateSummary();
+  }
+
+  document.getElementById('btn-add-contact').addEventListener('click', function() {
+    var nameEl  = document.getElementById('f-contact-name');
+    var emailEl = document.getElementById('f-contact-email');
+    var errEl   = document.getElementById('err-contact');
+    var name    = nameEl.value.trim();
+    var email   = emailEl.value.trim();
+    if (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      show(errEl); return;
+    }
+    hide(errEl);
+    data.contacts.push({ name: name, email: email });
+    nameEl.value = ''; emailEl.value = '';
+    renderContactList();
+  });
+
+  document.getElementById('contacts-list').addEventListener('click', function(e) {
+    var btn = e.target.closest('[data-remove]');
+    if (!btn) return;
+    var idx = parseInt(btn.getAttribute('data-remove'), 10);
+    data.contacts.splice(idx, 1);
+    renderContactList();
+  });
 
   /* ── Init ── */
   render();

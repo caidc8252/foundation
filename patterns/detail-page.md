@@ -57,7 +57,7 @@ when this record's job calls for it.
 
 | slot | required? | include when |
 |---|---|---|
-| detail-head band | **yes** | always — the page begins with the head band |
+| detail-header band | **yes** | always — the page begins with the head band |
 | → title / name (within the head) | **yes** | always — the only required slot inside the head |
 | body (Overview kv-grid **or** a tab-set) | **yes** | always — an Overview block (its required main is a kv-grid) or a tab-set |
 | back button | no | the record was reached from a list to return to; else the shell carries navigation |

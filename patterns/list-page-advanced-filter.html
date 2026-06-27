@@ -23,6 +23,7 @@
 <style>
   /* ── Page-local composition (same as list-page.html) ── */
 
+  /* LP4: two-line cell tile wrapper — tile is page-local; text uses .cell-2line composite */
   .cell-lead { display: flex; align-items: center; gap: var(--space-3); }
   .cell-lead__tile {
     display: grid; place-items: center; flex-shrink: 0;
@@ -32,8 +33,6 @@
     color: var(--color-content-secondary);
     font-size: var(--text-xs); font-weight: 600;
   }
-  .cell-lead__name { font-size: var(--text-sm); font-weight: 500; color: var(--color-content-primary); }
-  .cell-lead__sub  { font-size: var(--text-2xs); color: var(--color-content-tertiary); }
   .cell-chevron { color: var(--color-content-tertiary); }
   .cell-chevron svg { width: var(--space-4); height: var(--space-4); }
 
@@ -207,6 +206,7 @@
               </span>
               <input class="input" id="search-input" type="search" placeholder="Search customers…" aria-label="Search customers">
             </div>
+            <!-- LP3: select options carry `selected` to match any pre-applied chips -->
             <select class="select" aria-label="Status" id="qs-status">
               <option value="">All statuses</option>
               <option>Active</option>
@@ -246,13 +246,21 @@
         <!-- ■ REQUIRED CORE — results card = table-frame --flush wrapping summary-bar + table + pagination
              (the count bar, table, and pagination are the results block's required internals; keep all three). -->
         <div class="table-frame table-frame--flush">
+          <!-- LP2: summary bar has two modes: idle (Export) and bulk (when rows selected) -->
           <div class="summary-bar">
             <div class="summary-bar__count"><strong id="result-count">1,248</strong> customers <span id="filter-suffix"></span></div>
-            <div class="summary-bar__actions">
+            <!-- LP2: idle actions (no rows selected) -->
+            <div class="summary-bar__actions" id="summary-idle">
               <!-- Business-driven slot: list-level secondary actions, included only per need.
                    Export is the common one — delete it if the filtered result needs no export.
                    No default "Columns"/column-manager action exists in the system. -->
               <button class="btn btn--secondary btn--sm" type="button">Export</button>
+            </div>
+            <!-- LP2: bulk actions replace idle when ≥1 row is selected (hidden until then) -->
+            <div class="summary-bar__actions" id="summary-bulk" style="display:none">
+              <span class="summary-bar__count" id="bulk-count-label">0 selected</span>
+              <button class="btn btn--secondary btn--sm" type="button" id="bulk-assign" onclick="event.stopPropagation()">Assign</button>
+              <button class="btn btn--ghost-danger btn--sm" type="button" id="bulk-delete" onclick="event.stopPropagation()">Delete</button>
             </div>
           </div>
 
@@ -260,34 +268,48 @@
             <table class="data-table">
               <thead>
                 <tr>
-                  <th class="col-select"><input class="checkbox" type="checkbox" aria-label="Select all"></th>
+                  <!-- LP2: select-all checkbox; JS wires indeterminate state -->
+                  <th class="col-select"><input class="checkbox" type="checkbox" id="select-all" aria-label="Select all"></th>
                   <th>Customer</th>
                   <th>Status</th>
-                  <th>
+                  <!-- LP7: active sort column carries aria-sort + --active icon -->
+                  <th aria-sort="descending">
                     <button class="th-sort" type="button">Registered
-                      <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                      <svg class="th-sort__icon th-sort__icon--active" data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                     </button>
                   </th>
                   <th>City</th>
+                  <!-- LP6: TAGS column — category values use badge--neutral (no dot) -->
+                  <th>Plan</th>
                   <th class="cell-right">Lifetime value</th>
                   <th aria-hidden="true"></th>
                 </tr>
               </thead>
               <tbody>
+                <!-- LP2: each checkbox toggles aria-selected="true" on its <tr>;
+                     CSS auto-applies --color-state-selected bg + --shadow-row-selected 2px bar.
+                     LP4: two-line cell uses composite cell-2line family; tile is page-local.
+                     LP8 — OPTIONAL: inline row-actions (uncomment for triage queues):
+                     <td class="row-actions">
+                       <button class="btn btn--secondary btn--xs" type="button" onclick="event.stopPropagation()">Edit</button>
+                       <button class="btn btn--danger btn--xs" type="button" onclick="event.stopPropagation()">Delete</button>
+                     </td> -->
                 <tr class="is-clickable">
                   <td class="col-select"><input class="checkbox" type="checkbox" aria-label="Select Acme Robotics"></td>
                   <td>
                     <div class="cell-lead">
                       <span class="cell-lead__tile">AR</span>
-                      <span>
-                        <span class="cell-lead__name">Acme Robotics</span><br>
-                        <span class="cell-lead__sub">acme-robotics.example</span>
+                      <span class="cell-2line">
+                        <span class="cell-2line__main">Acme Robotics</span>
+                        <span class="cell-2line__sub">acme-robotics.example</span>
                       </span>
                     </div>
                   </td>
                   <td><span class="badge badge--success"><span class="badge__dot"></span>Active</span></td>
                   <td class="cell-num">Apr 12, 2026</td>
                   <td>Singapore</td>
+                  <!-- LP6: category column uses badge--neutral (no dot) -->
+                  <td><span class="badge badge--neutral">Enterprise</span></td>
                   <td class="cell-num cell-right">$48,200</td>
                   <td class="cell-right cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
                 </tr>
@@ -296,15 +318,16 @@
                   <td>
                     <div class="cell-lead">
                       <span class="cell-lead__tile">BR</span>
-                      <span>
-                        <span class="cell-lead__name">Brightleaf Retail</span><br>
-                        <span class="cell-lead__sub">brightleaf.example</span>
+                      <span class="cell-2line">
+                        <span class="cell-2line__main">Brightleaf Retail</span>
+                        <span class="cell-2line__sub">brightleaf.example</span>
                       </span>
                     </div>
                   </td>
                   <td><span class="badge badge--warning"><span class="badge__dot"></span>Trial</span></td>
                   <td class="cell-num">Apr 9, 2026</td>
                   <td>Auckland</td>
+                  <td><span class="badge badge--neutral">SMB</span></td>
                   <td class="cell-num cell-right">$3,120</td>
                   <td class="cell-right cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
                 </tr>
@@ -313,15 +336,16 @@
                   <td>
                     <div class="cell-lead">
                       <span class="cell-lead__tile">NC</span>
-                      <span>
-                        <span class="cell-lead__name">Northwind Commerce</span><br>
-                        <span class="cell-lead__sub">northwind.example</span>
+                      <span class="cell-2line">
+                        <span class="cell-2line__main">Northwind Commerce</span>
+                        <span class="cell-2line__sub">northwind.example</span>
                       </span>
                     </div>
                   </td>
                   <td><span class="badge badge--success"><span class="badge__dot"></span>Active</span></td>
                   <td class="cell-num">Mar 30, 2026</td>
                   <td>Sydney</td>
+                  <td><span class="badge badge--neutral">Enterprise</span></td>
                   <td class="cell-num cell-right">$129,540</td>
                   <td class="cell-right cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
                 </tr>
@@ -330,15 +354,17 @@
                   <td>
                     <div class="cell-lead">
                       <span class="cell-lead__tile">HP</span>
-                      <span>
-                        <span class="cell-lead__name">Helios Payments</span><br>
-                        <span class="cell-lead__sub">helios.example</span>
+                      <span class="cell-2line">
+                        <span class="cell-2line__main">Helios Payments</span>
+                        <span class="cell-2line__sub">helios.example</span>
                       </span>
                     </div>
                   </td>
                   <td><span class="badge badge--error"><span class="badge__dot"></span>Suspended</span></td>
                   <td class="cell-num">Mar 22, 2026</td>
-                  <td class="cell-chevron">—</td>
+                  <!-- LP5: empty value → cell-empty (not cell-chevron) -->
+                  <td class="cell-empty">—</td>
+                  <td><span class="badge badge--neutral">Startup</span></td>
                   <td class="cell-num cell-right">$0</td>
                   <td class="cell-right cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
                 </tr>
@@ -347,15 +373,16 @@
                   <td>
                     <div class="cell-lead">
                       <span class="cell-lead__tile">VL</span>
-                      <span>
-                        <span class="cell-lead__name">Vertex Logistics</span><br>
-                        <span class="cell-lead__sub">vertex.example</span>
+                      <span class="cell-2line">
+                        <span class="cell-2line__main">Vertex Logistics</span>
+                        <span class="cell-2line__sub">vertex.example</span>
                       </span>
                     </div>
                   </td>
                   <td><span class="badge badge--success"><span class="badge__dot"></span>Active</span></td>
                   <td class="cell-num">Mar 14, 2026</td>
                   <td>Tokyo</td>
+                  <td><span class="badge badge--neutral">Enterprise</span></td>
                   <td class="cell-num cell-right">$71,005</td>
                   <td class="cell-right cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
                 </tr>
@@ -385,6 +412,44 @@
               </button>
             </div>
           </div>
+          <!-- ┄┄┄ SWAP: NO-RESULTS-FOR-FILTERS — replace .table-scroll + .pagination with this. ┄┄┄
+          <div class="empty-state">
+            <div class="empty-state__icon">
+              <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+            </div>
+            <div class="empty-state__title">No customers match these filters</div>
+            <p class="empty-state__description">Try widening your search, or clear the active filters to see everyone.</p>
+            <div class="empty-state__action"><button class="btn btn--secondary" type="button">Clear filters</button></div>
+          </div>
+          -->
+
+          <!-- ┄┄┄ SWAP: NOTHING-YET (cold start) — invites the page's PRIMARY verb. ┄┄┄
+          <div class="empty-state">
+            <div class="empty-state__icon">
+              <svg data-lucide="user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div class="empty-state__title">No customers yet</div>
+            <p class="empty-state__description">Add your first customer to start tracking orders and activity.</p>
+            <div class="empty-state__action"><button class="btn btn--primary" type="button">New customer</button></div>
+          </div>
+          -->
+
+          <!-- ┄┄┄ SWAP: LOADING — a skeleton table fills the frame. LP10 ┄┄┄
+          <div class="skeleton-row"><span class="skeleton skeleton--line"></span><span class="skeleton skeleton--line"></span><span class="skeleton skeleton--line"></span></div>
+          <div class="skeleton-row"><span class="skeleton skeleton--line"></span><span class="skeleton skeleton--line"></span><span class="skeleton skeleton--line"></span></div>
+          <div class="skeleton-row"><span class="skeleton skeleton--line"></span><span class="skeleton skeleton--line"></span><span class="skeleton skeleton--line"></span></div>
+          -->
+
+          <!-- ┄┄┄ SWAP: ERROR — first-class state alongside empty and loading. LP10 ┄┄┄
+          <div class="empty-state">
+            <div class="empty-state__icon">
+              <svg data-lucide="alert-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div class="empty-state__title">Could not load customers</div>
+            <p class="empty-state__description">Something went wrong. Try again or contact support.</p>
+            <div class="empty-state__action"><button class="btn btn--secondary" type="button">Retry</button></div>
+          </div>
+          -->
         </div>
         <!-- /REQUIRED CORE results card -->
       </div>
@@ -489,6 +554,8 @@
 
   var searchInput  = document.getElementById('search-input');
   var searchBtn    = document.getElementById('search-btn');
+  var qsStatus     = document.getElementById('qs-status');
+  var qsRegion     = document.getElementById('qs-region');
   var trigger      = document.getElementById('adv-trigger');
   var overlay      = document.getElementById('adv-overlay');
   var panel        = document.getElementById('adv-panel');
@@ -498,8 +565,66 @@
   var appliedRow   = document.getElementById('applied-filters');
   var clearAllBtn  = document.getElementById('clear-all-btn');
   var suffix       = document.getElementById('filter-suffix');
+  // LP9: page-header count mirrors summary bar count
+  var headerCount  = document.querySelector('.page-header__count');
+  var summaryCount = document.getElementById('result-count');
+  // LP2: bulk bar elements
+  var summaryIdle  = document.getElementById('summary-idle');
+  var summaryBulk  = document.getElementById('summary-bulk');
+  var bulkLabel    = document.getElementById('bulk-count-label');
+  var selectAll    = document.getElementById('select-all');
 
   var X_SVG = '<svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>';
+
+  // ── LP2: Row selection ────────────────────────────────────────
+
+  function updateBulkBar() {
+    var rows = document.querySelectorAll('tbody tr');
+    var selectedRows = document.querySelectorAll('tbody tr[aria-selected="true"]');
+    var n = selectedRows.length;
+    if (n > 0) {
+      summaryIdle.style.display = 'none';
+      summaryBulk.style.display = '';
+      bulkLabel.textContent = n + ' selected';
+    } else {
+      summaryIdle.style.display = '';
+      summaryBulk.style.display = 'none';
+    }
+    // Update select-all indeterminate state
+    if (selectAll) {
+      selectAll.checked = n === rows.length && n > 0;
+      selectAll.indeterminate = n > 0 && n < rows.length;
+    }
+  }
+
+  // Wire per-row checkboxes
+  document.querySelectorAll('tbody .col-select input.checkbox').forEach(function (cb) {
+    cb.addEventListener('change', function () {
+      var row = cb.closest('tr');
+      if (cb.checked) {
+        row.setAttribute('aria-selected', 'true');
+      } else {
+        row.removeAttribute('aria-selected');
+      }
+      updateBulkBar();
+    });
+  });
+
+  // Wire select-all
+  if (selectAll) {
+    selectAll.addEventListener('change', function () {
+      document.querySelectorAll('tbody tr').forEach(function (row) {
+        var cb = row.querySelector('.col-select input.checkbox');
+        if (cb) cb.checked = selectAll.checked;
+        if (selectAll.checked) {
+          row.setAttribute('aria-selected', 'true');
+        } else {
+          row.removeAttribute('aria-selected');
+        }
+      });
+      updateBulkBar();
+    });
+  }
 
   // ── Open / close sheet ────────────────────────────────────────
 
@@ -538,6 +663,9 @@
     if (activeFilters.length === 0) {
       appliedRow.style.display = 'none';
       suffix.textContent = '';
+      // LP9: no filters → show full count
+      if (headerCount) headerCount.textContent = '1,248';
+      if (summaryCount) summaryCount.textContent = '1,248';
       return;
     }
 
@@ -558,6 +686,8 @@
       removeBtn.innerHTML = X_SVG;
       removeBtn.addEventListener('click', function () {
         if (chip.key === 'search') searchInput.value = '';
+        if (chip.key === 'status' && qsStatus) qsStatus.value = '';
+        if (chip.key === 'region' && qsRegion) qsRegion.value = '';
         activeFilters = activeFilters.filter(function (f) { return f.key !== chip.key; });
         renderChips();
       });
@@ -568,21 +698,35 @@
 
     appliedRow.style.display = '';
     suffix.textContent = '· matching filters';
+    // LP9: filtered → update both counts together (demo placeholder)
+    var filteredCount = '5';
+    if (headerCount) headerCount.textContent = filteredCount;
+    if (summaryCount) summaryCount.textContent = filteredCount;
   }
 
   clearAllBtn.addEventListener('click', function () {
     activeFilters = [];
     searchInput.value = '';
+    if (qsStatus) qsStatus.value = '';
+    if (qsRegion) qsRegion.value = '';
     renderChips();
     resetForm();
   });
 
-  // ── Search ────────────────────────────────────────────────────
+  // ── Search (LP3: Search commits draft→applied, reads all quick controls) ─────
 
   function doSearch() {
     var val = searchInput.value.trim();
     activeFilters = activeFilters.filter(function (f) { return f.key !== 'search'; });
     if (val) activeFilters.push({ key: 'search', label: 'Search: ' + val });
+
+    // LP3: read quick-filter selects as part of the same Search commit
+    activeFilters = activeFilters.filter(function (f) { return f.key !== 'status'; });
+    if (qsStatus && qsStatus.value) activeFilters.push({ key: 'status', label: 'Status: ' + qsStatus.options[qsStatus.selectedIndex].text });
+
+    activeFilters = activeFilters.filter(function (f) { return f.key !== 'region'; });
+    if (qsRegion && qsRegion.value) activeFilters.push({ key: 'region', label: 'Region: ' + qsRegion.options[qsRegion.selectedIndex].text });
+
     renderChips();
   }
 

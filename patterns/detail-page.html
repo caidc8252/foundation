@@ -34,16 +34,15 @@
 <style>
   /* Page-local composition — NOT new design vocabulary. All values are tokens. */
 
-  /* Overview = a key-value grid. Columns follow CONTAINER width via .grid-auto-fit-kv
-     (the contract forbids a hand-written repeat(auto-fit,…)); this only sets the gap. */
-  .kv-grid { gap: var(--space-5) var(--space-6); }
-  .kv { display: flex; flex-direction: column; gap: var(--space-1); }
-  .kv__label { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-content-tertiary); }
-  .kv__value { font-size: var(--text-sm); color: var(--color-content-primary); }
+  /* Overview = a key-value grid. The real .kv-grid composite in composites.css
+     provides the grid layout, label/value typography, and --full row span.
+     Page-local: only the reveal helper (inline-flex + gap) for the masked field. */
   .kv__value--mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
   .kv__value--reveal { display: inline-flex; align-items: center; gap: var(--space-2); }
 
   .section-title { font-size: var(--text-sm); font-weight: 600; color: var(--color-content-primary); }
+  /* Push the section-card header action to the trailing edge (layout-only, no design token) */
+  .card__header .header-action-end { margin-inline-start: auto; }
 
   /* Meta-row icon sizing (the dot separators come from .detail-header__meta itself). */
   .detail-header__meta svg { width: var(--space-3); height: var(--space-3); vertical-align: -1px; }
@@ -144,9 +143,21 @@
               Edit
             </button>
             <button class="btn btn--primary" type="button">New order</button>
-            <!-- ┄┄ When the record HAS destructive/overflow verbs, collapse them into a ⋯
-                 dropdown-menu here (rightmost) — e.g. Delete → confirm. Omitted here
-                 because this record's only verbs are Edit + New order. ┄┄ -->
+            <!-- ⋯ overflow menu — shown ONLY because this record has a destructive verb
+                 (Delete). Never render an empty ⋯; a header with only Edit + primary has none.
+                 Destructive actions: dropdown-menu__item--destructive (never a .btn inside the menu). -->
+            <div style="position:relative; display:inline-block;">
+              <button class="btn btn--ghost btn--icon" type="button" aria-label="More actions" aria-haspopup="true" aria-expanded="false" id="overflow-trigger">
+                <svg data-lucide="ellipsis" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+              </button>
+              <div class="dropdown-menu" id="overflow-menu" role="menu" aria-labelledby="overflow-trigger" style="display:none; position:absolute; right:0; top:100%; z-index:50; min-width:160px;">
+                <!-- Delete — the --destructive variant; leads to a confirm step before acting -->
+                <button class="dropdown-menu__item dropdown-menu__item--destructive" type="button" role="menuitem">
+                  <svg data-lucide="trash-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                  Delete customer
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -171,30 +182,82 @@
       <div class="page-body">
 
         <!-- REQUIRED — Overview (KV grid; columns follow the card's width). The
-             body's required main. -->
+             body's required main. The overview = main card (kv-grid) + OPTIONAL right rail
+             (stat-cards / amount-summary). Real .kv-grid composite: <dl> › .kv-grid__row
+             each with <dt> label + <dd> value; --full spans all columns. -->
         <!-- ── Overview tab ── -->
         <section class="tabs__content" role="tabpanel" id="panel-overview" data-panel="overview">
-          <div class="card">
-            <div class="card__header"><h2 class="section-title">Overview</h2></div>
-            <div class="card__content">
-              <div class="grid-auto-fit-kv kv-grid">
-                <div class="kv"><span class="kv__label">Account ID</span><span class="kv__value kv__value--mono">C-10293</span></div>
-                <div class="kv"><span class="kv__label">Plan</span><span class="kv__value">Enterprise (annual)</span></div>
-                <div class="kv"><span class="kv__label">Primary contact</span><span class="kv__value">Dana Okafor</span></div>
-                <div class="kv"><span class="kv__label">Email</span><span class="kv__value">dana@acme-robotics.example</span></div>
-                <div class="kv"><span class="kv__label">Region</span><span class="kv__value">APAC · Singapore</span></div>
-                <div class="kv"><span class="kv__label">Lifetime value</span><span class="kv__value kv__value--mono">$48,200</span></div>
-                <div class="kv"><span class="kv__label">Renews</span><span class="kv__value kv__value--mono">Jan 1, 2027</span></div>
-                <!-- sensitive field: masked by default; reveal is an audited action -->
-                <div class="kv">
-                  <span class="kv__label">Billing card</span>
-                  <span class="kv__value kv__value--reveal">
-                    <span class="kv__value--mono">•••• •••• •••• 4242</span>
-                    <button class="btn btn--ghost btn--xs" type="button">Reveal</button>
-                  </span>
-                </div>
+          <div style="display:grid; grid-template-columns:1fr 240px; gap:var(--space-5); align-items:start;">
+
+            <!-- Main card: KV grid (real composite — dl › .kv-grid__row › dt + dd) -->
+            <div class="card">
+              <div class="card__header"><h2 class="section-title">Overview</h2></div>
+              <div class="card__content">
+                <!-- .kv-grid is the real composite from composites.css:1587 -->
+                <dl class="kv-grid">
+                  <!-- DP5: ID row with copy action — ghost icon btn beside the value -->
+                  <div class="kv-grid__row">
+                    <dt>Account ID</dt>
+                    <dd class="kv__value--reveal">
+                      <span class="kv__value--mono">C-10293</span>
+                      <button class="btn btn--ghost btn--sm btn--icon" type="button" aria-label="Copy account ID">
+                        <svg data-lucide="clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+                      </button>
+                    </dd>
+                  </div>
+                  <div class="kv-grid__row">
+                    <dt>Plan</dt>
+                    <dd>Enterprise (annual)</dd>
+                  </div>
+                  <div class="kv-grid__row">
+                    <dt>Primary contact</dt>
+                    <dd>Dana Okafor</dd>
+                  </div>
+                  <div class="kv-grid__row">
+                    <dt>Email</dt>
+                    <dd>dana@acme-robotics.example</dd>
+                  </div>
+                  <div class="kv-grid__row">
+                    <dt>Region</dt>
+                    <dd>APAC · Singapore</dd>
+                  </div>
+                  <div class="kv-grid__row">
+                    <dt>Renews</dt>
+                    <dd class="kv__value--mono">Jan 1, 2027</dd>
+                  </div>
+                  <!-- sensitive field: masked by default; reveal is an audited action -->
+                  <div class="kv-grid__row">
+                    <dt>Billing card</dt>
+                    <dd class="kv__value--reveal">
+                      <span class="kv__value--mono">•••• •••• •••• 4242</span>
+                      <button class="btn btn--ghost btn--xs" type="button">Reveal</button>
+                    </dd>
+                  </div>
+                  <!-- --full: long values (address, description) span all columns -->
+                  <div class="kv-grid__row kv-grid__row--full">
+                    <dt>Billing address</dt>
+                    <dd>2200 Mission St, Suite 4, San Francisco, CA 94110</dd>
+                  </div>
+                </dl>
               </div>
             </div>
+
+            <!-- OPTIONAL right rail — stat-cards stacked (DP4). Delete if no key metrics. -->
+            <div style="display:flex; flex-direction:column; gap:var(--space-3);">
+              <div class="stat-card">
+                <div class="stat-card__head">
+                  <span class="stat-card__label">Lifetime value</span>
+                </div>
+                <div class="stat-card__value stat-card__value--success">$48,200</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-card__head">
+                  <span class="stat-card__label">Orders placed</span>
+                </div>
+                <div class="stat-card__value">14</div>
+              </div>
+            </div>
+
           </div>
         </section>
 
@@ -270,18 +333,64 @@
           </div>
         </section>
 
-        <!-- OPTIONAL — Orders tab (empty state). Delete with its tab trigger. -->
+        <!-- OPTIONAL — Orders tab (collection section). Delete with its tab trigger.
+             DP2: a section that lists a collection = section-card › card__header
+             (title · count · at-most-one action) › card__content--flush › data-table.
+             When the collection is empty, swap the data-table rows for an empty-state. -->
         <!-- ── Orders tab ── -->
         <section class="tabs__content" role="tabpanel" id="panel-orders" data-panel="orders" hidden>
-          <div class="card">
-            <div class="card__content">
-              <div class="empty-state">
-                <div class="empty-state__icon">
-                  <svg data-lucide="shopping-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 10a4 4 0 0 1-8 0"/><path d="M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
-                </div>
-                <div class="empty-state__title">No orders yet</div>
-                <p class="empty-state__description">When this customer places an order it will appear here.</p>
-                <div class="empty-state__action"><button class="btn btn--primary" type="button">New order</button></div>
+          <div class="card section-card">
+            <div class="card__header">
+              <h2 class="section-title">Orders</h2>
+              <!-- count badge — optional, reflects how many rows are in the table -->
+              <span class="badge badge--neutral">14</span>
+              <!-- at-most-one action in the section-card header (the section's primary verb) -->
+              <button class="btn btn--secondary btn--sm header-action-end" type="button">New order</button>
+            </div>
+            <!-- card__content--flush: never an inline padding:0 hack -->
+            <div class="card__content card__content--flush">
+              <div class="table-frame table-frame--flush">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Order</th>
+                      <th>Date</th>
+                      <th>Status</th>
+                      <th class="cell-num">Amount</th>
+                      <!-- row-actions column: always-visible per data-table contract -->
+                      <th class="row-actions" aria-label="Actions"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><span class="cell-2line"><span class="cell-2line__main">SO-2026-0184</span><span class="cell-2line__sub">5 terminals</span></span></td>
+                      <td>May 9, 2026</td>
+                      <td><span class="badge badge--success"><span class="badge__dot"></span>Delivered</span></td>
+                      <td class="cell-num kv__value--mono">$12,500</td>
+                      <td class="row-actions">
+                        <button class="btn btn--secondary btn--xs" type="button">View</button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><span class="cell-2line"><span class="cell-2line__main">SO-2026-0101</span><span class="cell-2line__sub">2 terminals</span></span></td>
+                      <td>Mar 14, 2026</td>
+                      <td><span class="badge badge--success"><span class="badge__dot"></span>Delivered</span></td>
+                      <td class="cell-num kv__value--mono">$5,000</td>
+                      <td class="row-actions">
+                        <button class="btn btn--secondary btn--xs" type="button">View</button>
+                      </td>
+                    </tr>
+                    <!-- When the collection is empty, replace rows with:
+                    <tr><td colspan="5">
+                      <div class="empty-state">
+                        <div class="empty-state__icon">…</div>
+                        <div class="empty-state__title">No orders yet</div>
+                        <p class="empty-state__description">…</p>
+                      </div>
+                    </td></tr>
+                    -->
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>

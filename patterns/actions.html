@@ -61,6 +61,8 @@
 
   /* A short note under a carrier (e.g. "opens a confirm"). */
   .action-note { font-size: var(--text-xs); color: var(--color-content-secondary); margin-top: var(--space-3); }
+  /* Inline note between carriers — no top gap, full width to break below siblings. */
+  .action-note--inline { width: 100%; margin-top: 0; }
 
   /* Two states side by side (inline-edit: display vs edit). */
   .action-states { display: grid; gap: var(--space-3); }
@@ -79,6 +81,19 @@
      centered positioning so they render in flow inside the demo box. */
   .action-inline-dialog { position: static; inset: auto; width: 100%; max-width: 100%; transform: none; }
   .action-inline-combo { width: 100%; }
+
+  /* Variant stage for menus/modals that need a column-flow surface. */
+  .action-stage--col { flex-direction: column; align-items: flex-start; }
+
+  /* Inline dropdown-menu demo: override min-width so it fits card width. */
+  .action-inline-menu { position: static; inset: auto; width: 100%; max-width: 100%; transform: none; }
+
+  /* Inline modal demo: sits below its trigger with a gap. */
+  .action-inline-modal { position: static; inset: auto; max-width: 100%; transform: none; margin-top: var(--space-3); }
+
+  /* list-row quick-ops stage: space-between layout. */
+  .action-stage--row { justify-content: space-between; }
+  .action-btn-group { display: flex; gap: var(--space-2); }
 </style>
 
 <div class="app-frame">
@@ -142,10 +157,13 @@
             </div>
             <div class="card__content">
               <div class="action-stage action-stage--surface">
-                <!-- carrier: a neutral trash icon button (ghost-danger), NOT a red column -->
+                <!-- carrier A: ghost-danger icon button (list rows / KV rows) -->
                 <button class="btn btn--ghost-danger btn--icon" type="button" aria-label="Delete customer">
                   <svg data-lucide="trash-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                 </button>
+                <!-- carrier B: danger text button — same dialog, parallel variant -->
+                <button class="btn btn--danger" type="button">Delete</button>
+                <p class="action-note action-note--inline">or a danger text button — same dialog</p>
                 <!-- opened surface, rendered INLINE (real one portals over .alert-dialog-overlay) -->
                 <div class="alert-dialog action-inline-dialog" role="alertdialog" aria-modal="true">
                   <div class="alert-dialog__header">
@@ -208,12 +226,18 @@
             </div>
             <div class="card__content">
               <div class="action-stage">
+                <!-- destructive direction: danger button + confirm -->
                 <button class="btn btn--danger" type="button">
                   <svg data-lucide="circle-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="10" x2="10" y1="15" y2="9"/><line x1="14" x2="14" y1="15" y2="9"/></svg>
                   Suspend
                 </button>
+                <!-- safe/neutral direction: secondary button, no confirm -->
+                <button class="btn btn--secondary" type="button">
+                  <svg data-lucide="circle-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+                  Activate
+                </button>
               </div>
-              <p class="action-note">Service-interrupting, so it opens a confirm (the confirm-danger AlertDialog). Reject directions open a reject-reason dialog instead.</p>
+              <p class="action-note">Destructive directions (Suspend) open a confirm-danger AlertDialog. Safe directions (Activate) run directly — neutral tone, no confirm. Multiple statuses → use a <code>dropdown-menu</code> of status items instead.</p>
             </div>
           </section>
 
@@ -249,6 +273,7 @@
                   </div>
                 </div>
               </div>
+              <p class="action-note">Large sets open a <code>Modal</code> list instead of the inline Combobox.</p>
             </div>
           </section>
 
@@ -298,6 +323,88 @@
                   <svg data-lucide="copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
                 </button>
               </div>
+            </div>
+          </section>
+
+          <!-- ░░ kebab menu — ⋯ trigger → dropdown-menu (core rule: items, never buttons) ░░ -->
+          <section class="card">
+            <div class="card__header">
+              <div class="action-card__name">kebab (⋯) menu</div>
+              <p class="action-card__intent">One carrier per row — collapse to a kebab past 2 frequent verbs. Menu rows are <code>.dropdown-menu__item</code>, never <code>.btn</code>.</p>
+            </div>
+            <div class="card__content">
+              <div class="action-stage action-stage--surface action-stage--col">
+                <!-- trigger: ghost icon + ellipsis-vertical -->
+                <button class="btn btn--ghost btn--icon" type="button" aria-label="Row actions" aria-haspopup="menu" aria-expanded="true">
+                  <svg data-lucide="ellipsis-vertical" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                </button>
+                <!-- opened menu, rendered INLINE (real one portals beneath trigger) -->
+                <div class="dropdown-menu action-inline-menu" role="menu">
+                  <div class="dropdown-menu__item" role="menuitem">
+                    <svg data-lucide="square-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
+                    Edit
+                  </div>
+                  <div class="dropdown-menu__item" role="menuitem">
+                    <svg data-lucide="copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                    Duplicate
+                  </div>
+                  <div class="dropdown-menu__item dropdown-menu__item--destructive" role="menuitem">
+                    <svg data-lucide="trash-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    Delete
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ░░ confirm-with-input — hardened Modal (reject reason / suspend note) ░░ -->
+          <section class="card">
+            <div class="card__header">
+              <div class="action-card__name">confirm with input</div>
+              <p class="action-card__intent">Action must capture context (reject reason, suspend note) — use a hardened <code>Modal</code> (<code>closeOnOverlay</code> + <code>closeOnEscape</code> off), not an AlertDialog.</p>
+            </div>
+            <div class="card__content">
+              <div class="action-stage action-stage--surface action-stage--col">
+                <!-- trigger: danger button -->
+                <button class="btn btn--danger" type="button">Reject</button>
+                <!-- hardened modal rendered INLINE; real one portals over .modal-overlay -->
+                <div class="modal action-inline-modal" role="dialog" aria-modal="true">
+                  <div class="modal__header">
+                    <div class="modal__heading">
+                      <h2 class="modal__title">Reject application?</h2>
+                      <p class="modal__description">Provide a reason — the applicant will see this note.</p>
+                    </div>
+                  </div>
+                  <div class="modal__body">
+                    <div class="field">
+                      <label class="label" for="reject-reason">Rejection reason</label>
+                      <textarea class="input input--sm" id="reject-reason" rows="3" placeholder="Explain why the application is being rejected…"></textarea>
+                    </div>
+                  </div>
+                  <div class="modal__footer">
+                    <button class="btn btn--outline" type="button">Cancel</button>
+                    <button class="btn btn--danger" type="button">Reject application</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ░░ list-row quick-ops — always-visible xs buttons on a row ░░ -->
+          <section class="card">
+            <div class="card__header">
+              <div class="action-card__name">list-row quick-ops</div>
+              <p class="action-card__intent">Single-row verbs when a requirement calls for them — always-visible <code>xs</code> buttons (<code>secondary</code> for the action, <code>danger</code> for Delete), not hover-reveal icons.</p>
+            </div>
+            <div class="card__content">
+              <div class="action-stage action-stage--row">
+                <span class="action-value">Acme Robotics</span>
+                <span class="action-btn-group">
+                  <button class="btn btn--secondary btn--xs" type="button">Edit</button>
+                  <button class="btn btn--danger btn--xs" type="button">Delete</button>
+                </span>
+              </div>
+              <p class="action-note">These open the same surfaces as their full-size counterparts (inline-edit or confirm-danger AlertDialog).</p>
             </div>
           </section>
 

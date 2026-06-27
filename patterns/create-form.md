@@ -26,7 +26,7 @@ form. Cancel and the primary action (Create / Save changes) sit in the header's
 actions slot — there is **no separate footer row**.
 
 The page-header (with its Cancel + Create/Save actions) and **at least one
-`form-section` card** are the required core. Everything else — a status banner, a
+`form-section` card** (*"form-section" 是概念单元——一张 `card` 的 `Field`,非 CSS 类;html 中即 `.card.form-page`*) are the required core. Everything else — a status banner, a
 file-upload block, extra section cards, per-section or page descriptions — is
 **optional**, included only when the page's job calls for it (see the slot table).
 
@@ -39,9 +39,12 @@ A pattern is a **framework**: it fixes structure + ordering, not that every slot
 filled (governance [principle #9](../governance/principles.md) — *patterns are
 frameworks*). The required core below is the few slots without which this stops
 being a create/edit form; everything else is included per business need. The
-fully-dressed [`create-form.html`](./create-form.html) shows every slot at once —
-copying it does **not** mean keeping them all; the optional ones are marked
-removable there.
+[`create-form.html`](./create-form.html) example shows the **required core live**;
+the optional slots appear only as labelled, removable stubs/comments — the
+status `banner` and the extra section card are commented stubs, the file-upload
+block is a known gap (no `Dropzone` primitive — see *Known gaps*), and the
+preview/summary rail is **full-page-only** and not shown in this example. Copying
+the example does **not** mean filling every slot.
 
 | slot | required? | include when |
 |---|---|---|
