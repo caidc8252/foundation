@@ -12,6 +12,9 @@
                                      this file's own <style> (page-local
                                      composition is allowed; an off-set
                                      component library is not — review these)
+     ⚠ inline padding/margin hack — style="padding:0"-style layout resets;
+                                     prefer a class (.stack--N / --flush). Advisory
+                                     only — never affects the exit code.
 
    The two ✗ categories are hard violations (non-zero exit). Classes are
    advisory by default; pass --strict to make off-set classes fail too.
@@ -173,6 +176,20 @@ const hardcodedColorsFromAuthored = (text) => {
   return [...new Set(colorLiterals)];
 };
 
+// Inline style="…padding…/…margin…" layout hacks. Spacing/flush is a composition
+// choice (a token-based class — .stack--N, .card__content--flush, or a page-local
+// class), never an inline reset like style="padding:0". Advisory ONLY — never
+// affects the exit code, even in --strict: it's a smell to review, not a
+// closed-set breach (the value carries no off-set token/color).
+const inlineLayoutHacksFromMarkup = (markup) => {
+  const hits = new Set();
+  for (const m of markup.matchAll(/\sstyle\s*=\s*(?:"([^"]*)"|'([^']*)')/gi)) {
+    const val = (m[1] ?? m[2] ?? "").trim();
+    if (/\b(?:padding|margin)\b/i.test(val)) hits.add(val.length > 60 ? val.slice(0, 57) + "…" : val);
+  }
+  return [...hits].sort();
+};
+
 let hardTotal = 0;
 for (const file of files) {
   if (!existsSync(file)) {
@@ -202,6 +219,9 @@ for (const file of files) {
   //    strict (warn otherwise); untagged icon-shaped svgs always warn.
   const icons = iconFindingsFromMarkup(markup);
 
+  // Advisory: inline padding/margin layout hacks (never affects exit code).
+  const layoutHacks = inlineLayoutHacksFromMarkup(markup);
+
   const hard =
     unknownTokens.length +
     hardColors.length +
@@ -230,6 +250,8 @@ for (const file of files) {
   }
   if (icons.untagged)
     console.log(`    ⚠ review: ${icons.untagged} icon-shaped <svg> with no data-lucide (un-mappable to lucide-react)`);
+  if (layoutHacks.length)
+    console.log(`  ⚠ review: ${layoutHacks.length} inline padding/margin style(s) — prefer a class (.stack--N / .card__content--flush / page-local): ${layoutHacks.join(" · ")}`);
   const passText = strict
     ? "PASS (strict: no out-of-set tokens, hardcoded colors, or off-set classes)"
     : "PASS (no out-of-set tokens, no hardcoded colors)";
