@@ -203,6 +203,11 @@
     "alert__description",
     "alert__icon",
     "alert__title",
+    "amount-row",
+    "amount-row--total",
+    "amount-row__label",
+    "amount-row__value",
+    "amount-summary",
     "app-frame",
     "app-frame--collapsed",
     "app-frame__avatar",
@@ -252,6 +257,9 @@
     "btn--ghost",
     "btn--ghost-danger",
     "btn--icon",
+    "btn--icon-lg",
+    "btn--icon-sm",
+    "btn--icon-xs",
     "btn--lg",
     "btn--link",
     "btn--md",
@@ -288,6 +296,7 @@
     "card--lg",
     "card--md",
     "card--sm",
+    "card__action",
     "card__content",
     "card__content--flush",
     "card__description",
@@ -679,6 +688,7 @@
     "search-input",
     "search-input__icon",
     "section-card",
+    "section-card--collapsible",
     "section-card__chevron",
     "section-card__toggle",
     "select",
@@ -803,6 +813,7 @@
     "timeline__title",
     "toast",
     "toast--countdown",
+    "toast--with-icon",
     "toast__close",
     "toast__content",
     "toast__description",
@@ -846,12 +857,13 @@
       "contract": "primitives/accordion.md",
       "example": null,
       "classes": [
+        ".accordion__content",
+        ".accordion__item--open",
+        ".accordion__arrow",
+        "--accordion-panel-height",
         ".accordion",
         ".accordion__item",
-        ".accordion__trigger",
-        ".accordion__arrow",
-        ".accordion__content",
-        ".accordion__item--open"
+        ".accordion__trigger"
       ]
     },
     {
@@ -1504,10 +1516,10 @@
       "contract": "primitives/slider.md",
       "example": null,
       "classes": [
+        ".slider__thumb",
         ".slider",
         ".slider__track",
-        ".slider__indicator",
-        ".slider__thumb"
+        ".slider__indicator"
       ]
     },
     {
@@ -1540,13 +1552,13 @@
       "contract": "primitives/tabs.md",
       "example": null,
       "classes": [
+        ".tabs__content",
         ".tabs",
         ".tabs__list",
         ".tabs__list--line",
         ".tabs__list--default",
         ".tabs__trigger",
-        ".tabs__trigger--active",
-        ".tabs__content"
+        ".tabs__trigger--active"
       ]
     },
     {
@@ -1632,6 +1644,21 @@
     }
   ],
   "composites": [
+    {
+      "layer": "composite",
+      "name": "amount-summary",
+      "title": "Amount summary · composite",
+      "summary": "A totals block for order, cart, and checkout screens: a hairline separator followed by a right-aligned stack of label → value rows (subtotal, discount, shipping, …) and an emphasised grand-total row.",
+      "contract": "composites/amount-summary.md",
+      "example": null,
+      "classes": [
+        ".amount-summary",
+        ".amount-row",
+        ".amount-row__label",
+        ".amount-row__value",
+        ".amount-row--total"
+      ]
+    },
     {
       "layer": "composite",
       "name": "app-frame",

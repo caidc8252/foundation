@@ -2,6 +2,21 @@
   "version": 1,
   "purpose": "Machine-readable generation schema for artifact-side composites. Contracts remain authoritative; this file helps AI choose and configure composites without inventing classes or structure.",
   "composites": {
+    "amount-summary": {
+      "intent": "Right-aligned totals block for order/cart/checkout: hairline separator, mono label→value rows, emphasised grand-total row.",
+      "contract": "composites/amount-summary.md",
+      "usedByPatterns": ["detail-page"],
+      "classes": ["amount-summary", "amount-row", "amount-row__label", "amount-row__value", "amount-row--total"],
+      "requiredSlots": ["rows", "totalRow"],
+      "optionalSlots": ["discountRow", "shippingRow"],
+      "variants": ["default"],
+      "states": ["loading"],
+      "artifactRecipe": {
+        "root": "div.amount-summary",
+        "structure": ["div.amount-row × N", "div.amount-row.amount-row--total"],
+        "notes": ["Values are author-supplied formatted strings; no JS formatting.", "Always include a .amount-row--total row.", "Place inside a card__content; the composite owns its own border-top separator."]
+      }
+    },
     "app-frame": {
       "intent": "Production-like shell used only as pattern context, not ported into frameless artifacts.",
       "contract": "composites/app-frame.md",

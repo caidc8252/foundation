@@ -62,6 +62,7 @@
   white-space: nowrap;
   cursor: pointer;
   user-select: none;
+  text-decoration: none; /* suppress anchor underline when .btn is on an <a> */
   transition: background-color 0.12s, border-color 0.12s, color 0.12s, box-shadow 0.12s;
   outline: none;
 }
@@ -191,6 +192,32 @@
 .btn--icon.btn--xs { width: var(--spacing-control-xs); }
 .btn--icon.btn--sm { width: var(--spacing-control-sm); }
 .btn--icon.btn--lg { width: var(--spacing-control-lg); }
+
+/* Standalone icon-only size variants (enumerated in button.md). Use these when
+   the icon-button size is the only modifier needed (no separate size class).
+     icon-xs = 24px · icon-sm = 28px (control-sm) · icon-lg = 36px (control-md)
+   Each is equivalent to .btn--icon + the corresponding size class but avoids
+   the two-class requirement. */
+.btn--icon-xs {
+  padding-inline: 0;
+  width: var(--space-6);   /* 24px */
+  height: var(--space-6);
+  aspect-ratio: 1 / 1;
+  font-size: var(--text-xs);
+}
+.btn--icon-sm {
+  padding-inline: 0;
+  width: var(--spacing-control-sm);   /* 28px */
+  height: var(--spacing-control-sm);
+  aspect-ratio: 1 / 1;
+}
+.btn--icon-lg {
+  padding-inline: 0;
+  width: var(--spacing-control-md);   /* 36px — per button.md icon-lg */
+  height: var(--spacing-control-md);
+  aspect-ratio: 1 / 1;
+  font-size: var(--text-lg);
+}
 
 /* ═══════════════════════════════ Input ═══════════════════════════════ */
 
@@ -612,6 +639,17 @@
   font-size: var(--text-xs);
   line-height: 1.5;
   color: var(--color-content-tertiary);
+}
+/* CardAction — header-right action slot; vertically centered against the title
+   block and pushed to the trailing edge. The card__header is a flex row; this
+   slot uses margin-inline-start:auto so it always rides the far right edge
+   regardless of whether title wraps or a description is present. */
+.card__action {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-inline-start: auto;
+  flex-shrink: 0;
 }
 /* ===== @cloud/ui coverage expansion (added below) ===== */
 /* Primitives: 39 components authored from @cloud/ui, token-only. */
@@ -3875,6 +3913,14 @@
    set per-toast by the consumer (loading/Infinity skip the bar — drop the
    .toast--countdown class). Pauses on hover (source pauses ALL timers on region
    hover; standalone artifact has no region, so we scope the pause to the card). */
+/* Variant: toast with a leading icon — reserves the icon column and aligns the
+   content next to it. Pair with .toast__icon for the icon slot. The base .toast
+   already uses flex + gap, so this modifier simply signals intent and preserves
+   the icon alignment contract for artifact-side consumers. */
+.toast--with-icon {
+  align-items: flex-start; /* ensure icon top-aligns even on taller toasts */
+}
+
 .toast--countdown::after {
   content: "";
   position: absolute;

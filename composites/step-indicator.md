@@ -79,6 +79,30 @@ defaults to `current`) caps how far clicks reach — typically the furthest step
 user has already visited. Steps at `index <= maxNavigable` become buttons; the rest
 stay inert. Without `onStepClick` nothing is navigable.
 
+## Status pipeline usage
+
+`step-indicator` is also the sanctioned vehicle for an **order or record "status
+pipeline"** — a read-only horizontal rail that shows where a record sits in a fixed
+lifecycle (e.g. Pending payment → Pending shipment → Shipped → Delivered).
+
+Use the same completed / active / upcoming states:
+
+- **completed** — stages already passed (green dot + connector).
+- **active** — the record's current stage (primary dot).
+- **upcoming** — stages not yet reached (muted dot).
+
+**When to use as a status pipeline vs. a wizard rail:**
+
+| use-case | signal |
+|---|---|
+| **Wizard rail** | user-driven, multi-step *creation* or *configuration* flow; user advances by filling forms and clicking Continue. |
+| **Status pipeline** | system-driven lifecycle; the record moves through stages automatically (payment, fulfilment, delivery). User reads, not drives. |
+
+For a status pipeline, omit `onStepClick` / navigation — it is purely display. Wrap
+the bare `<ol class="step-indicator">` in a card for surface (border `line-default` ·
+bg `surface-2` · `radius-xl` · `shadow-1` · `px-6 py-4`), same as the wizard rail.
+Use captions to show stage dates or IDs where available.
+
 ## Implementations
 
 - **Next / @cloud/ui** — `import { StepIndicator } from "@cloud/ui"`. Props

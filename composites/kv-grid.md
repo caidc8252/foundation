@@ -26,7 +26,7 @@ composite gives the pairs their typography and semantics on top of it.
 
 - A `<dl>` of `.kv-grid__row` cells, each a stacked **label** (`dt`) over
   **value** (`dd`).
-- **Label** — `dt`, `text-xs`, UPPERCASE, `tracking-overline`, `content-tertiary`, weight 500.
+- **Label** — `dt`, `text-xs`, **UPPERCASE** (`text-transform: uppercase`), `tracking-overline` (letter-spacing ~0.06 em), `content-tertiary`, weight 500. This casing is mandatory — never title-case or sentence-case labels. Both wizard summary rails and detail-screen overview grids must match.
 - **Value** — `dd`, `text-sm`, `content-primary`; ids/tokens render mono; a long
   value wraps. Mark a wide field `--full` to span the whole row.
 

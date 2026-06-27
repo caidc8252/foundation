@@ -45,7 +45,7 @@ Classes in `primitives/primitives.css` (on top of the inlined tokens).
 
 | component | use | classes (main; full set in `catalog.json`) | links |
 |---|---|---|---|
-| `accordion` | A vertical stack of collapsible disclosure sections. | `.accordion` `.accordion__item` `.accordion__trigger` `.accordion__arrow` `.accordion__content` `.accordion__item--open` | [contract](../primitives/accordion.md) |
+| `accordion` | A vertical stack of collapsible disclosure sections. | `.accordion__content` `.accordion__item--open` `.accordion__arrow` `--accordion-panel-height` `.accordion` `.accordion__item` `.accordion__trigger` | [contract](../primitives/accordion.md) |
 | `alert-dialog` | A forced-action confirm. | `.alert-dialog-overlay` `.alert-dialog` `.alert-dialog__header` `.alert-dialog__title` `.alert-dialog__description` `.alert-dialog__footer` `.btn` | [contract](../primitives/alert-dialog.md) |
 | `alert` | An inline, in-flow status message box. | `.alert` `.alert__icon` `.alert__title` `.alert__description` `.alert__action` `.alert--with-icon` `.btn` | [contract](../primitives/alert.md) |
 | `aspect-ratio` | A layout box that locks its content to a fixed width:height ratio (16/9 video thumbnails, 1/1 avatars-in-cards, 4/3 media tiles). | `--ratio` | [contract](../primitives/aspect-ratio.md) |
@@ -89,10 +89,10 @@ Classes in `primitives/primitives.css` (on top of the inlined tokens).
 | `select` | A dropdown for choosing one option from a list. | — | [contract](../primitives/select.md) |
 | `separator` | A hairline divider that splits content along one axis. | `.separator--vertical` | [contract](../primitives/separator.md) |
 | `sheet` | An edge-docked side panel that slides in over a dimmed scrim. | `.sheet-overlay` `.sheet` `.sheet--right` `--left` `--top` `--bottom` `.sheet__header` `.sheet__title` `.sheet__description` `.sheet__footer` `.btn` | [contract](../primitives/sheet.md) |
-| `slider` | A draggable track-and-thumb input for selecting a numeric value, or a range (two thumbs) along a continuous scale. | `.slider` `.slider__track` `.slider__indicator` `.slider__thumb` | [contract](../primitives/slider.md) |
+| `slider` | A draggable track-and-thumb input for selecting a numeric value, or a range (two thumbs) along a continuous scale. | `.slider__thumb` `.slider` `.slider__track` `.slider__indicator` | [contract](../primitives/slider.md) |
 | `spinner` | A circular, indeterminate loading indicator — a spinning ring shown while content or an action is in flight (in-button loading, inline "fetching", small section busy state). | — | [contract](../primitives/spinner.md) |
 | `switch` | A binary on/off toggle for an immediate state change (enable/disable, light/dark). | `.switch` `.switch--sm` `.switch__thumb` | [contract](../primitives/switch.md) |
-| `tabs` | A tabbed control: a horizontal bar of triggers that switch which content panel is shown. | `.tabs` `.tabs__list` `.tabs__list--line` `.tabs__list--default` `.tabs__trigger` `.tabs__trigger--active` `.tabs__content` | [contract](../primitives/tabs.md) |
+| `tabs` | A tabbed control: a horizontal bar of triggers that switch which content panel is shown. | `.tabs__content` `.tabs` `.tabs__list` `.tabs__list--line` `.tabs__list--default` `.tabs__trigger` `.tabs__trigger--active` | [contract](../primitives/tabs.md) |
 | `textarea` | A multi-line text field. | `.textarea` | [contract](../primitives/textarea.md) |
 | `time-picker` | A time-only field built on the native <input type="time">. | `.date-trigger__clear` `.input-group` `.input-group__addon` | [contract](../primitives/time-picker.md) |
 | `toast` | A transient, auto-dismissing notification (sonner). | `.toast` `.toast--with-icon` `.toast__icon` `.toast__content` `.toast__title` `.toast__description` `.toast__close` `--toast-duration` | [contract](../primitives/toast.md) |
@@ -100,12 +100,13 @@ Classes in `primitives/primitives.css` (on top of the inlined tokens).
 | `toggle` | A press-toggle button with on/off (pressed) state. | `.toggle` `.toggle-group` | [contract](../primitives/toggle.md) |
 | `tooltip` | A short text hint shown on hover/focus of a trigger. | `.tooltip` `.tooltip__arrow` | [contract](../primitives/tooltip.md) |
 
-## L2.5 · Composites (25) — page building blocks
+## L2.5 · Composites (26) — page building blocks
 
 Classes in `composites/composites.css` (load after primitives — they reuse `.btn`/`.input`/…).
 
 | component | use | classes (main; full set in `catalog.json`) | links |
 |---|---|---|---|
+| `amount-summary` | A totals block for order, cart, and checkout screens: a hairline separator followed by a right-aligned stack of label → value rows (subtotal, discount, shipping, …) and an emphasised grand-total row. | `.amount-summary` `.amount-row` `.amount-row__label` `.amount-row__value` `.amount-row--total` | [contract](../composites/amount-summary.md) |
 | `app-frame` | The portal chrome a page lives inside: a fixed sidebar, a sticky top header, and the scrolling content region. | `.app-frame` `.app-frame__sidebar` `--active` `.app-frame__col` `.app-frame__header` `.app-frame__main` | [contract](../composites/app-frame.md) |
 | `chart` | The data-viz family — bar, pie-with-callouts, sparkline, and the shared chrome (legend, tooltip, empty/loading states) — all themed off one categorical palette. | `.chart` `.chart__grid` `.chart__axis` `.chart__tick` `.chart__bar` `.chart__curve` `.chart__series--selected` `--dimmed` `--filtered` `.chart-legend` `.chart-legend__item` `--toggle` `--off` `.chart-legend__swatch` `--line` `.chart-legend__label` `.chart-tooltip` `.chart-tooltip__header` `.chart-tooltip__row` `.chart-tooltip__indicator` `--dashed` `.chart-tooltip__name` `.chart-tooltip__value` `.chart-tooltip__total` `.chart-sparkline` `.chart-empty` `.chart-empty__icon` `.chart-empty__title` `.chart-empty__description` `.chart-skeleton` | [contract](../composites/chart.md) |
 | `data-table` | The workhorse of the list pattern: rows you scan, sort, select, and act on. | `.table-frame` `.table-scroll` `--compact` `--spacious` `--sticky-head` `--sticky-col` `--striped` `.cell-num` `.cell-right` `.cell-2line` `.cell-tags` `.cell-chevron` `.cell-empty` `.row-actions` `.col-select` | [contract](../composites/data-table.md) |

@@ -113,6 +113,7 @@ const readLayer = (path) => readFileSync(join(root, path), "utf8");
 const tokens = readLayer("dist/tokens.inline.css");
 const primitives = readLayer("primitives/primitives.css");
 const composites = readLayer("composites/composites.css");
+const pkgVersion = JSON.parse(readLayer("package.json")).version; // G3 version stamp source
 
 const artifactCss = `
 /* 1/5 embedded Geist font layer */
@@ -152,7 +153,8 @@ body {
 ${pageLocalCss}
 `.trim();
 
-const output = `<!doctype html>
+const output = `<!-- foundation: v${pkgVersion} -->
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
