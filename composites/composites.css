@@ -41,6 +41,19 @@
   padding-block: var(--space-6) var(--space-8); /* 24 top, 32 bottom */
 }
 
+/* ═══════════════════════════════ Stack ═══════════════════════════════ */
+/* Vertical rhythm for block groups you compose by hand — sibling cards in a tab
+   panel, stacked sub-sections inside a card. page-body auto-stacks ITS direct
+   children at space-6; .stack brings the same rhythm anywhere else so a stacked
+   group never falls back to 0-gap. Rung per the spacing ladder (principles §13):
+   --5 sibling cards · --4 condition↔list · --3 in-card elements / stat grids.
+   Don't hand-roll margins between blocks; don't p-0 a slot (use its --flush). */
+.stack { display: flex; flex-direction: column; }
+.stack--6 { gap: var(--space-6); }
+.stack--5 { gap: var(--space-5); }
+.stack--4 { gap: var(--space-4); }
+.stack--3 { gap: var(--space-3); }
+
 /* ═══════════════════════════ Auto-fit grids ═══════════════════════════ */
 /* Artifact-side mirror of @cloud/ui's `@utility grid-auto-fit-kv`
    (packages/ui/src/components/styles/index.css). Column count follows the

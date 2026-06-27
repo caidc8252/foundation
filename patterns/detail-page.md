@@ -82,13 +82,15 @@ when this record's job calls for it.
   the one consistent block for every record-list section / tab (contracts, operators,
   members, devices, …). The shape is fixed:
   `section-card` › `card__header` ( **title** · optional **count** · **at most one**
-  action — the section's add / primary verb ) › `card__content` › `data-table`
+  action — the section's add / primary verb ) › a **flush** `card__content`
+  (`.card__content--flush` — never an inline `padding:0` hack) › `data-table`
   (row actions **always-visible** per [`data-table`](../composites/data-table.md);
   an `empty-state` in place of rows when the collection is empty). The count +
   action live in the **section-card header**, *not* a `summary-bar` — the
   [`summary-bar`](../composites/summary-bar.md) belongs to the list page, not a
-  detail section. Multiple such sections in one tab **stack vertically** (e.g.
-  Operators = an accounts `section-card` + a pending-invitations `section-card`).
+  detail section. Multiple such sections in one tab **stack vertically in a
+  `.stack--5`** (the sibling-card rung, principles §13 — they **never touch / 0-gap**;
+  e.g. Operators = an accounts `section-card` + a pending-invitations `section-card`).
   Don't hand-roll a different card/table shape per tab — every collection section
   reads the same.
 - **At most one primary action**, rightmost (mirrors `detail-header` /

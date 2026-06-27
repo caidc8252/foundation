@@ -148,3 +148,34 @@ Within a row — a table row, list item, header band, detail-head — the leadin
 label/title and the trailing actions sit on one horizontal centerline. Exception:
 when the leading content is genuinely multi-line (title + sub-line + meta), the
 trailing actions align to the **first** line, not the block center.
+
+## 13. Spacing rhythm — the nesting ladder
+
+Block-to-block spacing is part of the design, not a per-page guess. Page-level
+rhythm and slot padding are **provided** — `page-body` stacks its direct children,
+`card` slots own their padding; never hand-write those. What you compose by hand
+is the gap **between** the blocks/cards you stack, chosen by nesting tightness from
+this ladder (deeper nesting = tighter). Only `--space-*` steps — never an arbitrary
+value, and **never `p-0` / `m-0` to fake spacing** (flush a slot with its `flush`
+modifier, e.g. `.card__content--flush`).
+
+| between | token |
+|---|---|
+| `page-body` direct children (cards / bands / rows) | `space-6` (24px) — auto by `page-body` |
+| sibling block-cards you stack yourself (tab panel, wrapper) | `space-5` (20px) |
+| condition band ↔ list card | `space-4` (16px) sticky · `space-6` (24px) short / embedded |
+| main card ↔ a tightly-bound sub-card | 14px (React `gap-3.5`; no raw token — artifacts approximate) |
+| **in-card stacked elements** (header ↔ alert ↔ body ↔ sub-section) | **`space-3` (12px)** |
+| stat-card grid | `space-3` (12px) |
+| tight pair (title ↔ description, label ↔ control) | `space-1` / `space-2` (4 / 8px) |
+
+- **Compose stacked blocks with the `.stack` / `.stack--N` utility** (`flex-col` +
+  the rung's gap): `.stack--5` for sibling cards, `.stack--3` for in-card elements.
+  A stacked group then never falls back to 0-gap — spacing is a composition choice,
+  not a margin you can forget.
+- **Two stacked blocks never touch.** A 0-gap stack (or a `p-0` hack to flush a slot)
+  is a defect: the checker warns on inline `style` padding/margin hacks, and review
+  fails any two blocks that touch.
+
+(This is the canonical home for the portal spacing system; the standalone
+`docs/protal-page-style-spec.md` §3 is being folded in here.)
