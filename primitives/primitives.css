@@ -595,6 +595,24 @@
 .card__content--flush,
 .card__header--flush,
 .card__footer--flush { padding: 0; }
+
+/* Header title + description. Enumerated in the catalog and used by artifacts, but
+   previously unimplemented — so title/description rendered with no type contrast and,
+   crucially, no gap (they stuck together). Type per the Card contract; the
+   description's margin-top is the separation (layout-agnostic, safe inside a block,
+   flex, or grid header). */
+.card__title {
+  font-size: var(--text-md);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-content-primary);
+}
+.card__description {
+  margin-top: var(--space-1);
+  font-size: var(--text-xs);
+  line-height: 1.5;
+  color: var(--color-content-tertiary);
+}
 /* ===== @cloud/ui coverage expansion (added below) ===== */
 /* Primitives: 39 components authored from @cloud/ui, token-only. */
 
@@ -2602,6 +2620,12 @@
   align-items: center;
   gap: var(--space-2);
 }
+/* In React, focus lives on a hidden <input>; a static-HTML artifact instead makes
+   this container focusable (tabindex) to capture typing — which would paint a UA
+   focus ring around the whole group. Suppress it: the active-slot ring below is
+   the focus indicator, so a11y is preserved. */
+.input-otp:focus,
+.input-otp:focus-visible { outline: none; }
 /* dims when the underlying control is disabled */
 .input-otp:has(:disabled),
 .input-otp[aria-disabled="true"] {

@@ -62,6 +62,7 @@ Card
 
 - **The root owns NO padding.** All padding lives on the slots (`CardHeader`/`CardContent`/`CardFooter`), driven by the root's `size` via a `group-data` variant. Do not expect content to be inset unless you use a slot.
 - Because slot padding is a `group-data` variant class, a consumer's plain `p-0` can't override it (tailwind-merge won't dedupe across variants). Use the slot's `flush` prop for full-bleed content (tables, row lists) — rows then own their padding.
+- **Table or row-list in a card → flush the content slot.** A `data-table` / row-list inside `CardContent` must use `flush` (artifact: add `.card__content--flush` to the `.card__content` holding it) so the slot drops its padding and the table sits flush to the card edges, aligned with the header rule — the table frame and rows own their spacing. A non-flush `card__content` double-pads the table and misaligns its edges. (Mechanism is the **card's**, not the table's; `.table-frame--flush` is a separate data-table concern — corner clipping / sticky — not this.)
 - `CardAction` is vertically centered against the title block (team spec), not top-aligned like shadcn.
 
 ## Implementations

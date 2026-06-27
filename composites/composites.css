@@ -1486,7 +1486,7 @@
   align-items: flex-start;
   gap: var(--space-3) var(--space-4);
   padding-inline: var(--space-6);
-  padding-block: var(--space-4) var(--space-3);
+  padding-block: var(--space-4); /* 16px top & bottom — symmetric */
 }
 /* icon-only ghost back button — reuses .btn--ghost; this only nudges it to align
    with the title baseline and keeps it from shrinking. */
