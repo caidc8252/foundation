@@ -59,6 +59,69 @@ The indicator is clipped by the track (`overflow-hidden` + `radius-full`), so th
 - **Ring, not shadow-focus.** Unlike checkbox/radio/input (which use the `shadow-focus` token), the slider thumb expresses hover/active/focus with a 2px ring of `primary` at 30% opacity. The reference CSS reproduces this with `color-mix(... var(--color-primary-700) 30% ...)` rather than the shared focus token, to stay faithful to the source.
 - **Behavior owned by the React implementation.** Drag, keyboard stepping, value→position mapping, range/multi-thumb layout, and orientation switching are base-ui's; the reference CSS expresses the static skin only (rail, fill, thumb, states).
 
+## Artifact behavior (vanilla JS — paste, don't improvise)
+
+The CSS above is a static skin; in a self-contained HTML artifact, wire it with this
+progressive-enhancement snippet (CSP-safe, no deps). The skin renders without JS.
+
+```js
+(function () {
+  // Thumb width in px — matches .slider__thumb { width: 14px }
+  var THUMB_PX = 14;
+
+  function syncSlider(root) {
+    var input = root.querySelector('input[type="range"]');
+    var indicator = root.querySelector('.slider__indicator');
+    var thumb = root.querySelector('.slider__thumb');
+    if (!input || !indicator || !thumb) return;
+
+    function update() {
+      var min = parseFloat(input.min) || 0;
+      var max = parseFloat(input.max) || 100;
+      var val = parseFloat(input.value) || 0;
+      // Fraction in [0, 1]
+      var pct = (val - min) / (max - min);
+      var pctCss = (pct * 100).toFixed(4) + '%';
+
+      // Fill the indicator from 0 to the thumb centre
+      indicator.style.width = pctCss;
+
+      // Place the thumb so its centre sits at pct along the track.
+      // A naive "left: pct%" positions the thumb's LEFT EDGE at pct —
+      // that reads ~7px too far right at all positions and is worst near
+      // the ends (thumb overflows track). The correction below subtracts
+      // the distance the left edge must retreat from centre:
+      //   offset = pct × THUMB_PX   (the fraction of the thumb width
+      //            that must be pulled back so the centre, not the edge,
+      //            aligns with pct)
+      // Result: left edge = pct% - (pct × THUMB_PX px)
+      //         centre   = pct% - (pct × THUMB_PX px) + THUMB_PX/2 px ✓
+      // At pct=0: left=0px (thumb flush left). At pct=1: left=100% - THUMB_PX px (flush right).
+      thumb.style.left = 'calc(' + pctCss + ' - ' + (pct * THUMB_PX).toFixed(4) + 'px)';
+    }
+
+    input.addEventListener('input', update);
+    update(); // initialise from the value already in the DOM
+  }
+
+  document.querySelectorAll('.slider').forEach(syncSlider);
+})();
+```
+
+**Markup expected** (horizontal, single thumb):
+```html
+<div class="slider">
+  <div class="slider__track">
+    <div class="slider__indicator"></div>
+  </div>
+  <div class="slider__thumb"></div>
+  <!-- native range sits on top, full width, opacity:0 or pointer capture -->
+  <input type="range" min="0" max="100" value="30"
+         style="position:absolute;inset:0;width:100%;opacity:0;cursor:pointer;">
+</div>
+```
+The `.slider__thumb` must be `position:absolute` (or positioned relative to `.slider`) so `left` drives its horizontal position; the track's `overflow:hidden` clips the indicator automatically.
+
 ## Implementations
 
 - **Next / @cloud/ui** — `import { Slider } from "@cloud/ui"`. base-ui `Slider` under the hood (`Root`/`Control`/`Track`/`Indicator`/`Thumb`); props include `value`/`defaultValue` (array — one entry per thumb), `min`/`max`, orientation via base-ui. API details: the `ui` skill. Do not re-skin via `className`.

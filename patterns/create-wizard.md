@@ -62,6 +62,11 @@ summary rail and the done state are **optional**, included per business need.
   prior step with its fields intact. Back is **hidden on step 1** (not merely
   disabled — the slot is empty and the Continue button stays right-aligned alone),
   and visible from step 2 onward.
+  - **Footer is right-aligned, not split.** Back + Continue ride the **same right
+    edge** (`justify-content: flex-end`; Back is a ghost just left of Continue) —
+    **never push Back to the far left** with `margin-inline-start/right: auto` or
+    `justify-content: space-between`. Copy the example's `.wizard-footer`; don't
+    hand-roll a left-Back / right-Next split.
 - **The summary rail is all-or-nothing across steps** — show it on every step or
   none; it never blinks in and out. It's a `dl` of entered values; an unfilled value
   renders an **em-dash** (`—`), never a blank or a guess.

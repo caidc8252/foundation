@@ -2565,6 +2565,7 @@
   font-family: var(--font-sans);
   font-size: var(--text-sm);
   font-weight: 500;
+  white-space: nowrap; /* a text affix ("% off", "USD") stays on one line — never wraps when the field is narrow */
   cursor: text;
   user-select: none;
 }

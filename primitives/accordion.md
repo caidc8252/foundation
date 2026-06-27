@@ -78,6 +78,89 @@ and whether the arrow shows at all:
   trigger's text content, not the icon.
 - Focus ring (`line-focus`, inset) is never removed.
 
+## Artifact behavior (vanilla JS — paste, don't improvise)
+
+The CSS above is a static skin; in a self-contained HTML artifact, wire it with this
+progressive-enhancement snippet (CSP-safe, no deps). The skin renders without JS.
+
+```js
+(function () {
+  document.querySelectorAll('.accordion').forEach(function (root) {
+    root.querySelectorAll('.accordion__trigger').forEach(function (trigger) {
+      trigger.addEventListener('click', function () {
+        if (trigger.disabled || trigger.getAttribute('aria-disabled') === 'true') return;
+
+        var item = trigger.closest('.accordion__item');
+        if (!item) return;
+        var isOpen = item.classList.contains('accordion__item--open');
+
+        // Toggle this item (leave siblings alone — "multiple open" is the default;
+        // for "single open" behaviour, close siblings first — see comment below)
+        if (isOpen) {
+          item.classList.remove('accordion__item--open');
+          trigger.setAttribute('aria-expanded', 'false');
+        } else {
+          item.classList.add('accordion__item--open');
+          trigger.setAttribute('aria-expanded', 'true');
+        }
+      });
+
+      // Keyboard: Space / Enter already fire click on <button>; add Home/End roaming
+      trigger.addEventListener('keydown', function (e) {
+        var triggers = Array.from(root.querySelectorAll('.accordion__trigger:not(:disabled)'));
+        var idx = triggers.indexOf(trigger);
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          if (idx + 1 < triggers.length) triggers[idx + 1].focus();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          if (idx > 0) triggers[idx - 1].focus();
+        } else if (e.key === 'Home') {
+          e.preventDefault(); triggers[0].focus();
+        } else if (e.key === 'End') {
+          e.preventDefault(); triggers[triggers.length - 1].focus();
+        }
+      });
+    });
+
+    // For "single open" (accordion-style), replace the click handler body with:
+    //   root.querySelectorAll('.accordion__item').forEach(function(i){
+    //     i.classList.remove('accordion__item--open');
+    //     i.querySelector('.accordion__trigger').setAttribute('aria-expanded','false');
+    //   });
+    //   item.classList.add('accordion__item--open');
+    //   trigger.setAttribute('aria-expanded','true');
+  });
+})();
+```
+
+**Markup expected:**
+```html
+<div class="accordion">
+  <!-- open item -->
+  <div class="accordion__item accordion__item--open">
+    <button class="accordion__trigger" aria-expanded="true">
+      <span class="accordion__label">Section 1</span>
+      <span class="accordion__arrow" aria-hidden="true">&#x2304;</span>
+    </button>
+    <div class="accordion__content">
+      <p>Panel content here.</p>
+    </div>
+  </div>
+  <!-- closed item -->
+  <div class="accordion__item">
+    <button class="accordion__trigger" aria-expanded="false">
+      <span class="accordion__label">Section 2</span>
+      <span class="accordion__arrow" aria-hidden="true">&#x2304;</span>
+    </button>
+    <div class="accordion__content">
+      <p>Panel content here.</p>
+    </div>
+  </div>
+</div>
+```
+CSS shows `.accordion__content` when the parent `.accordion__item--open` is set, and rotates `.accordion__arrow` when `aria-expanded="true"` is on the trigger — no inline style needed.
+
 ## Implementations
 
 - **Next / @cloud/ui** — `import { Accordion, AccordionItem, AccordionTrigger,

@@ -62,6 +62,66 @@ Two slots: the pill **track** (root) and the circular **thumb**. The thumb is `p
 - **Token gap (thumb shadow).** The implementation gives the thumb a bespoke two-layer shadow (`0 1px 2px …/0.18, 0 0 0 0.5px …/0.08`) with no matching shadow token. `--shadow-1` is the nearest existing token and is what the reference CSS uses; proposal: a dedicated `--shadow-thumb` if exactness matters.
 - The implementation's `bg-background` thumb maps to `surface-1`; `bg-primary` maps to the `primary-700` CTA color; `border-destructive` / `ring-destructive` map to `error`. The `dark:*` classes are theme overrides that resolve automatically via the flipped tokens — the reference layer needs no dark handling.
 
+## Artifact behavior (vanilla JS — paste, don't improvise)
+
+The CSS above is a static skin; in a self-contained HTML artifact, wire it with this
+progressive-enhancement snippet (CSP-safe, no deps). The skin renders without JS.
+
+```js
+(function () {
+  document.querySelectorAll('.switch').forEach(function (sw) {
+    function isChecked() {
+      return sw.getAttribute('aria-checked') === 'true' || sw.hasAttribute('data-checked');
+    }
+
+    function toggle() {
+      if (sw.disabled || sw.getAttribute('aria-disabled') === 'true') return;
+      var nowChecked = !isChecked();
+      sw.setAttribute('aria-checked', String(nowChecked));
+      if (nowChecked) {
+        sw.setAttribute('data-checked', '');
+      } else {
+        sw.removeAttribute('data-checked');
+      }
+      // Fire a change-like event so surrounding code can react
+      sw.dispatchEvent(new CustomEvent('switch:change', { bubbles: true, detail: { checked: nowChecked } }));
+    }
+
+    sw.addEventListener('click', toggle);
+
+    sw.addEventListener('keydown', function (e) {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        toggle();
+      }
+    });
+
+    // Ensure the element is keyboard-reachable if not already
+    if (!sw.hasAttribute('tabindex') && sw.tagName !== 'BUTTON') {
+      sw.setAttribute('tabindex', '0');
+    }
+    // role="switch" is required for a11y; set it if the consumer forgot
+    if (!sw.getAttribute('role')) {
+      sw.setAttribute('role', 'switch');
+    }
+  });
+})();
+```
+
+**Markup expected:**
+```html
+<!-- unchecked -->
+<button class="switch" role="switch" aria-checked="false" aria-label="Enable notifications">
+  <span class="switch__thumb"></span>
+</button>
+
+<!-- checked (add data-checked OR aria-checked="true" — CSS keys on both) -->
+<button class="switch" role="switch" aria-checked="true" data-checked aria-label="Enable notifications">
+  <span class="switch__thumb"></span>
+</button>
+```
+The CSS drives the track fill and thumb translate from `[aria-checked="true"]` / `[data-checked]`; no inline style needed.
+
 ## Implementations
 
 - **Next / @cloud/ui** — `import { Switch } from "@cloud/ui"`. base-ui `Switch` (Root + Thumb) under the hood; prop `size` (`"sm" | "default"`). Toggle behavior (checked state, keyboard, `aria-checked`) is owned by the React/base-ui implementation; the contract and reference CSS express the static skin only. API details: the `ui` skill. For a labeled field use `ToggleSwitch`.
