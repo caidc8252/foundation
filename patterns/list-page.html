@@ -16,10 +16,6 @@
     To ship as a self-contained artifact (CSP, no external fetch), inline those
     three blocks into a <style> instead — see README "How each consumer uses it".
 
-  WHAT YOU PORT
-    .app-frame is CONTEXT ONLY — it mirrors Layout so the page renders at the true
-    content width with the real scroll root. You do NOT port it. The page is
-    everything inside .app-frame__main (the .page-header + .page-body below).
 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -30,6 +26,7 @@
 <link rel="stylesheet" href="../composites/composites.css">
 
 <style>
+
   /* Page-local composition — NOT new design vocabulary, just how this screen's
      cell content stacks. All values are tokens; restyle or drop freely. */
 
@@ -50,48 +47,11 @@
   .cell-chevron { color: var(--color-content-tertiary); }
   .cell-chevron svg { width: var(--space-4); height: var(--space-4); }
 </style>
+<body>
 
 <div class="app-frame">
-  <!-- ░░░ CONTEXT ONLY — the shell. Not ported (the app already has Layout). ░░░ -->
-  <aside class="app-frame__sidebar">
-    <div class="app-frame__brand">◆ Acme Portal</div>
-    <nav class="app-frame__nav">
-      <span class="app-frame__nav-label">Workspace</span>
-      <a class="app-frame__nav-item app-frame__nav-item--active">
-        <svg data-lucide="users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
-        Customers
-      </a>
-      <a class="app-frame__nav-item">
-        <svg data-lucide="shopping-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 10a4 4 0 0 1-8 0"/><path d="M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
-        Orders
-      </a>
-      <a class="app-frame__nav-item">
-        <svg data-lucide="package" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><polyline points="3.29 7 12 12 20.71 7"/><path d="m7.5 4.27 9 5.15"/></svg>
-        Products
-      </a>
-      <span class="app-frame__nav-label">Account</span>
-      <a class="app-frame__nav-item">
-        <svg data-lucide="settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>
-        Settings
-      </a>
-    </nav>
-  </aside>
-
   <div class="app-frame__col">
-    <header class="app-frame__header">
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb__list">
-          <li class="breadcrumb__item"><a class="breadcrumb__link">Home</a></li>
-          <li class="breadcrumb__separator" aria-hidden="true">/</li>
-          <li class="breadcrumb__item"><span class="breadcrumb__page" aria-current="page">Customers</span></li>
-        </ol>
-      </nav>
-      <span class="app-frame__spacer"></span>
-      <div class="app-frame__avatar">JD</div>
-    </header>
-
     <main class="app-frame__main">
-      <!-- ════════════════ PAGE — port everything below ════════════════ -->
       <!--
         REQUIRED CORE vs OPTIONAL SLOTS (see list-page.md §"Required core / optional
         slots" + governance principle #9 — Patterns are frameworks). A pattern
@@ -160,10 +120,9 @@
         </div>
         <!-- /OPTIONAL condition band -->
 
-        <!-- ■ REQUIRED CORE — results card = table-frame --flush wrapping summary-bar + table + pagination
-             (the count bar, table, and pagination are the results block's required internals; keep all three).
-             --flush rounds the corners WITHOUT trapping the sticky parts inside the card. -->
-        <div class="table-frame table-frame--flush">
+        <!-- ■ REQUIRED CORE — results card = table-frame wrapping summary-bar + table + pagination
+             (the count bar, table, and pagination are the results block's required internals; keep all three). -->
+        <div class="table-frame">
 
           <!-- summary bar (sticky) — count appends "matching filters" when any filter is applied -->
           <div class="summary-bar">
@@ -382,11 +341,9 @@
         <!-- /REQUIRED CORE results card -->
       </div>
 
-      <!-- ════════════════ /PAGE ════════════════ -->
     </main>
   </div>
 </div>
-
 <script>
 (function () {
   'use strict';
@@ -495,3 +452,4 @@
   });
 })();
 </script>
+</body>

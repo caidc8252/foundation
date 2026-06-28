@@ -136,11 +136,7 @@ when this record's job calls for it.
 
 **Overview structure** — `overview` = a **main card** (the KV grid, via
 `grid-auto-fit-kv`) **+ an optional right rail**. The rail stacks `stat-card`s
-(key metrics) and/or an **amount-summary** (subtotal/fee lines + an emphasized
-total, right-aligned mono) for order/invoice-style records.
-
-- ⚠️ Foundation has no dedicated `amount-summary` composite yet — known gap.
-  Compose it from `Separator` + mono KV for now; don't invent classes.
+(key metrics) for order/invoice-style records.
 
 **Detail head** — the **title/name** is the only required slot. An OPTIONAL
 leading **back button** (ghost icon + a left chevron, `aria-label` required,

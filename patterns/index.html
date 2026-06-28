@@ -70,8 +70,8 @@
     <code>../primitives/primitives.css</code> → <code>../composites/composites.css</code> (that load
     order matters) — so edits to tokens / primitives / composites flow straight through and nothing forks.
     To ship one as a self-contained artifact (CSP, no external fetch), inline those three blocks into a
-    <code>&lt;style&gt;</code> instead, per the README. The <code>.app-frame</code> shell in each file is
-    <b>context only</b> — you port what lives inside <code>.app-frame__main</code>.
+    <code>&lt;style&gt;</code> instead, per the README. Each file is a ready-to-copy frameless page — the
+    markup starts directly with <code>&lt;main class="app-frame__main"&gt;</code>, no shell to strip.
   </div>
 
   <div class="grid">

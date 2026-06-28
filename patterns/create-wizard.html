@@ -16,9 +16,6 @@
     To ship as a self-contained artifact (CSP, no external fetch), inline those
     three blocks into a <style> instead — see README "How each consumer uses it".
 
-  WHAT YOU PORT
-    .app-frame is CONTEXT ONLY — not ported. The page is everything inside
-    .app-frame__main (the .page-header + .page-body).
 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -29,6 +26,7 @@
 <link rel="stylesheet" href="../composites/composites.css">
 
 <style>
+
   /* Ensure [hidden] always wins over component display rules (e.g. .btn { display: inline-flex }). */
   [hidden] { display: none !important; }
 
@@ -93,39 +91,11 @@
   .wizard-done__title { font-size: var(--text-2xl); font-weight: 600; letter-spacing: -0.01em; color: var(--color-content-primary); margin-bottom: var(--space-2); }
   .wizard-done__text { font-size: var(--text-sm); color: var(--color-content-secondary); line-height: 1.6; margin-bottom: var(--space-6); }
 </style>
+<body>
 
 <div class="app-frame">
-  <!-- ░░░ CONTEXT ONLY — the shell. Not ported. ░░░ -->
-  <aside class="app-frame__sidebar">
-    <div class="app-frame__brand">◆ Acme Portal</div>
-    <nav class="app-frame__nav">
-      <span class="app-frame__nav-label">Workspace</span>
-      <a class="app-frame__nav-item app-frame__nav-item--active">
-        <svg data-lucide="users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
-        Customers
-      </a>
-      <a class="app-frame__nav-item">
-        <svg data-lucide="shopping-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 10a4 4 0 0 1-8 0"/><path d="M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
-        Orders
-      </a>
-    </nav>
-  </aside>
-
   <div class="app-frame__col">
-    <header class="app-frame__header">
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb__list">
-          <li class="breadcrumb__item"><a class="breadcrumb__link">Customers</a></li>
-          <li class="breadcrumb__separator" aria-hidden="true">/</li>
-          <li class="breadcrumb__item"><span class="breadcrumb__page" aria-current="page">New customer</span></li>
-        </ol>
-      </nav>
-      <span class="app-frame__spacer"></span>
-      <div class="app-frame__avatar">JD</div>
-    </header>
-
     <main class="app-frame__main">
-      <!-- ════════════════ PAGE — port everything below ════════════════ -->
       <!-- REQUIRED CORE (governance principle #9): header + step indicator + step body + nav.
            These four slots are what make this a wizard — keep all four. The summary rail and
            the done state below are OPTIONAL and marked removable where they appear. -->
@@ -354,11 +324,9 @@
         </div>
 
       </div>
-      <!-- ════════════════ /PAGE ════════════════ -->
     </main>
   </div>
 </div>
-
 <script>
   /* show/hide via style.display — reliable regardless of CSS class specificity */
   function show(el) { el.style.display = ''; el.removeAttribute('hidden'); }
@@ -568,3 +536,4 @@
   /* ── Init ── */
   render();
 </script>
+</body>

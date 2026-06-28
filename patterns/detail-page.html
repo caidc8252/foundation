@@ -19,9 +19,6 @@
     To ship as a self-contained artifact (CSP, no external fetch), inline those
     three blocks into a <style> instead — see README "How each consumer uses it".
 
-  WHAT YOU PORT
-    .app-frame is CONTEXT ONLY — not ported. The page is everything inside
-    .app-frame__main (the .detail-header band + .page-body).
 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -32,6 +29,7 @@
 <link rel="stylesheet" href="../composites/composites.css">
 
 <style>
+
   /* Page-local composition — NOT new design vocabulary. All values are tokens. */
 
   /* Overview = a key-value grid. The real .kv-grid composite in composites.css
@@ -40,53 +38,15 @@
   .kv__value--mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
   .kv__value--reveal { display: inline-flex; align-items: center; gap: var(--space-2); }
 
-  .section-title { font-size: var(--text-sm); font-weight: 600; color: var(--color-content-primary); }
-  /* Push the section-card header action to the trailing edge (layout-only, no design token) */
-  .card__header .header-action-end { margin-inline-start: auto; }
-
   /* Meta-row icon sizing (the dot separators come from .detail-header__meta itself). */
   .detail-header__meta svg { width: var(--space-3); height: var(--space-3); vertical-align: -1px; }
   .detail-header__meta .meta-item { display: inline-flex; align-items: center; gap: var(--space-1); }
 </style>
+<body>
 
 <div class="app-frame">
-  <!-- ░░░ CONTEXT ONLY — the shell. Not ported. ░░░ -->
-  <aside class="app-frame__sidebar">
-    <div class="app-frame__brand">◆ Acme Portal</div>
-    <nav class="app-frame__nav">
-      <span class="app-frame__nav-label">Workspace</span>
-      <a class="app-frame__nav-item app-frame__nav-item--active">
-        <svg data-lucide="users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
-        Customers
-      </a>
-      <a class="app-frame__nav-item">
-        <svg data-lucide="shopping-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 10a4 4 0 0 1-8 0"/><path d="M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
-        Orders
-      </a>
-      <a class="app-frame__nav-item">
-        <svg data-lucide="package" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><polyline points="3.29 7 12 12 20.71 7"/><path d="m7.5 4.27 9 5.15"/></svg>
-        Products
-      </a>
-    </nav>
-  </aside>
-
   <div class="app-frame__col">
-    <header class="app-frame__header">
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb__list">
-          <li class="breadcrumb__item"><a class="breadcrumb__link">Home</a></li>
-          <li class="breadcrumb__separator" aria-hidden="true">/</li>
-          <li class="breadcrumb__item"><a class="breadcrumb__link">Customers</a></li>
-          <li class="breadcrumb__separator" aria-hidden="true">/</li>
-          <li class="breadcrumb__item"><span class="breadcrumb__page" aria-current="page">Acme Robotics</span></li>
-        </ol>
-      </nav>
-      <span class="app-frame__spacer"></span>
-      <div class="app-frame__avatar">JD</div>
-    </header>
-
     <main class="app-frame__main">
-      <!-- ════════════════ PAGE — port everything below ════════════════ -->
 
       <!-- detail-header BAND (full-bleed) — back · logo · name+status+meta · actions,
            with the tab strip docked on the band's BOTTOM edge (below the name).
@@ -171,6 +131,7 @@
             <button class="tabs__trigger tabs__trigger--active" type="button" role="tab" aria-selected="true"  aria-controls="panel-overview" data-tab="overview">Overview</button>
             <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false" aria-controls="panel-activity" data-tab="activity">Activity</button>
             <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false" aria-controls="panel-orders"   data-tab="orders">Orders</button>
+            <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false" aria-controls="panel-billing"  data-tab="billing">Billing</button>
             <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false" aria-controls="panel-settings" data-tab="settings">Settings</button>
           </div>
         </div>
@@ -183,7 +144,7 @@
 
         <!-- REQUIRED — Overview (KV grid; columns follow the card's width). The
              body's required main. The overview = main card (kv-grid) + OPTIONAL right rail
-             (stat-cards / amount-summary). Real .kv-grid composite: <dl> › .kv-grid__row
+             (stat-cards). Real .kv-grid composite: <dl> › .kv-grid__row
              each with <dt> label + <dd> value; --full spans all columns. -->
         <!-- ── Overview tab ── -->
         <section class="tabs__content" role="tabpanel" id="panel-overview" data-panel="overview">
@@ -191,7 +152,7 @@
 
             <!-- Main card: KV grid (real composite — dl › .kv-grid__row › dt + dd) -->
             <div class="card">
-              <div class="card__header"><h2 class="section-title">Overview</h2></div>
+              <div class="card__header"><h2 class="card__title">Overview</h2></div>
               <div class="card__content">
                 <!-- .kv-grid is the real composite from composites.css:1587 -->
                 <dl class="kv-grid">
@@ -249,12 +210,14 @@
                   <span class="stat-card__label">Lifetime value</span>
                 </div>
                 <div class="stat-card__value stat-card__value--success">$48,200</div>
+                <p class="stat-card__description">All-time revenue</p>
               </div>
               <div class="stat-card">
                 <div class="stat-card__head">
                   <span class="stat-card__label">Orders placed</span>
                 </div>
                 <div class="stat-card__value">14</div>
+                <p class="stat-card__description">All time</p>
               </div>
             </div>
 
@@ -265,7 +228,7 @@
         <!-- ── Activity tab ── -->
         <section class="tabs__content" role="tabpanel" id="panel-activity" data-panel="activity" hidden>
           <div class="card">
-            <div class="card__header"><h2 class="section-title">Activity</h2></div>
+            <div class="card__header"><h2 class="card__title">Activity</h2></div>
             <div class="card__content">
               <ul class="timeline">
                 <li class="timeline__item">
@@ -339,13 +302,14 @@
              When the collection is empty, swap the data-table rows for an empty-state. -->
         <!-- ── Orders tab ── -->
         <section class="tabs__content" role="tabpanel" id="panel-orders" data-panel="orders" hidden>
-          <div class="card section-card">
+          <div class="card">
             <div class="card__header">
-              <h2 class="section-title">Orders</h2>
-              <!-- count badge — optional, reflects how many rows are in the table -->
-              <span class="badge badge--neutral">14</span>
-              <!-- at-most-one action in the section-card header (the section's primary verb) -->
-              <button class="btn btn--secondary btn--sm header-action-end" type="button">New order</button>
+              <h2 class="card__title">Orders <span class="badge badge--neutral">14</span></h2>
+              <p class="card__description">Purchase orders for this customer.</p>
+              <!-- at-most-one action → .card__action slot, right-aligned by the grid -->
+              <div class="card__action">
+                <button class="btn btn--primary btn--sm" type="button">New order</button>
+              </div>
             </div>
             <!-- card__content--flush: never an inline padding:0 hack -->
             <div class="card__content card__content--flush">
@@ -356,9 +320,8 @@
                       <th>Order</th>
                       <th>Date</th>
                       <th>Status</th>
-                      <th class="cell-num">Amount</th>
-                      <!-- row-actions column: always-visible per data-table contract -->
-                      <th class="row-actions" aria-label="Actions"></th>
+                      <th>Amount</th>
+                      <th aria-hidden="true"></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -396,6 +359,81 @@
           </div>
         </section>
 
+        <!-- OPTIONAL — Billing tab (no-description demo). Delete with its tab trigger.
+             Card header with title + action only (no .card__description).
+             Demonstrates .card__action vertical centering when there is only
+             one header row — the action spans both declared rows (row-span-2)
+             but effectively centers in the single visible row. -->
+        <!-- ── Billing tab ── -->
+        <section class="tabs__content" role="tabpanel" id="panel-billing" data-panel="billing" hidden>
+          <div style="display:grid; gap:var(--space-5);">
+
+            <!-- card with title + action only — no description -->
+            <div class="card">
+              <div class="card__header">
+                <h2 class="card__title">Payment methods</h2>
+                <div class="card__action">
+                  <button class="btn btn--secondary btn--sm" type="button">Add card</button>
+                </div>
+              </div>
+              <div class="card__content">
+                <div class="empty-state">
+                  <div class="empty-state__icon">
+                    <svg data-lucide="credit-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                  </div>
+                  <div class="empty-state__title">No payment methods</div>
+                  <p class="empty-state__description">Add a card or bank account for automatic billing.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- card with title + badge + action only — no description, count in title -->
+            <div class="card">
+              <div class="card__header">
+                <h2 class="card__title">Invoices <span class="badge badge--neutral">3</span></h2>
+                <div class="card__action">
+                  <button class="btn btn--secondary btn--sm" type="button">Download all</button>
+                </div>
+              </div>
+              <div class="card__content card__content--flush">
+                <div class="table-frame table-frame--flush">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Invoice</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="kv__value--mono">INV-2026-003</td>
+                        <td>Jun 1, 2026</td>
+                        <td class="cell-num kv__value--mono">$4,200</td>
+                        <td><span class="badge badge--success"><span class="badge__dot"></span>Paid</span></td>
+                      </tr>
+                      <tr>
+                        <td class="kv__value--mono">INV-2026-002</td>
+                        <td>May 1, 2026</td>
+                        <td class="cell-num kv__value--mono">$4,200</td>
+                        <td><span class="badge badge--success"><span class="badge__dot"></span>Paid</span></td>
+                      </tr>
+                      <tr>
+                        <td class="kv__value--mono">INV-2026-001</td>
+                        <td>Apr 1, 2026</td>
+                        <td class="cell-num kv__value--mono">$4,200</td>
+                        <td><span class="badge badge--success"><span class="badge__dot"></span>Paid</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
         <!-- OPTIONAL — Settings tab (empty state placeholder). Delete with its tab trigger. -->
         <!-- ── Settings tab ── -->
         <section class="tabs__content" role="tabpanel" id="panel-settings" data-panel="settings" hidden>
@@ -414,11 +452,9 @@
 
       </div>
 
-      <!-- ════════════════ /PAGE ════════════════ -->
     </main>
   </div>
 </div>
-
 <script>
   /* Static tab switching — pure presentation (in @cloud/ui this is the Tabs primitive's
      base-ui behavior). Uses style.display so component display rules can't override it. */
@@ -444,3 +480,4 @@
     });
   })();
 </script>
+</body>

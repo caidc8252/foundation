@@ -16,9 +16,6 @@
     To ship as a self-contained artifact (CSP, no external fetch), inline those
     three blocks into a <style> instead — see README "How each consumer uses it".
 
-  WHAT YOU PORT
-    .app-frame is CONTEXT ONLY — not ported. The page is everything inside
-    .app-frame__main (the .page-header + .page-body).
 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -29,6 +26,7 @@
 <link rel="stylesheet" href="../composites/composites.css">
 
 <style>
+
   /* Page-local composition — NOT new design vocabulary. All values are tokens. */
 
   /* Forms CENTER (not full-bleed): cap the measure and center the column. */
@@ -48,41 +46,13 @@
   .field-check { display: flex; align-items: flex-start; gap: var(--space-2); }
   .field-check__text { font-size: var(--text-sm); color: var(--color-content-primary); }
 </style>
+<body>
 
 <div class="app-frame">
-  <!-- ░░░ CONTEXT ONLY — the shell. Not ported. ░░░ -->
-  <aside class="app-frame__sidebar">
-    <div class="app-frame__brand">◆ Acme Portal</div>
-    <nav class="app-frame__nav">
-      <span class="app-frame__nav-label">Workspace</span>
-      <a class="app-frame__nav-item app-frame__nav-item--active">
-        <svg data-lucide="users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
-        Customers
-      </a>
-      <a class="app-frame__nav-item">
-        <svg data-lucide="shopping-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 10a4 4 0 0 1-8 0"/><path d="M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
-        Orders
-      </a>
-    </nav>
-  </aside>
-
   <div class="app-frame__col">
-    <header class="app-frame__header">
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb__list">
-          <li class="breadcrumb__item"><a class="breadcrumb__link">Customers</a></li>
-          <li class="breadcrumb__separator" aria-hidden="true">/</li>
-          <li class="breadcrumb__item"><span class="breadcrumb__page" aria-current="page">New customer</span></li>
-        </ol>
-      </nav>
-      <span class="app-frame__spacer"></span>
-      <div class="app-frame__avatar">JD</div>
-    </header>
-
     <main class="app-frame__main">
-      <!-- ════════════════ PAGE — port everything below ════════════════ -->
       <!--
-        REQUIRED CORE (do not drop): the sticky page-header (title + ghost Cancel +
+        REQUIRED CORE (do not drop): the sticky page-header (title + secondary Cancel +
         primary Create/Save) AND at least one form-section card of fields below.
         Everything marked OPTIONAL is removable per the page's job — copying this
         fully-dressed example does NOT mean keeping every slot.
@@ -96,11 +66,11 @@
             <p class="page-header__description">A single-step create/edit form — a centered card of fields, actions in the sticky header.</p>
           </div>
           <div class="page-header__actions">
-            <!-- REQUIRED: ghost Cancel + primary Create/Save. The primary verb follows
+            <!-- REQUIRED: secondary Cancel + primary Create/Save. The primary verb follows
                  the variant: "Create customer" (create) / "Save changes" (edit).
                  A SECONDARY header action beyond Cancel is OPTIONAL — add one only for a
                  genuine page-level secondary verb. -->
-            <button class="btn btn--ghost" type="button">Cancel</button>
+            <button class="btn btn--secondary" type="button">Cancel</button>
             <button class="btn btn--primary" type="submit" form="create-form">Create customer</button>
           </div>
         </div>
@@ -182,7 +152,7 @@
         -->
 
       </div>
-      <!-- ════════════════ /PAGE ════════════════ -->
     </main>
   </div>
 </div>
+</body>

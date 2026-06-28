@@ -21,6 +21,7 @@
 <link rel="stylesheet" href="../composites/composites.css">
 
 <style>
+
   /* ── Page-local composition (same as list-page.html) ── */
 
   /* LP4: two-line cell tile wrapper — tile is page-local; text uses .cell-2line composite */
@@ -36,8 +37,9 @@
   .cell-chevron { color: var(--color-content-tertiary); }
   .cell-chevron svg { width: var(--space-4); height: var(--space-4); }
 
-  /* ── Drawer body — scrollable middle section between header and footer ── */
-  .drawer__body {
+  /* ── Sheet body — scrollable middle section between header and footer.
+         The .sheet primitive omits this slot; added here for the filter sheet. ── */
+  .sheet__body {
     flex: 1;
     overflow-y: auto;
     padding: var(--space-5);
@@ -87,77 +89,63 @@
     user-select: none;
   }
 
-  /* ── Drawer close button — top-right corner of the header ── */
-  .drawer__close {
-    position: absolute;
-    top: var(--space-3);
-    right: var(--space-3);
+  /* ── Filter-sheet header: overrides .sheet__header flex-direction → row,
+         matching advanced-filter-sheet.tsx (funnel icon + title/desc column +
+         inline close button, all vertically centered, border-b separator). ── */
+  .filter-sheet__header {
+    flex-direction: row;
+    align-items: center;
+    border-bottom: 1px solid var(--color-line-subtle);
+  }
+  .filter-sheet__icon {
+    flex-shrink: 0;
+    width: var(--space-4);
+    height: var(--space-4);
+    color: var(--color-primary-700);
+    margin-right: var(--space-2_5);
+  }
+  .filter-sheet__text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--space-1) / 2);
+  }
+  /* advanced-filter-sheet.tsx overrides SheetDescription to text-xs + tertiary */
+  .filter-sheet__text .sheet__description {
+    font-size: var(--text-xs);
+    color: var(--color-content-tertiary);
   }
 
-  /* ── Drawer header: relative so close btn positions against it ── */
-  .drawer__header { position: relative; padding-right: var(--space-10); }
-
-  /* ── Drawer footer: side-by-side actions ── */
-  .drawer__footer {
+  /* ── Filter-sheet footer: overrides .sheet__footer flex-direction → row,
+         matching advanced-filter-sheet.tsx (Reset · Apply, right-aligned). ── */
+  .filter-sheet__footer {
     flex-direction: row;
     justify-content: flex-end;
     border-top: 1px solid var(--color-line-subtle);
   }
 
   /* ── Overlay + panel hide/show ── */
-  .drawer-overlay,
-  .drawer {
+  .sheet-overlay,
+  .sheet {
     display: none;
   }
-  .drawer-overlay.is-open,
-  .drawer.is-open {
+  .sheet-overlay.is-open,
+  .sheet.is-open {
     display: block;   /* overlay */
   }
-  .drawer.is-open {
+  .sheet.is-open {
     display: flex;    /* panel must be flex for body scroll + footer push */
   }
 
   /* Prevent body scroll when sheet is open */
   body.sheet-open { overflow: hidden; }
 </style>
+<body>
 
 <div class="app-frame">
-  <!-- ░░░ CONTEXT ONLY — the shell. Not ported. ░░░ -->
-  <aside class="app-frame__sidebar">
-    <div class="app-frame__brand">◆ Acme Portal</div>
-    <nav class="app-frame__nav">
-      <span class="app-frame__nav-label">Workspace</span>
-      <a class="app-frame__nav-item app-frame__nav-item--active">
-        <svg data-lucide="users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
-        Customers
-      </a>
-      <a class="app-frame__nav-item">
-        <svg data-lucide="shopping-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 10a4 4 0 0 1-8 0"/><path d="M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>
-        Orders
-      </a>
-      <span class="app-frame__nav-label">Account</span>
-      <a class="app-frame__nav-item">
-        <svg data-lucide="settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>
-        Settings
-      </a>
-    </nav>
-  </aside>
-
   <div class="app-frame__col">
-    <header class="app-frame__header">
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb__list">
-          <li class="breadcrumb__item"><a class="breadcrumb__link">Home</a></li>
-          <li class="breadcrumb__separator" aria-hidden="true">/</li>
-          <li class="breadcrumb__item"><span class="breadcrumb__page" aria-current="page">Customers</span></li>
-        </ol>
-      </nav>
-      <span class="app-frame__spacer"></span>
-      <div class="app-frame__avatar">JD</div>
-    </header>
-
     <main class="app-frame__main">
-      <!-- ════════════════ PAGE — port everything below ════════════════ -->
       <!--
         REQUIRED CORE vs OPTIONAL SLOTS (see list-page.md §"Required core / optional
         slots" + governance principle #9 — Patterns are frameworks). A pattern
@@ -195,7 +183,7 @@
 
         <!-- OPTIONAL slot — delete this whole .condition-band if this list needs no filtering.
              It is NOT part of the required core. In THIS variant it also carries the Advanced
-             trigger (#adv-trigger) that opens the drawer at the bottom of the file; dropping the
+             trigger (#adv-trigger) that opens the filter sheet at the bottom of the file; dropping the
              condition band means dropping that trigger and the matching #adv-overlay/#adv-panel too.
              condition band: search → quick-filters → Search → spacer → [Advanced ▸] (secondary, pushed right) -->
         <div class="condition-band">
@@ -225,7 +213,7 @@
             </button>
             <span class="condition-band__spacer"></span>
             <!-- OPTIONAL slot (the advanced-filter VARIANT) — delete this Advanced trigger
-                 (and the #adv-overlay/#adv-panel drawer near the end of the file) when all
+                 (and the #adv-overlay/#adv-panel sheet near the end of the file) when all
                  filter dimensions fit inline in the toolbar.
                  Advanced: secondary, pushed right by spacer — visually separated from primary filter flow -->
             <button class="btn btn--secondary" type="button" id="adv-trigger" aria-haspopup="dialog" aria-expanded="false">
@@ -243,9 +231,9 @@
         </div>
         <!-- /OPTIONAL condition band -->
 
-        <!-- ■ REQUIRED CORE — results card = table-frame --flush wrapping summary-bar + table + pagination
+        <!-- ■ REQUIRED CORE — results card = table-frame wrapping summary-bar + table + pagination
              (the count bar, table, and pagination are the results block's required internals; keep all three). -->
-        <div class="table-frame table-frame--flush">
+        <div class="table-frame">
           <!-- LP2: summary bar has two modes: idle (Export) and bulk (when rows selected) -->
           <div class="summary-bar">
             <div class="summary-bar__count"><strong id="result-count">1,248</strong> customers <span id="filter-suffix"></span></div>
@@ -454,38 +442,42 @@
         <!-- /REQUIRED CORE results card -->
       </div>
 
-      <!-- ════════════════ /PAGE ════════════════ -->
     </main>
   </div>
 </div>
-
 <!-- ════════════════════════════════════════════════════════════════
      OPTIONAL slot (the advanced-filter VARIANT) — delete this entire sheet
      (#adv-overlay + #adv-panel) together with the #adv-trigger above when a
      list needs no advanced filtering. It is NOT part of the required core.
      ADVANCED FILTER SHEET
-     Drawer (right) — outside the page tree so fixed positioning is relative
+     Sheet (right) — outside the page tree so fixed positioning is relative
      to the viewport, not any transformed ancestor.
-     Structure: overlay (scrim) + panel (.drawer .drawer--right)
+     Structure: overlay (scrim) + panel (.sheet .sheet--right).
+     Mirrors advanced-filter-sheet.tsx: funnel-icon header (flex-row) +
+     scrollable body + footer (Reset · Apply, right-aligned).
   ════════════════════════════════════════════════════════════════ -->
 
 <!-- Scrim — clicking it closes the sheet -->
-<div class="drawer-overlay" id="adv-overlay" role="presentation"></div>
+<div class="sheet-overlay" id="adv-overlay" role="presentation"></div>
 
 <!-- Panel -->
-<div class="drawer drawer--right" id="adv-panel" role="dialog" aria-modal="true" aria-labelledby="adv-title">
+<div class="sheet sheet--right" id="adv-panel" role="dialog" aria-modal="true" aria-labelledby="adv-title">
 
-  <!-- Header -->
-  <div class="drawer__header">
-    <div class="drawer__title" id="adv-title">Advanced filters</div>
-    <div class="drawer__description">Narrow results with additional criteria. Changes apply when you click "Apply".</div>
-    <button class="btn btn--ghost btn--icon btn--sm drawer__close" type="button" id="adv-close" aria-label="Close advanced filters">
+  <!-- Header — horizontal row: funnel icon + title/desc column + inline close
+       (matches advanced-filter-sheet.tsx SheetHeader override) -->
+  <div class="sheet__header filter-sheet__header">
+    <svg class="filter-sheet__icon" data-lucide="funnel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.74 1.67L9.483 12.66A2 2 0 0 1 10 14z"/></svg>
+    <div class="filter-sheet__text">
+      <div class="sheet__title" id="adv-title">Advanced filters</div>
+      <div class="sheet__description">Narrow results with additional criteria. Changes apply when you click "Apply".</div>
+    </div>
+    <button class="btn btn--ghost btn--icon btn--icon-sm" type="button" id="adv-close" aria-label="Close advanced filters">
       <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
     </button>
   </div>
 
   <!-- Body — scrollable filter groups -->
-  <div class="drawer__body">
+  <div class="sheet__body">
 
     <!-- Registration date range -->
     <div class="filter-group">
@@ -540,8 +532,8 @@
 
   </div>
 
-  <!-- Footer -->
-  <div class="drawer__footer">
+  <!-- Footer — horizontal action row (matches advanced-filter-sheet.tsx footer) -->
+  <div class="sheet__footer filter-sheet__footer">
     <button class="btn btn--ghost" type="button" id="adv-reset">Reset</button>
     <button class="btn btn--primary" type="button" id="adv-apply">Apply filters</button>
   </div>
@@ -784,3 +776,4 @@
 
 })();
 </script>
+</body>

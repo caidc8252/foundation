@@ -4,8 +4,8 @@
 commit. Named structure, not implementation.
 
 > 📐 **Copyable example** · [`create-form.html`](./create-form.html) — the single-step
-> card form (Field units, grouped into labelled section cards when long, with a
-> cancel/submit footer), ready to copy and modify. It **links** the reference CSS so
+> card form (Field units, grouped into labelled section cards when long, with
+> cancel/submit in the sticky header), ready to copy and modify. It **links** the reference CSS so
 > it never forks; inline the blocks to ship it as an artifact. All examples: [`index.html`](./index.html).
 
 ## Anatomy — single step (modal or page)
@@ -49,7 +49,7 @@ the example does **not** mean filling every slot.
 | slot | required? | include when |
 |---|---|---|
 | sticky `page-header` (title) | **yes** | always — names the record being created/edited |
-| header actions: ghost Cancel + primary Create/Save | **yes** | always — the conventional fill of the sticky header's actions slot (the primary verb follows the variant) |
+| header actions: secondary Cancel + primary Create/Save | **yes** | always — the conventional fill of the sticky header's actions slot (the primary verb follows the variant) |
 | ≥1 `form-section` card (header + `Field`s) | **yes** | always — at least one card of fields is the form |
 | header `description` | no | the title alone doesn't make the page's purpose obvious |
 | status `banner` (alert under the header) | no | a record-level status/notice must be surfaced before the fields |
@@ -71,7 +71,7 @@ The variant drives the primary verb in the (required) header actions slot:
 ## Rules
 
 - **The required core is the sticky header + ≥1 `form-section`.** A valid
-  create/edit form is, at minimum, the sticky `page-header` (title + ghost Cancel +
+  create/edit form is, at minimum, the sticky `page-header` (title + secondary Cancel +
   primary Create/Save) above a single `form-section` card of `Field`s. Banner,
   file-upload, extra section cards, and descriptions are optional add-ons (slot
   table above) — present them only when the page's job needs them, never as a
