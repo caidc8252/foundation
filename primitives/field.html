@@ -1,0 +1,171 @@
+<!--
+  field.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Field primitive in the foundation design system.
+  Covers:
+    - Default field with label and hint
+    - Required field (required * marker)
+    - Invalid field with error message
+    - Field with select control
+    - Field with textarea
+    - Disabled field
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Field · foundation primitive</title>
+  <link rel="stylesheet" href="../dist/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Default field with label and hint
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Field · default</h2>
+      <p class="demo-section__desc">
+        A basic <code>.field</code> stack: <code>.label</code> → <code>input</code> →
+        <code>.field__hint</code>. The label uses <code>htmlFor</code> to point at the
+        control <code>id</code> for click-to-focus.
+      </p>
+
+      <div class="field">
+        <label class="label" for="email-default">Email</label>
+        <input class="input" id="email-default" type="email" placeholder="you@example.com">
+        <p class="field__hint">We'll never share your email</p>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Required field
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Field · required</h2>
+      <p class="demo-section__desc">
+        Append <code>.field__required</code> (decorative <code>*</code>, <code>aria-hidden</code>)
+        after the label text. The control carries its own <code>required</code> attribute for AT.
+      </p>
+
+      <div class="field">
+        <label class="label" for="email-required">Email<span class="field__required" aria-hidden="true"> *</span></label>
+        <input class="input" id="email-required" type="email" required placeholder="you@example.com">
+        <p class="field__hint">We'll never share your email</p>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Invalid field with error
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Field · invalid</h2>
+      <p class="demo-section__desc">
+        When <code>error</code> is present it replaces the hint entirely. The error line
+        uses <code>.field__error</code> with <code>role="alert"</code>. The control carries
+        <code>aria-invalid="true"</code> for its own invalid skin.
+      </p>
+
+      <div class="field">
+        <label class="label" for="email-error">Email</label>
+        <input class="input" id="email-error" type="email" value="not-an-email" aria-invalid="true">
+        <p class="field__error" role="alert">Please enter a valid email address</p>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: Field with select control
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Field · select</h2>
+      <p class="demo-section__desc">
+        The <code>.select</code> class replaces <code>.input</code> as the control slot.
+        Same <code>.field</code> stack, same hint pattern.
+      </p>
+
+      <div class="field">
+        <label class="label" for="plan-select">Plan</label>
+        <select class="select" id="plan-select">
+          <option value="">Choose a plan…</option>
+          <option value="starter">Starter</option>
+          <option value="pro">Pro</option>
+          <option value="enterprise">Enterprise</option>
+        </select>
+        <p class="field__hint">You can upgrade or downgrade at any time</p>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 5: Field with textarea
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Field · textarea</h2>
+      <p class="demo-section__desc">
+        The <code>.textarea</code> class replaces <code>.input</code>. Same layout,
+        multi-line content area.
+      </p>
+
+      <div class="field">
+        <label class="label" for="bio-textarea">Bio</label>
+        <textarea class="textarea" id="bio-textarea" rows="4" placeholder="Tell us about yourself…"></textarea>
+        <p class="field__hint">Brief description for your profile</p>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 6: Disabled field
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Field · disabled</h2>
+      <p class="demo-section__desc">
+        The <code>disabled</code> attribute lives on the control, not the field. The label
+        dims via its own peer/group-disabled signals.
+      </p>
+
+      <div class="field">
+        <label class="label" for="email-disabled">Email</label>
+        <input class="input" id="email-disabled" type="email" value="admin@acme.com" disabled>
+        <p class="field__hint">Primary contact address</p>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

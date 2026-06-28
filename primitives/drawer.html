@@ -1,0 +1,438 @@
+<!--
+  drawer.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Drawer primitive in the foundation design system.
+  Covers:
+    - Bottom drawer (default) with drag handle, header, body, footer
+    - Left drawer docked to the left edge
+    - Right drawer docked to the right edge
+    - Interactive demo with JS-driven open/close, overlay dismiss,
+      Escape key, and single-open enforcement
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drawer · foundation primitive</title>
+  <link rel="stylesheet" href="../dist/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../composites/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-actions {
+      display: flex;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+    .demo-body-content {
+      font-size: var(--text-sm);
+      color: var(--color-content-secondary);
+      line-height: 1.6;
+      padding: var(--space-4);
+    }
+    .demo-body-content p {
+      margin: 0 0 var(--space-3) 0;
+    }
+    .demo-body-content p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* ── Transition animations for drawers ── */
+    .drawer-overlay {
+      transition: opacity 0.25s ease;
+    }
+    .drawer {
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .drawer--bottom {
+      transform: translateY(100%);
+    }
+    .drawer--top {
+      transform: translateY(-100%);
+    }
+    .drawer--left {
+      transform: translateX(-100%);
+    }
+    .drawer--right {
+      transform: translateX(100%);
+    }
+    .drawer.drawer--open {
+      transform: translateX(0) translateY(0);
+    }
+
+    /* ── Static display excerpts (no interaction) ── */
+    .drawer-excerpt {
+      position: static;
+      border: 1px solid var(--color-line-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .drawer-excerpt .drawer {
+      position: static;
+      box-shadow: none;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Bottom drawer
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Drawer · bottom (default)</h2>
+      <p class="demo-section__desc">
+        The default direction. Full-width panel docks to the bottom with a
+        maximum height of 80vh, rounded top corners (<code>radius-xl</code>),
+        and a drag handle at the top. Contains header (title + description),
+        body content, and a footer with action buttons.
+      </p>
+
+      <div class="drawer-excerpt">
+        <div class="drawer drawer--bottom">
+          <div class="drawer__handle" aria-hidden="true"></div>
+          <div class="drawer__header">
+            <h2 class="drawer__title">Confirm action</h2>
+            <p class="drawer__description">
+              This action cannot be undone. Please review before proceeding.
+            </p>
+          </div>
+          <div class="demo-body-content">
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+              enim ad minim veniam, quis nostrud exercitation ullamco laboris
+              nisi ut aliquip ex ea commodo consequat.
+            </p>
+            <p>
+              Duis aute irure dolor in reprehenderit in voluptate velit esse
+              cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+              cupidatat non proident, sunt in culpa qui officia deserunt
+              mollit anim id est laborum.
+            </p>
+          </div>
+          <div class="drawer__footer">
+            <button class="btn btn--ghost" type="button">Cancel</button>
+            <button class="btn btn--primary" type="button">Confirm</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Left drawer
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Drawer · left</h2>
+      <p class="demo-section__desc">
+        Docked to the left edge, full viewport height. Width is
+        <code>min(560px, 90vw)</code> with rounded right corners.
+        Contains header and body content.
+      </p>
+
+      <div class="drawer-excerpt">
+        <div class="drawer drawer--left">
+          <div class="drawer__header">
+            <h2 class="drawer__title">Navigation settings</h2>
+            <p class="drawer__description">
+              Configure your sidebar navigation preferences.
+            </p>
+          </div>
+          <div class="demo-body-content">
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+              enim ad minim veniam, quis nostrud exercitation ullamco laboris
+              nisi ut aliquip ex ea commodo consequat.
+            </p>
+            <p>
+              Duis aute irure dolor in reprehenderit in voluptate velit esse
+              cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+              cupidatat non proident, sunt in culpa qui officia deserunt
+              mollit anim id est laborum.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Right drawer
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Drawer · right</h2>
+      <p class="demo-section__desc">
+        Docked to the right edge, full viewport height. Width is
+        <code>min(560px, 90vw)</code> with rounded left corners.
+        Contains header and body content.
+      </p>
+
+      <div class="drawer-excerpt">
+        <div class="drawer drawer--right">
+          <div class="drawer__header">
+            <h2 class="drawer__title">Activity log</h2>
+            <p class="drawer__description">
+              Recent changes and events for this workspace.
+            </p>
+          </div>
+          <div class="demo-body-content">
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+              enim ad minim veniam, quis nostrud exercitation ullamco laboris
+              nisi ut aliquip ex ea commodo consequat.
+            </p>
+            <p>
+              Duis aute irure dolor in reprehenderit in voluptate velit esse
+              cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+              cupidatat non proident, sunt in culpa qui officia deserunt
+              mollit anim id est laborum.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: Interactive demo
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Interactive demo</h2>
+      <p class="demo-section__desc">
+        Click the buttons below to open each drawer variant. Dismiss by
+        clicking the overlay, pressing <kbd>Escape</kbd>, or (for bottom)
+        clicking the Cancel button. Only one drawer is open at a time.
+      </p>
+
+      <div class="demo-actions">
+        <button class="btn btn--primary" type="button" data-drawer="bottom">Open bottom drawer</button>
+        <button class="btn" type="button" data-drawer="left">Open left drawer</button>
+        <button class="btn" type="button" data-drawer="right">Open right drawer</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════
+       Drawer targets (hidden by default)
+       ════════════════════════════════════════════════════════════════ -->
+
+  <!-- Bottom drawer target -->
+  <div class="drawer-overlay" id="drawer-overlay-bottom" style="display:none;" aria-hidden="true"></div>
+  <div class="drawer drawer--bottom" id="drawer-bottom" style="display:none;" role="dialog" aria-modal="true" aria-label="Confirm action">
+    <div class="drawer__handle" aria-hidden="true"></div>
+    <div class="drawer__header">
+      <h2 class="drawer__title">Confirm action</h2>
+      <p class="drawer__description">
+        This action cannot be undone. Please review before proceeding.
+      </p>
+    </div>
+    <div class="demo-body-content">
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+        eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+        enim ad minim veniam, quis nostrud exercitation ullamco laboris
+        nisi ut aliquip ex ea commodo consequat.
+      </p>
+      <p>
+        Duis aute irure dolor in reprehenderit in voluptate velit esse
+        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+        cupidatat non proident, sunt in culpa qui officia deserunt
+        mollit anim id est laborum.
+      </p>
+    </div>
+    <div class="drawer__footer">
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--primary" type="button">Confirm</button>
+    </div>
+  </div>
+
+  <!-- Left drawer target -->
+  <div class="drawer-overlay" id="drawer-overlay-left" style="display:none;" aria-hidden="true"></div>
+  <div class="drawer drawer--left" id="drawer-left" style="display:none;" role="dialog" aria-modal="true" aria-label="Navigation settings">
+    <div class="drawer__header">
+      <h2 class="drawer__title">Navigation settings</h2>
+      <p class="drawer__description">
+        Configure your sidebar navigation preferences.
+      </p>
+    </div>
+    <div class="demo-body-content">
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+        eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+        enim ad minim veniam, quis nostrud exercitation ullamco laboris
+        nisi ut aliquip ex ea commodo consequat.
+      </p>
+      <p>
+        Duis aute irure dolor in reprehenderit in voluptate velit esse
+        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+        cupidatat non proident, sunt in culpa qui officia deserunt
+        mollit anim id est laborum.
+      </p>
+    </div>
+  </div>
+
+  <!-- Right drawer target -->
+  <div class="drawer-overlay" id="drawer-overlay-right" style="display:none;" aria-hidden="true"></div>
+  <div class="drawer drawer--right" id="drawer-right" style="display:none;" role="dialog" aria-modal="true" aria-label="Activity log">
+    <div class="drawer__header">
+      <h2 class="drawer__title">Activity log</h2>
+      <p class="drawer__description">
+        Recent changes and events for this workspace.
+      </p>
+    </div>
+    <div class="demo-body-content">
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+        eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+        enim ad minim veniam, quis nostrud exercitation ullamco laboris
+        nisi ut aliquip ex ea commodo consequat.
+      </p>
+      <p>
+        Duis aute irure dolor in reprehenderit in voluptate velit esse
+        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+        cupidatat non proident, sunt in culpa qui officia deserunt
+        mollit anim id est laborum.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var drawerConfig = {
+        bottom: {
+          overlay: document.getElementById('drawer-overlay-bottom'),
+          panel: document.getElementById('drawer-bottom')
+        },
+        left: {
+          overlay: document.getElementById('drawer-overlay-left'),
+          panel: document.getElementById('drawer-left')
+        },
+        right: {
+          overlay: document.getElementById('drawer-overlay-right'),
+          panel: document.getElementById('drawer-right')
+        }
+      };
+
+      var openDrawerName = null;
+
+      function openDrawer(name) {
+        if (openDrawerName === name) return;
+        closeDrawer();
+
+        var cfg = drawerConfig[name];
+        if (!cfg) return;
+
+        var overlay = cfg.overlay;
+        var panel = cfg.panel;
+
+        // Reset display so transitions play
+        overlay.style.display = '';
+        panel.style.display = '';
+
+        // Force layout to ensure initial position applies
+        overlay.offsetHeight;
+
+        // Remove hidden state, add open state
+        overlay.removeAttribute('aria-hidden');
+        overlay.classList.add('drawer-overlay--open');
+        panel.classList.add('drawer--open');
+
+        openDrawerName = name;
+
+        // Trap focus
+        var firstFocusable = panel.querySelector('[data-close], button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        if (firstFocusable) firstFocusable.focus();
+      }
+
+      function closeDrawer() {
+        if (!openDrawerName) return;
+
+        var cfg = drawerConfig[openDrawerName];
+        if (cfg) {
+          cfg.overlay.classList.remove('drawer-overlay--open');
+          cfg.panel.classList.remove('drawer--open');
+
+          // After transition, hide entirely
+          var panel = cfg.panel;
+          var overlay = cfg.overlay;
+          panel.addEventListener('transitionend', function handler() {
+            panel.removeEventListener('transitionend', handler);
+            panel.style.display = 'none';
+            overlay.style.display = 'none';
+            overlay.setAttribute('aria-hidden', 'true');
+          });
+        }
+
+        openDrawerName = null;
+      }
+
+      // ── Open buttons ──
+      var btns = document.querySelectorAll('[data-drawer]');
+      btns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          openDrawer(btn.getAttribute('data-drawer'));
+        });
+      });
+
+      // ── Overlay click to close ──
+      Object.keys(drawerConfig).forEach(function (name) {
+        var cfg = drawerConfig[name];
+        cfg.overlay.addEventListener('click', function () {
+          if (openDrawerName === name) closeDrawer();
+        });
+      });
+
+      // ── Close buttons inside drawers ──
+      document.querySelectorAll('[data-close]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          closeDrawer();
+        });
+      });
+
+      // ── Escape key ──
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && openDrawerName) {
+          closeDrawer();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

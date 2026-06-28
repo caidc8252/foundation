@@ -1,0 +1,225 @@
+<!--
+  alert-dialog.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Alert Dialog primitive in the foundation design system.
+  Covers:
+    - Default (benign) confirm dialog
+    - Destructive confirm dialog
+    - Open/close toggle via vanilla JS
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alert Dialog · foundation primitive</title>
+  <link rel="stylesheet" href="../dist/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../composites/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-col2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+    @media (max-width: 640px) {
+      .demo-col2 { grid-template-columns: 1fr; }
+    }
+
+    /* Alert Dialog overlay + dialog */
+    .alert-dialog-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background-color: var(--color-surface-overlay);
+      backdrop-filter: blur(2px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .alert-dialog-overlay--open {
+      display: flex;
+    }
+    .alert-dialog {
+      background-color: var(--color-surface-2);
+      color: var(--color-content-primary);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--color-line-subtle);
+      box-shadow: var(--shadow-4);
+      width: 100%;
+      max-width: 440px;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .alert-dialog__header {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1-5);
+      text-align: center;
+    }
+    @media (min-width: 640px) {
+      .alert-dialog__header {
+        text-align: left;
+      }
+    }
+    .alert-dialog__title {
+      font-size: var(--text-md);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      line-height: 1.3;
+      margin: 0;
+    }
+    .alert-dialog__description {
+      font-size: var(--text-xs);
+      color: var(--color-content-secondary);
+      margin: 0;
+      line-height: 1.5;
+    }
+    .alert-dialog__footer {
+      display: flex;
+      flex-direction: column-reverse;
+      gap: var(--space-2);
+      justify-content: flex-end;
+    }
+    @media (min-width: 640px) {
+      .alert-dialog__footer {
+        flex-direction: row;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Launch triggers
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Alert Dialog · launch examples</h2>
+      <p class="demo-section__desc">
+        A forced-action confirm dialog. The user must pick Cancel or Confirm —
+        there is no close (×) button and Escape / overlay click do not dismiss.
+        Uses <code>.alert-dialog</code> with <code>.alert-dialog__header</code>
+        (title + optional description) and <code>.alert-dialog__footer</code>
+        (Cancel + Confirm buttons).
+      </p>
+
+      <div class="demo-col2">
+        <button class="btn btn--primary" type="button" data-dialog="benign-dialog">Publish (benign confirm)</button>
+        <button class="btn btn--danger" type="button" data-dialog="destructive-dialog">Delete account (destructive)</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════
+       Benign confirm dialog
+       ════════════════════════════════════════════════════════════════ -->
+  <div class="alert-dialog-overlay" id="benign-dialog" role="presentation">
+    <div class="alert-dialog" role="alertdialog" aria-labelledby="benign-title" aria-describedby="benign-desc">
+      <div class="alert-dialog__header">
+        <h2 class="alert-dialog__title" id="benign-title">Publish changes?</h2>
+        <p class="alert-dialog__description" id="benign-desc">
+          This will make all pending changes visible to your users. You can revert
+          within 30 minutes.
+        </p>
+      </div>
+      <div class="alert-dialog__footer">
+        <button class="btn btn--outline" type="button" data-dialog-close>Cancel</button>
+        <button class="btn btn--primary" type="button" data-dialog-close>Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════
+       Destructive confirm dialog
+       ════════════════════════════════════════════════════════════════ -->
+  <div class="alert-dialog-overlay" id="destructive-dialog" role="presentation">
+    <div class="alert-dialog" role="alertdialog" aria-labelledby="dest-title" aria-describedby="dest-desc">
+      <div class="alert-dialog__header">
+        <h2 class="alert-dialog__title" id="dest-title">Delete account?</h2>
+        <p class="alert-dialog__description" id="dest-desc">
+          This action is permanent and irreversible. All data, teams, and billing
+          information will be removed immediately.
+        </p>
+      </div>
+      <div class="alert-dialog__footer">
+        <button class="btn btn--outline" type="button" data-dialog-close>Cancel</button>
+        <button class="btn btn--danger" type="button" data-dialog-close>Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Open dialog
+      document.querySelectorAll('[data-dialog]').forEach(function (trigger) {
+        trigger.addEventListener('click', function () {
+          var id = trigger.getAttribute('data-dialog');
+          var overlay = document.getElementById(id);
+          if (overlay) {
+            overlay.classList.add('alert-dialog-overlay--open');
+          }
+        });
+      });
+
+      // Close dialog via any button with data-dialog-close
+      document.querySelectorAll('[data-dialog-close]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var overlay = btn.closest('.alert-dialog-overlay');
+          if (overlay) {
+            overlay.classList.remove('alert-dialog-overlay--open');
+          }
+        });
+      });
+
+      // Close on overlay click (in a real AlertDialog this is suppressed,
+      // but for the demo we allow it so the user can dismiss)
+      document.querySelectorAll('.alert-dialog-overlay').forEach(function (overlay) {
+        overlay.addEventListener('click', function (e) {
+          if (e.target === overlay) {
+            overlay.classList.remove('alert-dialog-overlay--open');
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

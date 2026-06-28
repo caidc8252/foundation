@@ -1,0 +1,240 @@
+<!--
+  separator.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Separator primitive in the foundation design system.
+  Covers:
+    - Plain horizontal separator
+    - Plain vertical separator in a flex toolbar
+    - Labeled separator with centered caption
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Separator · foundation primitive</title>
+  <link rel="stylesheet" href="../dist/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../composites/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-col2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+    @media (max-width: 640px) {
+      .demo-col2 { grid-template-columns: 1fr; }
+    }
+
+    /* Toolbar for vertical separator demo */
+    .demo-toolbar {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+      border: 1px solid var(--color-line-default);
+      border-radius: var(--radius-md);
+      background: var(--color-surface-2);
+      width: fit-content;
+    }
+    .demo-toolbar__btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--color-content-secondary);
+      cursor: pointer;
+    }
+    .demo-toolbar__btn:hover {
+      background: var(--color-surface-hover);
+      color: var(--color-content-primary);
+    }
+    .demo-toolbar__btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Card sections for separator demo */
+    .demo-card-text {
+      font-size: var(--text-sm);
+      color: var(--color-content-secondary);
+      line-height: 1.6;
+    }
+
+    /* Labeled separator custom styling */
+    .separator-labeled {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      width: 100%;
+    }
+    .separator-labeled::before,
+    .separator-labeled::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--color-line-subtle);
+    }
+    .separator-labeled__label {
+      font-size: var(--text-xs);
+      color: var(--color-content-tertiary);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Plain horizontal separator
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Separator · horizontal</h2>
+      <p class="demo-section__desc">
+        A plain <code>.separator</code> hairline dividing content rows.
+      </p>
+
+      <div class="card">
+        <div class="card__content" style="display:flex;flex-direction:column;gap:var(--space-3);">
+          <p class="demo-card-text" style="margin:0;">Account overview section with summary information about the current plan and status.</p>
+          <div class="separator" role="separator" aria-orientation="horizontal"></div>
+          <p class="demo-card-text" style="margin:0;">Billing details including payment method, next invoice date, and tax information.</p>
+          <div class="separator" role="separator" aria-orientation="horizontal"></div>
+          <p class="demo-card-text" style="margin:0;">Team members and access permissions for all collaborators on this account.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Vertical separator
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Separator · vertical</h2>
+      <p class="demo-section__desc">
+        Vertical <code>.separator--vertical</code> in a toolbar between icon buttons.
+      </p>
+
+      <div class="demo-toolbar">
+        <button class="demo-toolbar__btn" title="Bold" aria-label="Bold">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/><path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/></svg>
+        </button>
+        <button class="demo-toolbar__btn" title="Italic" aria-label="Italic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg>
+        </button>
+        <button class="demo-toolbar__btn" title="Underline" aria-label="Underline">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4v6a6 6 0 0 0 12 0V4"/><line x1="4" y1="20" x2="20" y2="20"/></svg>
+        </button>
+        <div class="separator separator--vertical" role="separator" aria-orientation="vertical"></div>
+        <button class="demo-toolbar__btn" title="Align left" aria-label="Align left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="15" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="15" y2="18"/></svg>
+        </button>
+        <button class="demo-toolbar__btn" title="Center" aria-label="Center">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="6" x2="19" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="5" y1="18" x2="19" y2="18"/></svg>
+        </button>
+        <button class="demo-toolbar__btn" title="Align right" aria-label="Align right">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="9" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Labeled separator
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Separator · labeled</h2>
+      <p class="demo-section__desc">
+        A <code>.separator-labeled</code> with a centered caption between two line segments.
+      </p>
+
+      <div class="card">
+        <div class="card__content" style="display:flex;flex-direction:column;gap:var(--space-4);">
+          <p class="demo-card-text" style="margin:0;">Email address and password sign-in section with form fields for credentials.</p>
+
+          <div class="separator-labeled">
+            <span class="separator-labeled__label">OR</span>
+          </div>
+
+          <p class="demo-card-text" style="margin:0;">Continue with a social login provider or single sign-on option.</p>
+
+          <div class="separator-labeled">
+            <span class="separator-labeled__label">Continue with</span>
+          </div>
+
+          <p class="demo-card-text" style="margin:0;">Enterprise single sign-on via SAML or OpenID Connect.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: Plain separator between stacked sections
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Separator · in page layout</h2>
+      <p class="demo-section__desc">
+        Multiple plain separators dividing sections in a stacked settings layout.
+      </p>
+
+      <div class="card">
+        <div class="card__header">
+          <h2 class="card__title">Settings</h2>
+        </div>
+        <div class="card__content" style="display:flex;flex-direction:column;gap:var(--space-3);">
+          <div>
+            <h3 style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin:0 0 var(--space-1);">Profile</h3>
+            <p class="demo-card-text" style="margin:0;">Manage your public profile information and preferences.</p>
+          </div>
+          <div class="separator" role="separator" aria-orientation="horizontal"></div>
+          <div>
+            <h3 style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin:0 0 var(--space-1);">Security</h3>
+            <p class="demo-card-text" style="margin:0;">Password, two-factor authentication, and active sessions.</p>
+          </div>
+          <div class="separator" role="separator" aria-orientation="horizontal"></div>
+          <div>
+            <h3 style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin:0 0 var(--space-1);">Notifications</h3>
+            <p class="demo-card-text" style="margin:0;">Email, push, and in-app notification preferences.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!--
+  spinner.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Spinner primitive in the foundation design system.
+  Covers:
+    - All four sizes (sm, md, lg, xl)
+    - Spinner inline with text
+    - Spinner inside a button (loading state)
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spinner · foundation primitive</title>
+  <link rel="stylesheet" href="../dist/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../composites/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-col2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+    @media (max-width: 640px) {
+      .demo-col2 { grid-template-columns: 1fr; }
+    }
+
+    /* Spinner sizing */
+    .spinner--sm {
+      width: 14px;
+      height: 14px;
+      border-width: 2px;
+    }
+    .spinner--md {
+      width: 16px;
+      height: 16px;
+      border-width: 2px;
+    }
+    .spinner--lg {
+      width: 20px;
+      height: 20px;
+      border-width: 2px;
+    }
+    .spinner--xl {
+      width: 32px;
+      height: 32px;
+      border-width: 2px;
+    }
+    .spinner {
+      display: inline-block;
+      border-style: solid;
+      border-color: var(--color-line-default);
+      border-top-color: var(--color-primary-700);
+      border-radius: 50%;
+      animation: spin 750ms linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .spinner { animation: none; }
+    }
+
+    .demo-spinner-grid {
+      display: flex;
+      align-items: center;
+      gap: var(--space-6);
+      flex-wrap: wrap;
+    }
+    .demo-spinner-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .demo-spinner-label {
+      font-size: var(--text-xs);
+      color: var(--color-content-tertiary);
+    }
+
+    .demo-inline-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      font-size: var(--text-sm);
+      color: var(--color-content-primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Size variants
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Spinner · size variants</h2>
+      <p class="demo-section__desc">
+        All four sizes: <code>.spinner--sm</code> (14px), <code>.spinner--md</code> (16px),
+        <code>.spinner--lg</code> (20px), <code>.spinner--xl</code> (32px).
+      </p>
+
+      <div class="demo-spinner-grid">
+        <div class="demo-spinner-item">
+          <div class="spinner spinner--sm" role="status" aria-label="Loading"></div>
+          <span class="demo-spinner-label">sm (14px)</span>
+        </div>
+        <div class="demo-spinner-item">
+          <div class="spinner spinner--md" role="status" aria-label="Loading"></div>
+          <span class="demo-spinner-label">md (16px)</span>
+        </div>
+        <div class="demo-spinner-item">
+          <div class="spinner spinner--lg" role="status" aria-label="Loading"></div>
+          <span class="demo-spinner-label">lg (20px)</span>
+        </div>
+        <div class="demo-spinner-item">
+          <div class="spinner spinner--xl" role="status" aria-label="Loading"></div>
+          <span class="demo-spinner-label">xl (32px)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Spinner inline with text
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Spinner · inline with text</h2>
+      <p class="demo-section__desc">
+        A spinner placed beside text for inline loading states.
+      </p>
+
+      <div class="demo-inline-row">
+        <div class="spinner spinner--sm" role="status" aria-label="Loading"></div>
+        <span>Saving changes…</span>
+      </div>
+      <div class="demo-inline-row">
+        <div class="spinner spinner--md" role="status" aria-label="Loading"></div>
+        <span>Fetching latest data…</span>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Spinner in a button (loading state)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Spinner · in button loading state</h2>
+      <p class="demo-section__desc">
+        The spinner replaces the left icon slot in a button when <code>loading</code> is set.
+      </p>
+
+      <div class="demo-col2">
+        <button class="btn btn--primary" type="button" disabled style="display:inline-flex;align-items:center;gap:var(--space-2);">
+          <div class="spinner spinner--md" role="status" aria-label="Loading"></div>
+          Saving
+        </button>
+        <button class="btn btn--secondary" type="button" disabled style="display:inline-flex;align-items:center;gap:var(--space-2);">
+          <div class="spinner spinner--md" role="status" aria-label="Loading"></div>
+          Processing
+        </button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: Spinner in a card (section loading)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Spinner · in card loading state</h2>
+      <p class="demo-section__desc">
+        A larger <code>.spinner--lg</code> centered in a card while content loads.
+      </p>
+
+      <div class="card">
+        <div class="card__header">
+          <h2 class="card__title">Usage metrics</h2>
+        </div>
+        <div class="card__content" style="display:flex;align-items:center;justify-content:center;min-height:120px;">
+          <div class="spinner spinner--lg" role="status" aria-label="Loading"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!--
+  progress.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Progress primitive in the foundation design system.
+  Covers:
+    - Different percentages (0%, 25%, 50%, 75%, 100%)
+    - With label and value (caption + percentage readout)
+    - Semantic tones (success, warning, error, info)
+    - Indeterminate (conceptual approximation via CSS animation)
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Progress · foundation primitive</title>
+  <link rel="stylesheet" href="../dist/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../composites/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-col2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+    @media (max-width: 640px) {
+      .demo-col2 { grid-template-columns: 1fr; }
+    }
+    .progress-row {
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+    .indeterminate-bar {
+      width: 100%;
+    }
+    @keyframes indeterminate {
+      0%   { transform: translateX(-100%); }
+      50%  { transform: translateX(200%); }
+      100% { transform: translateX(400%); }
+    }
+    .indeterminate-bar .progress__indicator {
+      width: 33%;
+      animation: indeterminate 1.5s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Different percentages
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Progress · different percentages</h2>
+      <p class="demo-section__desc">
+        The indicator width is set via inline <code>style="width: &lt;n&gt;%"</code>.
+        At 0% the indicator collapses to zero width; at 100% it fills the track.
+      </p>
+
+      <div class="progress">
+        <div class="progress__track">
+          <div class="progress__indicator" style="width:0%"></div>
+        </div>
+        <div class="progress__track">
+          <div class="progress__indicator" style="width:25%"></div>
+        </div>
+        <div class="progress__track">
+          <div class="progress__indicator" style="width:50%"></div>
+        </div>
+        <div class="progress__track">
+          <div class="progress__indicator" style="width:75%"></div>
+        </div>
+        <div class="progress__track">
+          <div class="progress__indicator" style="width:100%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: With label and value
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Progress · with label and value</h2>
+      <p class="demo-section__desc">
+        A <code>.progress__label</code> on the left and <code>.progress__value</code>
+        (right-aligned via <code>ml-auto</code>) sit above the track in a flex row.
+      </p>
+
+      <div class="progress">
+        <div class="progress-row">
+          <span class="progress__label">Upload progress</span>
+          <span class="progress__value">64%</span>
+        </div>
+        <div class="progress__track">
+          <div class="progress__indicator" style="width:64%"></div>
+        </div>
+      </div>
+
+      <div class="progress">
+        <div class="progress-row">
+          <span class="progress__label">Data processing</span>
+          <span class="progress__value">42%</span>
+        </div>
+        <div class="progress__track">
+          <div class="progress__indicator" style="width:42%"></div>
+        </div>
+      </div>
+
+      <div class="progress">
+        <div class="progress-row">
+          <span class="progress__label">Report generation</span>
+          <span class="progress__value">91%</span>
+        </div>
+        <div class="progress__track">
+          <div class="progress__indicator" style="width:91%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Semantic tones
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Progress · semantic tones</h2>
+      <p class="demo-section__desc">
+        Tone modifiers swap the indicator fill color. The track stays
+        <code>surface-3</code>. No <code>neutral</code> tone — omit the modifier
+        for the default brand fill (<code>primary-700</code>).
+      </p>
+
+      <div class="progress">
+        <div class="progress-row">
+          <span class="progress__label">Default (brand)</span>
+          <span class="progress__value">72%</span>
+        </div>
+        <div class="progress__track">
+          <div class="progress__indicator" style="width:72%"></div>
+        </div>
+      </div>
+
+      <div class="progress">
+        <div class="progress-row">
+          <span class="progress__label">Success</span>
+          <span class="progress__value">100%</span>
+        </div>
+        <div class="progress__track">
+          <div class="progress__indicator progress__indicator--success" style="width:100%"></div>
+        </div>
+      </div>
+
+      <div class="progress">
+        <div class="progress-row">
+          <span class="progress__label">Warning</span>
+          <span class="progress__value">78%</span>
+        </div>
+        <div class="progress__track">
+          <div class="progress__indicator progress__indicator--warning" style="width:78%"></div>
+        </div>
+      </div>
+
+      <div class="progress">
+        <div class="progress-row">
+          <span class="progress__label">Error</span>
+          <span class="progress__value">34%</span>
+        </div>
+        <div class="progress__track">
+          <div class="progress__indicator progress__indicator--error" style="width:34%"></div>
+        </div>
+      </div>
+
+      <div class="progress">
+        <div class="progress-row">
+          <span class="progress__label">Info</span>
+          <span class="progress__value">50%</span>
+        </div>
+        <div class="progress__track">
+          <div class="progress__indicator progress__indicator--info" style="width:50%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: Indeterminate (conceptual)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Progress · indeterminate (conceptual)</h2>
+      <p class="demo-section__desc">
+        Indeterminate / streaming animation is not part of this contract — the
+        source renders a determinate fill from <code>value</code>. This visual
+        approximation uses a CSS keyframe animation on the indicator. The actual
+        indeterminate behavior belongs to the React implementation
+        (<code>@cloud/ui</code>).
+      </p>
+
+      <div class="progress">
+        <div class="progress__track indeterminate-bar">
+          <div class="progress__indicator" style="width:33%"></div>
+        </div>
+      </div>
+
+      <p class="demo-section__desc" style="font-style:italic;">
+        Note: The pulsing bar above is a static CSS-only approximation. The true
+        indeterminate <code>Progress</code> component is driven by React and
+        <code>base-ui</code> — it is not representable in plain HTML.
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>

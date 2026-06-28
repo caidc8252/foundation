@@ -56,7 +56,7 @@ Static only — no interactive state. `aria-hidden` by design; the tile mirrors 
 ## Notes
 
 - Use `colorSeed` to override which text drives the categorical hash when the displayed label differs from the identity key (e.g. a localized display name vs. an internal code).
-- `color-tile` and `initials-tile` contracts are superseded by this one for new code; existing artifacts referencing those classes still work.
+- `color-tile` and `initials-tile` contracts have been removed; use `object-tile` for all new work.
 
 ## Implementations
 

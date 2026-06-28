@@ -1,0 +1,248 @@
+<!--
+  textarea.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Textarea primitive in the foundation design system.
+  Covers:
+    - Normal textarea
+    - Textarea with placeholder
+    - Disabled textarea
+    - Invalid textarea (aria-invalid)
+    - Textarea with character count
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Textarea · foundation primitive</title>
+  <link rel="stylesheet" href="../dist/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../composites/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-col2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+    @media (max-width: 640px) {
+      .demo-col2 { grid-template-columns: 1fr; }
+    }
+
+    /* Textarea styling per contract */
+    .textarea {
+      display: block;
+      width: 100%;
+      min-height: 64px;
+      padding: var(--space-3);
+      background: var(--color-surface-2);
+      color: var(--color-content-primary);
+      font-size: var(--text-sm);
+      font-family: var(--font-sans);
+      border: 1px solid var(--color-line-default);
+      border-radius: var(--radius-md);
+      resize: vertical;
+      box-sizing: border-box;
+      outline: none;
+    }
+    .textarea::placeholder {
+      color: var(--color-content-tertiary);
+    }
+    .textarea:focus-visible {
+      border-color: var(--color-line-focus);
+      box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-line-focus) 30%, transparent);
+    }
+    .textarea:disabled {
+      cursor: not-allowed;
+      background: var(--color-surface-3);
+      opacity: 0.5;
+    }
+    .textarea[aria-invalid="true"] {
+      border-color: var(--color-error-strong);
+      box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-error) 20%, transparent);
+    }
+
+    .textarea-counter {
+      display: flex;
+      justify-content: flex-end;
+      font-size: var(--text-xs);
+      color: var(--color-content-tertiary);
+      margin-top: var(--space-1);
+    }
+    .textarea-counter--warning {
+      color: var(--color-warning-strong);
+    }
+    .textarea-counter--error {
+      color: var(--color-error-strong);
+    }
+
+    .demo-field {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+    .demo-field__label {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--color-content-primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Basic textarea
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Textarea · basic</h2>
+      <p class="demo-section__desc">
+        A standard <code>&lt;textarea class="textarea"&gt;</code> with placeholder text.
+      </p>
+
+      <div class="demo-col2">
+        <div class="demo-field">
+          <label class="demo-field__label" for="ta-empty">Empty</label>
+          <textarea class="textarea" id="ta-empty" placeholder="Enter description…" rows="3"></textarea>
+        </div>
+        <div class="demo-field">
+          <label class="demo-field__label" for="ta-filled">With content</label>
+          <textarea class="textarea" id="ta-filled" rows="3">This is an example of a textarea with pre-filled content. The height auto-sizes with content.</textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Disabled and invalid
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Textarea · disabled & invalid</h2>
+      <p class="demo-section__desc">
+        Disabled state uses <code>:disabled</code>, invalid uses <code>aria-invalid="true"</code>.
+      </p>
+
+      <div class="demo-col2">
+        <div class="demo-field">
+          <label class="demo-field__label" for="ta-disabled">Disabled</label>
+          <textarea class="textarea" id="ta-disabled" disabled rows="3">This textarea is disabled and cannot be edited.</textarea>
+        </div>
+        <div class="demo-field">
+          <label class="demo-field__label" for="ta-invalid">Invalid</label>
+          <textarea class="textarea" id="ta-invalid" aria-invalid="true" rows="3">This field has a validation error.</textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: With character counter
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Textarea · with character count</h2>
+      <p class="demo-section__desc">
+        A character counter below the textarea, shown when <code>showCount</code> is enabled.
+        The counter recolors at near-limit (90%+) and at-limit thresholds.
+      </p>
+
+      <div class="demo-col2">
+        <div class="demo-field">
+          <label class="demo-field__label" for="ta-count-ok">Normal count</label>
+          <textarea class="textarea" id="ta-count-ok" maxlength="200" rows="3" placeholder="Type something…">A short note.</textarea>
+          <div class="textarea-counter">12 / 200</div>
+        </div>
+        <div class="demo-field">
+          <label class="demo-field__label" for="ta-count-warn">Near limit (warning)</label>
+          <textarea class="textarea" id="ta-count-warn" maxlength="200" rows="3">Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est laborum.</textarea>
+          <div class="textarea-counter textarea-counter--warning">189 / 200</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: In a card (typical form usage)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Textarea · in a card</h2>
+      <p class="demo-section__desc">
+        A textarea inside a card form layout.
+      </p>
+
+      <div class="card">
+        <div class="card__header">
+          <h2 class="card__title">Add a note</h2>
+        </div>
+        <div class="card__content" style="display:flex;flex-direction:column;gap:var(--space-3);">
+          <div class="demo-field">
+            <label class="demo-field__label" for="ta-note">Note</label>
+            <textarea class="textarea" id="ta-note" maxlength="500" rows="4" placeholder="Write your note here…"></textarea>
+            <div class="textarea-counter">0 / 500</div>
+          </div>
+          <div style="display:flex;justify-content:flex-end;gap:var(--space-2);">
+            <button class="btn btn--ghost" type="button">Cancel</button>
+            <button class="btn btn--primary" type="button">Save note</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <script>
+    (function () {
+      // Interactive character counter
+      var textareas = document.querySelectorAll('.textarea');
+      textareas.forEach(function (ta) {
+        var parent = ta.closest('.demo-field') || ta.parentElement;
+        var counter = parent.querySelector('.textarea-counter');
+        if (!counter) return;
+        var max = parseInt(ta.getAttribute('maxlength'), 10);
+        if (!max) return;
+
+        function updateCounter() {
+          var len = ta.value.length;
+          counter.textContent = len + ' / ' + max;
+          counter.classList.remove('textarea-counter--warning', 'textarea-counter--error');
+          if (len >= max) {
+            counter.classList.add('textarea-counter--error');
+          } else if (len >= max * 0.9) {
+            counter.classList.add('textarea-counter--warning');
+          }
+        }
+
+        ta.addEventListener('input', updateCounter);
+        updateCounter();
+      });
+    })();
+  </script>
+</body>
+</html>

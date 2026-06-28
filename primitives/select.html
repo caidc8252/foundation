@@ -1,0 +1,266 @@
+<!--
+  select.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Select primitive in the foundation design system.
+  Covers:
+    - Default size select
+    - Small size select
+    - Disabled select
+    - Invalid select (aria-invalid)
+    - Select with a placeholder
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select · foundation primitive</title>
+  <link rel="stylesheet" href="../dist/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../composites/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-col2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+    @media (max-width: 640px) {
+      .demo-col2 { grid-template-columns: 1fr; }
+    }
+
+    /* Select styling per contract */
+    .select {
+      display: block;
+      width: 100%;
+      height: 36px;
+      padding: 0 var(--space-3);
+      background: var(--color-surface-2);
+      color: var(--color-content-primary);
+      font-size: var(--text-md);
+      font-family: var(--font-sans);
+      border: 1px solid var(--color-line-default);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      box-sizing: border-box;
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23808080' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right var(--space-3) center;
+      padding-right: var(--space-8);
+    }
+    .select:hover {
+      border-color: var(--color-line-strong);
+    }
+    .select:focus-visible {
+      border-color: var(--color-line-focus);
+      box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-line-focus) 30%, transparent);
+    }
+    .select:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+    .select[aria-invalid="true"] {
+      border-color: var(--color-error-strong);
+      box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-error) 20%, transparent);
+    }
+    .select--sm {
+      height: 28px;
+      font-size: var(--text-sm);
+      padding: 0 var(--space-2);
+      padding-right: var(--space-6);
+      background-position: right var(--space-2) center;
+      background-size: 12px;
+    }
+
+    .demo-field {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+    .demo-field__label {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--color-content-primary);
+    }
+
+    /* Select placeholder option styling */
+    .select option[value=""] {
+      color: var(--color-content-tertiary);
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Default size
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Select · default size</h2>
+      <p class="demo-section__desc">
+        A native <code>&lt;select class="select"&gt;</code> styled with the default
+        <code>control-md</code> (36px) height.
+      </p>
+
+      <div class="demo-col2">
+        <div class="demo-field">
+          <label class="demo-field__label" for="sel-plan">Plan</label>
+          <select class="select" id="sel-plan">
+            <option value="">Select a plan…</option>
+            <option value="starter">Starter</option>
+            <option value="pro">Professional</option>
+            <option value="enterprise">Enterprise</option>
+          </select>
+        </div>
+        <div class="demo-field">
+          <label class="demo-field__label" for="sel-region">Region</label>
+          <select class="select" id="sel-region">
+            <option value="us-east">US East (N. Virginia)</option>
+            <option value="us-west">US West (Oregon)</option>
+            <option value="eu-west">EU West (Ireland)</option>
+            <option value="ap-southeast">Asia Pacific (Singapore)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Small size
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Select · sm size</h2>
+      <p class="demo-section__desc">
+        The <code>.select--sm</code> modifier uses <code>control-sm</code> (28px) height
+        for dense toolbars and inline filters.
+      </p>
+
+      <div class="demo-col2">
+        <div class="demo-field">
+          <label class="demo-field__label" for="sel-sm-filter">Filter</label>
+          <select class="select select--sm" id="sel-sm-filter">
+            <option value="all">All</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="pending">Pending</option>
+          </select>
+        </div>
+        <div class="demo-field">
+          <label class="demo-field__label" for="sel-sm-sort">Sort by</label>
+          <select class="select select--sm" id="sel-sm-sort">
+            <option value="name">Name</option>
+            <option value="date">Date</option>
+            <option value="status">Status</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Disabled and invalid
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Select · disabled & invalid</h2>
+      <p class="demo-section__desc">
+        Disabled (<code>:disabled</code>) and invalid (<code>aria-invalid</code>) states.
+      </p>
+
+      <div class="demo-col2">
+        <div class="demo-field">
+          <label class="demo-field__label" for="sel-disabled">Environment</label>
+          <select class="select" id="sel-disabled" disabled>
+            <option value="prod">Production</option>
+            <option value="staging">Staging</option>
+          </select>
+        </div>
+        <div class="demo-field">
+          <label class="demo-field__label" for="sel-invalid">Category</label>
+          <select class="select" id="sel-invalid" aria-invalid="true">
+            <option value="">Select a category…</option>
+            <option value="billing">Billing</option>
+            <option value="support">Support</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: In a card (form usage)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Select · in a card form</h2>
+      <p class="demo-section__desc">
+        Multiple selects in a typical card form layout.
+      </p>
+
+      <div class="card">
+        <div class="card__header">
+          <h2 class="card__title">Project settings</h2>
+        </div>
+        <div class="card__content" style="display:flex;flex-direction:column;gap:var(--space-3);">
+          <div class="demo-field">
+            <label class="demo-field__label" for="sel-framework">Framework</label>
+            <select class="select" id="sel-framework">
+              <option value="">Select framework…</option>
+              <option value="next">Next.js</option>
+              <option value="nuxt">Nuxt</option>
+              <option value="remix">Remix</option>
+            </select>
+          </div>
+          <div class="demo-field">
+            <label class="demo-field__label" for="sel-language">Language</label>
+            <select class="select" id="sel-language">
+              <option value="typescript">TypeScript</option>
+              <option value="javascript">JavaScript</option>
+            </select>
+          </div>
+          <div class="demo-field">
+            <label class="demo-field__label" for="sel-package-manager">Package manager</label>
+            <select class="select--sm select" id="sel-package-manager">
+              <option value="pnpm">pnpm</option>
+              <option value="npm">npm</option>
+              <option value="yarn">Yarn</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

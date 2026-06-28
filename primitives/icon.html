@@ -1,0 +1,415 @@
+<!--
+  icon.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Icon primitive in the foundation design system.
+  Covers:
+    - Icon grid by semantic category (Navigation & Actions, CRUD & Operations,
+      Status & Feedback, Data & Media, Communication)
+    - Size comparison (search icon at 14, 16, 20, 24, 32)
+    - Color inheritance (default, content-tertiary, success, error)
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Icon · foundation primitive</title>
+  <link rel="stylesheet" href="../dist/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-subsection__title {
+      font-size: var(--text-md);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-top: var(--space-1);
+    }
+
+    /* ── Icon grid ── */
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: var(--space-4);
+    }
+    .icon-grid__item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-3) var(--space-2);
+      border: 1px solid var(--color-line-subtle);
+      border-radius: var(--radius-lg);
+      background-color: var(--color-surface-2);
+    }
+    .icon-grid__label {
+      font-size: var(--text-xs);
+      color: var(--color-content-secondary);
+      text-align: center;
+      word-break: break-word;
+      max-width: 100%;
+      line-height: 1.3;
+    }
+
+    /* ── Size comparison row ── */
+    .size-row {
+      display: flex;
+      align-items: flex-end;
+      gap: var(--space-6);
+      flex-wrap: wrap;
+    }
+    .size-row__item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .size-row__label {
+      font-size: var(--text-xs);
+      color: var(--color-content-secondary);
+      text-align: center;
+    }
+
+    /* ── Color inheritance row ── */
+    .color-row {
+      display: flex;
+      gap: var(--space-6);
+      flex-wrap: wrap;
+    }
+    .color-row__item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-4);
+      border: 1px solid var(--color-line-subtle);
+      border-radius: var(--radius-lg);
+    }
+    .color-row__item--default { color: var(--color-content-primary); }
+    .color-row__item--tertiary { color: var(--color-content-tertiary); }
+    .color-row__item--success { color: var(--color-success-strong); }
+    .color-row__item--error { color: var(--color-error-strong); }
+    .color-row__label {
+      font-size: var(--text-xs);
+      color: var(--color-content-secondary);
+      text-align: center;
+    }
+
+    /* ── Icon group divider ── */
+    .category-divider {
+      margin: var(--space-2) 0 var(--space-3);
+      border: 0;
+      border-top: 1px solid var(--color-line-subtle);
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Icon grid by category
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Icon grid by category</h2>
+      <p class="demo-section__desc">
+        Inline SVGs with <code>data-lucide</code> as the first attribute.
+        All icons at size 20 (width="20" height="20"). Decorative icons carry
+        <code>aria-hidden="true"</code>. Color is always
+        <code>stroke="currentColor"</code> — never a color literal.
+      </p>
+
+      <!-- ── Navigation & Actions ── -->
+      <h3 class="demo-subsection__title">Navigation &amp; Actions</h3>
+      <div class="icon-grid">
+        <div class="icon-grid__item">
+          <svg data-lucide="chevron-left" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+          <span class="icon-grid__label">chevron-left</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="chevron-right" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          <span class="icon-grid__label">chevron-right</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="chevron-down" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          <span class="icon-grid__label">chevron-down</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="chevron-up" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg>
+          <span class="icon-grid__label">chevron-up</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="chevrons-up-down" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+          <span class="icon-grid__label">chevrons-up-down</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="plus" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+          <span class="icon-grid__label">plus</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="minus" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg>
+          <span class="icon-grid__label">minus</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="x" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          <span class="icon-grid__label">x</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="check" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+          <span class="icon-grid__label">check</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="ellipsis" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+          <span class="icon-grid__label">ellipsis</span>
+        </div>
+      </div>
+
+      <hr class="category-divider">
+
+      <!-- ── CRUD & Operations ── -->
+      <h3 class="demo-subsection__title">CRUD &amp; Operations</h3>
+      <div class="icon-grid">
+        <div class="icon-grid__item">
+          <svg data-lucide="square-pen" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
+          <span class="icon-grid__label">square-pen</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="copy" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+          <span class="icon-grid__label">copy</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="trash-2" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+          <span class="icon-grid__label">trash-2</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="download" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          <span class="icon-grid__label">download</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="upload" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+          <span class="icon-grid__label">upload</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="refresh-cw" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>
+          <span class="icon-grid__label">refresh-cw</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="search" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <span class="icon-grid__label">search</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="funnel" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 3H2l8 9.46V19l4 2v-8.54l8-9.46Z"/></svg>
+          <span class="icon-grid__label">funnel</span>
+        </div>
+      </div>
+
+      <hr class="category-divider">
+
+      <!-- ── Status & Feedback ── -->
+      <h3 class="demo-subsection__title">Status &amp; Feedback</h3>
+      <div class="icon-grid">
+        <div class="icon-grid__item">
+          <svg data-lucide="circle-check" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+          <span class="icon-grid__label">circle-check</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="triangle-alert" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+          <span class="icon-grid__label">triangle-alert</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="info" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <span class="icon-grid__label">info</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="loader-circle" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+          <span class="icon-grid__label">loader-circle</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="ban" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
+          <span class="icon-grid__label">ban</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="shield" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
+          <span class="icon-grid__label">shield</span>
+        </div>
+      </div>
+
+      <hr class="category-divider">
+
+      <!-- ── Data & Media ── -->
+      <h3 class="demo-subsection__title">Data &amp; Media</h3>
+      <div class="icon-grid">
+        <div class="icon-grid__item">
+          <svg data-lucide="calendar" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+          <span class="icon-grid__label">calendar</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="clock" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span class="icon-grid__label">clock</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="eye" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7"/><circle cx="12" cy="12" r="3"/></svg>
+          <span class="icon-grid__label">eye</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="link" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          <span class="icon-grid__label">link</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="unlink" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18.84 12.25 1.72-1.71h-.02a5.004 5.004 0 0 0-.12-7.07 5 5 0 0 0-7.07 0l-1.71 1.71"/><path d="m5.17 11.75-1.71 1.71a5 5 0 0 0 7.07 7.07l1.71-1.71"/><line x1="8" x2="8" y1="2" y2="5"/><line x1="2" x2="5" y1="8" y2="8"/><line x1="16" x2="16" y1="19" y2="22"/><line x1="19" x2="22" y1="16" y2="16"/></svg>
+          <span class="icon-grid__label">unlink</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="lock" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span class="icon-grid__label">lock</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="lock-open" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+          <span class="icon-grid__label">lock-open</span>
+        </div>
+      </div>
+
+      <hr class="category-divider">
+
+      <!-- ── Communication ── -->
+      <h3 class="demo-subsection__title">Communication</h3>
+      <div class="icon-grid">
+        <div class="icon-grid__item">
+          <svg data-lucide="mail" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          <span class="icon-grid__label">mail</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="bell" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 4 9 4 9H2s4-2 4-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="icon-grid__label">bell</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="user" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span class="icon-grid__label">user</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="settings" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+          <span class="icon-grid__label">settings</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="circle-pause" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="10" x2="10" y1="15" y2="9"/><line x1="14" x2="14" y1="15" y2="9"/></svg>
+          <span class="icon-grid__label">circle-pause</span>
+        </div>
+        <div class="icon-grid__item">
+          <svg data-lucide="circle-play" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+          <span class="icon-grid__label">circle-play</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Size comparison
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Size comparison</h2>
+      <p class="demo-section__desc">
+        The same
+        <svg data-lucide="search" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:middle;display:inline;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <code>search</code> icon at ascending sizes. Standalone icons set explicit
+        <code>width</code> and <code>height</code>; inside a component the icon
+        inherits the context.
+      </p>
+
+      <div class="size-row">
+        <div class="size-row__item">
+          <svg data-lucide="search" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <span class="size-row__label">14</span>
+        </div>
+        <div class="size-row__item">
+          <svg data-lucide="search" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <span class="size-row__label">16</span>
+        </div>
+        <div class="size-row__item">
+          <svg data-lucide="search" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <span class="size-row__label">20</span>
+        </div>
+        <div class="size-row__item">
+          <svg data-lucide="search" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <span class="size-row__label">24</span>
+        </div>
+        <div class="size-row__item">
+          <svg data-lucide="search" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <span class="size-row__label">32</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Color inheritance
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Color inheritance</h2>
+      <p class="demo-section__desc">
+        Icons use <code>stroke="currentColor"</code> and inherit their color
+        from the surrounding context. Below are four contextual swatches.
+      </p>
+
+      <div class="color-row">
+        <div class="color-row__item color-row__item--default">
+          <svg data-lucide="circle-check" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+          <svg data-lucide="info" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <svg data-lucide="chevron-right" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          <span class="color-row__label">content-primary (default)</span>
+        </div>
+
+        <div class="color-row__item color-row__item--tertiary">
+          <svg data-lucide="circle-check" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+          <svg data-lucide="info" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <svg data-lucide="chevron-right" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          <span class="color-row__label">content-tertiary</span>
+        </div>
+
+        <div class="color-row__item color-row__item--success">
+          <svg data-lucide="circle-check" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+          <svg data-lucide="info" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <svg data-lucide="chevron-right" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          <span class="color-row__label">success</span>
+        </div>
+
+        <div class="color-row__item color-row__item--error">
+          <svg data-lucide="circle-check" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+          <svg data-lucide="info" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <svg data-lucide="chevron-right" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          <span class="color-row__label">error</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

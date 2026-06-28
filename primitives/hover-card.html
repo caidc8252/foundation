@@ -1,0 +1,282 @@
+<!--
+  hover-card.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Hover Card primitive in the foundation design system.
+  Covers:
+    - Static hover card popup (surface, avatar, title, body, actions)
+    - Interactive demo (hover-triggered show/hide with CSS transitions)
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hover Card · foundation primitive</title>
+  <link rel="stylesheet" href="../dist/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       Static popup display — show the hover-card surface in isolation
+       ════════════════════════════════════════════════════════════════ */
+    .static-popup-display {
+      display: flex;
+      justify-content: center;
+      padding: var(--space-8);
+      background-color: var(--color-surface-1);
+      border: 1px dashed var(--color-line-subtle);
+      border-radius: var(--radius-lg);
+    }
+
+    /* Avatar placeholder — 40px circular image placeholder */
+    .avatar-40 {
+      display: inline-flex;
+      flex-shrink: 0;
+      width: var(--space-10);
+      height: var(--space-10);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      background-color: var(--color-avatar-bg);
+      color: var(--color-avatar-fg);
+      font-weight: 600;
+      font-size: var(--text-md);
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       Interactive demo — hover-triggered card
+       ════════════════════════════════════════════════════════════════ */
+
+    /* Wrapper: establishes the positioning context + keeps hover alive
+       when moving from trigger to card (extended bottom padding). */
+    .hover-card-demo {
+      position: relative;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding-bottom: var(--space-8);   /* hover runway */
+    }
+
+    /* The trigger — an inline row the user hovers or focuses. */
+    .hover-card-demo__trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      cursor: pointer;
+      user-select: none;
+    }
+    .hover-card-demo__trigger:focus-visible {
+      outline: none;
+      box-shadow: var(--shadow-focus);
+      border-radius: var(--radius-md);
+    }
+    .hover-card-demo__username {
+      font-size: var(--text-md);
+      font-weight: 500;
+      color: var(--color-primary-500);
+      border-bottom: 1px dashed var(--color-primary-500);
+    }
+
+    /* The popup — positioned below the trigger, centered, with fade+zoom.
+       Uses the .hover-card class for surface styling. */
+    .hover-card-demo__popup {
+      position: absolute;
+      top: calc(100% - var(--space-8) + var(--space-1));  /* below trigger + 4px gap */
+      left: 50%;
+      z-index: 10;
+      opacity: 0;
+      transform: translateX(-50%) scale(0.95);
+      transform-origin: top center;
+      pointer-events: none;
+      transition: opacity var(--duration-fast) var(--ease-standard),
+                  transform var(--duration-fast) var(--ease-standard);
+      transition-delay: 0s;
+    }
+
+    /* Show on hover of the entire demo wrapper (includes runway). */
+    .hover-card-demo:hover .hover-card-demo__popup {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+      pointer-events: auto;
+      transition-delay: 0.15s;   /* hover-intent delay */
+    }
+
+    /* Also show on focus-within (keyboard users). */
+    .hover-card-demo:focus-within .hover-card-demo__popup {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+      pointer-events: auto;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hover-card-demo__popup { transition: opacity 0s; }
+    }
+
+    /* ── Content layout inside .hover-card ── */
+    .hover-card__header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-2);
+    }
+    .hover-card__info {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-0);
+    }
+    .hover-card__title {
+      font-size: var(--text-md);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      line-height: 1.3;
+    }
+    .hover-card__subtitle {
+      font-size: var(--text-xs);
+      color: var(--color-content-tertiary);
+      line-height: 1.4;
+    }
+    .hover-card__body {
+      font-size: var(--text-sm);
+      color: var(--color-content-secondary);
+      line-height: 1.5;
+      margin-bottom: var(--space-3);
+    }
+    .hover-card__actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Static hover card popup
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Hover Card · static popup</h2>
+      <p class="demo-section__desc">
+        The popup surface rendered in isolation: <code>.hover-card</code>.
+        Width 280px, <code>radius-xl</code> (12px), <code>surface-2</code> background,
+        1px <code>line-default</code> border, <code>spacing-cx-md</code> (14px) padding,
+        <code>text-sm</code> content, <code>shadow-4</code>. No size variants.
+      </p>
+
+      <div class="static-popup-display">
+        <div class="hover-card">
+          <div class="hover-card__header">
+            <span class="avatar-40" aria-hidden="true">AC</span>
+            <div class="hover-card__info">
+              <div class="hover-card__title">Alice Chen</div>
+              <div class="hover-card__subtitle">Senior Designer at Acme Corp</div>
+            </div>
+          </div>
+          <div class="hover-card__body">
+            Alice leads product design at Acme Corp with over 8 years of experience
+            in enterprise SaaS. She specialises in design systems, accessibility,
+            and developer tooling.
+          </div>
+          <div class="hover-card__actions">
+            <button class="btn btn--ghost btn--sm" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              Profile
+            </button>
+            <button class="btn btn--ghost btn--sm" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4Z"/></svg>
+              Message
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Interactive demo
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Hover Card · interactive</h2>
+      <p class="demo-section__desc">
+        Hover over the avatar or username to reveal the hover card. The card
+        fades and zooms in (scale 0.95 → 1) with a 150ms hover-intent delay.
+        On mouse leave, the card fades out immediately. Keyboard users can
+        focus the trigger to open the card.
+      </p>
+
+      <div style="padding:var(--space-4) 0;">
+        <div class="hover-card-demo" tabindex="0" role="tooltip" aria-label="Hover card demo">
+          <!-- Trigger -->
+          <div class="hover-card-demo__trigger">
+            <span class="avatar avatar--lg" aria-hidden="true">
+              <span class="avatar__fallback">AC</span>
+            </span>
+            <span class="hover-card-demo__username">@alicechen</span>
+          </div>
+
+          <!-- Popup -->
+          <div class="hover-card hover-card-demo__popup" aria-hidden="true">
+            <div class="hover-card__header">
+              <span class="avatar-40" aria-hidden="true">AC</span>
+              <div class="hover-card__info">
+                <div class="hover-card__title">Alice Chen</div>
+                <div class="hover-card__subtitle">Senior Designer at Acme Corp</div>
+              </div>
+            </div>
+            <div class="hover-card__body">
+              Alice leads product design at Acme Corp with over 8 years of experience
+              in enterprise SaaS. She specialises in design systems, accessibility,
+              and developer tooling.
+            </div>
+            <div class="hover-card__actions">
+              <button class="btn btn--ghost btn--sm" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Profile
+              </button>
+              <button class="btn btn--ghost btn--sm" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4Z"/></svg>
+                Message
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

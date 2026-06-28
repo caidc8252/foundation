@@ -1,0 +1,263 @@
+<!--
+  collapsible.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Collapsible primitive in the foundation design system.
+  Covers:
+    - Basic collapsible with chevron (open and closed)
+    - Collapsible with .btn-styled trigger
+    - Multiple collapsible in a list
+    - No-chrome collapsible (headless)
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Collapsible · foundation primitive</title>
+  <link rel="stylesheet" href="../dist/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../composites/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-col2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+    @media (max-width: 640px) {
+      .demo-col2 { grid-template-columns: 1fr; }
+    }
+
+    /* Collapsible — headless by design, consumer adds chrome */
+    .collapsible {
+      display: flex;
+      flex-direction: column;
+    }
+    .collapsible__trigger {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      width: 100%;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--color-content-primary);
+      text-align: left;
+      font-family: inherit;
+    }
+    .collapsible__trigger:hover {
+      background: var(--color-surface-hover);
+    }
+    .collapsible__trigger:focus-visible {
+      outline: 2px solid var(--color-line-focus);
+      outline-offset: -2px;
+    }
+    .collapsible__chevron {
+      display: inline-flex;
+      color: var(--color-content-tertiary);
+      transition: transform 0.2s ease;
+      margin-left: auto;
+    }
+    .collapsible__chevron--open {
+      transform: rotate(180deg);
+    }
+    .collapsible__content {
+      display: none;
+      padding: 0 var(--space-4) var(--space-3);
+      font-size: var(--text-xs);
+      color: var(--color-content-secondary);
+    }
+    .collapsible__content--open {
+      display: block;
+    }
+
+    /* Chrome-on variants for demo clarity */
+    .collapsible--bordered {
+      border: 1px solid var(--color-line-subtle);
+      border-radius: var(--radius-md);
+      background: var(--color-surface-2);
+    }
+    .collapsible--bordered .collapsible__trigger {
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Basic collapsibles (open vs closed)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Collapsible · basic (headless)</h2>
+      <p class="demo-section__desc">
+        Using <code>.collapsible</code> > <code>.collapsible__trigger</code>
+        (optionally with <code>.collapsible__chevron</code>) +
+        <code>.collapsible__content</code>. Collapsible is headless — consumers
+        add their own chrome. Here we style the trigger with a neutral background
+        for visibility.
+      </p>
+
+      <div class="demo-col2">
+        <div class="collapsible collapsible--bordered">
+          <button class="collapsible__trigger" data-panel-open aria-expanded="true" aria-controls="col-open-panel">
+            <span>Open section</span>
+            <span class="collapsible__chevron collapsible__chevron--open" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+          </button>
+          <div class="collapsible__content collapsible__content--open" id="col-open-panel">
+            <p>This panel is open by default. Click the trigger to collapse it.</p>
+            <p style="margin-top:var(--space-2);">The chevron rotates 180 degrees when open.</p>
+          </div>
+        </div>
+
+        <div class="collapsible collapsible--bordered">
+          <button class="collapsible__trigger" aria-expanded="false" aria-controls="col-closed-panel">
+            <span>Closed section</span>
+            <span class="collapsible__chevron" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+          </button>
+          <div class="collapsible__content" id="col-closed-panel">
+            <p>This content is hidden until the trigger is clicked.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: With button-styled trigger
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Collapsible · with .btn-styled trigger</h2>
+      <p class="demo-section__desc">
+        The trigger can be any control — here it uses <code>.btn .btn--ghost</code>
+        for the familiar button look. The trigger owns its own states and focus ring.
+      </p>
+
+      <div class="collapsible" style="gap:var(--space-1);">
+        <button class="btn btn--ghost collapsible__trigger" data-panel-open aria-expanded="true" aria-controls="col-btn-panel" style="justify-content:space-between;width:100%;">
+          Advanced filters
+          <span class="collapsible__chevron collapsible__chevron--open" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </button>
+        <div class="collapsible__content collapsible__content--open" id="col-btn-panel" style="padding:var(--space-3) var(--space-4);">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3);">
+            <div><label style="font-size:var(--text-xs);color:var(--color-content-secondary);">Status</label><br><select class="btn btn--secondary btn--sm" style="width:100%;margin-top:var(--space-1);"><option>All</option><option>Active</option><option>Inactive</option></select></div>
+            <div><label style="font-size:var(--text-xs);color:var(--color-content-secondary);">Priority</label><br><select class="btn btn--secondary btn--sm" style="width:100%;margin-top:var(--space-1);"><option>All</option><option>High</option><option>Medium</option><option>Low</option></select></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Multiple collapsibles (FAQ list)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Collapsible · FAQ list</h2>
+      <p class="demo-section__desc">
+        Multiple collapsibles stacked. Each operates independently (no single-open
+        constraint — that is Accordion's domain).
+      </p>
+
+      <div style="display:flex;flex-direction:column;gap:var(--space-2);">
+        <div class="collapsible collapsible--bordered">
+          <button class="collapsible__trigger" data-panel-open aria-expanded="true" aria-controls="faq-1">
+            How do I reset my password?
+            <span class="collapsible__chevron collapsible__chevron--open" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+          </button>
+          <div class="collapsible__content collapsible__content--open" id="faq-1">
+            <p>Go to Settings > Security > Password. Enter your current password, then your new password twice and click Save.</p>
+          </div>
+        </div>
+        <div class="collapsible collapsible--bordered">
+          <button class="collapsible__trigger" aria-expanded="false" aria-controls="faq-2">
+            Can I export my data?
+            <span class="collapsible__chevron" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+          </button>
+          <div class="collapsible__content" id="faq-2">
+            <p>Yes. Navigate to Settings > Data, click "Export all data", and choose your preferred format (CSV, JSON, or XML).</p>
+          </div>
+        </div>
+        <div class="collapsible collapsible--bordered">
+          <button class="collapsible__trigger" aria-expanded="false" aria-controls="faq-3">
+            What happens to my account when I downgrade?
+            <span class="collapsible__chevron" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+          </button>
+          <div class="collapsible__content" id="faq-3">
+            <p>Your account remains active. You lose access to premium features at the next billing cycle. No data is deleted.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    (function () {
+      document.querySelectorAll('.collapsible__trigger').forEach(function (trigger) {
+        trigger.addEventListener('click', function () {
+          var panel = trigger.nextElementSibling;
+          var chevron = trigger.querySelector('.collapsible__chevron');
+          var isOpen = trigger.getAttribute('data-panel-open') !== null;
+
+          if (isOpen) {
+            trigger.removeAttribute('data-panel-open');
+            trigger.setAttribute('aria-expanded', 'false');
+            panel.classList.remove('collapsible__content--open');
+            if (chevron) chevron.classList.remove('collapsible__chevron--open');
+          } else {
+            trigger.setAttribute('data-panel-open', '');
+            trigger.setAttribute('aria-expanded', 'true');
+            panel.classList.add('collapsible__content--open');
+            if (chevron) chevron.classList.add('collapsible__chevron--open');
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

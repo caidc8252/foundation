@@ -1,0 +1,191 @@
+<!--
+  label.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Label primitive in the foundation design system.
+  Covers:
+    - Basic standalone labels for form controls (label above an input)
+    - Label with required indicator (decorative * marker)
+    - Label variants: normal, with inline icon, with helper text
+    - Disabled label (.label--disabled) pairing with a disabled input
+    - Label with htmlFor — click-to-focus via browser native behavior
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Label · foundation primitive</title>
+  <link rel="stylesheet" href="../dist/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-stack {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    .demo-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+    @media (max-width: 480px) {
+      .demo-row { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Basic labels
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Basic labels</h2>
+      <p class="demo-section__desc">
+        Standalone <code>&lt;label class="label"&gt;</code> elements above form controls.
+        The label uses <code>htmlFor</code> to associate with the control <code>id</code>
+        for native click-to-focus.
+      </p>
+
+      <div class="demo-stack">
+        <label class="label" for="input-name">Full name</label>
+        <input class="input" id="input-name" type="text" placeholder="e.g. Jane Smith">
+
+        <label class="label" for="input-email">Email address</label>
+        <input class="input" id="input-email" type="email" placeholder="you@example.com">
+
+        <label class="label" for="input-org">Organization</label>
+        <input class="input" id="input-org" type="text" placeholder="e.g. Acme Corp">
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: With required indicator
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">With required indicator</h2>
+      <p class="demo-section__desc">
+        Append <code>&lt;span class="field__required" aria-hidden="true"&gt; *&lt;/span&gt;</code>
+        after the label text. The star is decorative — requiredness is communicated to AT
+        via the control's own <code>required</code> attribute.
+      </p>
+
+      <div class="demo-stack">
+        <label class="label" for="req-email">Email<span class="field__required" aria-hidden="true"> *</span></label>
+        <input class="input" id="req-email" type="email" required placeholder="you@example.com">
+
+        <label class="label" for="req-password">Password<span class="field__required" aria-hidden="true"> *</span></label>
+        <input class="input" id="req-password" type="password" required placeholder="At least 8 characters">
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Label variants
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Label variants</h2>
+      <p class="demo-section__desc">
+        The <code>.label</code> is an inline-flex container — it accommodates an inline icon
+        or a small control beside the caption text via the <code>gap-2</code> slot.
+        Helper text (via <code>.field__hint</code>) lives below the control, not inside the label.
+      </p>
+
+      <div class="demo-stack">
+        <label class="label" for="var-standard">Standard label</label>
+        <input class="input" id="var-standard" type="text" placeholder="Plain text caption">
+
+        <label class="label" for="var-icon">
+          <svg data-lucide="user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+          Label with inline icon
+        </label>
+        <input class="input" id="var-icon" type="text" placeholder="Inline icon in the label">
+
+        <label class="label" for="var-helper">Label with helper text</label>
+        <input class="input" id="var-helper" type="text" placeholder="e.g. Display name">
+        <p class="field__hint">This will appear on your public profile</p>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: Disabled label
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Disabled label</h2>
+      <p class="demo-section__desc">
+        Add <code>.label--disabled</code> to the label to get <code>cursor:not-allowed</code>
+        and <code>opacity:0.5</code>. In the artifact this is a static stand-in for the
+        React <code>group-disabled</code> / <code>peer-disabled</code> variants.
+        The control receives <code>disabled</code> on its own element.
+      </p>
+
+      <div class="demo-stack">
+        <label class="label label--disabled" for="disabled-name">Full name</label>
+        <input class="input" id="disabled-name" type="text" value="Jane Smith" disabled>
+
+        <label class="label label--disabled" for="disabled-email">Email address</label>
+        <input class="input" id="disabled-email" type="email" value="jane@acme.com" disabled>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 5: Label with htmlFor
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Label with htmlFor</h2>
+      <p class="demo-section__desc">
+        Click any label below to focus its paired input. The association is made via
+        <code>htmlFor="&lt;input-id&gt;"</code>, which the browser resolves natively
+        — no JavaScript required.
+      </p>
+
+      <div class="demo-stack">
+        <label class="label" for="focus-first">First name</label>
+        <input class="input" id="focus-first" type="text" placeholder="Click the label above">
+
+        <label class="label" for="focus-last">Last name</label>
+        <input class="input" id="focus-last" type="text" placeholder="Click the label above">
+      </div>
+
+      <p class="demo-section__desc" style="margin-top:var(--space-2);">
+        Tip: labels without <code>htmlFor</code> are still valid — they pair via
+        wrapping the control, but the explicit <code>htmlFor</code> pattern is preferred
+        for flexible layout and assistive technology.
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>

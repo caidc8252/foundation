@@ -1,0 +1,333 @@
+<!--
+  tabs.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Tabs primitive in the foundation design system.
+  Covers:
+    - Line variant (default)
+    - Default (pill) variant
+    - Disabled tab trigger
+    - Tabs in a card
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tabs · foundation primitive</title>
+  <link rel="stylesheet" href="../dist/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../composites/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-col2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+    @media (max-width: 640px) {
+      .demo-col2 { grid-template-columns: 1fr; }
+    }
+
+    /* Tabs base */
+    .tabs {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    /* Tabs list - line variant (default) */
+    .tabs__list {
+      display: flex;
+      gap: var(--space-1);
+      position: relative;
+    }
+    .tabs__list--line {
+      border-bottom: 1px solid var(--color-line-default);
+    }
+
+    /* Tabs trigger */
+    .tabs__trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) 12px;
+      font-size: var(--text-sm);
+      font-weight: 500;
+      font-family: var(--font-sans);
+      color: var(--color-content-secondary);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+      position: relative;
+      outline: none;
+      border-radius: 0;
+    }
+    .tabs__trigger:hover {
+      color: var(--color-content-primary);
+    }
+    .tabs__trigger:focus-visible {
+      box-shadow: 0 0 0 2px var(--color-line-focus);
+      border-radius: var(--radius-md);
+    }
+    .tabs__trigger:disabled,
+    .tabs__trigger[aria-disabled="true"] {
+      cursor: not-allowed;
+      color: var(--color-content-disabled);
+    }
+
+    /* Line variant active */
+    .tabs__list--line .tabs__trigger.tabs__trigger--active,
+    .tabs__list--line .tabs__trigger[aria-selected="true"] {
+      color: var(--color-content-primary);
+      font-weight: 600;
+    }
+    .tabs__list--line .tabs__trigger.tabs__trigger--active::after,
+    .tabs__list--line .tabs__trigger[aria-selected="true"]::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 12px;
+      right: 12px;
+      height: 2px;
+      background: var(--color-primary-700);
+    }
+
+    /* Default (pill) variant */
+    .tabs__list--default {
+      background: var(--color-surface-3);
+      border-radius: var(--radius-md);
+      padding: var(--space-1);
+      gap: var(--space-1);
+      height: 28px;
+      align-items: center;
+    }
+    .tabs__list--default .tabs__trigger {
+      height: calc(100% - 2px);
+      padding: 0 12px;
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--color-content-secondary);
+    }
+    .tabs__list--default .tabs__trigger:hover {
+      color: var(--color-content-primary);
+    }
+    .tabs__list--default .tabs__trigger.tabs__trigger--active,
+    .tabs__list--default .tabs__trigger[aria-selected="true"] {
+      background: var(--color-surface-2);
+      color: var(--color-content-primary);
+      box-shadow: var(--shadow-1);
+    }
+
+    /* Tabs content panels */
+    .tabs__content {
+      padding: var(--space-3) 0;
+      font-size: var(--text-sm);
+      color: var(--color-content-secondary);
+      line-height: 1.6;
+    }
+    .tabs__content[hidden] {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Line variant
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Tabs · line variant</h2>
+      <p class="demo-section__desc">
+        The <code>.tabs__list--line</code> variant: minimal style with a bottom hairline
+        and an animated <code>primary-700</code> underline on the active tab.
+        Click a tab to switch panels.
+      </p>
+
+      <div class="tabs" id="tabs-line">
+        <div class="tabs__list tabs__list--line" role="tablist">
+          <button class="tabs__trigger tabs__trigger--active" role="tab" aria-selected="true" aria-controls="line-panel-1" tabindex="0">Overview</button>
+          <button class="tabs__trigger" role="tab" aria-selected="false" aria-controls="line-panel-2" tabindex="-1">Details</button>
+          <button class="tabs__trigger" role="tab" aria-selected="false" aria-controls="line-panel-3" tabindex="-1">Settings</button>
+          <button class="tabs__trigger" role="tab" aria-selected="false" aria-controls="line-panel-4" tabindex="-1" disabled>Disabled</button>
+        </div>
+        <div class="tabs__content" id="line-panel-1" role="tabpanel">
+          <p><strong>Overview</strong> — This is the overview panel. It shows high-level information about the current item, including status, last updated, and key metrics.</p>
+        </div>
+        <div class="tabs__content" id="line-panel-2" role="tabpanel" hidden>
+          <p><strong>Details</strong> — The details panel contains more granular information, such as configuration parameters, environment variables, and connection settings.</p>
+        </div>
+        <div class="tabs__content" id="line-panel-3" role="tabpanel" hidden>
+          <p><strong>Settings</strong> — Manage preferences, permissions, and notification settings for this item.</p>
+        </div>
+        <div class="tabs__content" id="line-panel-4" role="tabpanel" hidden>
+          <p><strong>Disabled tab</strong> — This panel belongs to a disabled tab.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Default (pill) variant
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Tabs · default (pill) variant</h2>
+      <p class="demo-section__desc">
+        The <code>.tabs__list--default</code> variant: pill tabs inside a tinted tray.
+        The active tab lifts with <code>bg-surface-2</code> and <code>shadow-1</code>.
+      </p>
+
+      <div class="tabs" id="tabs-pill">
+        <div class="tabs__list tabs__list--default" role="tablist">
+          <button class="tabs__trigger tabs__trigger--active" role="tab" aria-selected="true" aria-controls="pill-panel-1" tabindex="0">Billing</button>
+          <button class="tabs__trigger" role="tab" aria-selected="false" aria-controls="pill-panel-2" tabindex="-1">Team</button>
+          <button class="tabs__trigger" role="tab" aria-selected="false" aria-controls="pill-panel-3" tabindex="-1">Security</button>
+          <button class="tabs__trigger" role="tab" aria-selected="false" aria-controls="pill-panel-4" tabindex="-1">Integrations</button>
+        </div>
+        <div class="tabs__content" id="pill-panel-1" role="tabpanel">
+          <p><strong>Billing</strong> — Manage your subscription plan, payment methods, and invoices.</p>
+        </div>
+        <div class="tabs__content" id="pill-panel-2" role="tabpanel" hidden>
+          <p><strong>Team</strong> — Invite team members, manage roles, and control access permissions.</p>
+        </div>
+        <div class="tabs__content" id="pill-panel-3" role="tabpanel" hidden>
+          <p><strong>Security</strong> — Configure password policies, two-factor authentication, and API keys.</p>
+        </div>
+        <div class="tabs__content" id="pill-panel-4" role="tabpanel" hidden>
+          <p><strong>Integrations</strong> — Connect external services and configure webhook endpoints.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Tabs in a card
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Tabs · in a card</h2>
+      <p class="demo-section__desc">
+        Tabs used inside a card layout for in-page section switching.
+      </p>
+
+      <div class="card">
+        <div class="card__header" style="padding-bottom:0;">
+          <h2 class="card__title">Project settings</h2>
+        </div>
+        <div class="card__content">
+          <div class="tabs" id="tabs-card-line">
+            <div class="tabs__list tabs__list--line" role="tablist">
+              <button class="tabs__trigger tabs__trigger--active" role="tab" aria-selected="true" aria-controls="card-panel-1" tabindex="0">General</button>
+              <button class="tabs__trigger" role="tab" aria-selected="false" aria-controls="card-panel-2" tabindex="-1">Environment</button>
+              <button class="tabs__trigger" role="tab" aria-selected="false" aria-controls="card-panel-3" tabindex="-1">Deploy</button>
+            </div>
+            <div class="tabs__content" id="card-panel-1" role="tabpanel">
+              <p>General settings including project name, description, and default branch.</p>
+            </div>
+            <div class="tabs__content" id="card-panel-2" role="tabpanel" hidden>
+              <p>Environment variables and configuration for development, staging, and production.</p>
+            </div>
+            <div class="tabs__content" id="card-panel-3" role="tabpanel" hidden>
+              <p>Deployment settings including build commands, output directory, and auto-deploy branches.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <script>
+    (function () {
+      document.querySelectorAll('.tabs').forEach(function (root) {
+        var triggers = Array.from(root.querySelectorAll('.tabs__trigger'));
+        var panels   = Array.from(root.querySelectorAll('.tabs__content'));
+
+        function activate(trigger) {
+          // Deactivate all
+          triggers.forEach(function (t) {
+            t.classList.remove('tabs__trigger--active');
+            t.setAttribute('aria-selected', 'false');
+            t.setAttribute('tabindex', '-1');
+          });
+          // Hide all panels.
+          panels.forEach(function (p) { p.hidden = true; });
+
+          // Activate the clicked trigger
+          trigger.classList.add('tabs__trigger--active');
+          trigger.setAttribute('aria-selected', 'true');
+          trigger.setAttribute('tabindex', '0');
+
+          // Show the matching panel via aria-controls or matching index
+          var panelId = trigger.getAttribute('aria-controls');
+          var panel = panelId
+            ? root.querySelector('#' + panelId)
+            : panels[triggers.indexOf(trigger)];
+          if (panel) panel.hidden = false;
+        }
+
+        triggers.forEach(function (trigger) {
+          trigger.addEventListener('click', function () {
+            if (trigger.disabled || trigger.getAttribute('aria-disabled') === 'true') return;
+            activate(trigger);
+          });
+
+          // Roving arrow-key focus along the trigger list
+          trigger.addEventListener('keydown', function (e) {
+            var idx = triggers.indexOf(trigger);
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+              e.preventDefault();
+              var next = triggers[(idx + 1) % triggers.length];
+              next.focus(); activate(next);
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+              e.preventDefault();
+              var prev = triggers[(idx - 1 + triggers.length) % triggers.length];
+              prev.focus(); activate(prev);
+            } else if (e.key === 'Home') {
+              e.preventDefault(); triggers[0].focus(); activate(triggers[0]);
+            } else if (e.key === 'End') {
+              e.preventDefault();
+              var last = triggers[triggers.length - 1];
+              last.focus(); activate(last);
+            }
+          });
+        });
+
+        // Initialise: activate the first --active trigger, or the first trigger
+        var initial = root.querySelector('.tabs__trigger--active') || triggers[0];
+        if (initial) activate(initial);
+      });
+    })();
+  </script>
+</body>
+</html>

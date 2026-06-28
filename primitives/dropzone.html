@@ -1,0 +1,381 @@
+<!--
+  dropzone.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Dropzone primitive in the foundation design system.
+  Covers:
+    - Resting dropzone (dashed border, upload icon, click-to-browse text)
+    - Drag-active state (--drag: primary border + tint)
+    - Disabled dropzone (--disabled)
+    - File list with file rows (name, size, progress, error, done, remove)
+    - Interactive demo with functional JS
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dropzone · foundation primitive</title>
+  <link rel="stylesheet" href="../dist/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../composites/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 740px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-col2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+    @media (max-width: 640px) {
+      .demo-col2 { grid-template-columns: 1fr; }
+    }
+    .demo-note {
+      font-size: var(--text-xs);
+      color: var(--color-content-tertiary);
+      font-style: italic;
+      margin: 0;
+    }
+    .file-list .file-row:last-child {
+      margin-bottom: 0;
+    }
+    .demo-dropzone-area {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Resting dropzone
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Dropzone · resting</h2>
+      <p class="demo-section__desc">
+        A dashed-border drop target: <code>.dropzone</code> with an upload icon,
+        "Drop files here or click to browse" text, and a hidden <code>&lt;input type="file"&gt;</code>.
+      </p>
+
+      <div class="dropzone">
+        <svg data-lucide="upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:var(--space-6);height:var(--space-6);">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" x2="12" y1="3" y2="15"/>
+        </svg>
+        <span>Drop files here or click to browse</span>
+        <input type="file" hidden multiple>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Drag active state
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Dropzone · drag active</h2>
+      <p class="demo-section__desc">
+        Add <code>.dropzone--drag</code> when a file is dragged over the zone.
+        Border shifts to <code>--color-primary-500</code> and background tints to
+        <code>--color-primary-50</code>.
+      </p>
+
+      <div class="dropzone dropzone--drag">
+        <svg data-lucide="upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:var(--space-6);height:var(--space-6);">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" x2="12" y1="3" y2="15"/>
+        </svg>
+        <span>Drop files here or click to browse</span>
+        <input type="file" hidden multiple>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Disabled dropzone
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Dropzone · disabled</h2>
+      <p class="demo-section__desc">
+        Add <code>.dropzone--disabled</code> to prevent interaction. The zone
+        dims (<code>opacity: 0.6</code>) and the cursor becomes <code>not-allowed</code>.
+      </p>
+
+      <div class="dropzone dropzone--disabled" aria-disabled="true">
+        <svg data-lucide="upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:var(--space-6);height:var(--space-6);">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" x2="12" y1="3" y2="15"/>
+        </svg>
+        <span>File upload is disabled</span>
+        <input type="file" hidden multiple disabled>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: File list with file rows
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">File list · file rows</h2>
+      <p class="demo-section__desc">
+        After files are selected or dropped, they render as <code>.file-row</code>
+        items inside a <code>.file-list</code> (<code>&lt;ul&gt;</code>). Each row
+        carries an icon, name, size, optional progress bar, status indicator, and
+        a remove button.
+      </p>
+
+      <ul class="file-list">
+        <!-- FileRow: done (success) -->
+        <li class="file-row">
+          <svg class="file-row__icon" data-lucide="file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
+            <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+          </svg>
+          <div class="file-row__body">
+            <div class="file-row__name-row">
+              <span class="file-row__name">report.pdf</span>
+              <span class="file-row__size">2.0 KB</span>
+            </div>
+          </div>
+          <svg class="file-row__status file-row__status--done" data-lucide="circle-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+          <button class="btn btn--ghost btn--icon-sm" type="button" aria-label="Remove report.pdf">
+            <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 6 6 18"/>
+              <path d="m6 6 12 12"/>
+            </svg>
+          </button>
+        </li>
+
+        <!-- FileRow: uploading with progress bar -->
+        <li class="file-row">
+          <svg class="file-row__icon" data-lucide="file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
+            <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+          </svg>
+          <div class="file-row__body">
+            <div class="file-row__name-row">
+              <span class="file-row__name">data.csv</span>
+              <span class="file-row__size">4.3 MB</span>
+            </div>
+            <div class="progress" style="margin-top:var(--space-1)">
+              <div class="progress__track">
+                <div class="progress__indicator" style="width:45%"></div>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn--ghost btn--icon-sm" type="button" aria-label="Remove data.csv">
+            <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 6 6 18"/>
+              <path d="m6 6 12 12"/>
+            </svg>
+          </button>
+        </li>
+
+        <!-- FileRow: error -->
+        <li class="file-row">
+          <svg class="file-row__icon" data-lucide="file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
+            <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+          </svg>
+          <div class="file-row__body">
+            <div class="file-row__name-row">
+              <span class="file-row__name">bad.bin</span>
+              <span class="file-row__size">128 KB</span>
+            </div>
+            <p class="file-row__error">Type not allowed</p>
+          </div>
+          <svg class="file-row__status file-row__status--error" data-lucide="circle-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="m15 9-6 6"/>
+            <path d="m9 9 6 6"/>
+          </svg>
+          <button class="btn btn--ghost btn--icon-sm" type="button" aria-label="Remove bad.bin">
+            <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 6 6 18"/>
+              <path d="m6 6 12 12"/>
+            </svg>
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 5: Interactive demo
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Dropzone · interactive demo</h2>
+      <p class="demo-section__desc">
+        Try it: click the dropzone to select files, or drag files onto it.
+        Uploaded files appear in the list below with a remove button.
+      </p>
+
+      <div class="demo-dropzone-area">
+        <!-- Interactive dropzone -->
+        <div class="dropzone" id="demo-dropzone">
+          <svg data-lucide="upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:var(--space-6);height:var(--space-6);">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" x2="12" y1="3" y2="15"/>
+          </svg>
+          <span>Drop files here or click to browse</span>
+          <input type="file" id="demo-file-input" hidden multiple>
+        </div>
+
+        <!-- File list (populated dynamically) -->
+        <ul class="file-list" id="demo-file-list">
+          <li class="file-row" style="color:var(--color-content-tertiary);font-size:var(--text-sm);justify-content:center;border-color:transparent;">
+            No files selected yet.
+          </li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    (function () {
+      var dropzone = document.getElementById('demo-dropzone');
+      var fileInput = document.getElementById('demo-file-input');
+      var fileList  = document.getElementById('demo-file-list');
+
+      /* ── Click to open file picker ── */
+      dropzone.addEventListener('click', function (e) {
+        // Don't re-trigger if the click landed on the file input itself
+        if (e.target === fileInput) return;
+        fileInput.click();
+      });
+
+      /* ── File selected via input ── */
+      fileInput.addEventListener('change', function () {
+        addFiles(fileInput.files);
+        fileInput.value = ''; // allow re-selecting the same file
+      });
+
+      /* ── Drag-over: visual feedback ── */
+      dropzone.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.add('dropzone--drag');
+      });
+
+      dropzone.addEventListener('dragleave', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.remove('dropzone--drag');
+      });
+
+      /* ── Drop: add files ── */
+      dropzone.addEventListener('drop', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.remove('dropzone--drag');
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+          addFiles(e.dataTransfer.files);
+        }
+      });
+
+      /* ── Add files to the list ── */
+      function addFiles(files) {
+        // Clear empty-state placeholder
+        if (fileList.children.length === 1 &&
+            fileList.querySelector('li').innerText.indexOf('No files') !== -1) {
+          fileList.innerHTML = '';
+        }
+
+        for (var i = 0; i < files.length; i++) {
+          var file = files[i];
+          var li = document.createElement('li');
+          li.className = 'file-row';
+
+          var size = formatSize(file.size);
+
+          li.innerHTML =
+            '<svg class="file-row__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+              '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>' +
+              '<path d="M14 2v4a2 2 0 0 0 2 2h4"/>' +
+            '</svg>' +
+            '<div class="file-row__body">' +
+              '<div class="file-row__name-row">' +
+                '<span class="file-row__name">' + escapeHtml(file.name) + '</span>' +
+                '<span class="file-row__size">' + size + '</span>' +
+              '</div>' +
+            '</div>' +
+            '<svg class="file-row__status file-row__status--done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+              '<circle cx="12" cy="12" r="10"/>' +
+              '<path d="m9 12 2 2 4-4"/>' +
+            '</svg>' +
+            '<button class="btn btn--ghost btn--icon-sm" type="button" aria-label="Remove ' + escapeHtml(file.name) + '">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                '<path d="M18 6 6 18"/>' +
+                '<path d="m6 6 12 12"/>' +
+              '</svg>' +
+            '</button>';
+
+          li.querySelector('button').addEventListener('click', function (e) {
+            e.stopPropagation();
+            li.remove();
+            // Restore empty state if list is now empty
+            if (fileList.children.length === 0) {
+              fileList.innerHTML =
+                '<li class="file-row" style="color:var(--color-content-tertiary);font-size:var(--text-sm);justify-content:center;border-color:transparent;">' +
+                  'No files selected yet.' +
+                '</li>';
+            }
+          });
+
+          fileList.appendChild(li);
+        }
+      }
+
+      /* ── Helpers ── */
+      function formatSize(bytes) {
+        if (bytes === 0) return '0 B';
+        var units = ['B', 'KB', 'MB', 'GB'];
+        var i = Math.floor(Math.log(bytes) / Math.log(1024));
+        var val = (bytes / Math.pow(1024, i)).toFixed(i > 0 ? 1 : 0);
+        return val + ' ' + units[i];
+      }
+
+      function escapeHtml(str) {
+        var div = document.createElement('div');
+        div.appendChild(document.createTextNode(str));
+        return div.innerHTML;
+      }
+    })();
+  </script>
+</body>
+</html>

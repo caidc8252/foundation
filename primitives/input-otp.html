@@ -1,0 +1,247 @@
+<!--
+  input-otp.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the InputOTP primitive in the foundation design system.
+  Covers:
+    - Grouped (3-3) with separator
+    - Ungrouped (single group)
+    - Grouped with error state (aria-invalid)
+    - Disabled container
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InputOTP · foundation primitive</title>
+  <link rel="stylesheet" href="../dist/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../composites/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-col2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+    @media (max-width: 640px) {
+      .demo-col2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Grouped (3-3)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">InputOTP · grouped (3-3)</h2>
+      <p class="demo-section__desc">
+        Six slots split into two groups of three with a separator between them.
+        Uses <code>.input-otp</code>, <code>.input-otp__group</code>,
+        <code>.input-otp__slot</code>, <code>.input-otp__separator</code>.
+      </p>
+
+      <div class="input-otp">
+        <input type="tel" maxlength="6" autocomplete="one-time-code" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;">
+        <div class="input-otp__group">
+          <div class="input-otp__slot input-otp__slot--active"><span class="input-otp__caret"></span></div>
+          <div class="input-otp__slot"></div>
+          <div class="input-otp__slot"></div>
+        </div>
+        <span class="input-otp__separator" role="separator">–</span>
+        <div class="input-otp__group">
+          <div class="input-otp__slot"></div>
+          <div class="input-otp__slot"></div>
+          <div class="input-otp__slot"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Ungrouped
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">InputOTP · ungrouped</h2>
+      <p class="demo-section__desc">
+        Four slots in a single group with no separator. All slots are adjacent.
+      </p>
+
+      <div class="input-otp">
+        <input type="tel" maxlength="4" autocomplete="one-time-code" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;">
+        <div class="input-otp__group">
+          <div class="input-otp__slot input-otp__slot--active"><span class="input-otp__caret"></span></div>
+          <div class="input-otp__slot"></div>
+          <div class="input-otp__slot"></div>
+          <div class="input-otp__slot"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Grouped with error
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">InputOTP · grouped with error</h2>
+      <p class="demo-section__desc">
+        Six slots in a 3-3 layout. The first group has <code>aria-invalid="true"</code>
+        on one slot, causing the group to render the unified error ring.
+      </p>
+
+      <div class="input-otp">
+        <input type="tel" maxlength="6" autocomplete="one-time-code" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;">
+        <div class="input-otp__group">
+          <div class="input-otp__slot input-otp__slot--active" aria-invalid="true"><span class="input-otp__caret"></span></div>
+          <div class="input-otp__slot" aria-invalid="true"></div>
+          <div class="input-otp__slot" aria-invalid="true"></div>
+        </div>
+        <span class="input-otp__separator" role="separator">–</span>
+        <div class="input-otp__group">
+          <div class="input-otp__slot"></div>
+          <div class="input-otp__slot"></div>
+          <div class="input-otp__slot"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: Disabled
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">InputOTP · disabled</h2>
+      <p class="demo-section__desc">
+        The whole container wrapped with <code>aria-disabled="true"</code>.
+        Slots dim to <code>opacity-50</code> and are <code>cursor-not-allowed</code>.
+      </p>
+
+      <div class="input-otp" aria-disabled="true">
+        <input type="tel" maxlength="6" autocomplete="one-time-code" disabled style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;">
+        <div class="input-otp__group">
+          <div class="input-otp__slot"></div>
+          <div class="input-otp__slot"></div>
+          <div class="input-otp__slot"></div>
+        </div>
+        <span class="input-otp__separator" role="separator">–</span>
+        <div class="input-otp__group">
+          <div class="input-otp__slot"></div>
+          <div class="input-otp__slot"></div>
+          <div class="input-otp__slot"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+(function () {
+  // Note: .input-otp and .input-otp:focus-visible already have outline:none in CSS —
+  // no JS suppression needed. The visible focus signal is the active slot's ring.
+
+  document.querySelectorAll('.input-otp').forEach(function (root) {
+    var slots = Array.from(root.querySelectorAll('.input-otp__slot'));
+    if (!slots.length) return;
+
+    // One hidden real <input> captures all keystrokes for the whole component.
+    var realInput = root.querySelector('input[type="text"],input[type="tel"],input[type="number"]');
+    if (!realInput) return;
+
+    var maxLen = slots.length;
+
+    function render(val) {
+      var chars = val.split('');
+      var cursor = Math.min(chars.length, maxLen - 1); // active slot index
+      slots.forEach(function (slot, i) {
+        // Clear slot
+        slot.classList.remove('input-otp__slot--active');
+        var caret = slot.querySelector('.input-otp__caret');
+        if (caret) caret.remove();
+        // Set character text (preserve other child nodes if any)
+        var textNode = slot.childNodes[0];
+        var ch = chars[i] || '';
+        if (textNode && textNode.nodeType === Node.TEXT_NODE) {
+          textNode.textContent = ch;
+        } else {
+          slot.insertBefore(document.createTextNode(ch), slot.firstChild);
+        }
+        // Active slot = next empty slot (or last slot when full)
+        if (i === cursor && chars.length < maxLen) {
+          slot.classList.add('input-otp__slot--active');
+          // Add caret only when slot is empty
+          if (!ch) {
+            var c = document.createElement('span');
+            c.className = 'input-otp__caret';
+            slot.appendChild(c);
+          }
+        }
+      });
+    }
+
+    realInput.addEventListener('input', function () {
+      // Clamp to maxLen and digits/letters only (adjust pattern as needed)
+      var val = realInput.value.slice(0, maxLen);
+      realInput.value = val;
+      render(val);
+    });
+
+    realInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Backspace') {
+        var val = realInput.value;
+        realInput.value = val.slice(0, -1);
+        render(realInput.value);
+      }
+    });
+
+    // Paste: strip non-alphanumeric, trim to maxLen
+    realInput.addEventListener('paste', function (e) {
+      e.preventDefault();
+      var pasted = (e.clipboardData || window.clipboardData).getData('text');
+      var val = pasted.replace(/\s/g, '').slice(0, maxLen);
+      realInput.value = val;
+      render(val);
+    });
+
+    // Click on any slot focuses the real input
+    slots.forEach(function (slot) {
+      slot.addEventListener('click', function () { realInput.focus(); });
+    });
+
+    // Initial render from pre-filled value (e.g. SSR snapshot)
+    render(realInput.value || '');
+  });
+})();
+  </script>
+</body>
+</html>

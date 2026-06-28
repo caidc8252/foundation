@@ -1,0 +1,618 @@
+<!--
+  date-time-range-picker.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the date-time-range-picker composite in the foundation
+  design system. Layout and behaviour mirror the React recipe:
+  trigger → popover with presets rail + dual-month calendar + time row + OK.
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Date-time-range-picker · foundation primitive</title>
+  <link rel="stylesheet" href="../dist/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../composites/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+
+    /* ── Popover wrapper ───────────────────────────────────────── */
+    .popover-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+    .popover-wrapper > .popover {
+      position: absolute;
+      top: calc(100% + var(--space-1));
+      left: 0;
+      z-index: 50;
+      display: none;
+      min-width: 760px;
+    }
+    .popover-wrapper > .popover.is-open {
+      display: block;
+    }
+
+    /* ── Clear button wrapper ──────────────────────────────────── */
+    .date-picker__clear-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+    .date-trigger__clear {
+      position: absolute;
+      right: var(--space-2);
+      top: 50%;
+      transform: translateY(-50%);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--color-content-tertiary);
+      padding: 0;
+      z-index: 1;
+    }
+    .date-trigger__clear:hover { color: var(--color-content-primary); }
+    .date-trigger--clearable {
+      padding-right: calc(var(--space-8) + var(--space-1));
+    }
+
+    /* ── Popover layout (matches React PopoverContent) ─────────── */
+    .popover__body {
+      display: flex;
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--color-line-default);
+      background: var(--color-surface-2);
+      box-shadow: var(--shadow-3);
+      overflow: hidden;
+    }
+    .popover__presets {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      width: 128px;
+      flex-shrink: 0;
+      border-right: 1px solid var(--color-line-default);
+      padding: var(--space-2);
+    }
+    .popover__presets button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: var(--space-1) var(--space-2);
+      background: transparent;
+      color: var(--color-content-secondary);
+      font-size: var(--text-sm);
+      cursor: pointer;
+      font-family: var(--font-sans);
+    }
+    .popover__presets button:hover {
+      background: var(--color-surface-hover);
+      color: var(--color-content-primary);
+    }
+    .popover__calendars {
+      display: flex;
+      gap: var(--space-4);
+      padding: var(--space-3);
+    }
+
+    /* ── Time section (matches React flex-col gap-2 border-t p-2.5) ── */
+    .popover__time {
+      border-top: 1px solid var(--color-line-default);
+      padding: var(--space-3);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    .popover__time-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .popover__time-label {
+      flex-shrink: 0;
+      width: 36px;    /* w-9 */
+      font-size: var(--text-xs);
+      color: var(--color-content-secondary);
+    }
+    .popover__time-actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Default trigger (placeholder)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Date-time-range-picker · placeholder</h2>
+      <p class="demo-section__desc">
+        Idle trigger via <code>.date-trigger</code> with calendar icon and
+        placeholder text.
+      </p>
+      <button class="date-trigger" type="button" style="width:280px;">
+        <svg class="date-trigger__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span class="date-trigger__value date-trigger__value--placeholder">Pick a date and time range</span>
+      </button>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Trigger with value + clear
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Date-time-range-picker · with value</h2>
+      <p class="demo-section__desc">
+        Trigger displaying a committed range. Clear button (sibling, absolutely
+        positioned) only appears when a value is present.
+      </p>
+      <div class="date-picker__clear-wrapper">
+        <button class="date-trigger date-trigger--clearable" type="button" style="width:320px;">
+          <svg class="date-trigger__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span class="date-trigger__value">Mar 1, 2026 00:00 – Mar 14, 2026 23:59</span>
+        </button>
+        <button class="date-trigger__clear" type="button" aria-label="Clear">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Interactive demo
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Interactive demo</h2>
+      <p class="demo-section__desc">
+        Click trigger → popover opens. Pick from presets, or click two dates to
+        define a range (time defaults to 00:00–23:59). Adjust times, then press OK
+        to commit. Pick a new start to replace the range. Clear resets.
+      </p>
+
+      <div class="popover-wrapper" id="interactive-picker">
+        <!-- Trigger + clear -->
+        <div class="date-picker__clear-wrapper">
+          <button id="demo-trigger" class="date-trigger" type="button" aria-haspopup="dialog" aria-expanded="false" style="width:320px;">
+            <svg class="date-trigger__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span id="demo-value" class="date-trigger__value date-trigger__value--placeholder">Pick a date and time range</span>
+          </button>
+          <button id="demo-clear" class="date-trigger__clear" type="button" aria-label="Clear" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+
+        <!-- Popover -->
+        <div class="popover" id="demo-popover" role="dialog" aria-label="Pick a date and time range">
+          <div class="popover__body">
+            <!-- Presets rail (matches React ul → li > button) -->
+            <div class="popover__presets" id="demo-presets">
+              <button data-preset="today">Today</button>
+              <button data-preset="yesterday">Yesterday</button>
+              <button data-preset="last7">Last 7 days</button>
+              <button data-preset="last30">Last 30 days</button>
+              <button data-preset="this-month">This month</button>
+              <button data-preset="last-month">Last month</button>
+            </div>
+
+            <!-- Dual-month calendar (uses primitives.css .calendar) -->
+            <div class="popover__calendars">
+              <div class="calendar" id="demo-cal-left"></div>
+              <div class="calendar" id="demo-cal-right"></div>
+            </div>
+          </div>
+
+          <!-- Time inputs + OK (matches React: border-t + flex-col gap-2 p-2.5 + OK btn) -->
+          <div class="popover__body" style="border-top-left-radius:0;border-top-right-radius:0;box-shadow:none;border-top:1px solid var(--color-line-default);">
+            <div class="popover__time">
+              <div class="popover__time-row">
+                <span class="popover__time-label">Start</span>
+                <input class="input input--sm" type="time" id="demo-time-start" value="00:00" style="flex:1;">
+              </div>
+              <div class="popover__time-row">
+                <span class="popover__time-label">End</span>
+                <input class="input input--sm" type="time" id="demo-time-end" value="23:59" style="flex:1;">
+              </div>
+              <div class="popover__time-actions">
+                <button class="btn btn--primary btn--sm" type="button" id="demo-ok">OK</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      /* ── State (matches React: draft + committed value are separate) ── */
+      var committed = null;     // { from: Date, to: Date } | null
+      var draft = null;         // { from: Date, to: Date? } | null
+      var fromTime = '00:00';
+      var toTime = '23:59';
+      var viewMonth = null;     // left calendar month
+      var open = false;
+
+      var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var DAYS   = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+
+      /* ── DOM refs ──────────────────────────────────────────────────── */
+      var triggerEl  = document.getElementById('demo-trigger');
+      var valueEl    = document.getElementById('demo-value');
+      var clearEl    = document.getElementById('demo-clear');
+      var popoverEl  = document.getElementById('demo-popover');
+      var calLeftEl  = document.getElementById('demo-cal-left');
+      var calRightEl = document.getElementById('demo-cal-right');
+      var timeStart  = document.getElementById('demo-time-start');
+      var timeEnd    = document.getElementById('demo-time-end');
+      var okBtn      = document.getElementById('demo-ok');
+      var presetsEl  = document.getElementById('demo-presets');
+
+      /* ── Helpers ───────────────────────────────────────────────────── */
+      function toDateStr(d) {
+        return d.getFullYear() + '-' +
+               String(d.getMonth() + 1).padStart(2, '0') + '-' +
+               String(d.getDate()).padStart(2, '0');
+      }
+      function sameDay(a, b) {
+        return a && b && a.getFullYear() === b.getFullYear() &&
+               a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+      }
+      function addMonths(d, n) {
+        var r = new Date(d); r.setMonth(r.getMonth() + n); return r;
+      }
+      function addDays(d, n) {
+        var r = new Date(d); r.setDate(r.getDate() + n); return r;
+      }
+      function dayOnly(d) {
+        return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+      }
+      function formatDate(d) {
+        return MONTHS[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+      }
+      function padTime(h, m) {
+        return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+      }
+      function applyTime(date, timeStr) {
+        var parts = timeStr.split(':');
+        var h = parseInt(parts[0], 10) || 0;
+        var m = parseInt(parts[1], 10) || 0;
+        var r = new Date(date);
+        r.setHours(h, m, 0, 0);
+        return r;
+      }
+      function endOfDay(d) {
+        var r = new Date(d);
+        r.setHours(23, 59, 0, 0);
+        return r;
+      }
+
+      /* ── Trigger display ───────────────────────────────────────────── */
+      function updateTrigger() {
+        if (committed) {
+          valueEl.textContent = formatDate(committed.from) + ' ' +
+            padTime(committed.from.getHours(), committed.from.getMinutes()) +
+            ' – ' + formatDate(committed.to) + ' ' +
+            padTime(committed.to.getHours(), committed.to.getMinutes());
+          valueEl.classList.remove('date-trigger__value--placeholder');
+          triggerEl.classList.add('date-trigger--clearable');
+          clearEl.style.display = '';
+        } else {
+          valueEl.textContent = 'Pick a date and time range';
+          valueEl.classList.add('date-trigger__value--placeholder');
+          triggerEl.classList.remove('date-trigger--clearable');
+          clearEl.style.display = 'none';
+        }
+      }
+
+      /* ── Popover ───────────────────────────────────────────────────── */
+      function openPopover() {
+        if (open) return;
+        open = true;
+        triggerEl.setAttribute('aria-expanded', 'true');
+        popoverEl.classList.add('is-open');
+        // Sync time inputs from committed or defaults
+        if (committed) {
+          fromTime = padTime(committed.from.getHours(), committed.from.getMinutes());
+          toTime = padTime(committed.to.getHours(), committed.to.getMinutes());
+          draft = { from: committed.from, to: committed.to };
+        } else {
+          fromTime = '00:00';
+          toTime = '23:59';
+        }
+        timeStart.value = fromTime;
+        timeEnd.value = toTime;
+        renderCalendars();
+      }
+
+      function closePopover() {
+        if (!open) return;
+        open = false;
+        triggerEl.setAttribute('aria-expanded', 'false');
+        popoverEl.classList.remove('is-open');
+      }
+
+      /* ── Calendar rendering (uses primitives.css classes) ──────────── */
+      function buildCalendar(monthOffset) {
+        var base = addMonths(viewMonth, monthOffset);
+        var year = base.getFullYear();
+        var month = base.getMonth();
+        var first = new Date(year, month, 1);
+        var last  = new Date(year, month + 1, 0);
+        var startDow = first.getDay();
+        var daysInMonth = last.getDate();
+        var today = new Date();
+        var todayStr = toDateStr(today);
+        var draftFrom = draft ? toDateStr(draft.from) : null;
+        var draftTo   = (draft && draft.to) ? toDateStr(draft.to) : null;
+
+        // Header
+        var html = '<div class="calendar__header">';
+        html += '<div class="calendar__caption">' + MONTHS[month] + ' ' + year + '</div>';
+        html += '<div class="calendar__nav">';
+        if (monthOffset === 0) {
+          html += '<button class="calendar__nav-btn" type="button" data-action="prev" aria-label="Previous month">';
+          html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="m15 18-6-6 6-6"/></svg>';
+          html += '</button>';
+        }
+        if (monthOffset === 1) {
+          html += '<button class="calendar__nav-btn" type="button" data-action="next" aria-label="Next month">';
+          html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="m9 18 6-6-6-6"/></svg>';
+          html += '</button>';
+        }
+        html += '</div></div>';
+
+        // Grid
+        html += '<div class="calendar__grid">';
+        for (var w = 0; w < 7; w++) html += '<div class="calendar__weekday">' + DAYS[w] + '</div>';
+
+        var col = 0;
+        // Leading blanks
+        for (var b = 0; b < startDow; b++) {
+          html += '<div class="calendar__day calendar__day--outside"></div>';
+          col++;
+        }
+        // Month days
+        for (var d = 1; d <= daysInMonth; d++) {
+          var dateObj = new Date(year, month, d);
+          var dateStr = toDateStr(dateObj);
+          var classes = ['calendar__day'];
+          if (dateStr === todayStr) classes.push('calendar__day--today');
+
+          if (draftFrom && draftTo) {
+            if (dateStr > draftFrom && dateStr < draftTo) classes.push('calendar__day--range-middle');
+            if (dateStr === draftFrom) {
+              classes.push('calendar__day--range-start');
+              if (draftFrom !== draftTo) classes.push('calendar__day--range-middle');
+            }
+            if (dateStr === draftTo) {
+              classes.push('calendar__day--range-end');
+              if (draftFrom !== draftTo) classes.push('calendar__day--range-middle');
+            }
+          } else if (draftFrom) {
+            if (dateStr === draftFrom) classes.push('calendar__day--selected');
+          }
+
+          html += '<button class="' + classes.join(' ') + '" type="button" data-date="' + dateStr + '">' + d + '</button>';
+          col++;
+        }
+        // Trailing blanks
+        while (col % 7 !== 0) {
+          html += '<div class="calendar__day calendar__day--outside"></div>';
+          col++;
+        }
+        html += '</div>';
+        return html;
+      }
+
+      function renderCalendar(container, offset) {
+        container.innerHTML = buildCalendar(offset);
+        // Nav buttons
+        var navBtn = container.querySelector('[data-action]');
+        if (navBtn) {
+          navBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (navBtn.getAttribute('data-action') === 'prev') {
+              viewMonth = addMonths(viewMonth, -1);
+            } else {
+              viewMonth = addMonths(viewMonth, 1);
+            }
+            renderCalendars();
+          });
+        }
+        // Day clicks
+        var dayBtns = container.querySelectorAll('[data-date]');
+        for (var i = 0; i < dayBtns.length; i++) {
+          dayBtns[i].addEventListener('click', function () {
+            handleDayClick(this.getAttribute('data-date'));
+          });
+        }
+      }
+
+      function renderCalendars() {
+        renderCalendar(calLeftEl, 0);
+        renderCalendar(calRightEl, 1);
+      }
+
+      /* ── Day click (matches React: draft-driven, two-step selection) ── */
+      function handleDayClick(dateStr) {
+        var parts = dateStr.split('-');
+        var clicked = dayOnly(new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10)));
+
+        if (!draft || !draft.from || draft.to) {
+          // First click or restart: set from, clear to
+          draft = { from: clicked, to: null };
+          fromTime = '00:00';
+          toTime = '23:59';
+          timeStart.value = fromTime;
+          timeEnd.value = toTime;
+        } else {
+          // Second click: complete the range
+          var fromDate = draft.from <= clicked ? draft.from : clicked;
+          var toDate   = draft.from <= clicked ? clicked : draft.from;
+          draft = { from: fromDate, to: toDate };
+          // Commit immediately with time drafts
+          committed = {
+            from: applyTime(fromDate, timeStart.value || '00:00'),
+            to:   applyTime(toDate, timeEnd.value || '23:59'),
+          };
+          updateTrigger();
+        }
+        renderCalendars();
+      }
+
+      /* ── Presets ────────────────────────────────────────────────────── */
+      function applyPreset(name) {
+        var now = dayOnly(new Date());
+        var y = now.getFullYear();
+        var m = now.getMonth();
+        var d = now.getDate();
+
+        switch (name) {
+          case 'today':
+            draft = { from: now, to: now };
+            fromTime = '00:00'; toTime = '23:59';
+            break;
+          case 'yesterday':
+            var yest = addDays(now, -1);
+            draft = { from: yest, to: yest };
+            fromTime = '00:00'; toTime = '23:59';
+            break;
+          case 'last7':
+            draft = { from: addDays(now, -6), to: now };
+            fromTime = '00:00'; toTime = '23:59';
+            break;
+          case 'last30':
+            draft = { from: addDays(now, -29), to: now };
+            fromTime = '00:00'; toTime = '23:59';
+            break;
+          case 'this-month':
+            draft = { from: new Date(y, m, 1), to: new Date(y, m + 1, 0) };
+            fromTime = '00:00'; toTime = '23:59';
+            break;
+          case 'last-month':
+            draft = { from: new Date(y, m - 1, 1), to: new Date(y, m, 0) };
+            fromTime = '00:00'; toTime = '23:59';
+            break;
+        }
+        committed = {
+          from: applyTime(draft.from, '00:00'),
+          to:   endOfDay(draft.to),
+        };
+        timeStart.value = '00:00';
+        timeEnd.value = '23:59';
+        updateTrigger();
+        renderCalendars();
+        closePopover();
+      }
+
+      /* ── OK handler ─────────────────────────────────────────────────── */
+      function applyAndClose() {
+        if (!draft || !draft.from) {
+          closePopover();
+          return;
+        }
+        var endDate = draft.to || draft.from;
+        committed = {
+          from: applyTime(draft.from, timeStart.value || '00:00'),
+          to:   endOfDay(applyTime(endDate, timeEnd.value || '23:59')),
+        };
+        fromTime = timeStart.value;
+        toTime = timeEnd.value;
+        updateTrigger();
+        closePopover();
+      }
+
+      /* ── Reset ──────────────────────────────────────────────────────── */
+      function resetPicker() {
+        committed = null;
+        draft = null;
+        fromTime = '00:00';
+        toTime = '23:59';
+        timeStart.value = '00:00';
+        timeEnd.value = '23:59';
+        updateTrigger();
+        renderCalendars();
+      }
+
+      /* ── Event wiring ───────────────────────────────────────────────── */
+      triggerEl.addEventListener('click', function () {
+        if (triggerEl.disabled) return;
+        open ? closePopover() : openPopover();
+      });
+
+      clearEl.addEventListener('click', function (e) {
+        e.stopPropagation();
+        resetPicker();
+      });
+
+      okBtn.addEventListener('click', applyAndClose);
+
+      presetsEl.addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-preset]');
+        if (!btn) return;
+        applyPreset(btn.getAttribute('data-preset'));
+      });
+
+      timeStart.addEventListener('input', function () { fromTime = this.value; });
+      timeEnd.addEventListener('input', function () { toTime = this.value; });
+
+      document.addEventListener('click', function (e) {
+        if (!open) return;
+        var wrapper = document.getElementById('interactive-picker');
+        if (!wrapper.contains(e.target)) closePopover();
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && open) closePopover();
+      });
+
+      /* ── Init ───────────────────────────────────────────────────────── */
+      var now = new Date();
+      viewMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      renderCalendars();
+      updateTrigger();
+    })();
+  </script>
+</body>
+</html>
