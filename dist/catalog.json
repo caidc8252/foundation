@@ -289,6 +289,7 @@
     "calendar__nav-btn",
     "calendar__weekday",
     "card",
+    "card--collapsible",
     "card--elevation-0",
     "card--elevation-1",
     "card--elevation-2",
@@ -297,6 +298,7 @@
     "card--md",
     "card--sm",
     "card__action",
+    "card__chevron",
     "card__content",
     "card__content--flush",
     "card__description",
@@ -305,6 +307,7 @@
     "card__header",
     "card__header--flush",
     "card__title",
+    "card__toggle",
     "carousel",
     "carousel--vertical",
     "carousel__dot",
@@ -509,6 +512,7 @@
     "feed-item__icon--success",
     "feed-item__icon--warning",
     "feed-item__main",
+    "feed-item__row",
     "feed-item__time",
     "feed-item__title",
     "feed-list",
@@ -688,10 +692,6 @@
     "scroll-area__viewport",
     "search-input",
     "search-input__icon",
-    "section-card",
-    "section-card--collapsible",
-    "section-card__chevron",
-    "section-card__toggle",
     "select",
     "select--sm",
     "separator",
@@ -998,7 +998,7 @@
       "title": "Card",
       "summary": "A bordered content container.",
       "contract": "primitives/card.md",
-      "example": null,
+      "example": "primitives/card.html",
       "classes": [
         ".card",
         ".card__header",
@@ -1647,21 +1647,6 @@
   "composites": [
     {
       "layer": "composite",
-      "name": "amount-summary",
-      "title": "Amount summary · composite",
-      "summary": "A totals block for order, cart, and checkout screens: a hairline separator followed by a right-aligned stack of label → value rows (subtotal, discount, shipping, …) and an emphasised grand-total row.",
-      "contract": "composites/amount-summary.md",
-      "example": null,
-      "classes": [
-        ".amount-summary",
-        ".amount-row",
-        ".amount-row__label",
-        ".amount-row__value",
-        ".amount-row--total"
-      ]
-    },
-    {
-      "layer": "composite",
       "name": "app-frame",
       "title": "App frame · composite — prototype shell",
       "summary": "The portal chrome a page lives inside: a fixed sidebar, a sticky top header, and the scrolling content region.",
@@ -1722,7 +1707,7 @@
       "title": "Data table · composite",
       "summary": "The workhorse of the list pattern: rows you scan, sort, select, and act on.",
       "contract": "composites/data-table.md",
-      "example": null,
+      "example": "composites/data-table.html",
       "classes": [
         ".table-frame",
         ".table-scroll",
@@ -1747,7 +1732,7 @@
       "title": "Detail header · composite",
       "summary": "The header band of a detail screen: an entity's identity (logo / name / status), its metadata, its actions, and the tab strip that switches its sub-views — all on one full-bleed surface that docks flush under the app header.",
       "contract": "composites/detail-header.md",
-      "example": null,
+      "example": "composites/detail-header.html",
       "classes": [
         ".detail-header",
         "--sticky",
@@ -1769,7 +1754,7 @@
       "title": "Diff · composite",
       "summary": "A compact before → after comparison: the old value struck through, an arrow, the new value highlighted.",
       "contract": "composites/diff.md",
-      "example": null,
+      "example": "composites/diff.html",
       "classes": [
         ".diff",
         ".diff__col--old",
@@ -1786,7 +1771,7 @@
       "title": "Empty state · composite",
       "summary": "What a collection shows when it has nothing — a first-class state, not blank space.",
       "contract": "composites/empty-state.md",
-      "example": null,
+      "example": "composites/empty-state.html",
       "classes": [
         ".empty-state",
         ".empty-state__icon",
@@ -1802,7 +1787,7 @@
       "title": "Feed list · composite",
       "summary": "A vertical list of event rows — each a tone-coded icon, a heading line, a body, and a right-aligned time, with optional row actions.",
       "contract": "composites/feed-list.md",
-      "example": null,
+      "example": "composites/feed-list.html",
       "classes": [
         ".feed-list",
         ".feed-item",
@@ -1822,7 +1807,7 @@
       "title": "Key-value grid · composite",
       "summary": "The overview block of a detail screen: a record's attributes as label → value pairs, laid out as a description list that flows into more columns as its container widens.",
       "contract": "composites/kv-grid.md",
-      "example": null,
+      "example": "composites/kv-grid.html",
       "classes": [
         ".kv-grid",
         ".kv-grid__row",
@@ -1836,7 +1821,7 @@
       "title": "List filter family · composite",
       "summary": "The \"quick bar + applied chips\" filtering apparatus of a list page.",
       "contract": "composites/list-filter.md",
-      "example": null,
+      "example": "composites/list-filter.html",
       "classes": [
         ".condition-band",
         ".condition-band__toolbar",
@@ -1856,7 +1841,7 @@
       "title": "Load more · composite",
       "summary": "The append-on-click footer beneath a list/table: an optional summary line, a load-more button (or an end marker once exhausted), and an optional progress bar.",
       "contract": "composites/load-more.md",
-      "example": null,
+      "example": "composites/load-more.html",
       "classes": [
         ".load-more",
         ".load-more__summary",
@@ -1871,7 +1856,7 @@
       "title": "Option card · composite",
       "summary": "A large, clickable card that behaves as a radio (or checkbox) — icon, title, description, and a selection indicator, with the whole card as the hit target and a tinted ring when chosen.",
       "contract": "composites/option-card.md",
-      "example": null,
+      "example": "composites/option-card.html",
       "classes": [
         ".option-card",
         "--selected",
@@ -1900,7 +1885,7 @@
       "title": "Page header  · composite",
       "summary": "The band at the top of a screen: what this page is, plus its actions.",
       "contract": "composites/page-header.md",
-      "example": null,
+      "example": "composites/page-header.html",
       "classes": [
         ".page-header",
         "--sticky",
@@ -1920,7 +1905,7 @@
       "title": "Pagination · composite",
       "summary": "Move through pages of a collection, and set page size.",
       "contract": "composites/pagination.md",
-      "example": null,
+      "example": "composites/pagination.html",
       "classes": [
         ".pagination__pages",
         ".pagination__page",
@@ -1938,7 +1923,7 @@
       "title": "Product card · composite",
       "summary": "A catalog tile for one sellable thing: a product image, its name / SKU / short description, a price, and an add-to-cart affordance — laid out as a card and tiled into a responsive grid.",
       "contract": "composites/product-card.md",
-      "example": null,
+      "example": "composites/product-card.html",
       "classes": [
         ".product-card",
         ".product-card__image",
@@ -1955,7 +1940,7 @@
       "title": "Rich Pagination · composite",
       "summary": "Full list/table footer bar: optional rows-per-page selector + \"Showing X–Y of Z\" range summary on the left, page-number navigation on the right.",
       "contract": "composites/rich-pagination.md",
-      "example": null,
+      "example": "composites/rich-pagination.html",
       "classes": [
         ".rich-pagination",
         ".rich-pagination__left",
@@ -1966,28 +1951,11 @@
     },
     {
       "layer": "composite",
-      "name": "section-card",
-      "title": "Section card · composite",
-      "summary": "A titled — and optionally collapsible — content panel: the block a detail page is divided into (\"Overview\", \"Billing\", \"Activity\").",
-      "contract": "composites/section-card.md",
-      "example": null,
-      "classes": [
-        ".card",
-        ".card__header",
-        ".card__content",
-        ".section-card",
-        ".section-card--collapsible",
-        ".section-card__toggle",
-        ".section-card__chevron"
-      ]
-    },
-    {
-      "layer": "composite",
       "name": "skeleton",
       "title": "Skeleton · composite",
       "summary": "The loading placeholder.",
       "contract": "composites/skeleton.md",
-      "example": null,
+      "example": "composites/skeleton.html",
       "classes": [
         ".skeleton",
         "--line",
@@ -2004,7 +1972,7 @@
       "title": "Stat card · composite",
       "summary": "A single key metric — overline label, big mono value, optional trend / icon / description — surfaced above a list (style-spec §4).",
       "contract": "composites/stat-card.md",
-      "example": null,
+      "example": "composites/stat-card.html",
       "classes": [
         ".stat-card",
         ".stat-card--selected",
@@ -2024,7 +1992,7 @@
       "title": "Step Indicator · composite",
       "summary": "Horizontal progress rail for a multi-step flow (wizard): a row of numbered dots joined by connectors, each with a caption + title, showing what's done, where you are, and what's left.",
       "contract": "composites/step-indicator.md",
-      "example": null,
+      "example": "composites/step-indicator.html",
       "classes": [
         ".step-indicator",
         ".step",
@@ -2044,7 +2012,7 @@
       "title": "Stepper · composite",
       "summary": "A numeric input flanked by −/+ buttons for incrementing/decrementing a single bounded number (quantity, page size, retry count).",
       "contract": "composites/stepper.md",
-      "example": null,
+      "example": "composites/stepper.html",
       "classes": [
         ".stepper",
         ".input-group",
@@ -2059,7 +2027,7 @@
       "title": "List summary bar · composite",
       "summary": "The strip between the list card's top edge and the table: how many results, and the list-level actions (Export, bulk ops).",
       "contract": "composites/summary-bar.md",
-      "example": null,
+      "example": "composites/summary-bar.html",
       "classes": [
         ".summary-bar",
         "--sticky",
@@ -2074,7 +2042,7 @@
       "title": "Theme Toggle · composite",
       "summary": "An icon-only button that flips the app between light and dark.",
       "contract": "composites/theme-toggle.md",
-      "example": null,
+      "example": "composites/theme-toggle.html",
       "classes": [
         ".theme-toggle",
         ".btn--ghost"
@@ -2086,7 +2054,7 @@
       "title": "Timeline · composite",
       "summary": "Vertical event log — device history, audit trails, ticket activity.",
       "contract": "composites/timeline.md",
-      "example": null,
+      "example": "composites/timeline.html",
       "classes": [
         ".timeline",
         ".timeline__item",
@@ -2111,7 +2079,7 @@
       "title": "Toggles · composite",
       "summary": "Inline control-with-label wrappers — pairs a .checkbox, .radio, or .switch primitive with an optional text .label.",
       "contract": "composites/toggles.md",
-      "example": null,
+      "example": "composites/toggles.html",
       "classes": [
         ".toggle-checkbox",
         ".toggle-radio",
