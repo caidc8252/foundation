@@ -449,32 +449,34 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-1);          /* icon ↔ label */
+  gap: var(--space-1);
   min-width: var(--spacing-control-sm); /* 28px */
   height: var(--spacing-control-sm);
   padding-inline: var(--space-2);
-  border: 0;
+  border: 1px solid transparent;       /* reserve space so active border doesn't shift */
   border-radius: var(--radius-md);
   background-color: transparent;
   font-family: var(--font-sans);
   font-size: var(--text-md);
   color: var(--color-content-secondary);
-  white-space: nowrap;          /* prev/next reuse the button recipe; a CJK
-                                   label ("上一页") must not break per-character */
+  white-space: nowrap;
   cursor: pointer;
-  transition: background-color var(--duration-fast) var(--ease-standard);
+  transition: background-color var(--duration-fast) var(--ease-standard),
+              border-color var(--duration-fast) var(--ease-standard),
+              color var(--duration-fast) var(--ease-standard);
 }
-/* Prev/next chevrons — same no-dimension-svg collapse as .btn; size + shrink-0. */
 .pagination__page svg {
   width: calc(var(--space-4) - var(--space-1) / 2);   /* 14px = size-3.5 */
   height: calc(var(--space-4) - var(--space-1) / 2);
   flex-shrink: 0;
 }
 .pagination__page:hover:not(:disabled) { background-color: var(--color-surface-hover); }
+/* active page — neutral surface + visible border, matches cloud/ui Pagination */
 .pagination__page[aria-current="page"] {
-  background-color: var(--color-primary-50);
-  color: var(--color-primary-700);
-  font-weight: 600;
+  background-color: var(--color-surface-2);
+  border-color: var(--color-line-default);
+  color: var(--color-content-primary);
+  font-weight: 500;
 }
 .pagination__page:disabled { opacity: 0.5; cursor: not-allowed; }
 .pagination__ellipsis {
@@ -1618,52 +1620,6 @@
 /* ═══════════════════════════ Section card ═══════════════════════════ */
 /* A titled, optionally-collapsible content panel — the block a detail/settings
    page divides into. Pure composition over .card (surface + header rule + slot
-   padding) and the collapsible behavior; this adds only the chevron, its
-   rotation, and the collapsed-state rule. Wear .card + .card__header +
-   .card__content as usual, then add .section-card on the root. */
-
-.section-card { /* the .card shell carries the surface; nothing to add at rest */ }
-/* Collapsible variant marker — enumerate this on the root alongside .section-card
-   when the panel is opt-in collapsible. The collapse behavior is driven by the
-   [data-open] attribute + __toggle/__chevron children; this class scopes the
-   affordance and makes the enumerated catalog entry real. */
-.section-card--collapsible > .card__header { cursor: pointer; }
-/* collapsible header is a full-width button (reuses the .card__header padding) */
-.section-card__toggle {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-  width: 100%;
-  border: 0;
-  background-color: transparent;
-  font: inherit;
-  color: inherit;
-  text-align: left;
-  cursor: pointer;
-  transition: background-color var(--duration-fast) var(--ease-standard);
-}
-.section-card__toggle:hover { background-color: var(--color-surface-hover); }
-.section-card__toggle:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
-.section-card__chevron {
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: var(--space-6);
-  height: var(--space-6);
-  color: var(--color-content-tertiary);
-  transition: transform var(--duration-fast) var(--ease-standard);
-}
-.section-card__chevron svg { width: var(--space-4); height: var(--space-4); }
-/* closed — content hidden, chevron lifted, header rule dropped so the bar reads
-   as a single closed row. Set data-open on the root (the skin can't observe it). */
-.section-card[data-open="false"] .card__content { display: none; }
-.section-card[data-open="false"] .card__header { border-bottom-color: transparent; }
-.section-card[data-open="false"] .section-card__chevron { transform: rotate(-90deg); }
-@media (prefers-reduced-motion: reduce) {
-  .section-card__chevron { transition: none; }
-}
-
 /* ═══════════════════════════ Option card ═══════════════════════════ */
 /* A large clickable card that IS a radio/checkbox: the card is a <label> over a
    visually-hidden native control, so selection + roving focus + group semantics
@@ -1842,17 +1798,25 @@
   color: var(--color-content-primary);
 }
 .feed-item__body {
-  margin-top: var(--space-1);
   font-size: var(--text-xs);
   line-height: 1.5;
   color: var(--color-content-secondary);
+}
+/* Body + actions share one row: body left, actions right (contract line 2). */
+.feed-item__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: var(--space-1);
 }
 .feed-item__actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-2);
-  margin-top: var(--space-2);
+  flex-shrink: 0;
 }
 .feed-item__time {
   font-size: var(--text-xs);

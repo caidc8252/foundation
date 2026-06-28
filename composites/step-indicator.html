@@ -1,0 +1,310 @@
+<!--
+  step-indicator.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the step-indicator composite in the foundation design system.
+  Covers:
+    - Wizard rail: numbered steps with completed/active/upcoming states
+    - Wizard rail with custom icons (icon persists through completed state)
+    - Status pipeline: read-only lifecycle with date captions
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Step indicator · foundation composite</title>
+  <link rel="stylesheet" href="../dist/tokens.inline.css">
+  <link rel="stylesheet" href="../primitives/primitives.css">
+  <link rel="stylesheet" href="../composites/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      /* max-width: 900px; */
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-col2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+    @media (max-width: 700px) {
+      .demo-col2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Wizard rail — numbered steps
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Step indicator · wizard rail (numbered)</h2>
+      <p class="demo-section__desc">
+        A 4-step onboarding flow with completed, active, and upcoming states.
+        Completed steps show a check; active shows the step number in primary;
+        upcoming is muted.
+      </p>
+
+      <div class="card" style="padding:var(--space-5);">
+        <div style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin-bottom:var(--space-5);">Company onboarding</div>
+        <ol class="step-indicator">
+          <li class="step step--completed" data-state="completed" aria-label="Step 1 completed">
+            <div class="step__body">
+              <div class="step__dot">
+                <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              </div>
+              <div class="step__text">
+                <span class="step__caption">Step 1</span>
+                <span class="step__title">Company details</span>
+              </div>
+            </div>
+            <div class="step__connector" aria-hidden="true"></div>
+          </li>
+          <li class="step step--completed" data-state="completed" aria-label="Step 2 completed">
+            <div class="step__body">
+              <div class="step__dot">
+                <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              </div>
+              <div class="step__text">
+                <span class="step__caption">Step 2</span>
+                <span class="step__title">Legal &amp; tax info</span>
+              </div>
+            </div>
+            <div class="step__connector" aria-hidden="true"></div>
+          </li>
+          <li class="step step--active" data-state="active" aria-current="step">
+            <div class="step__body">
+              <div class="step__dot">3</div>
+              <div class="step__text">
+                <span class="step__caption">Step 3</span>
+                <span class="step__title">Team members</span>
+              </div>
+            </div>
+            <div class="step__connector" aria-hidden="true"></div>
+          </li>
+          <li class="step step--upcoming" data-state="upcoming">
+            <div class="step__body">
+              <div class="step__dot">4</div>
+              <div class="step__text">
+                <span class="step__caption">Step 4</span>
+                <span class="step__title">Billing plan</span>
+              </div>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Wizard rail — custom icons
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Step indicator · wizard rail (custom icons)</h2>
+      <p class="demo-section__desc">
+        Steps carry a custom icon that persists through all states including completed,
+        instead of swapping to a checkmark.
+      </p>
+
+      <div class="card" style="padding:var(--space-5);">
+        <div style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin-bottom:var(--space-5);">Store setup wizard</div>
+        <ol class="step-indicator">
+          <li class="step step--completed" data-state="completed" aria-label="Step 1 completed">
+            <div class="step__body">
+              <div class="step__dot">
+                <svg data-lucide="building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="16" x="4" y="2" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg>
+              </div>
+              <div class="step__text">
+                <span class="step__caption">Store</span>
+                <span class="step__title">Store profile</span>
+              </div>
+            </div>
+            <div class="step__connector" aria-hidden="true"></div>
+          </li>
+          <li class="step step--completed" data-state="completed" aria-label="Step 2 completed">
+            <div class="step__body">
+              <div class="step__dot">
+                <svg data-lucide="package" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" y1="22" x2="12" y2="12"/></svg>
+              </div>
+              <div class="step__text">
+                <span class="step__caption">Catalog</span>
+                <span class="step__title">Products &amp; inventory</span>
+              </div>
+            </div>
+            <div class="step__connector" aria-hidden="true"></div>
+          </li>
+          <li class="step step--active" data-state="active" aria-current="step">
+            <div class="step__body">
+              <div class="step__dot">
+                <svg data-lucide="dollar-sign" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </div>
+              <div class="step__text">
+                <span class="step__caption">Pricing</span>
+                <span class="step__title">Payment &amp; shipping</span>
+              </div>
+            </div>
+            <div class="step__connector" aria-hidden="true"></div>
+          </li>
+          <li class="step step--upcoming" data-state="upcoming">
+            <div class="step__body">
+              <div class="step__dot">
+                <svg data-lucide="globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              </div>
+              <div class="step__text">
+                <span class="step__caption">Launch</span>
+                <span class="step__title">Go live</span>
+              </div>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Status pipeline
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Step indicator · status pipeline</h2>
+      <p class="demo-section__desc">
+        Read-only lifecycle display. Same completed/active/upcoming states,
+        captions carry stage dates instead of step numbers.
+      </p>
+
+      <div class="demo-col2">
+        <div class="card" style="padding:var(--space-5);">
+          <div style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin-bottom:var(--space-1);">Order #ORD-87321</div>
+          <div style="font-size:var(--text-xs);color:var(--color-content-tertiary);margin-bottom:var(--space-5);">Current stage: Shipped</div>
+          <ol class="step-indicator">
+            <li class="step step--completed" data-state="completed">
+              <div class="step__body">
+                <div class="step__dot">
+                  <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                </div>
+                <div class="step__text">
+                  <span class="step__caption">Jun 25</span>
+                  <span class="step__title">Pending payment</span>
+                </div>
+              </div>
+              <div class="step__connector" aria-hidden="true"></div>
+            </li>
+            <li class="step step--completed" data-state="completed">
+              <div class="step__body">
+                <div class="step__dot">
+                  <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                </div>
+                <div class="step__text">
+                  <span class="step__caption">Jun 26</span>
+                  <span class="step__title">Pending shipment</span>
+                </div>
+              </div>
+              <div class="step__connector" aria-hidden="true"></div>
+            </li>
+            <li class="step step--active" data-state="active" aria-current="step">
+              <div class="step__body">
+                <div class="step__dot">3</div>
+                <div class="step__text">
+                  <span class="step__caption">Jun 27</span>
+                  <span class="step__title">Shipped</span>
+                </div>
+              </div>
+              <div class="step__connector" aria-hidden="true"></div>
+            </li>
+            <li class="step step--upcoming" data-state="upcoming">
+              <div class="step__body">
+                <div class="step__dot">4</div>
+                <div class="step__text">
+                  <span class="step__caption">—</span>
+                  <span class="step__title">Delivered</span>
+                </div>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <div class="card" style="padding:var(--space-5);">
+          <div style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin-bottom:var(--space-1);">Payout #B-2048</div>
+          <div style="font-size:var(--text-xs);color:var(--color-content-tertiary);margin-bottom:var(--space-5);">Current stage: Completed</div>
+          <ol class="step-indicator">
+            <li class="step step--completed" data-state="completed">
+              <div class="step__body">
+                <div class="step__dot">
+                  <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                </div>
+                <div class="step__text">
+                  <span class="step__caption">Jun 20</span>
+                  <span class="step__title">Initiated</span>
+                </div>
+              </div>
+              <div class="step__connector" aria-hidden="true"></div>
+            </li>
+            <li class="step step--completed" data-state="completed">
+              <div class="step__body">
+                <div class="step__dot">
+                  <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                </div>
+                <div class="step__text">
+                  <span class="step__caption">Jun 21</span>
+                  <span class="step__title">Approved</span>
+                </div>
+              </div>
+              <div class="step__connector" aria-hidden="true"></div>
+            </li>
+            <li class="step step--completed" data-state="completed">
+              <div class="step__body">
+                <div class="step__dot">
+                  <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                </div>
+                <div class="step__text">
+                  <span class="step__caption">Jun 22</span>
+                  <span class="step__title">Processed</span>
+                </div>
+              </div>
+              <div class="step__connector" aria-hidden="true"></div>
+            </li>
+            <li class="step step--completed" data-state="completed">
+              <div class="step__body">
+                <div class="step__dot">
+                  <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                </div>
+                <div class="step__text">
+                  <span class="step__caption">Jun 23</span>
+                  <span class="step__title">Completed</span>
+                </div>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

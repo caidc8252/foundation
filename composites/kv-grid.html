@@ -1,0 +1,265 @@
+<!--
+  kv-grid — Foundation composite example
+  =======================================
+  Demonstrates:
+    - .kv-grid as a <dl> with .kv-grid__row cells (dt label + dd value)
+    - Container-responsive columns (auto-fit, 16rem cell threshold)
+    - .kv-grid__row--full for full-span values (addresses, notes)
+    - Empty value: renders em-dash (content-tertiary) per contract
+    - Loading state: skeleton--text stands in for values while labels hold
+    - Mono values for IDs, amounts (via font-mono tabular-nums class)
+    - Realistic detail-page Overview layout
+
+  Cross-reference: @cloud/ui ui/recipes/KeyValue + KvGrid.
+    The @cloud/ui version uses gap-4 gap-y-5 and text-md for dd values;
+    the composite CSS uses var(--space-8) column gap and text-sm for dd.
+    The contract is authoritative.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KV grid · Foundation composite</title>
+  <link rel="stylesheet" href="../dist/tokens.inline.css">
+  <link rel="stylesheet" href="../primitives/primitives.css">
+  <link rel="stylesheet" href="../composites/composites.css">
+  <style>
+    /* Page-local layout */
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--color-surface-1);
+      padding: var(--space-6);
+    }
+    .example-section {
+      margin-bottom: var(--space-10);
+    }
+    .example-section h2 {
+      font-size: var(--text-xl);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin-bottom: var(--space-4);
+    }
+    .example-section h3 {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--color-content-tertiary);
+      margin-bottom: var(--space-3);
+      margin-top: var(--space-6);
+    }
+    /* Demo card for the detail-page overview */
+    .demo-card {
+      border: 1px solid var(--color-line-default);
+      border-radius: var(--radius-xl);
+      background-color: var(--color-surface-2);
+      box-shadow: var(--shadow-1);
+      max-width: 960px;
+    }
+    .demo-card__header {
+      padding-inline: var(--space-5);
+      padding-block: var(--space-4);
+      border-bottom: 1px solid var(--color-line-subtle);
+      font-weight: 600;
+      font-size: var(--text-md);
+      color: var(--color-content-primary);
+    }
+    .demo-card__content {
+      padding: var(--space-5);
+    }
+    /* Note about values */
+    .note {
+      font-size: var(--text-xs);
+      color: var(--color-content-tertiary);
+      margin-top: var(--space-2);
+      font-style: italic;
+    }
+    /* Inline mono helper for values that should render in monospace */
+    .kv-mono {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="example-section">
+    <h2>KV grid · customer detail overview</h2>
+    <p style="font-size: var(--text-sm); color: var(--color-content-secondary); margin-bottom: var(--space-4);">
+      A <code>.kv-grid</code> (<code>&lt;dl&gt;</code>) with label/value pairs.
+      Column count follows the container width (auto-fit, 16rem cell threshold) —
+      no viewport breakpoints. Wide or empty values are handled by the row.
+    </p>
+
+    <div class="demo-card">
+      <div class="demo-card__header">Overview</div>
+      <div class="demo-card__content">
+        <dl class="kv-grid">
+          <!-- ID: mono value -->
+          <div class="kv-grid__row">
+            <dt>ID</dt>
+            <dd class="kv-mono">cust_8f2a1b3e</dd>
+          </div>
+
+          <!-- Status: regular value -->
+          <div class="kv-grid__row">
+            <dt>Status</dt>
+            <dd>Active</dd>
+          </div>
+
+          <!-- Created: mono date -->
+          <div class="kv-grid__row">
+            <dt>Created</dt>
+            <dd class="kv-mono">Mar 4, 2026</dd>
+          </div>
+
+          <!-- Owner: email as value -->
+          <div class="kv-grid__row">
+            <dt>Owner</dt>
+            <dd>alice.lee@acme.co</dd>
+          </div>
+
+          <!-- Type: regular value -->
+          <div class="kv-grid__row">
+            <dt>Type</dt>
+            <dd>Business account</dd>
+          </div>
+
+          <!-- Plan: regular value -->
+          <div class="kv-grid__row">
+            <dt>Plan</dt>
+            <dd>Enterprise Plus</dd>
+          </div>
+
+          <!-- MFA: yes/no -->
+          <div class="kv-grid__row">
+            <dt>MFA enabled</dt>
+            <dd>Yes</dd>
+          </div>
+
+          <!-- Full-span row for a long value -->
+          <div class="kv-grid__row kv-grid__row--full">
+            <dt>Billing address</dt>
+            <dd>
+              2200 Mission Street, Suite 400<br>
+              San Francisco, CA 94110<br>
+              United States
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <div class="example-section">
+    <h2>KV grid · empty values</h2>
+    <p style="font-size: var(--text-sm); color: var(--color-content-secondary); margin-bottom: var(--space-4);">
+      Empty (undefined / null / "") values render an em-dash (<code>—</code>)
+      in <code>content-tertiary</code>, never a blank cell.
+    </p>
+
+    <div class="demo-card" style="max-width: 600px;">
+      <div class="demo-card__header">Product details</div>
+      <div class="demo-card__content">
+        <dl class="kv-grid">
+          <div class="kv-grid__row">
+            <dt>SKU</dt>
+            <dd class="kv-mono">WIDGET-PRO-X1</dd>
+          </div>
+          <div class="kv-grid__row">
+            <dt>Name</dt>
+            <dd>Widget Pro</dd>
+          </div>
+          <div class="kv-grid__row">
+            <dt>Category</dt>
+            <dd>Hardware</dd>
+          </div>
+          <div class="kv-grid__row">
+            <dt>Description</dt>
+            <dd>—</dd>
+          </div>
+          <div class="kv-grid__row">
+            <dt>EAN</dt>
+            <dd>—</dd>
+          </div>
+          <div class="kv-grid__row">
+            <dt>Price</dt>
+            <dd class="kv-mono">USD 120.00</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <div class="example-section">
+    <h2>KV grid · loading state</h2>
+    <p style="font-size: var(--text-sm); color: var(--color-content-secondary); margin-bottom: var(--space-4);">
+      While data loads, a <code>.skeleton--text</code> stands in for each value.
+      The labels remain visible so the block preserves layout.
+    </p>
+
+    <div class="demo-card" style="max-width: 600px;">
+      <div class="demo-card__header">Overview (loading)</div>
+      <div class="demo-card__content">
+        <dl class="kv-grid">
+          <div class="kv-grid__row">
+            <dt>ID</dt>
+            <dd><div class="skeleton skeleton--text" style="width: 120px;"></div></dd>
+          </div>
+          <div class="kv-grid__row">
+            <dt>Status</dt>
+            <dd><div class="skeleton skeleton--text" style="width: 60px;"></div></dd>
+          </div>
+          <div class="kv-grid__row">
+            <dt>Created</dt>
+            <dd><div class="skeleton skeleton--text" style="width: 100px;"></div></dd>
+          </div>
+          <div class="kv-grid__row">
+            <dt>Owner</dt>
+            <dd><div class="skeleton skeleton--text" style="width: 140px;"></div></dd>
+          </div>
+          <div class="kv-grid__row">
+            <dt>Plan</dt>
+            <dd><div class="skeleton skeleton--text" style="width: 90px;"></div></dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <div class="example-section">
+    <h2>KV grid · inside a narrow container (drawer width)</h2>
+    <p style="font-size: var(--text-sm); color: var(--color-content-secondary); margin-bottom: var(--space-4);">
+      The grid collapses to 1 column in a narrow container — no breakpoints needed.
+      This demonstrates container responsiveness.
+    </p>
+
+    <div class="demo-card" style="max-width: 360px;">
+      <div class="demo-card__header">Quick view</div>
+      <div class="demo-card__content">
+        <dl class="kv-grid">
+          <div class="kv-grid__row">
+            <dt>Order ID</dt>
+            <dd class="kv-mono">ORD-2026-0428</dd>
+          </div>
+          <div class="kv-grid__row">
+            <dt>Status</dt>
+            <dd>Shipped</dd>
+          </div>
+          <div class="kv-grid__row">
+            <dt>Date</dt>
+            <dd class="kv-mono">Jun 15, 2026</dd>
+          </div>
+          <div class="kv-grid__row">
+            <dt>Total</dt>
+            <dd class="kv-mono">USD 255.76</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

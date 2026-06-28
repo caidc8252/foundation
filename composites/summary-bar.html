@@ -1,0 +1,179 @@
+<!--
+  summary-bar.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the list summary-bar composite in the foundation design system.
+  Covers:
+    - Default bar: mono result count + label on the left, Export button on the right
+    - No actions (count only)
+    - Sticky variant (--sticky): docks at top-0 z-10
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Summary bar · foundation composite</title>
+  <link rel="stylesheet" href="../dist/tokens.inline.css">
+  <link rel="stylesheet" href="../primitives/primitives.css">
+  <link rel="stylesheet" href="../composites/composites.css">
+  <style>
+    /* Page-local overrides for this demo page */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-card {
+      border: 1px solid var(--color-line-default);
+      border-radius: var(--radius-xl);
+      background-color: var(--color-surface-2);
+      box-shadow: var(--shadow-1);
+      overflow: clip;
+    }
+    .demo-card__body {
+      padding: var(--space-5);
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-content-tertiary);
+      font-size: var(--text-sm);
+    }
+    /* Simulate a scrolling container for the sticky demo */
+    .demo-scroll-container {
+      position: relative;
+      max-height: 300px;
+      overflow-y: auto;
+      overflow-x: clip;
+      border: 1px solid var(--color-line-default);
+      border-radius: var(--radius-xl);
+      background-color: var(--color-surface-2);
+      box-shadow: var(--shadow-1);
+    }
+    .demo-scroll-content {
+      min-height: 500px;
+      padding: var(--space-5);
+      color: var(--color-content-tertiary);
+      font-size: var(--text-sm);
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ── Section: Default summary bar ── -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Summary bar · default (count + Export)</h2>
+      <p class="demo-section__desc">
+        The standard bar: mono tabular count (content-primary, weight 600) +
+        "results" label on the left, secondary Export button on the right.
+        Fixed height 48px. Sits inside a table frame above the table.
+      </p>
+
+      <div class="table-frame" style="overflow:clip">
+        <div class="summary-bar">
+          <div class="summary-bar__count">
+            <strong>1,248</strong> results · sorted by name
+          </div>
+          <div class="summary-bar__actions">
+            <button class="btn btn--secondary btn--sm">
+              <svg data-lucide="download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Export
+            </button>
+          </div>
+        </div>
+        <div class="demo-card__body" style="border-top:1px solid var(--color-line-subtle);background:var(--color-surface-2)">
+          <em>Table would appear below the summary bar</em>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section: Summary bar — no actions (count only) ── -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Summary bar · no actions (count only)</h2>
+      <p class="demo-section__desc">
+        When there are no list-level actions, only the count + label are shown.
+        The right slot is empty — no default buttons.
+      </p>
+
+      <div class="table-frame" style="overflow:clip">
+        <div class="summary-bar">
+          <div class="summary-bar__count">
+            <strong>87</strong> transactions
+          </div>
+          <div class="summary-bar__actions"><!-- no actions for this list --></div>
+        </div>
+        <div class="demo-card__body" style="border-top:1px solid var(--color-line-subtle);background:var(--color-surface-2)">
+          <em>Read-only transaction list</em>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section: Sticky summary bar ── -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Summary bar · sticky (with scroll demo)</h2>
+      <p class="demo-section__desc">
+        The <code>--sticky</code> variant docks the bar at the top of the
+        scroll container. The host frame <strong>must</strong> use
+        <code>overflow:clip</code> (not <code>overflow:hidden</code>), or
+        the sticky bar is trapped. The table's sticky header then offsets
+        by the bar's 48px height so the two tile flush.
+      </p>
+
+      <div class="demo-scroll-container">
+        <div class="summary-bar summary-bar--sticky">
+          <div class="summary-bar__count">
+            <strong>1,248</strong> results · sorted by name
+          </div>
+          <div class="summary-bar__actions">
+            <button class="btn btn--secondary btn--sm">
+              <svg data-lucide="download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Export
+            </button>
+          </div>
+        </div>
+        <div class="demo-scroll-content">
+          <p>Scroll down to see the summary bar stick to the top of this container.</p>
+          <br><br><br><br><br><br><br><br>
+          <p>The summary bar stays pinned at <code>top:0; z-index:10</code>.</p>
+          <br><br><br><br><br><br><br><br>
+          <p>End of scroll content. The table would continue below the bar.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

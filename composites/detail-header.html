@@ -1,0 +1,307 @@
+<!--
+  detail-header.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the detail-header composite in the foundation design system.
+  Covers:
+    - Default with all anatomy: back · logo · name+status+chips · meta · actions · tabs
+    - No tabs (single-section detail page)
+    - No logo (records without visual identity)
+    - Loading skeleton (title, badges, meta shimmer; tab labels render immediately)
+    - Sticky variant (pins to top of scroll container)
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detail header · foundation composite</title>
+  <link rel="stylesheet" href="../dist/tokens.inline.css">
+  <link rel="stylesheet" href="../primitives/primitives.css">
+  <link rel="stylesheet" href="../composites/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    /* Sticky demo scroll container */
+    .demo-scroll {
+      max-height: 320px;
+      overflow-y: auto;
+      border: 1px solid var(--color-line-subtle);
+      border-radius: var(--radius-md);
+    }
+    .demo-scroll__filler {
+      height: 600px;
+      padding: var(--space-6);
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Default — full anatomy with tabs
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Detail header · default (with tabs)</h2>
+      <p class="demo-section__desc">
+        Full anatomy: back button, logo, name with status badges and category chips on the
+        title line, meta row with dot-separated facts and a copy affordance, action cluster
+        (primary rightmost, surplus verbs behind ⋯), and the tab strip docked on the band's
+        bottom edge.
+      </p>
+
+      <div class="detail-header">
+        <div class="detail-header__bar">
+          <button class="btn btn--ghost btn--icon btn--sm detail-header__back" type="button" aria-label="Back to customers">
+            <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+
+          <span class="detail-header__logo">A</span>
+
+          <div class="detail-header__main">
+            <div class="detail-header__title">
+              <span class="detail-header__name">Acme Robotics</span>
+              <span class="badge badge--success"><span class="badge__dot"></span>Active</span>
+              <span class="detail-header__chips">
+                <span class="badge badge--neutral">Enterprise</span>
+                <span class="badge badge--neutral">SaaS</span>
+              </span>
+            </div>
+            <div class="detail-header__meta">
+              <span class="meta-item" style="font-family:var(--font-mono);">#C-10293</span>
+              <span class="meta-item">
+                <svg data-lucide="clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:var(--space-3);height:var(--space-3);vertical-align:-1px;"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+                <button class="btn btn--ghost btn--xs btn--icon" type="button" aria-label="Copy ID" style="margin-left:var(--space-1);">
+                  <svg data-lucide="copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:var(--space-3);height:var(--space-3);"><rect width="13" height="13" x="9" y="9" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                </button>
+              </span>
+              <span class="meta-item">Customer since 2021</span>
+              <span class="meta-item">Singapore · APAC</span>
+            </div>
+          </div>
+
+          <div class="detail-header__actions">
+            <button class="btn btn--secondary" type="button">
+              <svg data-lucide="square-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
+              Edit
+            </button>
+            <div style="position:relative; display:inline-block;">
+              <button class="btn btn--ghost btn--icon" type="button" aria-label="More actions" aria-haspopup="true" aria-expanded="false">
+                <svg data-lucide="ellipsis" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+              </button>
+            </div>
+            <button class="btn btn--primary" type="button">New order</button>
+          </div>
+        </div>
+
+        <div class="detail-header__tabs">
+          <div class="tabs__list tabs__list--line" role="tablist" aria-label="Customer detail sections">
+            <button class="tabs__trigger tabs__trigger--active" type="button" role="tab" aria-selected="true"  aria-controls="demo1-overview">Overview</button>
+            <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false" aria-controls="demo1-activity">Activity</button>
+            <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false" aria-controls="demo1-orders">Orders</button>
+            <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false" aria-controls="demo1-settings">Settings</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: No tabs (single-section)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Detail header · no tabs (single-section detail page)</h2>
+      <p class="demo-section__desc">
+        When sub-views aren't needed, the tab strip is omitted entirely.
+        The band is just identity + meta + actions with its bottom hairline.
+      </p>
+
+      <div class="detail-header">
+        <div class="detail-header__bar">
+          <button class="btn btn--ghost btn--icon btn--sm detail-header__back" type="button" aria-label="Back to customers">
+            <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+
+          <span class="detail-header__logo">AP</span>
+
+          <div class="detail-header__main">
+            <div class="detail-header__title">
+              <span class="detail-header__name">API Access Key — Production</span>
+              <span class="badge badge--error"><span class="badge__dot"></span>Expired</span>
+            </div>
+            <div class="detail-header__meta">
+              <span class="meta-item" style="font-family:var(--font-mono);">key-prod-abcd1234</span>
+              <span class="meta-item">Created Jan 10, 2024</span>
+              <span class="meta-item">Expired Jun 10, 2025</span>
+            </div>
+          </div>
+
+          <div class="detail-header__actions">
+            <button class="btn btn--primary" type="button">Regenerate key</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: No logo (records without visual identity)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Detail header · no logo (records without visual identity)</h2>
+      <p class="demo-section__desc">
+        Logo is optional — omit for records like tickets, issues, or API keys
+        that have no visual avatar. The identity block shifts left, back + name
+        still align.
+      </p>
+
+      <div class="detail-header">
+        <div class="detail-header__bar">
+          <button class="btn btn--ghost btn--icon btn--sm detail-header__back" type="button" aria-label="Back to tickets">
+            <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+
+          <div class="detail-header__main">
+            <div class="detail-header__title">
+              <span class="detail-header__name">Cannot deploy to staging — database migration fails with timeout</span>
+              <span class="badge badge--warning"><span class="badge__dot"></span>Open</span>
+              <span class="badge badge--info">High priority</span>
+            </div>
+            <div class="detail-header__meta">
+              <span class="meta-item" style="font-family:var(--font-mono);">#TKT-4821</span>
+              <span class="meta-item">Reported 45 min ago</span>
+              <span class="meta-item">Assigned to backend-squad</span>
+            </div>
+          </div>
+
+          <div class="detail-header__actions">
+            <button class="btn btn--primary" type="button">Assign to me</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: Loading skeleton
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Detail header · loading state</h2>
+      <p class="demo-section__desc">
+        Title/meta/actions are replaced by skeleton placeholders while data loads.
+        Tab labels render immediately — they're static and don't depend on data.
+      </p>
+
+      <div class="detail-header">
+        <div class="detail-header__bar">
+          <button class="btn btn--ghost btn--icon btn--sm detail-header__back" type="button" aria-label="Back to customers" disabled>
+            <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+
+          <span class="detail-header__logo" aria-hidden="true" style="background-color:var(--color-surface-3);">
+            <span class="skeleton skeleton--block" style="width:100%;height:100%;border-radius:var(--radius-xl);"></span>
+          </span>
+
+          <div class="detail-header__main">
+            <div class="detail-header__title">
+              <span class="skeleton skeleton--title" style="width:12rem;"></span>
+              <span class="skeleton skeleton--text" style="width:4rem;height:var(--space-5);border-radius:var(--radius-full);"></span>
+              <span class="skeleton skeleton--text" style="width:5rem;height:var(--space-5);border-radius:var(--radius-full);"></span>
+            </div>
+            <div class="detail-header__meta">
+              <span class="skeleton skeleton--text" style="width:18rem;"></span>
+            </div>
+          </div>
+
+          <div class="detail-header__actions">
+            <span class="skeleton skeleton--text" style="width:5rem;height:var(--spacing-control-sm);"></span>
+            <span class="skeleton skeleton--text" style="width:7rem;height:var(--spacing-control-sm);"></span>
+          </div>
+        </div>
+
+        <div class="detail-header__tabs">
+          <div class="tabs__list tabs__list--line" role="tablist" aria-label="Customer detail sections">
+            <button class="tabs__trigger tabs__trigger--active" type="button" role="tab" aria-selected="true">Overview</button>
+            <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false">Activity</button>
+            <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false">Settings</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 5: Sticky variant
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Detail header · sticky variant</h2>
+      <p class="demo-section__desc">
+        Add <code>.detail-header--sticky</code> to pin the band to the top of the
+        scroll container. Scroll the box below to see it stick.
+      </p>
+
+      <div class="demo-scroll">
+        <div class="detail-header detail-header--sticky">
+          <div class="detail-header__bar">
+            <button class="btn btn--ghost btn--icon btn--sm detail-header__back" type="button" aria-label="Back to customers">
+              <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            </button>
+
+            <span class="detail-header__logo">S</span>
+
+            <div class="detail-header__main">
+              <div class="detail-header__title">
+                <span class="detail-header__name">Sticky Band Demo</span>
+                <span class="badge badge--success"><span class="badge__dot"></span>Active</span>
+              </div>
+              <div class="detail-header__meta">
+                <span class="meta-item" style="font-family:var(--font-mono);">#S-1001</span>
+                <span class="meta-item">Scroll down to see the band stick</span>
+              </div>
+            </div>
+
+            <div class="detail-header__actions">
+              <button class="btn btn--primary" type="button">Action</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-scroll__filler">
+          <p>The detail header band stays pinned at the top while you scroll.</p>
+          <p style="margin-top:var(--space-2);">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+          <p style="margin-top:var(--space-4); font-weight:600; color:var(--color-content-primary);">End of scroll content — the band is still pinned above.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

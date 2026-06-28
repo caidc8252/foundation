@@ -1,0 +1,237 @@
+<!--
+  Composite · Stepper — copyable example
+  -------------------------------------------------------------------------------
+  Companion to stepper.md (the contract — when the two disagree, the .md wins).
+  Demonstrates the Stepper composite — a numeric input flanked by −/+ buttons.
+  Shows normal state, boundary states (atMin / atMax), disabled (whole-Stepper),
+  and invalid states. Built on the InputGroup + InputGroupAddon + ghost icon-xs
+  buttons composition. All values are static (the clamp/draft/keyboard behavior
+  is owned by the React implementation).
+
+  HOW THE STYLES LOAD
+    This file LINKS the reference CSS (relative to composites/), so edits to
+    tokens, primitives, or composites flow straight through — no forked copy
+    that can drift. Order is load-bearing: tokens → primitives → composites.
+    To ship as a self-contained artifact (CSP, no external fetch), inline those
+    three blocks into a <style> instead.
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Composite · Stepper — foundation example</title>
+
+<link rel="stylesheet" href="../dist/tokens.inline.css">
+<link rel="stylesheet" href="../primitives/primitives.css">
+<link rel="stylesheet" href="composites.css">
+
+<style>
+
+  /* Page-local composition — arranges demo sections. */
+  .demo-page { padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-8); max-width: 640px; }
+  .demo-section__title { font-size: var(--text-lg); font-weight: 600; color: var(--color-content-primary); margin-bottom: var(--space-4); }
+  .demo-section__desc { font-size: var(--text-sm); color: var(--color-content-tertiary); margin-bottom: var(--space-4); }
+
+  /* Stepper gallery — one row per stepper, two columns for label/state. */
+  .stepper-gallery { display: flex; flex-direction: column; gap: var(--space-5); }
+
+  .stepper-demo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+    padding: var(--space-4);
+    border: 1px solid var(--color-line-subtle);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface-1);
+  }
+  .stepper-demo__label { min-width: 100px; }
+  .stepper-demo__name { font-size: var(--text-sm); font-weight: 600; color: var(--color-content-primary); }
+  .stepper-demo__state { font-size: var(--text-xs); color: var(--color-content-tertiary); margin-top: var(--space-1); }
+
+  /* The input group chrome — copied from input-group.md for stepper use.
+     The composites.css already has .stepper__input and .stepper__button,
+     but we need .input-group from the input-group artifact. */
+  .input-group {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--color-line-default);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface-2);
+    overflow: hidden;
+    height: var(--spacing-control-md);
+    transition: border-color var(--duration-fast) var(--ease-standard),
+                box-shadow var(--duration-fast) var(--ease-standard);
+  }
+  .input-group:focus-within {
+    border-color: var(--color-line-focus);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-line-focus) 50%, transparent);
+  }
+  .input-group--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: var(--color-surface-3);
+  }
+  .input-group--invalid {
+    border-color: var(--color-error-strong);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-error) 20%, transparent);
+  }
+  .input-group--invalid:focus-within {
+    border-color: var(--color-error-strong);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-error) 20%, transparent);
+  }
+
+  .input-group__addon--inline-start {
+    display: flex;
+    align-items: center;
+    order: -1;
+  }
+  .input-group__addon--inline-end {
+    display: flex;
+    align-items: center;
+    order: 99;
+  }
+
+  .input-group__control {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: var(--text-md);
+    color: var(--color-content-primary);
+    padding-inline: var(--space-2);
+  }
+  .input-group__control::placeholder { color: var(--color-content-tertiary); }
+  .input-group__control:disabled { cursor: not-allowed; }
+
+  /* Ghost icon-xs button — smaller than .btn--xs, used inline inside groups. */
+  .input-group .btn--ghost.btn--icon.btn--xs {
+    height: var(--space-6);
+    width: var(--space-6);
+    padding: 0;
+    border-radius: var(--radius-sm);
+  }
+</style>
+
+<body class="demo-page">
+
+  <section>
+    <h2 class="demo-section__title">Stepper variants</h2>
+    <p class="demo-section__desc">All states of the numeric stepper: normal, boundary (atMin / atMax), whole disabled, and invalid. The stepper is an <code>.input-group</code> composition — the shell owns the border, focus ring, and group chrome; the <code>.stepper__button</code> class sizes the −/+ buttons, and <code>aria-disabled</code> gates the boundary dim.</p>
+
+    <div class="stepper-gallery">
+
+      <!-- ── Normal (value 5, step 1, min 0, max 10) ── -->
+      <div class="stepper-demo">
+        <div class="stepper-demo__label">
+          <div class="stepper-demo__name">Normal</div>
+          <div class="stepper-demo__state">min=0 · max=10 · value=5</div>
+        </div>
+
+        <div class="input-group stepper" role="group" aria-label="Quantity">
+          <div class="input-group__addon--inline-start">
+            <button class="stepper__button btn btn--ghost btn--icon btn--xs" type="button" aria-label="Decrement" tabindex="-1">
+              <svg data-lucide="minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+          </div>
+          <input class="input-group__control stepper__input" type="text" inputmode="numeric" role="spinbutton" aria-valuenow="5" aria-valuemin="0" aria-valuemax="10" aria-label="Quantity" value="5">
+          <div class="input-group__addon--inline-end">
+            <button class="stepper__button btn btn--ghost btn--icon btn--xs" type="button" aria-label="Increment" tabindex="-1">
+              <svg data-lucide="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── At minimum boundary (value 0, min 0, max 5) ── -->
+      <div class="stepper-demo">
+        <div class="stepper-demo__label">
+          <div class="stepper-demo__name">At minimum</div>
+          <div class="stepper-demo__state">value=0 · min=0 — decrement dims</div>
+        </div>
+
+        <div class="input-group stepper" role="group" aria-label="Quantity">
+          <div class="input-group__addon--inline-start">
+            <button class="stepper__button btn btn--ghost btn--icon btn--xs" type="button" aria-label="Decrement" tabindex="-1" aria-disabled="true">
+              <svg data-lucide="minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+          </div>
+          <input class="input-group__control stepper__input" type="text" inputmode="numeric" role="spinbutton" aria-valuenow="0" aria-valuemin="0" aria-valuemax="5" aria-label="Quantity" value="0">
+          <div class="input-group__addon--inline-end">
+            <button class="stepper__button btn btn--ghost btn--icon btn--xs" type="button" aria-label="Increment" tabindex="-1">
+              <svg data-lucide="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── At maximum boundary (value 10, max 10) ── -->
+      <div class="stepper-demo">
+        <div class="stepper-demo__label">
+          <div class="stepper-demo__name">At maximum</div>
+          <div class="stepper-demo__state">value=10 · max=10 — increment dims</div>
+        </div>
+
+        <div class="input-group stepper" role="group" aria-label="Quantity">
+          <div class="input-group__addon--inline-start">
+            <button class="stepper__button btn btn--ghost btn--icon btn--xs" type="button" aria-label="Decrement" tabindex="-1">
+              <svg data-lucide="minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+          </div>
+          <input class="input-group__control stepper__input" type="text" inputmode="numeric" role="spinbutton" aria-valuenow="10" aria-valuemin="0" aria-valuemax="10" aria-label="Quantity" value="10">
+          <div class="input-group__addon--inline-end">
+            <button class="stepper__button btn btn--ghost btn--icon btn--xs" type="button" aria-label="Increment" tabindex="-1" aria-disabled="true">
+              <svg data-lucide="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Whole-stepper disabled ── -->
+      <div class="stepper-demo">
+        <div class="stepper-demo__label">
+          <div class="stepper-demo__name">Disabled</div>
+          <div class="stepper-demo__state">whole control — native disabled on both buttons + input</div>
+        </div>
+
+        <div class="input-group stepper input-group--disabled" role="group" aria-label="Quantity">
+          <div class="input-group__addon--inline-start">
+            <button class="stepper__button btn btn--ghost btn--icon btn--xs" type="button" aria-label="Decrement" tabindex="-1" disabled>
+              <svg data-lucide="minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+          </div>
+          <input class="input-group__control stepper__input" type="text" inputmode="numeric" role="spinbutton" aria-valuenow="5" aria-valuemin="0" aria-valuemax="10" aria-label="Quantity" value="5" disabled>
+          <div class="input-group__addon--inline-end">
+            <button class="stepper__button btn btn--ghost btn--icon btn--xs" type="button" aria-label="Increment" tabindex="-1" disabled>
+              <svg data-lucide="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Invalid state (value violates constraint) ── -->
+      <div class="stepper-demo">
+        <div class="stepper-demo__label">
+          <div class="stepper-demo__name">Invalid</div>
+          <div class="stepper-demo__state"><code>aria-invalid="true"</code> — error ring</div>
+        </div>
+
+        <div class="input-group stepper input-group--invalid" role="group" aria-label="Quantity">
+          <div class="input-group__addon--inline-start">
+            <button class="stepper__button btn btn--ghost btn--icon btn--xs" type="button" aria-label="Decrement" tabindex="-1">
+              <svg data-lucide="minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+          </div>
+          <input class="input-group__control stepper__input" type="text" inputmode="numeric" role="spinbutton" aria-valuenow="-1" aria-valuemin="0" aria-valuemax="10" aria-label="Quantity" value="-1" aria-invalid="true">
+          <div class="input-group__addon--inline-end">
+            <button class="stepper__button btn btn--ghost btn--icon btn--xs" type="button" aria-label="Increment" tabindex="-1">
+              <svg data-lucide="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</body>
