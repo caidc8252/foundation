@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Customer detail</title>
+  <title>Published app detail</title>
   <style>
 /* 1/5 embedded Geist font layer */
 /* GENERATED font layer for external design tools (artifact-design).
@@ -7055,29 +7055,32 @@ body {
   .detail-header__meta svg { width: var(--space-3); height: var(--space-3); vertical-align: -1px; }
   .detail-header__meta .meta-item { display: inline-flex; align-items: center; gap: var(--space-1); }
 
-  /* Frameless guard — the UA [hidden] rule loses to composites that set an
-     explicit display (.card etc.), so an inactive tab panel would leak. Force it. */
+  /* Overview = a main column + a fixed ~320px rail (4× the 80px step); collapses to
+     one column when the container can't hold both (container query, no viewport bp). */
+  .overview-grid { display: grid; gap: var(--space-6); grid-template-columns: minmax(0, 1fr) calc(var(--space-20) * 4); align-items: start; }
+  @container (max-width: 52rem) { .overview-grid { grid-template-columns: minmax(0, 1fr); } }
+  .page-body { container-type: inline-size; }
+
+  /* Screenshot placeholders — a row of fixed-ratio tiles (2× / 1.25× the step) that wrap. */
+  .shot-row { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+  .shot-tile { width: calc(var(--space-20) * 2); height: calc(var(--space-20) * 1.25); border-radius: var(--radius-lg); }
+
+  /* A label↔control row (settings): label/value on the left, action on the right. */
+  .settings-row { display: flex; align-items: center; gap: var(--space-3); }
+  .settings-row__main { display: flex; align-items: center; gap: var(--space-3); flex: 1; min-width: 0; }
+  .settings-row__label { font-size: var(--text-sm); font-weight: 600; color: var(--color-content-primary); }
+
+  /* Two-column grid for the compatibility device checkboxes. */
+  .compat-grid { display: grid; gap: var(--space-3) var(--space-6); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  /* A right-aligned ghost action that rides a section-card title row. */
+  .sub-label { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-content-tertiary); font-weight: 500; }
+  .muted { color: var(--color-content-secondary); }
+
+  /* Frameless tab panels: foundation cards set display, overriding the UA [hidden]
+     attribute. This guard restores hidden's "out of flow" so only the active panel
+     paints (the tab script toggles [hidden] + inline display together). */
   [hidden] { display: none !important; }
-
-  /* Overview = main column + a fixed identity rail. Collapses to one column when
-     the container is too narrow for the rail to sit alongside the grid. */
-  .overview-grid { display: grid; grid-template-columns: 1fr 20rem; gap: var(--space-6); align-items: start; }
-  @media (max-width: 56rem) { .overview-grid { grid-template-columns: 1fr; } }
-
-  /* A card header that carries a trailing action: make the slot a flex row so
-     .card__action's margin-inline-start:auto rides the far edge. */
-  .card__header--row { display: flex; align-items: center; gap: var(--space-3); }
-
-  /* System-roles list — a stacked set of rows (icon · name+desc · scope · action),
-     each separated by the card's hairline; same rhythm as the feed list. */
-  .role-row { display: grid; grid-template-columns: var(--space-8) 1fr auto; gap: var(--space-3); align-items: center; padding-inline: var(--space-5); padding-block: var(--space-3); border-bottom: 1px solid var(--color-line-subtle); }
-  .role-list > .role-row:last-child { border-bottom: 0; }
-  .role-row__icon { display: grid; place-items: center; width: var(--space-8); height: var(--space-8); border-radius: var(--radius-md); background-color: var(--color-surface-3); color: var(--color-content-secondary); }
-  .role-row__icon svg { width: var(--space-4); height: var(--space-4); }
-  .role-row__main { min-width: 0; }
-  .role-row__name { font-size: var(--text-sm); font-weight: 600; color: var(--color-content-primary); }
-  .role-row__desc { margin-top: var(--space-1); font-size: var(--text-xs); line-height: 1.5; color: var(--color-content-secondary); }
-  .role-row__scope { display: inline-flex; flex-wrap: wrap; gap: var(--space-1); }
     .app-frame__nav-item { text-decoration: none; }
 </style>
 </head>
@@ -7086,9 +7089,9 @@ body {
     <aside class="app-frame__sidebar">
       <div class="app-frame__brand">TOMS Admin</div>
       <nav class="app-frame__nav">
-        <a class="app-frame__nav-item app-frame__nav-item--active" href="customer-list.html" aria-current="page"><svg data-lucide="users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg><span>Customers</span></a>
+        <a class="app-frame__nav-item" href="customer-list.html"><svg data-lucide="users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg><span>Customers</span></a>
         <a class="app-frame__nav-item" href="order-list.html"><svg data-lucide="shopping-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg><span>Orders</span></a>
-        <a class="app-frame__nav-item" href="published-apps.html"><svg data-lucide="package" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><polyline points="3.29 7 12 12 20.71 7"/><path d="m7.5 4.27 9 5.15"/></svg><span>Published Apps</span></a>
+        <a class="app-frame__nav-item app-frame__nav-item--active" href="published-apps.html" aria-current="page"><svg data-lucide="package" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><polyline points="3.29 7 12 12 20.71 7"/><path d="m7.5 4.27 9 5.15"/></svg><span>Published Apps</span></a>
         <a class="app-frame__nav-item" href="app-publish-list.html"><svg data-lucide="upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg><span>App Publish</span></a>
       </nav>
     </aside>
@@ -7105,375 +7108,416 @@ body {
       <main class="app-frame__main">
     <!-- ════════════════ PAGE — port everything below ════════════════ -->
 
-          <!-- detail-header BAND — back · logo · name+status+meta+chips · actions,
-               with the tab strip docked on the band's bottom edge. -->
-          <header class="detail-header">
-            <div class="detail-header__bar">
-              <!-- back to the customer list -->
-              <a class="btn btn--ghost btn--icon detail-header__back" href="customer-list.html" aria-label="Back to customers">
-                <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-              </a>
+      <!-- detail-header BAND (full-bleed) — back · logo · name+status+meta · actions,
+           with the tab strip docked on the band's BOTTOM edge (below the name). -->
+      <header class="detail-header">
+        <div class="detail-header__bar">
+          <!-- back → the app publish list -->
+          <a class="btn btn--ghost btn--icon detail-header__back" href="published-apps.html" aria-label="Back to published apps">
+            <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </a>
 
-              <!-- entity logo — initials tile derived from the company name -->
-              <span class="initials-tile detail-header__logo" aria-hidden="true">NC</span>
+          <!-- app identity tile -->
+          <span class="detail-header__logo">NP</span>
 
-              <!-- identity: name + status + contract chips, then a meta row of facts -->
-              <div class="detail-header__main">
-                <div class="detail-header__title">
-                  <span class="detail-header__name">Northwind Commerce</span>
-                  <span class="badge badge--success"><span class="badge__dot"></span>Active</span>
-                  <span class="detail-header__chips">
-                    <span class="badge badge--neutral">ISV</span>
-                    <span class="badge badge--neutral">ISO</span>
-                  </span>
-                </div>
-                <div class="detail-header__meta">
-                  <span class="meta-item">
-                    <svg data-lucide="clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-                    Registered Aug 14, 2025
-                  </span>
-                  <span class="meta-item">
-                    <svg data-lucide="shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
-                    License: NW-2024-08831-CA
-                  </span>
-                </div>
-              </div>
-
-              <!-- header action — Edit info (secondary; the only verb this record needs) -->
-              <div class="detail-header__actions">
-                <button class="btn btn--secondary" type="button">
-                  <svg data-lucide="square-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
-                  Edit info
-                </button>
-              </div>
+          <div class="detail-header__main">
+            <div class="detail-header__title">
+              <span class="detail-header__name">Northwind POS Pro</span>
+              <!-- two status axes = two chips -->
+              <span class="badge badge--success"><span class="badge__dot"></span>Published</span>
+              <span class="badge badge--info">All ISOs</span>
             </div>
-
-            <!-- tab strip docked on the band's bottom edge -->
-            <div class="detail-header__tabs">
-              <div class="tabs__list tabs__list--line" role="tablist" aria-label="Customer detail sections">
-                <button class="tabs__trigger tabs__trigger--active" type="button" role="tab" aria-selected="true"  aria-controls="panel-overview"  data-tab="overview">Overview</button>
-                <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false" aria-controls="panel-contracts" data-tab="contracts">Contracts</button>
-                <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false" aria-controls="panel-operators" data-tab="operators">Operators &amp; roles</button>
-              </div>
+            <!-- meta row: dot-joined facts; the package id reads mono -->
+            <div class="detail-header__meta">
+              <span class="meta-item">
+                <svg data-lucide="credit-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                Payments
+              </span>
+              <span class="meta-item kv__value--mono">com.northwind.pos.pro</span>
+              <span class="meta-item">Latest 4.3.2</span>
             </div>
-          </header>
+          </div>
+        </div>
 
-          <!-- body — holds the active tab's content (gutters + stack) -->
-          <div class="page-body">
+        <!-- tab strip docked on the band's bottom edge -->
+        <div class="detail-header__tabs">
+          <div class="tabs__list tabs__list--line" role="tablist" aria-label="App detail sections">
+            <button class="tabs__trigger tabs__trigger--active" type="button" role="tab" aria-selected="true"  aria-controls="panel-overview"    data-tab="overview">Overview</button>
+            <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false" aria-controls="panel-versions"    data-tab="versions">Versions <span class="muted">3</span></button>
+            <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false" aria-controls="panel-subscribers" data-tab="subscribers">Subscribers <span class="muted">11</span></button>
+            <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false" aria-controls="panel-activity"    data-tab="activity">Activity <span class="muted">6</span></button>
+          </div>
+        </div>
+      </header>
 
-            <!-- ── Overview tab ── -->
-            <section class="tabs__content" role="tabpanel" id="panel-overview" data-panel="overview">
-              <div class="overview-grid">
-                <!-- left: the company record as a KV grid -->
-                <div class="card section-card">
-                  <div class="card__header"><h2 class="card__title">Company</h2></div>
-                  <div class="card__content">
-                    <dl class="kv-grid">
-                      <div class="kv-grid__row"><dt>Name</dt><dd>Northwind Commerce</dd></div>
-                      <div class="kv-grid__row"><dt>License</dt><dd>NW-2024-08831-CA</dd></div>
-                      <div class="kv-grid__row"><dt>Country</dt><dd>United States</dd></div>
-                      <div class="kv-grid__row"><dt>Timezone</dt><dd>America/Los_Angeles</dd></div>
-                      <div class="kv-grid__row"><dt>Contact name</dt><dd>Sarah Chen</dd></div>
-                      <div class="kv-grid__row"><dt>Phone</dt><dd>+1 415 226 4800</dd></div>
-                      <div class="kv-grid__row"><dt>Email</dt><dd>sarah.chen@northwind.example</dd></div>
-                      <div class="kv-grid__row"><dt>Registered</dt><dd>Aug 14, 2025, 10:12 AM</dd></div>
-                      <div class="kv-grid__row kv-grid__row--full"><dt>Address</dt><dd>1455 Market Street, Suite 600, San Francisco, CA 94103, USA</dd></div>
-                      <div class="kv-grid__row kv-grid__row--full"><dt>Remark</dt><dd>Mid-market e-commerce platform; expanding into card-present in Q3.</dd></div>
-                    </dl>
-                  </div>
-                </div>
+      <div class="page-body">
 
-                <!-- right rail: at-a-glance counts -->
-                <div class="stat-grid">
-                  <div class="stat-card">
-                    <div class="stat-card__head"><span class="stat-card__label">Contracts</span></div>
-                    <div class="stat-card__value">2</div>
-                    <div class="stat-card__description">2 Active</div>
-                  </div>
-                  <div class="stat-card">
-                    <div class="stat-card__head"><span class="stat-card__label">Operators</span></div>
-                    <div class="stat-card__value">4</div>
-                    <div class="stat-card__description">4 active</div>
-                  </div>
-                  <div class="stat-card">
-                    <div class="stat-card__head"><span class="stat-card__label">Last activity</span></div>
-                    <div class="stat-card__value">3 days ago</div>
+        <!-- ── Tab 1 · Overview ── -->
+        <section class="tabs__content" role="tabpanel" id="panel-overview" data-panel="overview">
+          <div class="overview-grid">
+
+            <!-- main column -->
+            <div class="stack stack--6">
+
+              <!-- About -->
+              <div class="card section-card">
+                <div class="card__header"><h2 class="section-title">About</h2></div>
+                <div class="card__content">
+                  <div class="stack stack--3">
+                    <p class="kv__value">Full-featured point-of-sale for mid-market retail: payments, returns, split tender, and offline mode.</p>
+                    <p class="kv__value muted">Published by Northwind Commerce</p>
                   </div>
                 </div>
               </div>
-            </section>
 
-            <!-- ── Contracts tab ── -->
-            <section class="tabs__content" role="tabpanel" id="panel-contracts" data-panel="contracts" hidden>
-              <div class="stack stack--5">
-                <!-- live contracts -->
-                <div class="card section-card">
-                  <div class="card__header card__header--row">
-                    <h2 class="card__title">Contracts</h2>
-                    <div class="card__action">
-                      <button class="btn btn--primary btn--sm" type="button">
-                        <svg data-lucide="settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>
-                        Manage contracts
-                      </button>
+              <!-- Supported device models -->
+              <div class="card section-card">
+                <div class="card__header"><h2 class="section-title">Supported device models</h2></div>
+                <div class="card__content">
+                  <div class="stack stack--3">
+                    <div class="cell-tags">
+                      <span class="badge badge--neutral">N950</span>
+                      <span class="badge badge--neutral">S90</span>
+                      <span class="badge badge--neutral">S60</span>
+                      <span class="badge badge--neutral">N750P</span>
                     </div>
+                    <p class="field__hint">4 models declared</p>
                   </div>
-                  <div class="card__content card__content--flush">
-                    <div class="feed-list">
-                      <div class="feed-item">
-                        <span class="feed-item__icon feed-item__icon--neutral">
-                          <svg data-lucide="file-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
-                        </span>
-                        <div class="feed-item__main">
-                          <div class="feed-item__title">ISV <span class="badge badge--success"><span class="badge__dot"></span>Active</span></div>
-                          <p class="feed-item__body">Authorized by NPT (Platform) · Effective Aug 16, 2025 → No end date</p>
-                        </div>
-                      </div>
-                      <div class="feed-item">
-                        <span class="feed-item__icon feed-item__icon--neutral">
-                          <svg data-lucide="shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
-                        </span>
-                        <div class="feed-item__main">
-                          <div class="feed-item__title">ISO <span class="badge badge--success"><span class="badge__dot"></span>Active</span></div>
-                          <p class="feed-item__body">Authorized by NPT (Platform) · Effective Sep 2, 2025 → No end date</p>
-                        </div>
-                      </div>
-                      <div class="feed-item">
-                        <span class="feed-item__icon feed-item__icon--neutral">
-                          <svg data-lucide="store" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5"/><path d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244"/><path d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05"/></svg>
-                        </span>
-                        <div class="feed-item__main">
-                          <div class="feed-item__title">Merchant <span class="badge badge--success"><span class="badge__dot"></span>Active</span></div>
-                          <p class="feed-item__body">Authorized by Northwind Commerce (ISO) · Effective Feb 19, 2026 → No end date</p>
-                        </div>
-                      </div>
+                </div>
+              </div>
+
+              <!-- Screenshots -->
+              <div class="card section-card">
+                <div class="card__header"><h2 class="section-title">Screenshots</h2></div>
+                <div class="card__content">
+                  <div class="stack stack--3">
+                    <p class="field__hint">from 4.3.2 · captured at upload</p>
+                    <div class="shot-row">
+                      <span class="skeleton skeleton--block shot-tile" aria-hidden="true"></span>
+                      <span class="skeleton skeleton--block shot-tile" aria-hidden="true"></span>
+                      <span class="skeleton skeleton--block shot-tile" aria-hidden="true"></span>
+                      <span class="skeleton skeleton--block shot-tile" aria-hidden="true"></span>
                     </div>
                   </div>
                 </div>
+              </div>
 
-                <!-- terminated history -->
-                <div class="card section-card section-card--collapsible" data-open="true">
-                  <div class="card__header">
-                    <button class="section-card__toggle" type="button" aria-expanded="true">
-                      <h2 class="card__title">History (1 terminated)</h2>
-                      <span class="section-card__chevron">
-                        <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+
+            <!-- right rail -->
+            <div class="stack stack--6">
+
+              <!-- Latest version -->
+              <div class="card section-card">
+                <div class="card__header">
+                  <h2 class="section-title">Latest version</h2>
+                  <div class="card__action">
+                    <a class="btn btn--ghost btn--sm" href="published-version-detail.html">Details</a>
+                  </div>
+                </div>
+                <div class="card__content">
+                  <div class="stack stack--5">
+                    <div class="grid-auto-fit-kv kv-grid">
+                      <div class="kv"><span class="kv__label">Version</span><span class="kv__value kv__value--mono">4.3.2</span><span class="field__hint">code 1432</span></div>
+                      <div class="kv"><span class="kv__label">Size</span><span class="kv__value kv__value--mono">28.4 MB</span></div>
+                      <div class="kv"><span class="kv__label">Reach</span><span class="kv__value kv__value--mono">11</span><span class="field__hint">ISO subscribers</span></div>
+                    </div>
+                    <div class="kv">
+                      <span class="sub-label">Release notes</span>
+                      <p class="kv__value">Faster card reads, fixes offline sync edge cases.</p>
+                    </div>
+                    <div class="kv">
+                      <span class="sub-label">Vulnerability scan</span>
+                      <span class="kv__value">
+                        <span class="badge badge--success">
+                          <svg data-lucide="shield-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+                          No findings
+                        </span>
                       </span>
-                    </button>
-                  </div>
-                  <div class="card__content card__content--flush">
-                    <div class="feed-list">
-                      <div class="feed-item feed-item--read">
-                        <span class="feed-item__icon feed-item__icon--neutral">
-                          <svg data-lucide="shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
-                        </span>
-                        <div class="feed-item__main">
-                          <div class="feed-item__title">ISO <span class="badge badge--neutral">Terminated</span></div>
-                          <p class="feed-item__body">Terminated Jan 10, 2026 by admin@carbon</p>
-                        </div>
-                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </section>
 
-            <!-- ── Operators & roles tab ── -->
-            <section class="tabs__content" role="tabpanel" id="panel-operators" data-panel="operators" hidden>
-              <div class="stack stack--5">
-
-                <!-- (a) operators table -->
-                <div class="card section-card">
-                  <div class="card__header"><h2 class="card__title">Operators</h2></div>
-                  <div class="card__content card__content--flush">
-                    <div class="table-frame">
-                      <div class="table-scroll">
-                        <table class="data-table">
-                          <thead>
-                            <tr>
-                              <th scope="col">Name</th>
-                              <th scope="col">Email</th>
-                              <th scope="col">Role</th>
-                              <th scope="col">Last login</th>
-                              <th scope="col"><span class="cell-empty" aria-hidden="true">—</span></th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <td>
-                                <div class="cell-2line">
-                                  <span class="cell-2line__main"><span class="avatar avatar--sm"><span class="avatar__fallback">SC</span></span> Sarah Chen</span>
-                                </div>
-                              </td>
-                              <td>sarah.chen@northwind.example</td>
-                              <td><span class="badge badge--info">Admin</span></td>
-                              <td>2 hours ago</td>
-                              <td class="cell-right">
-                                <span class="row-actions">
-                                  <button class="btn btn--ghost btn--icon btn--icon-sm" type="button" aria-label="More actions for Sarah Chen">
-                                    <svg data-lucide="ellipsis-vertical" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
-                                  </button>
-                                </span>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <div class="cell-2line">
-                                  <span class="cell-2line__main"><span class="avatar avatar--sm"><span class="avatar__fallback">MW</span></span> Marcus Webb</span>
-                                </div>
-                              </td>
-                              <td>marcus.webb@northwind.example</td>
-                              <td><span class="badge badge--neutral">Operator</span></td>
-                              <td>yesterday</td>
-                              <td class="cell-right">
-                                <span class="row-actions">
-                                  <button class="btn btn--ghost btn--icon btn--icon-sm" type="button" aria-label="More actions for Marcus Webb">
-                                    <svg data-lucide="ellipsis-vertical" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
-                                  </button>
-                                </span>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <div class="cell-2line">
-                                  <span class="cell-2line__main"><span class="avatar avatar--sm"><span class="avatar__fallback">PA</span></span> Priya Anand</span>
-                                </div>
-                              </td>
-                              <td>priya.anand@northwind.example</td>
-                              <td><span class="badge badge--neutral">ISV Partner Manager</span></td>
-                              <td>4 days ago</td>
-                              <td class="cell-right">
-                                <span class="row-actions">
-                                  <button class="btn btn--ghost btn--icon btn--icon-sm" type="button" aria-label="More actions for Priya Anand">
-                                    <svg data-lucide="ellipsis-vertical" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
-                                  </button>
-                                </span>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <div class="cell-2line">
-                                  <span class="cell-2line__main"><span class="avatar avatar--sm"><span class="avatar__fallback">DO</span></span> Daniel Okafor</span>
-                                </div>
-                              </td>
-                              <td>daniel.okafor@northwind.example</td>
-                              <td><span class="badge badge--error">Locked</span></td>
-                              <td><span class="cell-empty">Never</span></td>
-                              <td class="cell-right">
-                                <span class="row-actions">
-                                  <button class="btn btn--ghost btn--icon btn--icon-sm" type="button" aria-label="More actions for Daniel Okafor">
-                                    <svg data-lucide="ellipsis-vertical" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
-                                  </button>
-                                </span>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- (b) system roles -->
-                <div class="card section-card">
-                  <div class="card__header">
-                    <h2 class="card__title">System roles</h2>
-                    <p class="card__description">Roles whose contract scope overlaps this customer.</p>
-                  </div>
-                  <div class="card__content card__content--flush">
-                    <div class="role-list">
-                      <div class="role-row">
-                        <span class="role-row__icon">
-                          <svg data-lucide="shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
-                        </span>
-                        <div class="role-row__main">
-                          <div class="role-row__name">Operator</div>
-                          <p class="role-row__desc">Day-to-day device &amp; order operations</p>
-                        </div>
-                        <span class="role-row__scope"><span class="badge badge--neutral">all</span> <button class="btn btn--ghost btn--xs" type="button">Block</button></span>
-                      </div>
-                      <div class="role-row">
-                        <span class="role-row__icon">
-                          <svg data-lucide="shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
-                        </span>
-                        <div class="role-row__main">
-                          <div class="role-row__name">Viewer</div>
-                          <p class="role-row__desc">Read-only access</p>
-                        </div>
-                        <span class="role-row__scope"><span class="badge badge--neutral">all</span> <button class="btn btn--ghost btn--xs" type="button">Block</button></span>
-                      </div>
-                      <div class="role-row">
-                        <span class="role-row__icon">
-                          <svg data-lucide="shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
-                        </span>
-                        <div class="role-row__main">
-                          <div class="role-row__name">ISV Partner Manager</div>
-                          <p class="role-row__desc">Manage ISV integrations</p>
-                        </div>
-                        <span class="role-row__scope"><span class="badge badge--neutral">ISV</span> <button class="btn btn--ghost btn--xs" type="button">Block</button></span>
-                      </div>
-                      <div class="role-row">
-                        <span class="role-row__icon">
-                          <svg data-lucide="shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
-                        </span>
-                        <div class="role-row__main">
-                          <div class="role-row__name">ISO Sales Lead</div>
-                          <p class="role-row__desc">Manage sub-merchant onboarding</p>
-                        </div>
-                        <span class="role-row__scope"><span class="badge badge--neutral">ISO</span> <button class="btn btn--ghost btn--xs" type="button">Block</button></span>
-                      </div>
-                      <div class="role-row">
-                        <span class="role-row__icon">
-                          <svg data-lucide="shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
-                        </span>
-                        <div class="role-row__main">
-                          <div class="role-row__name">Merchant Support</div>
-                          <p class="role-row__desc">Handle merchant tickets</p>
-                        </div>
-                        <span class="role-row__scope"><span class="badge badge--neutral">Merchant</span> <button class="btn btn--ghost btn--xs" type="button">Block</button></span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- (c) custom roles — empty state -->
-                <div class="card section-card">
-                  <div class="card__header card__header--row">
-                    <h2 class="card__title">Custom roles</h2>
-                    <div class="card__action">
-                      <button class="btn btn--secondary btn--sm" type="button">
-                        <svg data-lucide="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-                        Add custom role
-                      </button>
-                    </div>
-                  </div>
-                  <div class="card__content">
-                    <div class="empty-state">
-                      <div class="empty-state__icon">
-                        <svg data-lucide="shield-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
-                      </div>
-                      <div class="empty-state__title">No custom roles</div>
-                      <p class="empty-state__description">Use “Add custom role” above to extend permissions beyond the system roles.</p>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </section>
+            </div>
 
           </div>
+        </section>
+
+        <!-- ── Tab 2 · Versions ── -->
+        <section class="tabs__content" role="tabpanel" id="panel-versions" data-panel="versions" hidden>
+          <div class="card section-card">
+            <div class="card__header"><h2 class="section-title">Version list</h2></div>
+            <div class="card__content">
+              <div class="condition-band">
+                <div class="condition-band__toolbar">
+                  <div class="search-input">
+                    <span class="search-input__icon">
+                      <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+                    </span>
+                    <input class="input" type="search" placeholder="Search version / build code…" aria-label="Search version or build code">
+                  </div>
+                  <select class="select" aria-label="Status">
+                    <option>All</option><option>Published</option><option>Unpublished</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="card__content card__content--flush">
+              <div class="table-frame table-frame--flush">
+                <div class="table-scroll">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Version</th>
+                        <th>Code</th>
+                        <th class="cell-right">Size</th>
+                        <th>Uploaded</th>
+                        <th>Published</th>
+                        <th>Status</th>
+                        <th aria-hidden="true"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="is-clickable" onclick="location.href='published-version-detail.html'">
+                        <td>
+                          <span class="cell-2line">
+                            <span class="cell-2line__main kv__value--mono">4.3.2 <span class="badge badge--neutral">Current</span></span>
+                          </span>
+                        </td>
+                        <td class="cell-num">1432</td>
+                        <td class="cell-num cell-right">28.4 MB</td>
+                        <td class="cell-num">2026-05-09</td>
+                        <td class="cell-num">2026-05-10</td>
+                        <td><span class="badge badge--success"><span class="badge__dot"></span>Published</span></td>
+                        <td class="cell-right cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
+                      </tr>
+                      <tr class="is-clickable" onclick="location.href='published-version-detail.html'">
+                        <td class="cell-num">4.3.1</td>
+                        <td class="cell-num">1431</td>
+                        <td class="cell-num cell-right">28.1 MB</td>
+                        <td class="cell-num">2026-04-22</td>
+                        <td class="cell-num">2026-04-23</td>
+                        <td><span class="badge badge--success"><span class="badge__dot"></span>Published</span></td>
+                        <td class="cell-right cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
+                      </tr>
+                      <tr class="is-clickable" onclick="location.href='published-version-detail.html'">
+                        <td class="cell-num">4.2.4</td>
+                        <td class="cell-num">1428</td>
+                        <td class="cell-num cell-right">27.6 MB</td>
+                        <td class="cell-num">2026-02-18</td>
+                        <td class="cell-empty">—</td>
+                        <td><span class="badge badge--warning"><span class="badge__dot"></span>Unpublished</span></td>
+                        <td class="cell-right cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── Tab 3 · Subscribers ── -->
+        <section class="tabs__content" role="tabpanel" id="panel-subscribers" data-panel="subscribers" hidden>
+          <div class="card section-card">
+            <div class="card__header"><h2 class="section-title">Subscribers</h2></div>
+            <div class="card__content">
+              <div class="condition-band">
+                <div class="condition-band__toolbar">
+                  <div class="search-input">
+                    <span class="search-input__icon">
+                      <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+                    </span>
+                    <input class="input" type="search" placeholder="Search ISO name or region…" aria-label="Search ISO name or region">
+                  </div>
+                  <select class="select" aria-label="Version">
+                    <option>All versions</option><option>4.3.2</option><option>4.3.1</option><option>4.3.0</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="card__content card__content--flush">
+              <div class="table-frame table-frame--flush">
+                <div class="table-scroll">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>ISO company</th>
+                        <th>Country / region</th>
+                        <th>Current version</th>
+                        <th>Subscribed</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <div class="settings-row__main">
+                            <span class="initials-tile initials-tile--sm" aria-hidden="true">AR</span>
+                            <span class="cell-2line"><span class="cell-2line__main">Apex Retail Group</span></span>
+                          </div>
+                        </td>
+                        <td>US-East</td>
+                        <td class="cell-num">4.3.2</td>
+                        <td>3w ago</td>
+                        <td><span class="badge badge--success"><span class="badge__dot"></span>Up to date</span></td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="settings-row__main">
+                            <span class="initials-tile initials-tile--sm" aria-hidden="true">MP</span>
+                            <span class="cell-2line"><span class="cell-2line__main">Meridian Payments</span></span>
+                          </div>
+                        </td>
+                        <td>EU-West</td>
+                        <td class="cell-num">4.3.0</td>
+                        <td>5mo ago</td>
+                        <td><span class="badge badge--warning"><span class="badge__dot"></span>Behind</span></td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="settings-row__main">
+                            <span class="initials-tile initials-tile--sm" aria-hidden="true">CP</span>
+                            <span class="cell-2line"><span class="cell-2line__main">Coastal POS Co.</span></span>
+                          </div>
+                        </td>
+                        <td>US-West</td>
+                        <td class="cell-num">4.3.1</td>
+                        <td>2mo ago</td>
+                        <td><span class="badge badge--warning"><span class="badge__dot"></span>Pending approval</span></td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="settings-row__main">
+                            <span class="initials-tile initials-tile--sm" aria-hidden="true">SM</span>
+                            <span class="cell-2line"><span class="cell-2line__main">Summit Merchant Svcs</span></span>
+                          </div>
+                        </td>
+                        <td>CA-Central</td>
+                        <td class="cell-num">4.3.2</td>
+                        <td>1mo ago</td>
+                        <td><span class="badge badge--success"><span class="badge__dot"></span>Up to date</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab 4 - Activity -->
+        <section class="tabs__content" role="tabpanel" id="panel-activity" data-panel="activity" hidden>
+          <div class="card section-card">
+            <div class="card__header">
+              <h2 class="section-title">Activity timeline</h2>
+              <span class="field__hint">6 events</span>
+            </div>
+            <div class="card__content">
+              <ol class="timeline timeline--stacked">
+                <li class="timeline__item">
+                  <div class="timeline__marker timeline__marker--icon timeline__marker--success">
+                    <div class="timeline__marker-node"><svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+                    <div class="timeline__rail"></div>
+                  </div>
+                  <div class="timeline__content">
+                    <div class="timeline__header">
+                      <span class="timeline__title"><span class="badge badge--success"><span class="badge__dot"></span>Version published</span> 4.3.2 published to the public app pool</span>
+                      <time class="timeline__time" datetime="2026-05-10">2026-05-10 15:00</time>
+                    </div>
+                    <p class="timeline__description">The current version became available to ISO subscribers.</p>
+                    <div class="timeline__time-row"><span class="timeline__actor">by M. Hassan</span></div>
+                  </div>
+                </li>
+                <li class="timeline__item">
+                  <div class="timeline__marker timeline__marker--icon timeline__marker--info">
+                    <div class="timeline__marker-node"><svg data-lucide="upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg></div>
+                    <div class="timeline__rail"></div>
+                  </div>
+                  <div class="timeline__content">
+                    <div class="timeline__header">
+                      <span class="timeline__title"><span class="badge badge--info"><span class="badge__dot"></span>Version uploaded</span> 4.3.2 APK uploaded</span>
+                      <time class="timeline__time" datetime="2026-05-09">2026-05-09 10:00</time>
+                    </div>
+                    <p class="timeline__description">Scanner parsed 18 permissions and found no high or critical issues.</p>
+                    <div class="timeline__time-row"><span class="timeline__actor">by M. Hassan</span></div>
+                  </div>
+                </li>
+                <li class="timeline__item">
+                  <div class="timeline__marker timeline__marker--icon timeline__marker--success">
+                    <div class="timeline__marker-node"><svg data-lucide="users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg></div>
+                    <div class="timeline__rail"></div>
+                  </div>
+                  <div class="timeline__content">
+                    <div class="timeline__header">
+                      <span class="timeline__title"><span class="badge badge--success"><span class="badge__dot"></span>Subscriber added</span> Apex Retail Group subscribed</span>
+                      <time class="timeline__time" datetime="2026-04-23">2026-04-23 11:20</time>
+                    </div>
+                    <p class="timeline__description">Subscription is tracking the latest published version.</p>
+                    <div class="timeline__time-row"><span class="timeline__actor">by System</span></div>
+                  </div>
+                </li>
+                <li class="timeline__item">
+                  <div class="timeline__marker timeline__marker--icon timeline__marker--warning">
+                    <div class="timeline__marker-node"><svg data-lucide="archive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg></div>
+                    <div class="timeline__rail"></div>
+                  </div>
+                  <div class="timeline__content">
+                    <div class="timeline__header">
+                      <span class="timeline__title"><span class="badge badge--warning"><span class="badge__dot"></span>Version unpublished</span> 4.2.4 withdrawn</span>
+                      <time class="timeline__time" datetime="2026-02-20">2026-02-20 11:00</time>
+                    </div>
+                    <p class="timeline__description">Version was replaced after crash reports on S60 tip prompts.</p>
+                    <div class="timeline__time-row"><span class="timeline__actor">by Northwind Commerce</span></div>
+                  </div>
+                </li>
+                <li class="timeline__item">
+                  <div class="timeline__marker timeline__marker--icon timeline__marker--info">
+                    <div class="timeline__marker-node"><svg data-lucide="settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg></div>
+                    <div class="timeline__rail"></div>
+                  </div>
+                  <div class="timeline__content">
+                    <div class="timeline__header">
+                      <span class="timeline__title"><span class="badge badge--info"><span class="badge__dot"></span>Mode changed</span> Visibility set to All ISOs</span>
+                      <time class="timeline__time" datetime="2026-01-12">2026-01-12 09:00</time>
+                    </div>
+                    <p class="timeline__description">The app became discoverable by all eligible ISO companies.</p>
+                    <div class="timeline__time-row"><span class="timeline__actor">by Northwind Commerce</span></div>
+                  </div>
+                </li>
+                <li class="timeline__item timeline__item--last">
+                  <div class="timeline__marker timeline__marker--dot timeline__marker--neutral">
+                    <div class="timeline__marker-node"><span class="timeline__marker-dot"></span></div>
+                    <div class="timeline__rail"></div>
+                  </div>
+                  <div class="timeline__content">
+                    <div class="timeline__header">
+                      <span class="timeline__title"><span class="badge badge--neutral"><span class="badge__dot"></span>Created</span> Northwind POS Pro registered</span>
+                      <time class="timeline__time" datetime="2025-08-27">2025-08-27 08:00</time>
+                    </div>
+                    <p class="timeline__description">Initial app record and package identity were created.</p>
+                    <div class="timeline__time-row"><span class="timeline__actor">by Northwind Commerce</span></div>
+                  </div>
+                </li>
+              </ol>
+            </div>
+          </div>
+        </section>
+
+      </div>
 
           <!-- ════════════════ /PAGE ════════════════ -->
         </main>
     </div>
   </div>
-
   <script>
-    /* Static tab switching — pure presentation (in @cloud/ui this is the Tabs primitive's
-       base-ui behavior). Uses style.display so component display rules can't override it. */
+    /* Static tab switching — pure presentation (the Tabs primitive's base-ui
+       behavior in @cloud/ui). Uses inline display + [hidden] together so frameless
+       card display rules can't override it. */
     (function () {
       var triggers = document.querySelectorAll('.detail-header__tabs .tabs__trigger');
       var panels   = document.querySelectorAll('.tabs__content[data-panel]');
-
       function activate(name) {
         triggers.forEach(function (t) {
           var on = t.getAttribute('data-tab') === name;
@@ -7486,7 +7530,6 @@ body {
           if (on) { p.removeAttribute('hidden'); } else { p.setAttribute('hidden', ''); }
         });
       }
-
       triggers.forEach(function (t) {
         t.addEventListener('click', function () { activate(t.getAttribute('data-tab')); });
       });

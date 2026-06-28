@@ -1,0 +1,68 @@
+{
+  "version": "v3",
+  "baseVersion": "",
+  "publishedAt": "2026-06-28T14:14:05.205Z",
+  "source": {
+    "page": "customer-list.html",
+    "title": "Customers",
+    "href": "http://localhost:4177/customer-list.html"
+  },
+  "counts": {
+    "tokens": 0,
+    "compositeDeclarations": 2,
+    "selectors": 2,
+    "elementPaths": 2
+  },
+  "changedTokens": [],
+  "tokenOverrides": {},
+  "classOverrides": {
+    ".page-header__heading": {
+      "gap": "var(--spacing-control-lg)"
+    },
+    ".page-header__title": {
+      "font-size": "var(--text-4xl)"
+    }
+  },
+  "changes": {
+    "tokens": [],
+    "composites": [
+      {
+        "selector": ".page-header__heading",
+        "prop": "gap",
+        "previous": "var(--spacing-cx-sm)",
+        "next": "var(--spacing-control-lg)"
+      },
+      {
+        "selector": ".page-header__title",
+        "prop": "font-size",
+        "previous": "var(--text-2xl)",
+        "next": "var(--text-4xl)"
+      }
+    ]
+  },
+  "elementOverrides": {
+    "1.0.1.1.0.0.0.0": {
+      "gap": "var(--spacing-control-lg)"
+    },
+    "1.0.1.1.0.0.0.0.0": {
+      "font-size": "var(--text-4xl)"
+    }
+  },
+  "conflicts": [],
+  "skipped": {
+    "tokens": [],
+    "classOverrides": []
+  },
+  "releasedAt": "2026-06-28T14:14:24.209Z",
+  "release": {
+    "version": "v3",
+    "structure": [
+      "catalog.json",
+      "catalog.md",
+      "tokens.inline.css",
+      "tokens.json",
+      "composites.css",
+      "manifest.json"
+    ]
+  }
+}

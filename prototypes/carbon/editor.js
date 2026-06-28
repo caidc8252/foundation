@@ -1,8 +1,8 @@
 /* TOMS prototype — in-page style editor.
    Runtime-injected; NOT part of any page's static markup (so pages stay closed-set clean).
    Click a primitive/composite element in Edit mode → tweak its declared, themeable styles
-   with foundation tokens. Changes are inline overrides on that one element, persisted to
-   localStorage, and exportable as edited HTML or a changes JSON. */
+   with foundation tokens. Changes are in-memory draft overrides until saved as a
+   version, and exportable as edited HTML or a changes JSON. */
 (function () {
   'use strict';
   if (window.__tomsEditor) return;
@@ -110,7 +110,7 @@
     return opts;
   }
 
-  // ───────────────── element path (stable id for persistence) ─────────────────
+  // ───────────────── element path (stable id for draft + save payload) ─────────────────
   function pathOf(el) {
     var parts = [];
     while (el && el.nodeType === 1 && el !== document.documentElement) {
@@ -128,19 +128,22 @@
 
   // ───────────────── store ─────────────────
   var store = {};
-  function loadStore() { try { return JSON.parse(localStorage.getItem(PAGE_KEY)) || {}; } catch (e) { return {}; } }
-  function saveStore() { try { localStorage.setItem(PAGE_KEY, JSON.stringify(store)); } catch (e) {} }
-  function applyStored() {
-    store = loadStore();
+  function loadStore() { return {}; }
+  function saveStore() {}
+  function applyElementStore() {
     for (var path in store) {
       var el = elByPath(path); if (!el) continue;
       for (var p in store[path]) el.style.setProperty(p, store[path][p]);
     }
   }
+  function applyStored() {
+    store = loadStore();
+    applyElementStore();
+  }
 
   // ───────────────── global tokens (edit :root → every var(--…) updates) ─────────────────
-  // Shared across all pages (design tokens are global), persisted separately, baked into
-  // exported HTML as inline custom properties on <html>.
+  // Shared across all pages (design tokens are global), kept as an in-memory draft,
+  // then baked into saved versions / exported JSON.
   var TOKEN_KEY = 'tomsedit:tokens';
   var tokenStore = {};
   var TOKEN_GROUPS = [
@@ -156,11 +159,40 @@
     { key: '--container-', label: '容器 Container' },
     { key: '--breakpoint-', label: '断点 Breakpoint' },
   ];
-  function loadTokenStore() { try { return JSON.parse(localStorage.getItem(TOKEN_KEY)) || {}; } catch (e) { return {}; } }
-  function saveTokenStore() { try { localStorage.setItem(TOKEN_KEY, JSON.stringify(tokenStore)); } catch (e) {} }
+  function loadTokenStore() { return {}; }
+  function saveTokenStore() {}
+  function applyTokenStore() {
+    for (var n in tokenStore) document.documentElement.style.setProperty(n, tokenStore[n]);
+  }
   function applyTokens() {
     tokenStore = loadTokenStore();
-    for (var n in tokenStore) document.documentElement.style.setProperty(n, tokenStore[n]);
+    applyTokenStore();
+  }
+  function clearDraftOverrides() {
+    for (var n in tokenStore) document.documentElement.style.removeProperty(n);
+    tokenStore = {};
+    try { localStorage.removeItem(TOKEN_KEY); } catch (e) {}
+    for (var path in store) {
+      var el = elByPath(path);
+      if (!el) continue;
+      for (var p in store[path]) el.style.removeProperty(p);
+    }
+    store = {};
+    try { localStorage.removeItem(PAGE_KEY); } catch (e) {}
+    if (panel) panel.style.display = 'none';
+    if (tpanel && tpanel.style.display !== 'none') renderTokenPanel();
+  }
+  function clearLegacyDraftStorage() {
+    try {
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(PAGE_KEY);
+      var keys = [];
+      for (var i = 0; i < localStorage.length; i++) {
+        var key = localStorage.key(i);
+        if (key && key.indexOf('tomsedit:') === 0) keys.push(key);
+      }
+      keys.forEach(function (key) { localStorage.removeItem(key); });
+    } catch (e) {}
   }
   function applyToken(name, value) {
     document.documentElement.style.setProperty(name, value);
@@ -372,7 +404,15 @@
   // ───────────────── state + DOM helpers ─────────────────
   var editing = false, selected = null, hoverEl = null, bar = null, panel = null;
   function div(cls) { var d = document.createElement('div'); if (cls) d.className = cls; d.setAttribute('data-editor', ''); return d; }
-  function mkbtn(label, fn) { var b = document.createElement('button'); b.className = 'se-btn'; b.textContent = label; b.setAttribute('data-editor', ''); b.onclick = fn; return b; }
+  function mkbtn(label, fn, extraCls) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'se-btn' + (extraCls ? ' ' + extraCls : '');
+    b.textContent = label;
+    b.setAttribute('data-editor', '');
+    b.onclick = fn;
+    return b;
+  }
 
   function injectStyle() {
     var css = [
@@ -382,7 +422,46 @@
       '.se-bar__row{display:flex;gap:6px;}',
       '.se-btn{font:inherit;font-size:13px;padding:6px 10px;border-radius:8px;border:1px solid var(--color-line-default,#d4d4d8);background:var(--color-surface-1,#fff);color:var(--color-content-primary,#18181b);cursor:pointer;box-shadow:var(--shadow-2,0 1px 3px rgba(0,0,0,.15));}',
       '.se-btn:hover{background:var(--color-surface-hover,#f4f4f5);}',
+      '.se-btn:disabled{opacity:.56;cursor:not-allowed;}',
       '.se-btn--on{background:var(--color-primary-500,#2563eb);color:var(--color-content-on-primary,#fff);border-color:transparent;}',
+      '.se-btn--on:hover{background:var(--color-primary-600,var(--color-primary-500,#2563eb));color:var(--color-content-on-primary,#fff);}',
+      '.se-btn--primary{background:var(--color-primary-500,#2563eb);color:var(--color-content-on-primary,#fff);border-color:transparent;}',
+      '.se-btn--primary:hover{background:var(--color-primary-600,var(--color-primary-500,#2563eb));}',
+      '.se-btn--ghost{background:transparent;box-shadow:none;}',
+      '.se-btn--ghost:hover{background:var(--color-surface-hover,#f4f4f5);}',
+      '.se-version{display:flex;align-items:center;gap:6px;margin-inline-start:var(--space-2);font-family:var(--font-sans,system-ui,sans-serif);}',
+      '.se-version__label{font-size:12px;color:var(--color-content-secondary,#71717a);}',
+      '.se-version select{min-width:96px;font:inherit;font-size:12px;padding:5px 28px 5px 8px;border-radius:8px;border:1px solid var(--color-line-default,#d4d4d8);background:var(--color-surface-1,#fff);color:var(--color-content-primary,#18181b);}',
+      '.se-version .se-btn{box-shadow:none;}',
+      '.se-version__status{font-size:11px;color:var(--color-content-tertiary,#a1a1aa);max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}',
+      '.se-save-overlay{position:fixed;inset:0;z-index:2147483647;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(15,23,42,.42);backdrop-filter:blur(6px);font-family:var(--font-sans,system-ui,sans-serif);}',
+      '.se-save-overlay[data-open="true"]{display:flex;}',
+      '.se-save-modal{width:min(640px,calc(100vw - 32px));max-height:min(760px,calc(100vh - 48px));display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--color-line-default,#d4d4d8);border-radius:16px;background:var(--color-surface-1,#fff);box-shadow:0 24px 70px rgba(15,23,42,.24);color:var(--color-content-primary,#18181b);}',
+      '.se-save-modal__hero{display:flex;gap:14px;align-items:flex-start;padding:18px 20px 16px;border-bottom:1px solid var(--color-line-subtle,#e4e4e7);background:linear-gradient(180deg,var(--color-surface-2,#fafafa),var(--color-surface-1,#fff));}',
+      '.se-save-modal__icon{display:grid;place-items:center;width:36px;height:36px;flex:0 0 36px;border-radius:12px;background:var(--color-primary-50,#eff6ff);color:var(--color-primary-700,#1d4ed8);font-weight:700;}',
+      '.se-save-modal__title{margin:0;font-size:16px;font-weight:700;letter-spacing:0;color:var(--color-content-primary,#18181b);}',
+      '.se-save-modal__desc{margin:4px 0 0;font-size:13px;line-height:1.5;color:var(--color-content-secondary,#71717a);}',
+      '.se-save-modal__body{padding:16px 20px;overflow:auto;display:flex;flex-direction:column;gap:14px;}',
+      '.se-save-modal__stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}',
+      '.se-save-stat{border:1px solid var(--color-line-subtle,#e4e4e7);border-radius:10px;background:var(--color-surface-2,#fafafa);padding:10px 12px;}',
+      '.se-save-stat__label{font-size:11px;color:var(--color-content-tertiary,#a1a1aa);}',
+      '.se-save-stat__value{margin-top:3px;font-family:var(--font-mono,monospace);font-size:18px;font-weight:700;color:var(--color-content-primary,#18181b);}',
+      '.se-save-callout{border:1px solid var(--color-warning-500,#f59e0b);border-radius:10px;background:var(--color-warning-bg,#fffbeb);color:var(--color-warning-strong,#92400e);padding:10px 12px;font-size:12px;line-height:1.45;}',
+      '.se-save-section__head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}',
+      '.se-save-section__title{font-size:12px;font-weight:700;color:var(--color-content-primary,#18181b);}',
+      '.se-save-section__hint{font-size:11px;color:var(--color-content-tertiary,#a1a1aa);}',
+      '.se-save-list{border:1px solid var(--color-line-subtle,#e4e4e7);border-radius:10px;overflow:hidden;background:var(--color-surface-1,#fff);}',
+      '.se-save-row{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:center;padding:9px 12px;border-top:1px solid var(--color-line-subtle,#e4e4e7);font-size:12px;}',
+      '.se-save-row:first-child{border-top:0;}',
+      '.se-save-row--preview{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);}',
+      '.se-save-row__name{font-family:var(--font-mono,monospace);color:var(--color-content-primary,#18181b);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}',
+      '.se-save-row__value{font-family:var(--font-mono,monospace);color:var(--color-content-secondary,#71717a);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}',
+      '.se-save-row__arrow{color:var(--color-content-tertiary,#a1a1aa);}',
+      '.se-save-empty{border:1px dashed var(--color-line-default,#d4d4d8);border-radius:10px;padding:18px;text-align:center;font-size:13px;color:var(--color-content-secondary,#71717a);background:var(--color-surface-2,#fafafa);}',
+      '.se-save-modal__footer{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:12px 20px;border-top:1px solid var(--color-line-subtle,#e4e4e7);background:var(--color-surface-2,#fafafa);}',
+      '.se-save-spinner{width:18px;height:18px;border-radius:50%;border:2px solid var(--color-line-default,#d4d4d8);border-top-color:var(--color-primary-600,#2563eb);animation:seSpin .8s linear infinite;}',
+      '@keyframes seSpin{to{transform:rotate(360deg);}}',
+      '@media (max-width:560px){.se-save-modal__stats{grid-template-columns:1fr}.se-save-row{grid-template-columns:minmax(0,1fr);gap:4px}.se-save-row__arrow{display:none}.se-save-modal__footer{flex-wrap:wrap}.se-save-modal__footer .se-btn{flex:1 1 auto;}}',
       '.se-panel{position:fixed;z-index:2147483647;width:300px;max-height:72vh;overflow:auto;background:var(--color-surface-1,#fff);border:1px solid var(--color-line-default,#d4d4d8);border-radius:12px;box-shadow:var(--shadow-4,0 8px 30px rgba(0,0,0,.2));font-family:var(--font-sans,system-ui,sans-serif);font-size:13px;color:var(--color-content-primary,#18181b);}',
       '.se-hd{position:sticky;top:0;background:var(--color-surface-2,#fafafa);border-bottom:1px solid var(--color-line-subtle,#e4e4e7);padding:10px 12px;display:flex;align-items:center;gap:8px;justify-content:space-between;}',
       '.se-title{font-weight:600;font-size:12px;word-break:break-all;font-family:var(--font-mono,monospace);}',
@@ -425,24 +504,97 @@
 
   function buildBar() {
     bar = div('se-bar');
-    var actions = div('se-bar__row'); actions.style.display = 'none';
-    actions.appendChild(mkbtn('导出 HTML', exportHTML));
-    actions.appendChild(mkbtn('导出 JSON', exportJSON));
-    actions.appendChild(mkbtn('导入', importJSON));
-    actions.appendChild(mkbtn('重置本页', resetPage));
     var toggle = mkbtn('✎ 编辑样式', function () {
       editing = !editing;
       toggle.classList.toggle('se-btn--on', editing);
       toggle.textContent = editing ? '✓ 编辑中 · 点元素改样式' : '✎ 编辑样式';
-      actions.style.display = editing ? 'flex' : 'none';
       if (!editing) { clearHover(); deselect(); }
     });
     var row = div('se-bar__row');
     row.appendChild(mkbtn('🎨 Token', openTokenPanel));
+    row.appendChild(mkbtn('保存', saveChanges, 'se-btn--primary'));
     row.appendChild(toggle);
-    bar.appendChild(actions);
     bar.appendChild(row);
     document.body.appendChild(bar);
+  }
+
+  var selectedVersion = '';
+  var versionSelect = null, versionStatus = null;
+  var versionTokenLink = null, versionCompositeLink = null;
+  function apiUrl(path) { return location.protocol === 'file:' ? 'http://localhost:4177' + path : path; }
+  function setVersionStatus(text) { if (versionStatus) versionStatus.textContent = text || ''; }
+  function assetUrl(version, file) {
+    return apiUrl('/versions/' + encodeURIComponent(version) + '/' + file) + '?t=' + Date.now();
+  }
+  function applyVersion(version) {
+    selectedVersion = version || '';
+    clearDraftOverrides();
+    if (!version) {
+      if (versionTokenLink) versionTokenLink.remove();
+      if (versionCompositeLink) versionCompositeLink.remove();
+      versionTokenLink = null; versionCompositeLink = null;
+      setVersionStatus('Base');
+      return;
+    }
+    if (!versionTokenLink) {
+      versionTokenLink = document.createElement('link');
+      versionTokenLink.rel = 'stylesheet';
+      versionTokenLink.setAttribute('data-editor', '');
+      document.head.appendChild(versionTokenLink);
+    }
+    if (!versionCompositeLink) {
+      versionCompositeLink = document.createElement('link');
+      versionCompositeLink.rel = 'stylesheet';
+      versionCompositeLink.setAttribute('data-editor', '');
+      document.head.appendChild(versionCompositeLink);
+    }
+    versionTokenLink.href = assetUrl(version, 'tokens.inline.css');
+    versionCompositeLink.href = assetUrl(version, 'composites.css');
+    setVersionStatus('已应用 ' + version);
+  }
+  function loadVersions(preferred) {
+    if (!versionSelect) return;
+    fetch(apiUrl('/__prototype_versions')).then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (data) {
+        if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
+        return data;
+      });
+    }).then(function (data) {
+      var versions = data.versions || [];
+      var chosen = preferred || selectedVersion || '';
+      versionSelect.innerHTML = '';
+      var base = document.createElement('option'); base.value = ''; base.textContent = 'Base'; versionSelect.appendChild(base);
+      versions.forEach(function (item) {
+        var opt = document.createElement('option');
+        opt.value = item.version;
+        opt.textContent = item.version;
+        if (item.publishedAt) opt.title = item.publishedAt;
+        versionSelect.appendChild(opt);
+      });
+      if (chosen && versions.some(function (item) { return item.version === chosen; })) versionSelect.value = chosen;
+      else versionSelect.value = '';
+      applyVersion(versionSelect.value);
+    }).catch(function () {
+      setVersionStatus('版本服务未连接');
+    });
+  }
+  function buildVersionControl() {
+    var header = document.querySelector('.app-frame__header');
+    if (!header) return;
+    var wrap = div('se-version');
+    var label = document.createElement('span'); label.className = 'se-version__label'; label.setAttribute('data-editor', ''); label.textContent = 'Version';
+    versionSelect = document.createElement('select'); versionSelect.setAttribute('data-editor', ''); versionSelect.setAttribute('aria-label', 'Select style version');
+    versionSelect.onchange = function () { applyVersion(versionSelect.value); };
+    var releaseBtn = mkbtn('发布', releaseCurrentVersion, 'se-btn--primary');
+    versionStatus = document.createElement('span'); versionStatus.className = 'se-version__status'; versionStatus.setAttribute('data-editor', '');
+    wrap.appendChild(label);
+    wrap.appendChild(versionSelect);
+    wrap.appendChild(releaseBtn);
+    wrap.appendChild(versionStatus);
+    var spacer = header.querySelector('.app-frame__spacer');
+    if (spacer && spacer.nextSibling) header.insertBefore(wrap, spacer.nextSibling);
+    else header.appendChild(wrap);
+    loadVersions();
   }
 
   function ensurePanel() {
@@ -583,55 +735,389 @@
     if (props) { for (var p in props) el.style.removeProperty(p); delete store[path]; saveStore(); }
     renderPanel();
   }
-  function resetPage() {
-    if (!window.confirm('清空本页所有改动?')) return;
-    localStorage.removeItem(PAGE_KEY); location.reload();
+  // ───────────────── save / release ─────────────────
+  function ownerClassForProp(el, prop) {
+    var owner = null, classes = foundationClasses(el);
+    classes.forEach(function (c) {
+      var d = classDecl[c];
+      if (d && d[prop] != null) owner = c;
+    });
+    return owner || classes[classes.length - 1] || null;
   }
-
-  // ───────────────── export / import ─────────────────
-  function download(name, text, type) {
-    var blob = new Blob([text], { type: type || 'text/plain' });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a'); a.setAttribute('data-editor', ''); a.href = url; a.download = name;
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
-  }
-  function baseName() { return (location.pathname.split('/').pop() || 'page').replace(/\.html?$/, ''); }
-  function exportJSON() { download(baseName() + '.changes.json', JSON.stringify({ tokens: tokenStore, elements: store }, null, 2), 'application/json'); }
-  function exportHTML() {
-    clearHover();
-    var clone = document.documentElement.cloneNode(true);
-    var i, n, kill = clone.querySelectorAll('[data-editor]');
-    for (i = 0; i < kill.length; i++) kill[i].remove();
-    var scripts = clone.querySelectorAll('script[src]');
-    for (i = 0; i < scripts.length; i++) { if (/editor\.js(\?|$)/.test(scripts[i].getAttribute('src') || '')) scripts[i].remove(); }
-    var marked = clone.querySelectorAll('.se-hover,.se-selected');
-    for (i = 0; i < marked.length; i++) {
-      n = marked[i]; n.classList.remove('se-hover', 'se-selected');
-      if (n.getAttribute('class') === '') n.removeAttribute('class');
+  function collectClassOverrides() {
+    var overrides = {}, conflicts = [];
+    for (var path in store) {
+      var el = elByPath(path);
+      if (!el) continue;
+      for (var prop in store[path]) {
+        var cls = ownerClassForProp(el, prop);
+        if (!cls) continue;
+        var selector = '.' + cls;
+        var value = store[path][prop];
+        if (!overrides[selector]) overrides[selector] = {};
+        if (overrides[selector][prop] != null && overrides[selector][prop] !== value) {
+          conflicts.push({ selector: selector, prop: prop, previous: overrides[selector][prop], next: value, path: path });
+        }
+        overrides[selector][prop] = value;
+      }
     }
-    download(baseName() + '.edited.html', '<!doctype html>\n' + clone.outerHTML, 'text/html');
+    return { overrides: overrides, conflicts: conflicts };
   }
-  function importJSON() {
-    var inp = document.createElement('input'); inp.type = 'file'; inp.accept = '.json,application/json'; inp.setAttribute('data-editor', '');
-    inp.onchange = function () {
-      var f = inp.files && inp.files[0]; if (!f) return;
-      var rd = new FileReader();
-      rd.onload = function () {
-        try {
-          var data = JSON.parse(rd.result);
-          if (data && (data.elements || data.tokens)) {
-            localStorage.setItem(PAGE_KEY, JSON.stringify(data.elements || {}));
-            localStorage.setItem(TOKEN_KEY, JSON.stringify(data.tokens || {}));
-          } else {
-            localStorage.setItem(PAGE_KEY, JSON.stringify(data || {})); // legacy flat = element overrides
-          }
-          location.reload();
-        } catch (e) { window.alert('JSON 解析失败:' + e.message); }
-      };
-      rd.readAsText(f);
+  function countKeys(obj) {
+    var n = 0;
+    for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj, k)) n++;
+    return n;
+  }
+  function countDecls(map) {
+    var n = 0;
+    for (var selector in map) n += countKeys(map[selector]);
+    return n;
+  }
+  function displayChangeValue(value) {
+    if (value == null || String(value).trim() === '') return '(unset)';
+    value = String(value).replace(/\s+/g, ' ').trim();
+    return value.length > 120 ? value.slice(0, 117) + '...' : value;
+  }
+  function formatSaveChangeSummary(changes) {
+    changes = changes || {};
+    var rows = [];
+    (changes.tokens || []).forEach(function (item) {
+      rows.push('Token ' + item.name + ': ' + displayChangeValue(item.previous) + ' -> ' + displayChangeValue(item.next));
+    });
+    (changes.composites || []).forEach(function (item) {
+      rows.push('Composite ' + item.selector + ' ' + item.prop + ': ' + displayChangeValue(item.previous) + ' -> ' + displayChangeValue(item.next));
+    });
+    if (!rows.length) return '';
+    var limit = 24;
+    var out = rows.slice(0, limit);
+    if (rows.length > limit) out.push('... +' + (rows.length - limit) + ' more');
+    return out.join('\n');
+  }
+  var saveOverlay = null, saveModal = null, saveBusy = false;
+  function saveNode(tag, cls, text) {
+    var node = document.createElement(tag);
+    if (cls) node.className = cls;
+    node.setAttribute('data-editor', '');
+    if (text != null) node.textContent = text;
+    return node;
+  }
+  function ensureSaveModal() {
+    if (saveOverlay && saveModal) return saveModal;
+    saveOverlay = div('se-save-overlay');
+    saveOverlay.onclick = function (e) { if (e.target === saveOverlay) closeSaveModal(); };
+    saveModal = div('se-save-modal');
+    saveModal.setAttribute('role', 'dialog');
+    saveModal.setAttribute('aria-modal', 'true');
+    saveOverlay.appendChild(saveModal);
+    document.body.appendChild(saveOverlay);
+    return saveModal;
+  }
+  function closeSaveModal() {
+    if (saveBusy) return;
+    if (saveOverlay) saveOverlay.removeAttribute('data-open');
+  }
+  function openSaveModal() {
+    ensureSaveModal();
+    saveOverlay.setAttribute('data-open', 'true');
+  }
+  function clearSaveModal() {
+    ensureSaveModal();
+    saveModal.innerHTML = '';
+  }
+  function appendSaveHero(title, description, iconText) {
+    var hero = div('se-save-modal__hero');
+    var icon = saveNode('span', 'se-save-modal__icon', iconText || 'S');
+    var copy = div('');
+    copy.appendChild(saveNode('h2', 'se-save-modal__title', title));
+    copy.appendChild(saveNode('p', 'se-save-modal__desc', description));
+    hero.appendChild(icon);
+    hero.appendChild(copy);
+    saveModal.appendChild(hero);
+  }
+  function appendSaveStats(body, stats) {
+    var wrap = div('se-save-modal__stats');
+    stats.forEach(function (item) {
+      var stat = div('se-save-stat');
+      stat.appendChild(saveNode('div', 'se-save-stat__label', item.label));
+      stat.appendChild(saveNode('div', 'se-save-stat__value', item.value));
+      wrap.appendChild(stat);
+    });
+    body.appendChild(wrap);
+  }
+  function appendSaveFooter(buttons) {
+    var ft = div('se-save-modal__footer');
+    buttons.forEach(function (button) { ft.appendChild(button); });
+    saveModal.appendChild(ft);
+  }
+  function previewRowsFromDraft(collected) {
+    var rows = [];
+    Object.keys(tokenStore).sort().forEach(function (name) {
+      rows.push({ name: 'Token ' + name, next: tokenStore[name] });
+    });
+    var overrides = collected.overrides || {};
+    Object.keys(overrides).sort().forEach(function (selector) {
+      Object.keys(overrides[selector]).sort().forEach(function (prop) {
+        rows.push({ name: 'Composite ' + selector + ' ' + prop, next: overrides[selector][prop] });
+      });
+    });
+    return rows;
+  }
+  function rowsFromSavedChanges(changes) {
+    changes = changes || {};
+    var rows = [];
+    (changes.tokens || []).forEach(function (item) {
+      rows.push({ name: 'Token ' + item.name, previous: item.previous, next: item.next });
+    });
+    (changes.composites || []).forEach(function (item) {
+      rows.push({ name: 'Composite ' + item.selector + ' ' + item.prop, previous: item.previous, next: item.next });
+    });
+    return rows;
+  }
+  function appendSaveRows(body, title, hint, rows, mode) {
+    var section = div('se-save-section');
+    var head = div('se-save-section__head');
+    head.appendChild(saveNode('div', 'se-save-section__title', title));
+    if (hint) head.appendChild(saveNode('div', 'se-save-section__hint', hint));
+    section.appendChild(head);
+    if (!rows.length) {
+      section.appendChild(saveNode('div', 'se-save-empty', '没有可显示的改动。'));
+      body.appendChild(section);
+      return;
+    }
+    var list = div('se-save-list');
+    rows.forEach(function (row) {
+      var item = div('se-save-row' + (mode === 'preview' ? ' se-save-row--preview' : ''));
+      item.appendChild(saveNode('div', 'se-save-row__name', row.name));
+      if (mode === 'preview') {
+        item.appendChild(saveNode('div', 'se-save-row__value', displayChangeValue(row.next)));
+      } else {
+        item.appendChild(saveNode('div', 'se-save-row__value', displayChangeValue(row.previous)));
+        item.appendChild(saveNode('div', 'se-save-row__arrow', '->'));
+        item.appendChild(saveNode('div', 'se-save-row__value', displayChangeValue(row.next)));
+      }
+      list.appendChild(item);
+    });
+    section.appendChild(list);
+    body.appendChild(section);
+  }
+  function renderSaveNoChanges() {
+    saveBusy = false;
+    clearSaveModal();
+    appendSaveHero('没有可保存的改动', '先编辑 token 或组件样式，再保存为一个版本。', 'i');
+    var body = div('se-save-modal__body');
+    body.appendChild(saveNode('div', 'se-save-empty', '当前草稿为空。'));
+    saveModal.appendChild(body);
+    appendSaveFooter([mkbtn('关闭', closeSaveModal, 'se-btn--primary')]);
+    openSaveModal();
+  }
+  function renderSaveConfirm(payload, collected, meta) {
+    saveBusy = false;
+    clearSaveModal();
+    appendSaveHero('保存样式改动', '保存后会生成一个新的 version，并展示每一项从旧值到新值的变化。', 'S');
+    var body = div('se-save-modal__body');
+    appendSaveStats(body, [
+      { label: 'Token', value: String(meta.tokenCount) },
+      { label: 'Composite', value: String(meta.styleCount) },
+      { label: 'Base', value: payload.baseVersion || 'Base' },
+    ]);
+    if (collected.conflicts.length) {
+      body.appendChild(saveNode('div', 'se-save-callout', '有 ' + collected.conflicts.length + ' 个同 class 同属性存在不同取值，保存时会使用最后一次编辑的值。'));
+    }
+    appendSaveRows(body, '即将保存', '新值预览', previewRowsFromDraft(collected), 'preview');
+    saveModal.appendChild(body);
+    appendSaveFooter([
+      mkbtn('取消', closeSaveModal, 'se-btn--ghost'),
+      mkbtn('保存为新版本', function () { submitSavePayload(payload); }, 'se-btn--primary'),
+    ]);
+    openSaveModal();
+  }
+  function renderSaveLoading() {
+    saveBusy = true;
+    clearSaveModal();
+    appendSaveHero('正在保存', '正在写入 versions，并生成 tokens.inline.css / composites.css。', 'S');
+    var body = div('se-save-modal__body');
+    var row = div('se-save-empty');
+    row.style.display = 'flex';
+    row.style.alignItems = 'center';
+    row.style.justifyContent = 'center';
+    row.style.gap = '10px';
+    row.appendChild(div('se-save-spinner'));
+    row.appendChild(saveNode('span', '', '请稍候...'));
+    body.appendChild(row);
+    saveModal.appendChild(body);
+    openSaveModal();
+  }
+  function renderSaveSuccess(data) {
+    saveBusy = false;
+    clearSaveModal();
+    appendSaveHero('保存成功', '已创建 ' + data.version + '，可在 header 的 Version 下拉框中选择。', '\u2713');
+    var body = div('se-save-modal__body');
+    appendSaveStats(body, [
+      { label: 'Version', value: data.version || '-' },
+      { label: 'Token', value: String((data.changes && data.changes.tokens || []).length) },
+      { label: 'Composite', value: String((data.changes && data.changes.composites || []).length) },
+    ]);
+    body.appendChild(saveNode('div', 'se-save-callout', '目录: ' + data.relativeDir));
+    appendSaveRows(body, '修改明细', '旧值 -> 新值', rowsFromSavedChanges(data.changes), 'saved');
+    saveModal.appendChild(body);
+    appendSaveFooter([mkbtn('完成', closeSaveModal, 'se-btn--primary')]);
+    openSaveModal();
+  }
+  function renderSaveError(error, retry) {
+    saveBusy = false;
+    clearSaveModal();
+    appendSaveHero('保存失败', error.message || String(error), '!');
+    var body = div('se-save-modal__body');
+    body.appendChild(saveNode('div', 'se-save-callout', '请确认页面通过本地服务打开: npm run prototype:carbon / http://localhost:4177/'));
+    saveModal.appendChild(body);
+    appendSaveFooter([
+      mkbtn('关闭', closeSaveModal, 'se-btn--ghost'),
+      mkbtn('重试', retry, 'se-btn--primary'),
+    ]);
+    openSaveModal();
+  }
+  function submitSavePayload(payload) {
+    renderSaveLoading();
+    fetch(apiUrl('/__prototype_save'), {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (data) {
+        if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
+        return data;
+      });
+    }).then(function (data) {
+      loadVersions(data.version);
+      renderSaveSuccess(data);
+    }).catch(function (err) {
+      renderSaveError(err, function () { submitSavePayload(payload); });
+    });
+  }
+  function saveChanges() {
+    var collected = collectClassOverrides();
+    var tokenCount = countKeys(tokenStore);
+    var styleCount = countDecls(collected.overrides);
+    if (!tokenCount && !styleCount) {
+      renderSaveNoChanges();
+      return;
+    }
+
+    var payload = {
+      page: location.pathname.split('/').pop() || 'index.html',
+      href: location.href,
+      title: document.title || '',
+      publishedAt: new Date().toISOString(),
+      baseVersion: versionSelect && versionSelect.value ? versionSelect.value : '',
+      tokens: tokenStore,
+      classOverrides: collected.overrides,
+      elementOverrides: store,
+      conflicts: collected.conflicts
     };
-    inp.click();
+    renderSaveConfirm(payload, collected, { tokenCount: tokenCount, styleCount: styleCount });
+  }
+  function releaseFileRows(files) {
+    files = files && files.length ? files : ['catalog.json', 'catalog.md', 'tokens.inline.css', 'tokens.json', 'composites.css', 'manifest.json'];
+    return files.map(function (file) { return { name: file, next: 'release/' + file }; });
+  }
+  function renderReleaseNoVersion() {
+    saveBusy = false;
+    clearSaveModal();
+    appendSaveHero('请选择要发布的版本', '先在 header 的 Version 下拉框里选择一个已保存版本，再发布到 release。', 'R');
+    var body = div('se-save-modal__body');
+    body.appendChild(saveNode('div', 'se-save-empty', '当前选择是 Base，Base 不能直接发布。'));
+    saveModal.appendChild(body);
+    appendSaveFooter([mkbtn('关闭', closeSaveModal, 'se-btn--primary')]);
+    openSaveModal();
+  }
+  function renderReleaseConfirm(version) {
+    saveBusy = false;
+    clearSaveModal();
+    appendSaveHero('发布版本到 release', '发布会把当前选中的版本打包成 release 产物，release 目录只保留一份最新内容。', 'R');
+    var body = div('se-save-modal__body');
+    appendSaveStats(body, [
+      { label: 'Version', value: version },
+      { label: 'Target', value: 'release' },
+      { label: 'Mode', value: '覆盖' },
+    ]);
+    body.appendChild(saveNode('div', 'se-save-callout', 'release 目录会被清空并写入当前版本的 catalog、tokens、composites 和 manifest。'));
+    appendSaveRows(body, '发布产物', '目标路径', releaseFileRows(), 'preview');
+    saveModal.appendChild(body);
+    appendSaveFooter([
+      mkbtn('取消', closeSaveModal, 'se-btn--ghost'),
+      mkbtn('发布到 release', function () { submitReleasePayload(version); }, 'se-btn--primary'),
+    ]);
+    openSaveModal();
+  }
+  function renderReleaseLoading(version) {
+    saveBusy = true;
+    clearSaveModal();
+    appendSaveHero('正在发布', '正在用 ' + version + ' 覆盖 release 目录。', 'R');
+    var body = div('se-save-modal__body');
+    var row = div('se-save-empty');
+    row.style.display = 'flex';
+    row.style.alignItems = 'center';
+    row.style.justifyContent = 'center';
+    row.style.gap = '10px';
+    row.appendChild(div('se-save-spinner'));
+    row.appendChild(saveNode('span', '', '请稍候...'));
+    body.appendChild(row);
+    saveModal.appendChild(body);
+    openSaveModal();
+  }
+  function renderReleaseSuccess(data) {
+    saveBusy = false;
+    clearSaveModal();
+    appendSaveHero('发布成功', data.version + ' 已经写入 release，后续发布会继续覆盖这一份产物。', '\u2713');
+    var body = div('se-save-modal__body');
+    appendSaveStats(body, [
+      { label: 'Version', value: data.version || '-' },
+      { label: 'Files', value: String((data.files || []).length) },
+      { label: 'Target', value: 'release' },
+    ]);
+    body.appendChild(saveNode('div', 'se-save-callout', '目录: ' + data.relativeDir));
+    appendSaveRows(body, '产物文件', '已写入', releaseFileRows(data.files), 'preview');
+    saveModal.appendChild(body);
+    appendSaveFooter([mkbtn('完成', closeSaveModal, 'se-btn--primary')]);
+    openSaveModal();
+  }
+  function renderReleaseError(error, version) {
+    saveBusy = false;
+    clearSaveModal();
+    appendSaveHero('发布失败', error.message || String(error), '!');
+    var body = div('se-save-modal__body');
+    body.appendChild(saveNode('div', 'se-save-callout', '请确认本地服务正在运行，并且版本 ' + version + ' 存在。'));
+    saveModal.appendChild(body);
+    appendSaveFooter([
+      mkbtn('关闭', closeSaveModal, 'se-btn--ghost'),
+      mkbtn('重试', function () { submitReleasePayload(version); }, 'se-btn--primary'),
+    ]);
+    openSaveModal();
+  }
+  function submitReleasePayload(version) {
+    renderReleaseLoading(version);
+    fetch(apiUrl('/__prototype_release'), {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ version: version })
+    }).then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (data) {
+        if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
+        return data;
+      });
+    }).then(function (data) {
+      renderReleaseSuccess(data);
+    }).catch(function (err) {
+      renderReleaseError(err, version);
+    });
+  }
+  function releaseCurrentVersion() {
+    var version = versionSelect && versionSelect.value;
+    if (!version) {
+      renderReleaseNoVersion();
+      return;
+    }
+    renderReleaseConfirm(version);
   }
 
   // ───────────────── events ─────────────────
@@ -655,16 +1141,19 @@
 
   function init() {
     mainEl = document.querySelector('.app-frame__main');
+    clearLegacyDraftStorage();
     readCSS();
     applyStored();
     applyTokens();
     injectStyle();
     buildBar();
+    buildVersionControl();
     document.addEventListener('click', onClick, true);
     document.addEventListener('mousemove', onMove, true);
     document.addEventListener('keydown', function (e) {
       if (e.key !== 'Escape') return;
-      if (cpick && cpick.style.display !== 'none') closePicker();
+      if (saveOverlay && saveOverlay.getAttribute('data-open') === 'true') closeSaveModal();
+      else if (cpick && cpick.style.display !== 'none') closePicker();
       else if (tpanel && tpanel.style.display !== 'none') closeTokenPanel();
       else if (editing) deselect();
     });

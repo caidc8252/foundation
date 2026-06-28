@@ -34,6 +34,11 @@ There is **no fifth source**. Everything an artifact renders comes from here:
 and **[`dist/catalog.json`](dist/catalog.json)** (machine). If a token name, a
 class, or a pattern is not in the catalog, **it is not part of this system.**
 
+When consuming a generated `release/` package, those generated `dist/*` files are
+flattened at the release root: `tokens.inline.css`, `tokens.json`, `catalog.md`,
+`catalog.json`, and `composites.css`. The release package does **not** contain a
+`dist/` directory.
+
 **Icons** are the one other piece of raw material — inline **Lucide** SVGs, like
 token *values* rather than a component layer. They have no class; you obtain one
 by name and paste its exact `<svg>`. The set is full Lucide (pinned in
