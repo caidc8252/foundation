@@ -431,6 +431,21 @@
         "structure": ["control", "label text"],
         "notes": ["Use switch for immediate setting changes; use checkbox/radio for form submission choices."]
       }
+    },
+    "list-row": {
+      "intent": "Non-tabular interactive list row: a leading visual, a title with inline badges over an optional sub, and a trailing control / actions / value.",
+      "contract": "composites/list-row.md",
+      "usedByPatterns": [],
+      "classes": ["list-rows", "list-row", "list-row__icon", "list-row__main", "list-row__title", "list-row__sub", "list-row__trailing", "list-row__value", "list-row__actions", "list-row__chevron", "badge", "avatar", "switch", "btn"],
+      "requiredSlots": ["title"],
+      "optionalSlots": ["icon", "avatar", "sub", "badges", "control", "value", "actions", "chevron"],
+      "variants": ["interactive", "selected", "disabled"],
+      "states": ["hover", "active", "focus", "selected", "disabled", "empty", "loading"],
+      "artifactRecipe": {
+        "root": "div.list-rows > div.list-row",
+        "structure": ["leading: .list-row__icon | .avatar (optional)", ".list-row__main > .list-row__title (+ inline .badge) + .list-row__sub", "trailing: .list-row__trailing > .switch | .btn | .list-row__value + .list-row__chevron"],
+        "notes": ["Hairline-separated inside a section-card / card; the last row drops the rule (do not box each row).", "Pick one primary trailing affordance per row: a switch, an action button, or a value+chevron.", "--interactive makes the whole row a click target; wrap a real button/anchor and show a chevron — cursor-pointer alone is not interactive.", "Use feed-list for events, timeline for dated sequences, kv-grid for attribute pairs, data-table for columns; list-row is the items-with-controls list none of those cover.", "Empty renders an empty-state, never a blank frame."]
+      }
     }
   }
 }

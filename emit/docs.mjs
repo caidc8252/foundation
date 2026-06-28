@@ -38,6 +38,15 @@ function mdToHtml(md){
   while (i < L.length){
     const line = L[i];
     if (!line.trim()) { i++; continue; }
+    // fenced code block (``` … ```) — preserves the ASCII anatomy diagrams verbatim
+    if (line.trim().startsWith("```")) {
+      const buf = [];
+      i++;
+      while (i < L.length && !L[i].trim().startsWith("```")) { buf.push(L[i]); i++; }
+      i++;
+      out.push("<pre class=\"md-pre\"><code>" + esc(buf.join("\n")) + "</code></pre>");
+      continue;
+    }
     // GFM pipe table (header row, then a |---|---| separator)
     if (line.trim().startsWith("|") && i + 1 < L.length && /-/.test(L[i + 1]) && /^[\s|:-]+$/.test(L[i + 1].trim())){
       const rows = [];
@@ -66,6 +75,7 @@ function mdToHtml(md){
     }
     const buf = [];
     while (i < L.length && L[i].trim() && !L[i].trim().startsWith("|") && !L[i].trim().startsWith(">") &&
+           !L[i].trim().startsWith("```") &&
            !/^\s*[-*]\s+/.test(L[i]) && !/^#{1,6}\s/.test(L[i])) { buf.push(L[i]); i++; }
     out.push("<p class=\"md-p\">" + inline(buf.join(" ")) + "</p>");
   }
@@ -83,6 +93,278 @@ const contracts = { ...loadContracts("primitives"), ...loadContracts("composites
 
 // Build stamp — lets you confirm the browser isn't showing a cached page.
 const buildTime = new Date().toISOString().slice(0, 16).replace("T", " ") + " UTC";
+
+// Example — a Customers management screen REBUILT on foundation (tokens +
+// primitives + composites), modeled on carbon-admin's customer list. Written
+// self-contained to docs/example-customer.html and embedded via iframe.
+const CUST_ROWS = [
+  ["NT", "Northwind Trading", "Seattle, WA", "success", "Active", "2024-03-12", ["ISV", "Merchant"]],
+  ["GC", "Globex Corporation", "Austin, TX", "success", "Active", "2024-05-02", ["ISO"]],
+  ["IL", "Initech LLC", "San Jose, CA", "warning", "Onboarding", "2026-06-01", []],
+  ["UR", "Umbrella Retail", "Raccoon City, IN", "info", "In pilot", "2025-11-20", ["Merchant"]],
+  ["AF", "Acme Foods", "Chicago, IL", "error", "Suspended", "2023-09-18", ["ISV"]],
+  ["SG", "Soylent Group", "Portland, OR", "neutral", "Expired", "2022-01-30", ["ISO"]],
+  ["SI", "Stark Industries", "New York, NY", "success", "Active", "2024-08-08", ["ISV", "ISO", "Merchant"]],
+];
+const ICON_X = "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M18 6 6 18M6 6l12 12\"/></svg>";
+const ICON_CHEVR = "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"m9 18 6-6-6-6\"/></svg>";
+const custRowsHtml = CUST_ROWS.map(([ini, name, city, tone, status, date, tags]) =>
+  "<tr class=\"is-clickable\" onclick=\"location.href='example-customer-detail.html'\">" +
+    "<td><div class=\"cust\"><span class=\"initials-tile initials-tile--sm\">" + ini + "</span>" +
+      "<div><div class=\"cust__name\">" + name + "</div><div class=\"cust__sub\">" + city + "</div></div></div></td>" +
+    "<td><span class=\"badge badge--" + tone + "\"><span class=\"badge__dot\"></span> " + status + "</span></td>" +
+    "<td class=\"cell-num\">" + date + "</td>" +
+    "<td>" + (tags.length
+      ? "<div class=\"tag-row\">" + tags.map(t => "<span class=\"badge badge--neutral\">" + t + "</span>").join("") + "</div>"
+      : "<span style=\"color:var(--color-content-tertiary)\">—</span>") + "</td>" +
+    "<td class=\"cell-right\"><span class=\"chev\">" + ICON_CHEVR + "</span></td>" +
+  "</tr>"
+).join("");
+
+const exampleHtml = `<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Example · Customers — built on foundation</title>
+<style>
+${inlineCss}
+${primitivesCss}
+${compositesCss}
+/* page-local composition — not new design vocabulary */
+html, body { margin: 0; }
+.cust { display: flex; align-items: center; gap: var(--space-3); }
+.cust__name { font-size: var(--text-sm); font-weight: 500; color: var(--color-content-primary); }
+.cust__sub { font-size: var(--text-2xs); color: var(--color-content-tertiary); }
+.tag-row { display: flex; flex-wrap: wrap; gap: var(--space-1); }
+.chev { display: inline-flex; color: var(--color-content-tertiary); }
+.chev svg { width: 16px; height: 16px; }
+</style>
+</head>
+<body>
+<div class="app-frame">
+  <aside class="app-frame__sidebar">
+    <div class="app-frame__brand">◆ TOMS</div>
+    <nav class="app-frame__nav">
+      <div class="app-frame__nav-label">Management</div>
+      <a class="app-frame__nav-item app-frame__nav-item--active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 5.5a3.5 3.5 0 0 1 0 6.9"/></svg> Customers</a>
+      <a class="app-frame__nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18M3 12h18M3 17h18"/></svg> Orders</a>
+      <a class="app-frame__nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M10 18h4"/></svg> Devices</a>
+      <a class="app-frame__nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg> Apps</a>
+    </nav>
+  </aside>
+  <div class="app-frame__col">
+    <div class="app-frame__header"><strong style="font-size:var(--text-sm)">Customer Admin</strong><span class="app-frame__spacer"></span><div class="app-frame__avatar">LC</div></div>
+    <div class="app-frame__main">
+      <div class="page-header">
+        <div class="page-header__bar">
+          <div class="page-header__titles">
+            <div class="page-header__heading"><span class="page-header__title">Customers</span><span class="page-header__count">1,248</span></div>
+            <div class="page-header__description">Maintain customer companies, their contracts and operators.</div>
+          </div>
+          <div class="page-header__actions">
+            <button class="btn btn--secondary">Import</button>
+            <button class="btn btn--primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> New customer</button>
+          </div>
+        </div>
+      </div>
+      <div class="page-body">
+        <div class="condition-band">
+          <div class="condition-band__toolbar">
+            <div class="search-input"><span class="search-input__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span><input class="input" placeholder="Search by name, address, license"></div>
+            <select class="select"><option>All contracts</option><option>ISV</option><option>ISO</option><option>Merchant</option></select>
+            <select class="select"><option>All statuses</option><option>With active contract</option><option>In pilot</option><option>With expired contract</option><option>With suspended contract</option><option>Onboarding</option><option>All terminated</option></select>
+            <button class="btn btn--secondary">Search</button>
+          </div>
+          <div class="applied-filters">
+            <span class="applied-filters__label">Filters:</span>
+            <span class="filter-chip">Status: With active contract <button class="filter-chip__remove">${ICON_X}</button></span>
+            <span class="filter-chip">Contract: ISV <button class="filter-chip__remove">${ICON_X}</button></span>
+            <button class="btn btn--link btn--sm">Clear all</button>
+          </div>
+        </div>
+        <div class="table-frame table-frame--flush">
+          <div class="summary-bar">
+            <div class="summary-bar__count"><strong>1,248</strong> customers</div>
+            <div class="summary-bar__actions"><button class="btn btn--ghost btn--sm">Export</button></div>
+          </div>
+          <div class="table-scroll">
+            <table class="data-table">
+              <thead><tr>
+                <th style="width:34%">Customer</th>
+                <th style="width:14%">Status</th>
+                <th style="width:16%"><button class="th-sort">Registered <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button></th>
+                <th>Contracts</th>
+                <th style="width:48px"></th>
+              </tr></thead>
+              <tbody>${custRowsHtml}</tbody>
+            </table>
+          </div>
+          <div class="pagination">
+            <div class="pagination__info">
+              <div class="pagination__rows">Rows <select class="select select--sm"><option>25</option><option>50</option><option>100</option></select></div>
+              <span class="pagination__summary">Showing <strong>1–25</strong> of <strong>1,248</strong></span>
+            </div>
+            <div class="pagination__pages">
+              <button class="pagination__page" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg> Prev</button>
+              <span class="pagination__current">1 / 50</span>
+              <button class="pagination__page">Next <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>`;
+
+// Customer DETAIL page — the screen a list row navigates to (detail-page pattern:
+// detail-header band + line tabs, body = kv-grid overview + section-cards + feed).
+const exampleDetailHtml = `<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Example · Customer detail — built on foundation</title>
+<style>
+${inlineCss}
+${primitivesCss}
+${compositesCss}
+html, body { margin: 0; }
+.mono { font-family: var(--font-mono); }
+.ov-grid { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: var(--space-4); align-items: start; }
+@media (max-width: 860px) { .ov-grid { grid-template-columns: 1fr; } }
+.rail { display: flex; flex-direction: column; gap: var(--space-3); }
+.tab-panel { display: flex; flex-direction: column; gap: var(--space-6); }
+.tab-panel[hidden] { display: none; }
+</style>
+</head>
+<body>
+<div class="app-frame">
+  <aside class="app-frame__sidebar">
+    <div class="app-frame__brand">◆ TOMS</div>
+    <nav class="app-frame__nav">
+      <div class="app-frame__nav-label">Management</div>
+      <a class="app-frame__nav-item app-frame__nav-item--active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 5.5a3.5 3.5 0 0 1 0 6.9"/></svg> Customers</a>
+      <a class="app-frame__nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18M3 12h18M3 17h18"/></svg> Orders</a>
+      <a class="app-frame__nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M10 18h4"/></svg> Devices</a>
+      <a class="app-frame__nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg> Apps</a>
+    </nav>
+  </aside>
+  <div class="app-frame__col">
+    <div class="app-frame__header"><strong style="font-size:var(--text-sm)">Customer Admin</strong><span class="app-frame__spacer"></span><div class="app-frame__avatar">LC</div></div>
+    <div class="app-frame__main">
+      <div class="detail-header">
+        <div class="detail-header__bar">
+          <button class="btn btn--ghost btn--icon detail-header__back" aria-label="Back" onclick="location.href='example-customer.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></button>
+          <div class="detail-header__logo">N</div>
+          <div class="detail-header__main">
+            <div class="detail-header__title"><span class="detail-header__name">Northwind Trading</span><span class="badge badge--success"><span class="badge__dot"></span> Active</span></div>
+            <div class="detail-header__meta"><span class="mono">cust_8f2a91</span><span>Seattle, WA</span><span>Registered 2024-03-12</span><span>12 operators</span></div>
+          </div>
+          <div class="detail-header__actions">
+            <button class="btn btn--secondary btn--sm">Edit</button>
+            <button class="btn btn--ghost btn--icon btn--sm" aria-label="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+          </div>
+        </div>
+        <div class="detail-header__tabs">
+          <div class="tabs__list tabs__list--line">
+            <button class="tabs__trigger tabs__trigger--active" data-tab="overview">Overview</button>
+            <button class="tabs__trigger" data-tab="contracts">Contracts</button>
+            <button class="tabs__trigger" data-tab="operators">Operators</button>
+            <button class="tabs__trigger" data-tab="activity">Activity</button>
+          </div>
+        </div>
+      </div>
+      <div class="page-body">
+        <div class="tab-panel" data-panel="overview">
+        <div class="ov-grid">
+          <div class="card section-card" data-open="true">
+            <button class="card__header section-card__toggle"><strong>Customer details</strong><span class="section-card__chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span></button>
+            <div class="card__content">
+              <dl class="kv-grid">
+                <div class="kv-grid__row"><dt>Legal name</dt><dd>Northwind Trading Co.</dd></div>
+                <div class="kv-grid__row"><dt>Customer ID</dt><dd class="mono">cust_8f2a91</dd></div>
+                <div class="kv-grid__row"><dt>Status</dt><dd><span class="badge badge--success"><span class="badge__dot"></span> Active</span></dd></div>
+                <div class="kv-grid__row"><dt>Region</dt><dd>Seattle, WA · US-West</dd></div>
+                <div class="kv-grid__row"><dt>Registered</dt><dd class="mono">2024-03-12</dd></div>
+                <div class="kv-grid__row"><dt>License</dt><dd class="mono">LIC-4821-NW</dd></div>
+                <div class="kv-grid__row"><dt>Primary contact</dt><dd>a.lee@northwind.co</dd></div>
+                <div class="kv-grid__row kv-grid__row--full"><dt>Address</dt><dd>1200 Pike St, Suite 400, Seattle, WA 98101, United States</dd></div>
+              </dl>
+            </div>
+          </div>
+          <div class="rail">
+            <div class="stat-card"><div class="stat-card__head"><span class="stat-card__label">Live contracts</span></div><div class="stat-card__value">2</div></div>
+            <div class="stat-card"><div class="stat-card__head"><span class="stat-card__label">Operators</span></div><div class="stat-card__value">12</div></div>
+            <div class="stat-card"><div class="stat-card__head"><span class="stat-card__label">Open tickets</span></div><div class="stat-card__value stat-card__value--warning">1</div></div>
+          </div>
+        </div>
+        </div>
+        <div class="tab-panel" data-panel="contracts" hidden>
+        <div class="card section-card" data-open="true">
+          <button class="card__header section-card__toggle"><strong>Live contracts</strong><span class="section-card__chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span></button>
+          <div class="card__content card__content--flush">
+            <div class="table-scroll"><table class="data-table data-table--compact">
+              <thead><tr><th>Type</th><th>Status</th><th>Effective from</th><th>Effective to</th></tr></thead>
+              <tbody>
+                <tr><td><span class="badge badge--neutral">ISV</span></td><td><span class="badge badge--success"><span class="badge__dot"></span> Active</span></td><td class="cell-num">2024-03-12</td><td class="cell-num">2026-03-11</td></tr>
+                <tr><td><span class="badge badge--neutral">Merchant</span></td><td><span class="badge badge--success"><span class="badge__dot"></span> Active</span></td><td class="cell-num">2024-06-01</td><td class="cell-num">2025-12-31</td></tr>
+              </tbody>
+            </table></div>
+          </div>
+        </div>
+        </div>
+        <div class="tab-panel" data-panel="operators" hidden>
+          <div class="card section-card" data-open="true">
+            <button class="card__header section-card__toggle"><strong>Operators</strong><span class="section-card__chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span></button>
+            <div class="card__content card__content--flush">
+              <div class="table-scroll"><table class="data-table data-table--compact">
+                <thead><tr><th>Operator</th><th>Email</th><th>Role</th><th>Status</th></tr></thead>
+                <tbody>
+                  <tr><td>Alice Lee</td><td class="cell-num">a.lee@northwind.co</td><td><span class="badge badge--neutral">Admin</span></td><td><span class="badge badge--success"><span class="badge__dot"></span> Active</span></td></tr>
+                  <tr><td>Marco Ortiz</td><td class="cell-num">m.ortiz@northwind.co</td><td><span class="badge badge--neutral">Operator</span></td><td><span class="badge badge--success"><span class="badge__dot"></span> Active</span></td></tr>
+                  <tr><td>Kira Shaw</td><td class="cell-num">k.shaw@northwind.co</td><td><span class="badge badge--neutral">Operator</span></td><td><span class="badge badge--warning"><span class="badge__dot"></span> Invited</span></td></tr>
+                </tbody>
+              </table></div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-panel" data-panel="activity" hidden>
+        <div class="card section-card" data-open="true">
+          <button class="card__header section-card__toggle"><strong>Recent activity</strong><span class="section-card__chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span></button>
+          <div class="card__content card__content--flush">
+            <div class="feed-list">
+              <div class="feed-item">
+                <div class="feed-item__icon feed-item__icon--success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></div>
+                <div class="feed-item__main">
+                  <div class="feed-item__head">Contract · ISV</div>
+                  <div class="feed-item__title">ISV contract renewed</div>
+                  <div class="feed-item__body">Extended to 2026-03-11 by m.ortiz.</div>
+                </div>
+                <div class="feed-item__time">2h ago</div>
+              </div>
+              <div class="feed-item feed-item--read">
+                <div class="feed-item__icon feed-item__icon--info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg></div>
+                <div class="feed-item__main">
+                  <div class="feed-item__head">Operator · invited</div>
+                  <div class="feed-item__title">Invitation sent to k.shaw@northwind.co</div>
+                  <div class="feed-item__body">Role: Operator · expires in 7 days.</div>
+                </div>
+                <div class="feed-item__time">1d ago</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+      <script>(function(){var tabs=document.querySelectorAll(".tabs__trigger[data-tab]");var panels=document.querySelectorAll(".tab-panel[data-panel]");tabs.forEach(function(t){t.addEventListener("click",function(){tabs.forEach(function(x){x.classList.remove("tabs__trigger--active");});t.classList.add("tabs__trigger--active");var name=t.getAttribute("data-tab");panels.forEach(function(p){p.hidden=p.getAttribute("data-panel")!==name;});});});})();</script>
+    </div>
+  </div>
+</div>
+</body>
+</html>`;
 
 const page = `<!doctype html>
 <html lang="zh-CN" data-theme="light">
@@ -137,7 +419,7 @@ code, .mono { font-family: var(--font-mono); }
 .subnav { display: flex; flex-direction: column; margin: 2px 0 var(--space-2) var(--space-2); padding-left: var(--space-2); border-left: 1px solid var(--color-line-default); }
 .nav .subnav a { font-size: var(--text-xs); color: var(--color-content-tertiary); padding: 3px var(--space-2); }
 .nav .subnav a:hover { color: var(--color-content-primary); }
-.main { padding: var(--space-12) var(--space-12); max-width: 1100px; }
+.main { padding: var(--space-12) var(--space-12); max-width: 1320px; margin-inline: auto; }
 
 /* header bar */
 .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-10); gap: var(--space-4); }
@@ -253,11 +535,11 @@ h3.group { font-size: var(--text-sm); letter-spacing: 0.02em;
   cursor: pointer;
 }
 #cx-inspector {
-  position: fixed; z-index: 1000; max-width: 340px;
+  position: fixed; z-index: 1000; max-width: 460px;
   background: var(--color-surface-2); color: var(--color-content-primary);
   border: 1px solid var(--color-line-strong); border-radius: var(--radius-lg);
   box-shadow: var(--shadow-4); overflow: hidden;
-  font-family: var(--font-mono); font-size: var(--text-2xs);
+  font-family: var(--font-mono); font-size: var(--text-sm);
 }
 #cx-inspector[hidden] { display: none; }
 .cx-inspector__head {
@@ -289,6 +571,20 @@ h3.group { font-size: var(--text-sm); letter-spacing: 0.02em;
 #anno-launch:hover { background: var(--color-surface-hover); }
 #anno-launch .n { font-family: var(--font-mono); color: var(--color-content-tertiary); }
 
+/* inspect-mode toggle — same fixed pill as #anno-launch, docked one row above it */
+#inspectToggle {
+  position: fixed; right: var(--space-5);
+  bottom: calc(var(--space-5) + var(--spacing-control-lg) + var(--space-2)); z-index: 950;
+  display: flex; align-items: center; gap: var(--space-2);
+  height: var(--spacing-control-lg); padding: 0 var(--spacing-cx-lg);
+  border: 1px solid var(--color-line-strong); border-radius: var(--radius-full);
+  background: var(--color-surface-2); color: var(--color-content-primary);
+  font-family: var(--font-sans); font-size: var(--text-sm); cursor: pointer;
+  box-shadow: var(--shadow-3); white-space: nowrap;
+}
+#inspectToggle:hover { background: var(--color-surface-hover); }
+#inspectToggle[aria-pressed="false"] { color: var(--color-content-tertiary); }
+
 #anno-layer { position: fixed; inset: 0; pointer-events: none; z-index: 949; }
 .anno-pin {
   position: fixed; transform: translate(-50%, -50%); pointer-events: auto;
@@ -306,7 +602,7 @@ body.anno-on main { cursor: crosshair; }
 .anno-flash { outline: 2px solid transparent; outline-offset: 2px; animation: anno-flash 1.2s var(--ease-standard); }
 
 #anno-panel {
-  position: fixed; right: var(--space-5); bottom: calc(var(--space-5) + var(--spacing-control-lg) + var(--space-2));
+  position: fixed; right: var(--space-5); bottom: calc(var(--space-5) + 2 * var(--spacing-control-lg) + 2 * var(--space-2));
   z-index: 951; width: 340px; max-width: calc(100vw - 2 * var(--space-5)); max-height: 64vh;
   display: flex; flex-direction: column; overflow: hidden;
   background: var(--color-surface-2); border: 1px solid var(--color-line-strong);
@@ -367,6 +663,19 @@ h6.md-h { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 
 .md-table td { color: var(--color-content-secondary); }
 .contract a { color: var(--color-primary-500); }
 
+/* fenced code blocks (ASCII anatomy diagrams) */
+.md-pre { margin: var(--space-3) 0; padding: var(--space-3) var(--space-4); background: var(--color-surface-3); border: 1px solid var(--color-line-subtle); border-radius: var(--radius-md); overflow-x: auto; }
+.md-pre code { font-family: var(--font-mono); font-size: var(--text-2xs); line-height: 1.5; color: var(--color-content-secondary); white-space: pre; background: none; padding: 0; }
+/* pattern (L3) card — renders the full archetype contract */
+.pattern { border: 1px solid var(--color-line-default); border-radius: var(--radius-lg); background: var(--color-surface-2); padding: var(--space-4) var(--space-6) var(--space-6); margin-bottom: var(--space-5); }
+.pattern .md-h:first-child { margin-top: var(--space-2); }
+.pattern a { color: var(--color-primary-500); }
+/* live example frame (the assembled page prototype, isolated in an iframe) */
+.pattern__bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-top: var(--space-4); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-content-tertiary); }
+.pattern__bar a { color: var(--color-primary-500); text-decoration: none; }
+.pattern__bar a:hover { text-decoration: underline; }
+.pattern-frame { display: block; width: 100%; height: 580px; margin-top: var(--space-2); margin-bottom: var(--space-3); border: 1px solid var(--color-line-default); border-radius: var(--radius-lg); background: var(--color-surface-1); }
+
 @media (max-width: 820px) {
   .shell { grid-template-columns: 1fr; }
   .nav { position: static; height: auto; }
@@ -392,6 +701,8 @@ h6.md-h { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 
     <div class="subnav" id="subnav-primitives"></div>
     <a href="#composites" class="nav-parent">组件 Composites</a>
     <div class="subnav" id="subnav-composites"></div>
+    <a href="#example" class="nav-parent">示例 Example</a>
+    <div class="subnav" id="subnav-example"></div>
   </aside>
   <main class="main">
     <div class="topbar">
@@ -1319,9 +1630,56 @@ h6.md-h { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 
         </div>
       </div>
 
+      <h3 class="group">列表行 · list-row</h3>
+      <div class="cx-demo">
+        <div class="cx-demo__head"><div class="cx-demo__name">ListRow <code>.list-rows / .list-row / __icon / __title / __sub / __trailing / --interactive</code></div><div class="cx-demo__desc">非表格的设置 / 账户 / 权限 / 实体列表行：前导图标或头像 | 主体（标题含内联徽章 + 副行）| 尾部（开关 / 操作 / 值+箭头）。细线分隔，整行可 --interactive。</div></div>
+        <div class="cx-demo__body" style="padding:0">
+          <div class="table-frame"><div class="list-rows">
+            <div class="list-row">
+              <div class="list-row__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+              <div class="list-row__main">
+                <div class="list-row__title">两步验证 <span class="badge badge--success">已开启</span></div>
+                <div class="list-row__sub">登录时额外输入一次性验证码。</div>
+              </div>
+              <div class="list-row__trailing"><span class="switch" aria-checked="true"><span class="switch__thumb"></span></span></div>
+            </div>
+            <div class="list-row">
+              <span class="avatar avatar--sm"><span class="avatar__fallback">MO</span></span>
+              <div class="list-row__main">
+                <div class="list-row__title">m.ortiz <span class="badge badge--neutral">Owner</span></div>
+                <div class="list-row__sub">m.ortiz@acme.co · 2 小时前活跃</div>
+              </div>
+              <div class="list-row__trailing"><div class="list-row__actions"><button class="btn btn--secondary btn--sm">管理</button></div></div>
+            </div>
+            <div class="list-row list-row--interactive">
+              <div class="list-row__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div>
+              <div class="list-row__main">
+                <div class="list-row__title">PILOT 合同 <span class="badge badge--warning">7 天后到期</span></div>
+                <div class="list-row__sub">3 / 5 字段已填写</div>
+              </div>
+              <div class="list-row__trailing"><span class="list-row__value">查看</span><span class="list-row__chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+            </div>
+          </div></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════ Example (real-product reference screen, embedded live) ═══════════ -->
+    <section id="example">
+      <h2>示例 Example</h2>
+      <p class="lede">用 foundation 的 primitives + composites <strong>重新实现</strong>的客户管理页（参照 carbon-admin 的 customer 列表，按 list-page 原型组装）——非外链，完全由本设计系统的积木拼装。点「↗ 新标签打开」可全屏查看。</p>
+      <h3 class="group">客户管理 · customer</h3>
+      <div class="pattern">
+        <div class="pattern__bar"><span>foundation · 客户管理（list-page 原型）</span><a href="example-customer.html" target="_blank" rel="noopener">↗ 新标签打开</a></div>
+        <iframe class="pattern-frame" src="example-customer.html" loading="lazy" title="foundation · 客户管理" style="height:680px"></iframe>
+      </div>
     </section>
   </main>
 </div>
+<!-- fixed inspect-mode toggle, docked above the 批注 launcher (outside <main> so
+     annotation mode never treats it as a target) -->
+<button id="inspectToggle" aria-pressed="true" title="开关元素检视高亮框">◉ 检视·开</button>
 
 <script>
 const TOKENS = ${JSON.stringify(tokens)};
@@ -1511,12 +1869,18 @@ function buildSubnav(sectionId, containerId){
 }
 buildSubnav("primitives", "subnav-primitives");
 buildSubnav("composites", "subnav-composites");
+buildSubnav("example", "subnav-example");
 
 // ── Click-to-inspect ──────────────────────────────────────────────────────
 // Click any element inside a demo to float a popover of its RESOLVED computed
 // values (concrete px / oklch, theme-aware) anchored to that element. The
 // values are read live on click, so they always reflect the current theme.
 const TRANSPARENT = ["rgba(0, 0, 0, 0)", "transparent"];
+
+// Inspect-mode master switch (topbar toggle). Gates BOTH the hover highlight
+// box and the click-to-read popover, so they stay coherent. Default on, which
+// preserves the prior always-on behavior.
+let inspectOn = true;
 
 // ── Resolved value → token name ──
 // getComputedStyle only yields resolved oklch()/shadow strings, never the
@@ -1622,6 +1986,7 @@ function closeInspector(){ inspector.hidden = true; inspector.__target = null; }
 
 document.addEventListener("click", e => {
   if (document.body.classList.contains("anno-on")) return;  // annotation mode owns clicks
+  if (!inspectOn) return;                                   // inspect mode off
   if (e.target.closest(".cx-inspector__close")) { closeInspector(); return; }
   if (e.target.closest("#cx-inspector")) return;            // clicks inside keep it open
   const body = e.target.closest(".cx-demo__body");
@@ -1646,10 +2011,21 @@ function setHovered(el){
 document.querySelectorAll(".cx-demo__body").forEach(body => {
   body.addEventListener("mouseover", e => {
     if (document.body.classList.contains("anno-on")) { setHovered(null); return; }
+    if (!inspectOn) { setHovered(null); return; }
     const el = e.target.closest("[class]");
     setHovered(el && el !== body && !el.classList.contains("cx-demo__body") ? el : null);
   });
   body.addEventListener("mouseleave", () => setHovered(null));
+});
+
+// Topbar toggle for inspect mode: flips the flag, updates the label, and clears
+// any live highlight / open readout when switching off.
+const inspectToggle = document.getElementById("inspectToggle");
+inspectToggle.addEventListener("click", () => {
+  inspectOn = !inspectOn;
+  inspectToggle.setAttribute("aria-pressed", String(inspectOn));
+  inspectToggle.textContent = inspectOn ? "◉ 检视·开" : "◯ 检视·关";
+  if (!inspectOn) { setHovered(null); closeInspector(); }
 });
 
 // ── Per-component CONTRACT (.md) panel ────────────────────────────────────
@@ -1982,4 +2358,6 @@ function pkgVersion(){
 
 mkdirSync(resolve(root, "docs"), { recursive: true });
 writeFileSync(resolve(root, "docs/index.html"), page);
-console.log("✓ wrote docs/index.html");
+writeFileSync(resolve(root, "docs/example-customer.html"), exampleHtml);
+writeFileSync(resolve(root, "docs/example-customer-detail.html"), exampleDetailHtml);
+console.log("✓ wrote docs/index.html + example-customer(.detail).html");
