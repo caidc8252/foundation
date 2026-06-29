@@ -190,7 +190,7 @@ list below restates the optional slots with the extra detail each needs.
   primitive (`.sheet` / `.sheet--right` / `.sheet__header` / `.sheet__footer`);
   the [`drawer`](../primitives/drawer.md) primitive (`.drawer` / `.drawer--right`)
   is an equivalent alternative — both are governed. The copyable example
-  (`list-page-advanced-filter.html`) uses `.drawer--right` for its panel.
+  (`list-page-advanced-filter.html`) uses `.sheet--right` for its panel.
 - **`queue`** — a row of **status-segment tabs** above the list (All / Pending /
   Approved …) whose selection drives the applied filter. These segment tabs are
   list-level navigation — they re-scope the collection — and are distinct from a

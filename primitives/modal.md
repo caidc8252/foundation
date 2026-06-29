@@ -40,8 +40,10 @@ Width presets only — height is content-driven and capped (see States · overfl
 │                                                       │
 │   ┌ modal (panel) ────────────────────────────────┐  │
 │   │ ┌ header ────────────────────────────────────┐ │  │
-│   │ │ title              [×] close (optional)    │ │  │
-│   │ │ description (optional)                     │ │  │
+│   │ │ ┌ heading ────────────────────────────┐ [×] │ │  │
+│   │ │ │ title                                │    │ │  │
+│   │ │ │ description (optional)               │    │ │  │
+│   │ │ └──────────────────────────────────────┘    │ │  │
 │   │ └────────────────────────────────────────────┘ │  │
 │   │ ┌ body (scrolls) ────────────────────────────┐ │  │
 │   │ │ children …                                 │ │  │
@@ -54,7 +56,13 @@ Width presets only — height is content-driven and capped (see States · overfl
 ```
 
 - **panel** — `surface-2` on `content-primary`, `radius-xl`, 1px `line-subtle` border, `shadow-1`, clipped (`overflow: hidden`) so slot edges meet the rounded corner.
-- **header** — present only if there's a title, description, or close button. A row: title/description stack on the left, close button pinned right, separated by a bottom `line-subtle` hairline.
+- **header** — present only if there's a title, description, or close button. A row:
+  `.modal__heading` (grouping title + description) on the left, close button pinned
+  right, separated by a bottom `line-subtle` hairline.
+- **heading** (`modal__heading`) — an intermediate wrapper inside `__header` that
+  groups `__title` and `__description` into a vertical stack. This keeps the close
+  button vertically centered with the text block when only a title is present, and
+  lets the title+description pair flow naturally when both exist.
 - **title** — `text-md` / 600 / `content-primary`, tight leading.
 - **description** — `text-xs` / `content-secondary`, normal leading.
 - **close** — a 24px `radius-md` `content-tertiary` icon button (×); hover recipe above. Behaves like a `ghost` button but is part of the modal shell, not a `.btn`.
@@ -79,4 +87,4 @@ Width presets only — height is content-driven and capped (see States · overfl
 ## Implementations
 
 - **Next / @cloud/ui** — `import { Modal } from "@cloud/ui"`. base-ui `Dialog` under the hood; props `open` `onClose` `title` `description` `footer` `size` `showCloseButton` `closeOnOverlay` `closeOnEscape` `className`. Prop/API details: the `ui` skill. For a confirm that forbids casual dismissal, reach for `AlertDialog`, not a hardened `Modal`.
-- **Artifact (self-contained HTML)** — `.modal-overlay` wrapping `.modal` (+ `.modal--<size>`), with `.modal__header` › `.modal__title` + `.modal__description` + `.modal__close`, then `.modal__body`, then `.modal__footer` (holds `.btn`s). In `../primitives/primitives.css`, on top of the inlined `dist/tokens.inline.css`. Same token recipe, same names. The skin renders the resting OPEN dialog; the consumer drives visibility.
+- **Artifact (self-contained HTML)** — `.modal-overlay` wrapping `.modal` (+ `.modal--<size>`), with `.modal__header` › `.modal__heading` (grouping `.modal__title` + `.modal__description`) + `.modal__close`, then `.modal__body`, then `.modal__footer` (holds `.btn`s). In `../primitives/primitives.css`, on top of the inlined `dist/tokens.inline.css`. Same token recipe, same names. The skin renders the resting OPEN dialog; the consumer drives visibility.

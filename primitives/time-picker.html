@@ -63,6 +63,13 @@
       display: none;
       appearance: none;
     }
+    /* .date-trigger__clear is position:absolute by default; override to work
+       inside the input-group addon's flex layout. */
+    .input-group__addon .date-trigger__clear {
+      position: static;
+      transform: none;
+      margin-top: 0;
+    }
   </style>
 </head>
 <body>
@@ -87,7 +94,7 @@
             </div>
             <input class="input input--md input-group__control" type="time" id="tp-1" value="09:30">
             <div class="input-group__addon input-group__addon--inline-end">
-              <button class="btn btn--ghost btn--icon-xs" type="button" aria-label="Clear" tabindex="-1">
+              <button class="date-trigger__clear" type="button" aria-label="Clear" tabindex="-1">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
               </button>
             </div>
@@ -101,7 +108,7 @@
             </div>
             <input class="input input--md input-group__control" type="time" id="tp-2" value="17:45">
             <div class="input-group__addon input-group__addon--inline-end">
-              <button class="btn btn--ghost btn--icon-xs" type="button" aria-label="Clear" tabindex="-1">
+              <button class="date-trigger__clear" type="button" aria-label="Clear" tabindex="-1">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
               </button>
             </div>
@@ -219,7 +226,7 @@
   <script>
     (function () {
       // Clear button behavior — matches React: click clears the time value
-      document.querySelectorAll('.input-group .btn--icon-xs').forEach(function (btn) {
+      document.querySelectorAll('.input-group .date-trigger__clear').forEach(function (btn) {
         btn.addEventListener('click', function () {
           var group = btn.closest('.input-group');
           if (!group) return;

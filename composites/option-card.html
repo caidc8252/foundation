@@ -298,4 +298,41 @@
     </div>
   </section>
 
+  <!-- ============================================================
+       Interactive behavior
+       ============================================================ -->
+  <script>
+    (function () {
+      /* Radio groups — mutually exclusive selection ("default vs non-default").
+         Remove --selected from all cards in the same radiogroup, then add it
+         to the newly checked card only.                                            */
+      document.querySelectorAll('.option-card--radio .option-card__input[type="radio"]').forEach(function (radio) {
+        radio.addEventListener('change', function () {
+          var group = radio.closest('[role="radiogroup"]');
+          if (!group) return;
+          /* clear all --selected in this group */
+          group.querySelectorAll('.option-card--radio').forEach(function (card) {
+            card.classList.remove('option-card--selected');
+          });
+          /* apply --selected to the checked card (native radio already flipped :checked) */
+          if (radio.checked) {
+            var card = radio.closest('.option-card');
+            if (card) card.classList.add('option-card--selected');
+          }
+        });
+      });
+
+      /* Checkbox groups — toggle --selected on the individual card.
+         For the checkbox variant, the visual state is already driven by
+         :has(:checked) in CSS; the class is synced as a secondary hook.            */
+      document.querySelectorAll('.option-card:not(.option-card--radio) .option-card__input[type="checkbox"]').forEach(function (checkbox) {
+        checkbox.addEventListener('change', function () {
+          var card = checkbox.closest('.option-card');
+          if (!card) return;
+          card.classList.toggle('option-card--selected', checkbox.checked);
+        });
+      });
+    })();
+  </script>
+
 </body>

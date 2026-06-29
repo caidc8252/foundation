@@ -1584,6 +1584,11 @@
      separation — the tab strip docks tight to the band's bottom edge. */
   padding-inline: var(--space-6);
 }
+/* The band's own border-bottom is the hairline; suppress the tabs list's inset
+   box-shadow so there is only one line at the bottom edge. */
+.detail-header__tabs .tabs__list--line {
+  box-shadow: none;
+}
 
 /* ═══════════════════════════ Key-value grid ═══════════════════════════ */
 /* The detail-page Overview: a <dl> of stacked label→value pairs whose column

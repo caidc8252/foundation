@@ -59,11 +59,6 @@
     @media (max-width: 640px) {
       .demo-col2 { grid-template-columns: 1fr; }
     }
-    .progress-row {
-      display: flex;
-      align-items: center;
-      width: 100%;
-    }
     .indeterminate-bar {
       width: 100%;
     }
@@ -95,15 +90,23 @@
         <div class="progress__track">
           <div class="progress__indicator" style="width:0%"></div>
         </div>
+      </div>
+      <div class="progress">
         <div class="progress__track">
           <div class="progress__indicator" style="width:25%"></div>
         </div>
+      </div>
+      <div class="progress">
         <div class="progress__track">
           <div class="progress__indicator" style="width:50%"></div>
         </div>
+      </div>
+      <div class="progress">
         <div class="progress__track">
           <div class="progress__indicator" style="width:75%"></div>
         </div>
+      </div>
+      <div class="progress">
         <div class="progress__track">
           <div class="progress__indicator" style="width:100%"></div>
         </div>
@@ -121,7 +124,7 @@
       </p>
 
       <div class="progress">
-        <div class="progress-row">
+        <div style="display:flex;align-items:center;width:100%;">
           <span class="progress__label">Upload progress</span>
           <span class="progress__value">64%</span>
         </div>
@@ -131,7 +134,7 @@
       </div>
 
       <div class="progress">
-        <div class="progress-row">
+        <div style="display:flex;align-items:center;width:100%;">
           <span class="progress__label">Data processing</span>
           <span class="progress__value">42%</span>
         </div>
@@ -141,7 +144,7 @@
       </div>
 
       <div class="progress">
-        <div class="progress-row">
+        <div style="display:flex;align-items:center;width:100%;">
           <span class="progress__label">Report generation</span>
           <span class="progress__value">91%</span>
         </div>
@@ -163,7 +166,7 @@
       </p>
 
       <div class="progress">
-        <div class="progress-row">
+        <div style="display:flex;align-items:center;width:100%;">
           <span class="progress__label">Default (brand)</span>
           <span class="progress__value">72%</span>
         </div>
@@ -173,7 +176,7 @@
       </div>
 
       <div class="progress">
-        <div class="progress-row">
+        <div style="display:flex;align-items:center;width:100%;">
           <span class="progress__label">Success</span>
           <span class="progress__value">100%</span>
         </div>
@@ -183,7 +186,7 @@
       </div>
 
       <div class="progress">
-        <div class="progress-row">
+        <div style="display:flex;align-items:center;width:100%;">
           <span class="progress__label">Warning</span>
           <span class="progress__value">78%</span>
         </div>
@@ -193,7 +196,7 @@
       </div>
 
       <div class="progress">
-        <div class="progress-row">
+        <div style="display:flex;align-items:center;width:100%;">
           <span class="progress__label">Error</span>
           <span class="progress__value">34%</span>
         </div>
@@ -203,7 +206,7 @@
       </div>
 
       <div class="progress">
-        <div class="progress-row">
+        <div style="display:flex;align-items:center;width:100%;">
           <span class="progress__label">Info</span>
           <span class="progress__value">50%</span>
         </div>

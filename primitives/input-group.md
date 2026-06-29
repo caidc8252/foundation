@@ -35,6 +35,20 @@ Input Group is not a variant family — it is a container plus four addon-shaped
 
 A button or `kbd` placed in an inline addon pulls a hair toward the edge (negative margin) so its visual box hugs the field border instead of floating with the addon's own padding.
 
+### `--block` modifier
+
+When the group contains a `block-start` or `block-end` addon, add `.input-group--block` on the container to switch it from a single-line row to a column layout:
+
+```css
+.input-group--block { height: auto; flex-direction: column; }
+```
+
+- **No `--block`** → the group is a fixed-height row (`control-md`, 36px) — for inline addons only.
+- **With `--block`** → `height: auto` + `flex-direction: column` — the group stacks the
+  block addon(s) and the control vertically. Used when the group wraps a `Textarea`
+  with a `block-end` character count, or a `block-start` toolbar above a multi-line
+  control.
+
 ## Sizes
 
 The group itself is a single height — `control-md` (36px), or `height:auto` when it wraps a `Textarea` or a `block-*` addon. There is no `sm`/`lg` group size.

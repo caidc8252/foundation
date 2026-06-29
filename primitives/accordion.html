@@ -119,7 +119,7 @@
           </div>
         </div>
         <div class="accordion__item">
-          <button class="accordion__trigger" aria-expanded="false" aria-controls="a1-panel4" disabled>
+          <button class="accordion__trigger" aria-expanded="false" aria-controls="a1-panel4" aria-disabled="true">
             <span class="accordion__label">Security (disabled)</span>
             <span class="accordion__arrow" aria-hidden="true">
               <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
@@ -178,7 +178,7 @@
           </div>
         </div>
         <div class="accordion__item">
-          <button class="accordion__trigger" aria-expanded="false" aria-controls="a2-panel4" disabled>
+          <button class="accordion__trigger" aria-expanded="false" aria-controls="a2-panel4" aria-disabled="true">
             <span class="accordion__label">Advanced (disabled)</span>
             <span class="accordion__arrow" aria-hidden="true">
               <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
@@ -294,7 +294,7 @@
 
           // Keyboard: Space / Enter already fire click on <button>; add Home/End roaming
           trigger.addEventListener('keydown', function (e) {
-            var triggers = Array.from(root.querySelectorAll('.accordion__trigger:not(:disabled)'));
+            var triggers = Array.from(root.querySelectorAll('.accordion__trigger:not([aria-disabled="true"])'));
             var idx = triggers.indexOf(trigger);
             if (e.key === 'ArrowDown') {
               e.preventDefault();

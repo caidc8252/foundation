@@ -18,11 +18,39 @@ divide and frame themselves, use **Accordion** instead.
 **No visual variant — this is a headless behavior primitive.** The `@cloud/ui`
 wrapper adds zero chrome: it forwards `className` to the base-ui Root / Trigger /
 Panel and nothing else. The source is explicit — *"callers own all visual
-styling."* So there is no authored surface, border, fill, or padding to mirror;
-the contract governs only the disclosure *mechanic* and its structural slots.
-The reference skin below is therefore deliberately bare: it makes the panel
-show/hide and rotates an optional chevron, and stays out of the way so a
-consumer can drop a `.btn`-styled trigger or any content inside.
+styling."* So the contract governs only the disclosure *mechanic* and its structural
+slots; padding, surface, border, and radius are the consumer's visual domain
+(whether set via a composed `.btn`, local page CSS, or the reference demo skin).
+
+The reference skin is deliberately minimal: it makes the panel show/hide and
+rotates an optional chevron. A consumer may add chrome — padding on the trigger
+for a comfortable hit target, a border/background wrapper for framing — without
+violating the contract. The demo HTML illustrates this with a local trigger padding
+and an optional `--bordered` variant (see below).
+
+### `--bordered`
+
+An optional framing variant applied to the root for grouped disclosures (FAQ lists,
+filter sections):
+
+```css
+.collapsible--bordered {
+  border: 1px solid var(--color-line-subtle);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-2);
+}
+.collapsible--bordered .collapsible__trigger {
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+```
+
+- **Root** gains a subtle border, `radius-md`, and `surface-2` fill — framing the
+  trigger↔panel pair as a self-contained card.
+- **Trigger** inherits the top border-radius so it sits flush against the root's
+  rounded top corners when closed.
+- This is a consumer-side chrome layer, not a built-in variant of the primitive:
+  the contract keeps the core trigger/panel slots headless so `.btn` composition
+  and custom chrome both work.
 
 ## States
 
