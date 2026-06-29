@@ -2,6 +2,16 @@
   summary-bar.html
   ──────────────────────────────────────────────────────────────────────
   Demonstrates the list summary-bar composite in the foundation design system.
+
+  When to use (AI decision guide)
+  ──────────────────────────────────────────────────────────────────────
+  Use summary-bar inside .table-frame--flush above .table-scroll on every
+  list page. It shows the result count on the left and list-level actions
+  (Export, bulk actions) on the right.
+  · Required for list pages — the count bar is part of the results core
+  · Sticky variant (--sticky) docks under a sticky page-header
+  · Right actions are business-driven; never add a default "Columns" action
+
   Covers:
     - Default bar: mono result count + label on the left, Export button on the right
     - No actions (count only)

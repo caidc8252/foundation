@@ -1,6 +1,14 @@
 <!--
   load-more · Foundation composite example
   ==========================================
+  When to use (AI decision guide)
+  ──────────────────────────────────────────────────────────────────────
+  Use load-more for append-on-click pagination (infinite-scroll style)
+  at the bottom of a feed or grid. Shows a "Load more" button with
+  optional progress bar and "Showing N of TOTAL" summary.
+  · pagination — for page-based navigation (tables, search results)
+  · Do NOT use load-more on data tables; use pagination instead.
+
   Demonstrates:
     - .load-more container (centered stack, top hairline, px-4/py-5)
     - More state (loading=false, done=false) — button enabled, progress at current ratio

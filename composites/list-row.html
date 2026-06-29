@@ -1,0 +1,605 @@
+<!--
+  list-row.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the list-row composite in the foundation design system.
+
+  When to use (AI decision guide)
+  ──────────────────────────────────────────────────────────────────────
+  Use list-row for non-tabular interactive item lists: settings rows
+  (with switch), member/entity rows (with action buttons), navigation
+  rows (with value + chevron). Hairline-separated inside a card.
+  · data-table — for columnar data with sorting and selection
+  · feed-list  — for event / activity / notification feeds
+  · timeline   — for chronological history with markers
+  · kv-grid    — for static key:value attribute pairs
+
+  Covers:
+    - Settings rows with switch controls (leading icon, title + badge,
+      sub-line, trailing .switch)
+    - Member / entity rows with action buttons (leading avatar or icon,
+      title + badge, sub-line, trailing .btn cluster)
+    - Interactive navigation rows (leading icon, title + badge, sub-line,
+      trailing .list-row__value + chevron)
+    - States: selected, disabled, empty
+    - Text-only rows (no leading icon, no trailing — just identity text)
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>List row · foundation composite</title>
+  <link rel="stylesheet" href="../dist/tokens.inline.css">
+  <link rel="stylesheet" href="../primitives/primitives.css">
+  <link rel="stylesheet" href="../composites/composites.css">
+  <style>
+    /* Page-local overrides for this demo page */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ── Section: Settings rows (switch controls) ── -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Settings &amp; preferences</h2>
+      <p class="demo-section__desc">
+        Rows with a leading icon, a title line, an optional sub-line, and a trailing
+        <code>.switch</code> control. Each row is one preference — hairline-separated
+        inside a <code>card</code>.
+      </p>
+
+      <div class="card">
+        <div class="card__header">
+          <h3 style="font-size:var(--text-sm);font-weight:600;margin:0">Security</h3>
+        </div>
+        <div class="card__content card__content--flush">
+          <div class="list-rows">
+
+            <!-- Row 1: leading icon + title + sub + switch (on) -->
+            <div class="list-row">
+              <div class="list-row__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+              </div>
+              <div class="list-row__main">
+                <div class="list-row__title">Two-factor authentication</div>
+                <div class="list-row__sub">Adds a one-time code at sign-in</div>
+              </div>
+              <div class="list-row__trailing">
+                <button class="switch" role="switch" aria-checked="true" aria-label="Two-factor authentication">
+                  <span class="switch__thumb"></span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Row 2: leading icon + title + sub + switch (off) -->
+            <div class="list-row">
+              <div class="list-row__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                  <rect x="1" y="1" width="22" height="22" rx="5" ry="5"/>
+                  <path d="M12 7v4"/>
+                  <line x1="15" y1="13" x2="21" y2="13"/>
+                </svg>
+              </div>
+              <div class="list-row__main">
+                <div class="list-row__title">Session timeout</div>
+                <div class="list-row__sub">Automatically log out after 30 minutes of inactivity</div>
+              </div>
+              <div class="list-row__trailing">
+                <button class="switch" role="switch" aria-checked="false" aria-label="Session timeout">
+                  <span class="switch__thumb"></span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Row 3: leading icon + title + switch (on), no sub-line -->
+            <div class="list-row">
+              <div class="list-row__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+              </div>
+              <div class="list-row__main">
+                <div class="list-row__title">Passwordless sign-in</div>
+              </div>
+              <div class="list-row__trailing">
+                <button class="switch" role="switch" aria-checked="true" aria-label="Passwordless sign-in">
+                  <span class="switch__thumb"></span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Row 4: disabled — a setting not yet available -->
+            <div class="list-row list-row--disabled">
+              <div class="list-row__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                  <line x1="12" y1="19" x2="12" y2="23"/>
+                  <line x1="8" y1="23" x2="16" y2="23"/>
+                </svg>
+              </div>
+              <div class="list-row__main">
+                <div class="list-row__title">Voice authentication</div>
+                <div class="list-row__sub">Unavailable on your current plan. <a href="#">Upgrade</a></div>
+              </div>
+              <div class="list-row__trailing">
+                <button class="switch" role="switch" aria-checked="false" aria-disabled="true" aria-label="Voice authentication">
+                  <span class="switch__thumb"></span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section: Member / entity rows (action buttons) ── -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Members &amp; entities</h2>
+      <p class="demo-section__desc">
+        Rows with a leading avatar or icon, a title line that carries inline
+        <code>.badge</code>s, a sub-line with handle / meta, and a trailing
+        <code>.btn</code> cluster.
+      </p>
+
+      <div class="card">
+        <div class="card__header">
+          <h3 style="font-size:var(--text-sm);font-weight:600;margin:0">Team members</h3>
+        </div>
+        <div class="card__content card__content--flush">
+          <div class="list-rows">
+
+            <!-- Row 1: avatar + title with badge + sub + action button -->
+            <div class="list-row">
+              <!-- .avatar primitive as the leading slot -->
+              <div class="avatar avatar--md" aria-hidden="true">
+                <span class="avatar__fallback">MO</span>
+              </div>
+              <div class="list-row__main">
+                <div class="list-row__title">
+                  m.ortiz
+                  <span class="badge badge--neutral">Owner</span>
+                </div>
+                <div class="list-row__sub">m.ortiz@acme.co &middot; last active 2h ago</div>
+              </div>
+              <div class="list-row__trailing">
+                <button class="btn btn--secondary btn--sm">Manage</button>
+              </div>
+            </div>
+
+            <!-- Row 2: avatar + title with two badges + sub + action button -->
+            <div class="list-row">
+              <div class="avatar avatar--md" aria-hidden="true">
+                <span class="avatar__fallback">AL</span>
+              </div>
+              <div class="list-row__main">
+                <div class="list-row__title">
+                  a.lee
+                  <span class="badge badge--success">Admin</span>
+                </div>
+                <div class="list-row__sub">a.lee@acme.co &middot; last active 45m ago</div>
+              </div>
+              <div class="list-row__trailing">
+                <button class="btn btn--secondary btn--sm">Manage</button>
+              </div>
+            </div>
+
+            <!-- Row 3: avatar + title + badge + sub + action button -->
+            <div class="list-row">
+              <div class="avatar avatar--md" aria-hidden="true">
+                <span class="avatar__fallback">PW</span>
+              </div>
+              <div class="list-row__main">
+                <div class="list-row__title">
+                  p.walsh
+                  <span class="badge badge--info">Member</span>
+                </div>
+                <div class="list-row__sub">p.walsh@acme.co &middot; last active 1d ago</div>
+              </div>
+              <div class="list-row__trailing">
+                <button class="btn btn--secondary btn--sm">Manage</button>
+              </div>
+            </div>
+
+            <!-- Row 4: icon tile instead of avatar + trailing action buttons cluster -->
+            <div class="list-row">
+              <div class="list-row__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                  <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                  <line x1="12" y1="22.08" x2="12" y2="12"/>
+                </svg>
+              </div>
+              <div class="list-row__main">
+                <div class="list-row__title">
+                  carbon-api
+                  <span class="badge badge--warning">Pending</span>
+                </div>
+                <div class="list-row__sub">App ID ca_4x…2f &middot; created Oct 12</div>
+              </div>
+              <div class="list-row__trailing">
+                <div class="list-row__actions">
+                  <button class="btn btn--secondary btn--sm">Rotate key</button>
+                  <button class="btn btn--ghost btn--sm">Revoke</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section: Interactive navigation rows ── -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Interactive navigation rows</h2>
+      <p class="demo-section__desc">
+        Whole-row click targets with <code>.list-row--interactive</code>, a trailing
+        <code>.list-row__value</code>, and a <code>.list-row__chevron</code>. Use
+        for drill-in lists like connected services, contracts, or sessions.
+      </p>
+
+      <div class="card">
+        <div class="card__header">
+          <h3 style="font-size:var(--text-sm);font-weight:600;margin:0">Connected services</h3>
+        </div>
+        <div class="card__content card__content--flush">
+          <div class="list-rows">
+
+            <!-- Row 1: icon + title + value + chevron -->
+            <button class="list-row list-row--interactive" style="width:100%;border:0;background:none;font:inherit;text-align:inherit;color:inherit;">
+              <div class="list-row__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                </svg>
+              </div>
+              <div class="list-row__main">
+                <div class="list-row__title">
+                  GitHub
+                  <span class="badge badge--success">Connected</span>
+                </div>
+                <div class="list-row__sub">carbon-app &middot; last synced 2h ago</div>
+              </div>
+              <div class="list-row__trailing">
+                <span class="list-row__value">12 repos</span>
+                <div class="list-row__chevron" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"/>
+                  </svg>
+                </div>
+              </div>
+            </button>
+
+            <!-- Row 2: icon + title with badge + value + chevron -->
+            <button class="list-row list-row--interactive" style="width:100%;border:0;background:none;font:inherit;text-align:inherit;color:inherit;">
+              <div class="list-row__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                  <line x1="8" y1="21" x2="16" y2="21"/>
+                  <line x1="12" y1="17" x2="12" y2="21"/>
+                </svg>
+              </div>
+              <div class="list-row__main">
+                <div class="list-row__title">
+                  Datadog
+                  <span class="badge badge--warning">Expiring</span>
+                </div>
+                <div class="list-row__sub">API key expires in 7 days</div>
+              </div>
+              <div class="list-row__trailing">
+                <span class="list-row__value">3 dashboards</span>
+                <div class="list-row__chevron" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"/>
+                  </svg>
+                </div>
+              </div>
+            </button>
+
+            <!-- Row 3: icon + title + value + chevron, no sub -->
+            <button class="list-row list-row--interactive" style="width:100%;border:0;background:none;font:inherit;text-align:inherit;color:inherit;">
+              <div class="list-row__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+              </div>
+              <div class="list-row__main">
+                <div class="list-row__title">Slack workspace</div>
+                <div class="list-row__sub">24 channels &middot; acme.slack.com</div>
+              </div>
+              <div class="list-row__trailing">
+                <span class="list-row__value">Active</span>
+                <div class="list-row__chevron" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"/>
+                  </svg>
+                </div>
+              </div>
+            </button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section: Contracts / sessions (selected + interactive) ── -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Master/detail — with selected row</h2>
+      <p class="demo-section__desc">
+        An interactive list where one row carries <code>.list-row--selected</code> — the
+        open item in a split-pane or drill-in. Clicking a row opens its detail on the right.
+      </p>
+
+      <div class="card">
+        <div class="card__header">
+          <h3 style="font-size:var(--text-sm);font-weight:600;margin:0">Sessions</h3>
+        </div>
+        <div class="card__content card__content--flush">
+          <div class="list-rows">
+
+            <!-- Row 1: selected (the active session) -->
+            <button class="list-row list-row--interactive list-row--selected" style="width:100%;border:0;background:none;font:inherit;text-align:inherit;color:inherit;">
+              <div class="list-row__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                  <line x1="8" y1="21" x2="16" y2="21"/>
+                  <line x1="12" y1="17" x2="12" y2="21"/>
+                </svg>
+              </div>
+              <div class="list-row__main">
+                <div class="list-row__title">
+                  macOS · Chrome
+                  <span class="badge badge--success"><span class="badge__dot"></span>Current</span>
+                </div>
+                <div class="list-row__sub">San Francisco, CA &middot; IP 203.0.113.42 &middot; started 2h ago</div>
+              </div>
+              <div class="list-row__trailing">
+                <div class="list-row__chevron" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"/>
+                  </svg>
+                </div>
+              </div>
+            </button>
+
+            <!-- Row 2: unselected -->
+            <button class="list-row list-row--interactive" style="width:100%;border:0;background:none;font:inherit;text-align:inherit;color:inherit;">
+              <div class="list-row__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                  <line x1="12" y1="18" x2="12.01" y2="18"/>
+                </svg>
+              </div>
+              <div class="list-row__main">
+                <div class="list-row__title">
+                  iOS · Safari
+                </div>
+                <div class="list-row__sub">New York, NY &middot; IP 198.51.100.7 &middot; started 5d ago</div>
+              </div>
+              <div class="list-row__trailing">
+                <div class="list-row__chevron" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"/>
+                  </svg>
+                </div>
+              </div>
+            </button>
+
+            <!-- Row 3: unselected -->
+            <button class="list-row list-row--interactive" style="width:100%;border:0;background:none;font:inherit;text-align:inherit;color:inherit;">
+              <div class="list-row__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                  <line x1="12" y1="18" x2="12.01" y2="18"/>
+                </svg>
+              </div>
+              <div class="list-row__main">
+                <div class="list-row__title">
+                  Linux · Firefox
+                </div>
+                <div class="list-row__sub">London, UK &middot; IP 192.0.2.88 &middot; started 12d ago</div>
+              </div>
+              <div class="list-row__trailing">
+                <div class="list-row__chevron" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"/>
+                  </svg>
+                </div>
+              </div>
+            </button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section: Disabled row ── -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Disabled rows</h2>
+      <p class="demo-section__desc">
+        A <code>.list-row--disabled</code> row dims to 0.5 opacity and drops pointer
+        events — for settings not yet available or entities that can't be acted on.
+      </p>
+
+      <div class="card">
+        <div class="card__content card__content--flush">
+          <div class="list-rows">
+
+            <!-- Row 1: normal interactive row -->
+            <button class="list-row list-row--interactive" style="width:100%;border:0;background:none;font:inherit;text-align:inherit;color:inherit;">
+              <div class="list-row__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                  <line x1="16" y1="17" x2="8" y2="17"/>
+                  <polyline points="10 9 9 9 8 9"/>
+                </svg>
+              </div>
+              <div class="list-row__main">
+                <div class="list-row__title">
+                  Pilot contract
+                  <span class="badge badge--success"><span class="badge__dot"></span>Active</span>
+                </div>
+                <div class="list-row__sub">Signed Jun 12 &middot; $4,200 / mo</div>
+              </div>
+              <div class="list-row__trailing">
+                <div class="list-row__chevron" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"/>
+                  </svg>
+                </div>
+              </div>
+            </button>
+
+            <!-- Row 2: disabled -->
+            <div class="list-row list-row--disabled">
+              <div class="list-row__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                </svg>
+              </div>
+              <div class="list-row__main">
+                <div class="list-row__title">
+                  Legacy contract
+                  <span class="badge badge--error"><span class="badge__dot"></span>Expired</span>
+                </div>
+                <div class="list-row__sub">Expired Mar 1 &middot; no longer actionable</div>
+              </div>
+              <div class="list-row__trailing">
+                <div class="list-row__chevron" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section: Empty state ── -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Empty state</h2>
+      <p class="demo-section__desc">
+        When there are no rows to show, render an <code>empty-state</code> inside the
+        card — never a blank frame.
+      </p>
+
+      <div class="card">
+        <div class="card__header">
+          <h3 style="font-size:var(--text-sm);font-weight:600;margin:0">Connected services</h3>
+        </div>
+        <div class="card__content">
+          <div class="empty-state">
+            <div class="empty-state__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                <line x1="8" y1="21" x2="16" y2="21"/>
+                <line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+            </div>
+            <div class="empty-state__title">No connected services</div>
+            <p class="empty-state__description">
+              Connect a service to pull data into your workspace. Supported services
+              include GitHub, Datadog, and Slack.
+            </p>
+            <div class="empty-state__action">
+              <button class="btn btn--primary btn--sm">Connect a service</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section: Skeleton loading ── -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Loading (skeleton rows)</h2>
+      <p class="demo-section__desc">
+        While data loads, render <code>.skeleton-row</code>s inside the frame.
+      </p>
+
+      <div class="card">
+        <div class="card__content card__content--flush">
+          <div class="list-rows">
+
+            <div class="skeleton-row">
+              <div class="skeleton skeleton--circle" style="width:var(--space-8);height:var(--space-8);"></div>
+              <div style="display:flex;flex-direction:column;gap:var(--space-2);flex:1;">
+                <div class="skeleton skeleton--text" style="width:45%;"></div>
+                <div class="skeleton skeleton--text" style="width:65%;"></div>
+              </div>
+              <div class="skeleton skeleton--text" style="width:var(--space-10);"></div>
+            </div>
+
+            <div class="skeleton-row">
+              <div class="skeleton skeleton--circle" style="width:var(--space-8);height:var(--space-8);"></div>
+              <div style="display:flex;flex-direction:column;gap:var(--space-2);flex:1;">
+                <div class="skeleton skeleton--text" style="width:35%;"></div>
+                <div class="skeleton skeleton--text" style="width:55%;"></div>
+              </div>
+              <div class="skeleton skeleton--text" style="width:var(--space-12);"></div>
+            </div>
+
+            <div class="skeleton-row" style="border-bottom:0;">
+              <div class="skeleton skeleton--circle" style="width:var(--space-8);height:var(--space-8);"></div>
+              <div style="display:flex;flex-direction:column;gap:var(--space-2);flex:1;">
+                <div class="skeleton skeleton--text" style="width:50%;"></div>
+              </div>
+              <div class="skeleton skeleton--text" style="width:var(--space-12);"></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

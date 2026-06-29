@@ -5,6 +5,7 @@
     "app-frame": {
       "intent": "Production-like shell used only as pattern context, not ported into frameless artifacts.",
       "contract": "composites/app-frame.md",
+      "example": null,
       "usedByPatterns": ["actions", "create-form", "create-wizard", "detail-page", "list-page"],
       "classes": ["app-frame", "app-frame__sidebar", "app-frame__col", "app-frame__header", "app-frame__main"],
       "requiredSlots": ["sidebar", "header", "main"],
@@ -20,6 +21,7 @@
     "chart": {
       "intent": "Token-skinned chart chrome for bars, lines, sparklines, legends, tooltips, empty and loading states.",
       "contract": "composites/chart.md",
+      "example": null,
       "usedByPatterns": [],
       "classes": ["chart", "chart__grid", "chart__axis", "chart__tick", "chart__bar", "chart__curve", "chart__series--selected", "chart-legend", "chart-legend__item", "chart-legend__swatch", "chart-tooltip", "chart-tooltip__header", "chart-tooltip__row", "chart-tooltip__indicator", "chart-tooltip__name", "chart-tooltip__value", "chart-tooltip__total", "chart-sparkline", "chart-empty", "chart-empty__icon", "chart-empty__title", "chart-empty__description", "chart-skeleton"],
       "requiredSlots": ["data"],
@@ -35,6 +37,7 @@
     "data-table": {
       "intent": "Config-driven table for scanning, sorting, selecting, and acting on rows.",
       "contract": "composites/data-table.md",
+      "example": "composites/data-table.html",
       "usedByPatterns": ["list-page", "detail-page"],
       "classes": ["table-frame", "table-scroll", "data-table", "cell-num", "cell-right", "row-actions", "col-select"],
       "requiredSlots": ["columns", "rows"],
@@ -66,6 +69,7 @@
     "detail-header": {
       "intent": "Detail screen identity band with optional back button, logo, status, metadata, actions, and tabs.",
       "contract": "composites/detail-header.md",
+      "example": "composites/detail-header.html",
       "usedByPatterns": ["detail-page"],
       "classes": ["detail-header", "detail-header__bar", "detail-header__logo", "detail-header__main", "detail-header__title", "detail-header__meta", "detail-header__chips", "detail-header__actions", "detail-header__tabs", "tabs__list--line", "badge"],
       "requiredSlots": ["title"],
@@ -81,6 +85,7 @@
     "diff": {
       "intent": "Compact before-to-after value comparison.",
       "contract": "composites/diff.md",
+      "example": "composites/diff.html",
       "usedByPatterns": ["actions", "detail-page"],
       "classes": ["diff", "diff__col--old", "diff__arrow", "diff__col--new", "diff__label", "diff__value", "diff--inline"],
       "requiredSlots": ["oldValue", "newValue"],
@@ -96,6 +101,7 @@
     "empty-state": {
       "intent": "First-class empty, no-results, or cold-start state.",
       "contract": "composites/empty-state.md",
+      "example": "composites/empty-state.html",
       "usedByPatterns": ["list-page", "detail-page"],
       "classes": ["empty-state", "empty-state__icon", "empty-state__title", "empty-state__description", "empty-state__action", "btn--primary"],
       "requiredSlots": ["title"],
@@ -111,6 +117,7 @@
     "feed-list": {
       "intent": "Vertical list of activity or event rows.",
       "contract": "composites/feed-list.md",
+      "example": "composites/feed-list.html",
       "usedByPatterns": ["detail-page"],
       "classes": ["feed-list", "feed-item", "feed-item__icon", "feed-item__main", "feed-item__time", "empty-state"],
       "requiredSlots": ["items"],
@@ -126,6 +133,7 @@
     "kv-grid": {
       "intent": "Responsive grid of key-value attributes for overview blocks.",
       "contract": "composites/kv-grid.md",
+      "example": "composites/kv-grid.html",
       "usedByPatterns": ["detail-page"],
       "classes": ["kv-grid", "kv-grid__row", "grid-auto-fit-kv"],
       "requiredSlots": ["items"],
@@ -151,6 +159,7 @@
     "list-filter": {
       "intent": "Quick search, quick filters, Search button, and visible applied filter chips.",
       "contract": "composites/list-filter.md",
+      "example": "composites/list-filter.html",
       "usedByPatterns": ["list-page"],
       "classes": ["condition-band", "condition-band__toolbar", "search-input", "select", "condition-band__spacer", "applied-filters", "applied-filters__label", "filter-chip"],
       "requiredSlots": ["toolbar"],
@@ -182,6 +191,7 @@
     "load-more": {
       "intent": "Append-on-click footer beneath a list or table.",
       "contract": "composites/load-more.md",
+      "example": "composites/load-more.html",
       "usedByPatterns": [],
       "classes": ["load-more", "load-more__summary", "load-more__end", "progress", "load-more__progress"],
       "requiredSlots": ["actionOrEnd"],
@@ -197,6 +207,7 @@
     "option-card": {
       "intent": "Large clickable radio or checkbox card.",
       "contract": "composites/option-card.md",
+      "example": "composites/option-card.html",
       "usedByPatterns": ["create-wizard", "create-form"],
       "classes": ["option-card", "radio", "option-card__icon", "option-card__body", "option-card__check"],
       "requiredSlots": ["title"],
@@ -212,6 +223,7 @@
     "page-body": {
       "intent": "Guttered vertical stack for page content below the header band.",
       "contract": "composites/page-body.md",
+      "example": null,
       "usedByPatterns": ["actions", "create-form", "create-wizard", "detail-page", "list-page"],
       "classes": ["page-body", "page-header"],
       "requiredSlots": ["children"],
@@ -227,6 +239,7 @@
     "page-header": {
       "intent": "Top page band that names the page and carries page-level actions.",
       "contract": "composites/page-header.md",
+      "example": "composites/page-header.html",
       "usedByPatterns": ["actions", "create-form", "create-wizard", "list-page"],
       "classes": ["page-header", "page-header__bar", "page-header__titles", "page-header__heading", "page-header__title", "page-header__count", "badge", "page-header__description", "page-header__actions"],
       "requiredSlots": ["title"],
@@ -252,6 +265,7 @@
     "pagination": {
       "intent": "Move through pages of a collection and select row count.",
       "contract": "composites/pagination.md",
+      "example": "composites/pagination.html",
       "usedByPatterns": ["list-page"],
       "classes": ["pagination", "pagination__info", "pagination__rows", "select--sm", "pagination__summary", "pagination__pages", "pagination__page", "pagination__current", "pagination__ellipsis"],
       "requiredSlots": ["currentPage", "rangeSummary"],
@@ -267,6 +281,7 @@
     "product-card": {
       "intent": "Catalog tile for one sellable product.",
       "contract": "composites/product-card.md",
+      "example": "composites/product-card.html",
       "usedByPatterns": [],
       "classes": ["product-grid", "product-card", "product-card__image", "product-card__placeholder", "product-card__body", "product-card__add", "btn--primary"],
       "requiredSlots": ["name"],
@@ -282,6 +297,7 @@
     "rich-pagination": {
       "intent": "Full list/table footer with rows-per-page summary and page navigation.",
       "contract": "composites/rich-pagination.md",
+      "example": "composites/rich-pagination.html",
       "usedByPatterns": ["list-page"],
       "classes": ["rich-pagination", "rich-pagination__left", "rich-pagination__rows", "rich-pagination__summary", "pagination"],
       "requiredSlots": ["rangeSummary", "pagination"],
@@ -297,6 +313,7 @@
     "skeleton": {
       "intent": "Loading placeholder blocks, rows, text, circles, and lines.",
       "contract": "composites/skeleton.md",
+      "example": "composites/skeleton.html",
       "usedByPatterns": ["list-page", "detail-page", "create-form", "create-wizard"],
       "classes": ["skeleton", "skeleton-row"],
       "requiredSlots": ["shape"],
@@ -312,6 +329,7 @@
     "stat-card": {
       "intent": "Single key metric card for collection-level KPIs.",
       "contract": "composites/stat-card.md",
+      "example": "composites/stat-card.html",
       "usedByPatterns": ["list-page", "detail-page"],
       "classes": ["stat-grid", "stat-card", "stat-card--selected", "stat-card--interactive", "stat-card__head", "stat-card__label", "stat-card__icon", "stat-card__value", "stat-card__delta", "stat-card__description"],
       "requiredSlots": ["label", "value"],
@@ -335,6 +353,7 @@
     "step-indicator": {
       "intent": "Horizontal progress rail for multi-step create flows.",
       "contract": "composites/step-indicator.md",
+      "example": "composites/step-indicator.html",
       "usedByPatterns": ["create-wizard"],
       "classes": ["step-indicator", "step", "step--completed", "step--active", "step--upcoming", "step__dot", "step__text", "step__caption", "step__title", "step__connector"],
       "requiredSlots": ["steps", "activeStep"],
@@ -360,6 +379,7 @@
     "stepper": {
       "intent": "Numeric input with decrement and increment buttons.",
       "contract": "composites/stepper.md",
+      "example": "composites/stepper.html",
       "usedByPatterns": ["create-form", "create-wizard"],
       "classes": ["stepper", "input-group", "input-group__addon--inline-start", "input-group__addon--inline-end", "input-group--disabled"],
       "requiredSlots": ["value"],
@@ -375,6 +395,7 @@
     "summary-bar": {
       "intent": "List result count and list-level actions directly above the table.",
       "contract": "composites/summary-bar.md",
+      "example": "composites/summary-bar.html",
       "usedByPatterns": ["list-page"],
       "classes": ["summary-bar", "summary-bar__count", "summary-bar__actions", "table-frame--flush"],
       "requiredSlots": ["countLabel"],
@@ -390,6 +411,7 @@
     "theme-toggle": {
       "intent": "Icon-only light/dark theme toggle.",
       "contract": "composites/theme-toggle.md",
+      "example": "composites/theme-toggle.html",
       "usedByPatterns": [],
       "classes": ["theme-toggle", "btn--ghost"],
       "requiredSlots": ["toggleAction"],
@@ -405,6 +427,7 @@
     "timeline": {
       "intent": "Vertical chronological event log for history and audit trails.",
       "contract": "composites/timeline.md",
+      "example": "composites/timeline.html",
       "usedByPatterns": ["detail-page"],
       "classes": ["timeline", "timeline__item", "timeline__marker", "timeline__content", "timeline__marker--dot", "timeline--compact", "timeline--stacked", "timeline__item--last", "timeline__header", "timeline__title", "timeline__time", "timeline__time-row", "timeline__description", "timeline__actor"],
       "requiredSlots": ["items"],
@@ -420,6 +443,7 @@
     "toggles": {
       "intent": "Inline control-with-label wrappers for checkbox, radio, or switch.",
       "contract": "composites/toggles.md",
+      "example": "composites/toggles.html",
       "usedByPatterns": ["create-form", "create-wizard"],
       "classes": ["toggle-checkbox", "toggle-radio", "toggle-switch", "checkbox", "radio", "switch", "label"],
       "requiredSlots": ["control", "label"],
@@ -435,6 +459,7 @@
     "list-row": {
       "intent": "Non-tabular interactive list row: a leading visual, a title with inline badges over an optional sub, and a trailing control / actions / value.",
       "contract": "composites/list-row.md",
+      "example": "composites/list-row.html",
       "usedByPatterns": [],
       "classes": ["list-rows", "list-row", "list-row__icon", "list-row__main", "list-row__title", "list-row__sub", "list-row__trailing", "list-row__value", "list-row__actions", "list-row__chevron", "badge", "avatar", "switch", "btn"],
       "requiredSlots": ["title"],

@@ -1,6 +1,15 @@
 <!--
   skeleton — Foundation composite example
   ========================================
+  When to use (AI decision guide)
+  ──────────────────────────────────────────────────────────────────────
+  Use skeleton for content-loading placeholders that preserve layout.
+  Shapes: line, text, title, block, circle. Use skeleton-row inside
+  table-frame for table loading states.
+  · spinner — for inline button/control loading, not whole-page
+  · Do NOT leave a blank void while content loads; always show skeleton
+  · Skeleton replaces content in the SAME spatial region
+
   Demonstrates:
     - .skeleton with shape variants: --line, --text, --title, --block, --circle
     - .skeleton-row for table-loading scaffold (inside .table-frame)

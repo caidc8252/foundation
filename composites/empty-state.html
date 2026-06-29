@@ -1,6 +1,16 @@
 <!--
   empty-state — Foundation composite example
   ===========================================
+  When to use (AI decision guide)
+  ──────────────────────────────────────────────────────────────────────
+  Use empty-state for the three canonical empty conditions:
+  1. Nothing yet (cold start)   — invite the page's primary action
+  2. No results for filters     — offer to clear / widen filters
+  3. Error (load failure)       — describe the problem, offer Retry
+  Every list, table, and feed MUST handle all three; never show a blank
+  void. The empty-state sits in place of the content it replaces (inside
+  the same card / table-frame).
+
   Demonstrates:
     - .empty-state with icon, title, description, action
     - "Nothing yet" variant (cold start with create CTA)

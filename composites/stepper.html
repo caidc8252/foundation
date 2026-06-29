@@ -1,6 +1,14 @@
 <!--
   Composite · Stepper — copyable example
   -------------------------------------------------------------------------------
+  When to use (AI decision guide)
+  ──────────────────────────────────────────────────────────────────────
+  Use stepper for bounded numeric quantity input with −/+ buttons (qty,
+  seats, items). Built on input-group with ghost icon-xs buttons.
+  · input — for free-text numbers (price, weight, any value)
+  · select — for small fixed options (1-5), not a stepper
+  · Do NOT use stepper for unbounded or large-range values
+
   Companion to stepper.md (the contract — when the two disagree, the .md wins).
   Demonstrates the Stepper composite — a numeric input flanked by −/+ buttons.
   Shows normal state, boundary states (atMin / atMax), disabled (whole-Stepper),

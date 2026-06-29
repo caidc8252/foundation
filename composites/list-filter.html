@@ -2,7 +2,19 @@
   list-filter.html
   ──────────────────────────────────────────────────────────────────────
   Demonstrates the list-filter family of composites in the foundation
-  design system. Covers:
+  design system.
+
+  When to use (AI decision guide)
+  ──────────────────────────────────────────────────────────────────────
+  Use list-filter (condition-band) when a list page needs search + quick
+  filter dropdowns + visible applied chips. Every filter change commits
+  on the Search button click, not on change.
+  · For lists with many filter dimensions → use list-page-advanced-filter
+    pattern (filter drawer / sheet)
+  · For simple single-field search → a bare .search-input is sufficient
+  · Do NOT use condition-band on detail or create pages
+
+  Covers:
     - Condition band (toolbar + applied-filters rows)
     - Search input with leading magnifier icon via .search-input__icon
       wrapper (NEVER drop a bare <svg> into .search-input)

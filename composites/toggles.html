@@ -1,6 +1,15 @@
 <!--
   toggles · Foundation composite example
   =======================================
+  When to use (AI decision guide)
+  ──────────────────────────────────────────────────────────────────────
+  Use toggles for labeled checkbox / radio / switch controls. Each wraps
+  a native <input> inside a <label> so the text is part of the hit target.
+  · toggle-switch   — for immediate setting toggles (on/off)
+  · toggle-checkbox — for form submission choices (multi-select)
+  · toggle-radio    — for single-select within a fieldset/legend group
+  · For large card-style selections, use option-card instead of toggle-radio
+
   Demonstrates:
     - .toggle-checkbox — checkbox + label (checked, unchecked, disabled)
     - .toggle-radio — radio + label inside a radio group with fieldset/legend

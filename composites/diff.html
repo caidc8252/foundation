@@ -1,6 +1,13 @@
 <!--
   diff · Foundation composite example
   ====================================
+  When to use (AI decision guide)
+  ──────────────────────────────────────────────────────────────────────
+  Use diff for before→after value comparisons. It paints old (struck) →
+  new (highlighted) transitions. Use inside confirm-before-save dialogs,
+  audit trails, and approval review rows. For static key:value display
+  without a change, use kv-grid instead.
+
   Demonstrates:
     - .diff block layout (three-column grid: old · arrow · new) on surface-3
       with optional BEFORE / AFTER labels

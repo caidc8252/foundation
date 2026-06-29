@@ -141,20 +141,37 @@ vocabulary — they stay inside the closed set.
 3. **[`composites/schema.json`](composites/schema.json)** — the machine-readable
    composite plan surface for AI generation. Use it after choosing a pattern to
    decide which composites to configure, which slots are required, which slots
-   are optional, and which class names are legal for that composite. The schema
-   does not replace contracts; it keeps AI planning aligned with them.
+   are optional, and which class names are legal for that composite. Each entry's
+   **`example`** field links to the composite's HTML sample — always follow it.
+   The schema does not replace contracts; it keeps AI planning aligned with them.
 4. **The contract** (`primitives/<x>.md` · `composites/<x>.md` · `patterns/<x>.md`)
    — anatomy, rules, states, and the exact "Artifact" class recipe. The contract
    wins over any implementation.
-5. **The example** (`patterns/<x>.html`) — copy it and edit the markup.
+5. **The HTML example** (`patterns/<x>.html` · `composites/<x>.html`) — the
+   **primary implementation reference**. These are executable specifications:
+   they show the exact markup, class combinations, aria attributes, and state
+   variants that the structured data describes. **Always read the relevant HTML
+   samples before writing markup** — they are the anti-hallucination guard.
+   Pattern examples are the copy-and-edit starter; composite examples show every
+   variant and state in context.
 
 AI generation flow:
 
 1. Interpret the user's request with `patterns/router.json` and choose one route.
 2. Run `build-artifact.mjs` with the route's `builderPattern`.
-3. Read the route's pattern contract/example for ordering and required core.
-4. Read `composites/schema.json` for the composites used by that route.
-5. Configure each composite through its required/optional slots.
+3. **Read the pattern's HTML example** — this is your primary template. The HTML
+   sample is the executable specification: it shows the exact DOM structure, class
+   combinations, aria attributes, state swap blocks (empty/loading/error), and
+   page-local style patterns. Copy and edit it; do not assemble from scratch.
+   Cross-check the pattern contract (`.md`) for required-core vs. optional-slot
+   rules — the contract wins, but the HTML shows how it renders.
+4. Read `composites/schema.json` for the composites used by that route. Follow
+   each composite's **`example`** field to its HTML sample. **Before configuring
+   any composite, read its HTML sample** — it demonstrates every variant, state,
+   and markup pattern the schema describes. The "When to use" header in each
+   sample guides the composite-vs-alternative decision.
+5. Configure each composite through its required/optional slots, using the exact
+   markup patterns from the composite's HTML sample.
 6. For any icon, `scripts/icon/icon.mjs search <english intent>` → `get <name>`;
    paste the exact `<svg>` (keep `data-lucide` first). Never hand-write paths. If
    nothing fits, try other English words; after three misses, report the gap to a

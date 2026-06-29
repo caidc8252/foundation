@@ -2,6 +2,15 @@
   page-header.html
   ──────────────────────────────────────────────────────────────────────
   Demonstrates the page-header composite in the foundation design system.
+
+  When to use (AI decision guide)
+  ──────────────────────────────────────────────────────────────────────
+  Use page-header on EVERY page. It names the page, carries the record
+  count, and exposes page-level actions. Only the title is required.
+  · list / create / wizard pages → page-header
+  · detail / profile pages       → detail-header (carries identity)
+  · At most ONE primary action, rightmost; everything else secondary/ghost
+
   Covers:
     - Default with full anatomy: title + count + status adornment + description + actions
     - Minimal (title only, info page)
