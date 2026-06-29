@@ -74,9 +74,11 @@ node scripts/build-artifact.mjs --list
 node scripts/build-artifact.mjs --pattern list-page --out artifacts/customers.html --title "Customers"
 ```
 
-The builder copies the page inside `.app-frame__main`, wraps it in the frameless
-full-width shell, inlines the three CSS layers in the correct
-order, adds the frameless `[hidden]` guard, and runs
+The builder copies the page inside `.app-frame__main`, wraps it in a **frameless
+shell** — the production app-frame skeleton with the sidebar + header chrome
+removed: `.app-frame > .app-frame__col > main.app-frame__main`, so
+`main.app-frame__main` is the real scroll root — inlines the three CSS layers in
+the correct order, adds the `[hidden]{display:none!important}` guard, and runs
 `check-artifact.mjs --strict` against the output. Use this before hand-editing;
 then re-run the strict check after edits.
 
@@ -96,11 +98,13 @@ those same files so edits flow through live — see the README. For a shipped
 artifact, inline them: CSP blocks external fetches.)
 
 - **A frameless page is full-width — no max-width lock.** These artifacts are
-  standalone functional pages with **no `.app-frame` chrome**; the content fills
-  the viewport width (the `.artifact-shell` sets `width: 100%`, no `max-width`).
-  **Height scrolls** — the page grows downward and the window scrolls.
-  (`.app-frame` remains available when you instead want full production chrome —
-  sidebar + header — see [`composites/app-frame.md`](composites/app-frame.md).)
+  standalone functional pages with **the sidebar + header chrome removed** (that is
+  what *frameless* means): the builder keeps the app-frame skeleton minus the
+  chrome, so `main.app-frame__main` is the scroll root and the content fills its
+  width (no `max-width`). **Height scrolls** — the page grows downward and
+  `main.app-frame__main` scrolls. (The full `.app-frame` *with* chrome — sidebar +
+  header — is available when you instead want production chrome; see
+  [`composites/app-frame.md`](composites/app-frame.md).)
 - Dark mode is a `[data-theme="dark"]` toggle — never edit color values.
 - **Every wrapper `div` must earn its place** — it exists to group spacing,
   establish a scroll/flex context, or constrain width. A wrapper with a single
@@ -109,21 +113,24 @@ artifact, inline them: CSP blocks external fetches.)
 
 ## Two traps in a frameless page
 
-Frameless, the page has no `.app-frame__main` scroll root and no guaranteed
-`display:none` for hidden nodes. Two things bite silently:
+The builder now neutralizes both of these by default — it gives the page a real
+`main.app-frame__main` scroll root and injects `[hidden]{display:none!important}`.
+They only bite if you **build the shell by hand, replace it, or add your own scroll
+container**, so know them:
 
 - **Sticky needs a scroll root.** `--sticky-head` / `summary-bar--sticky` /
-  `page-header--sticky` pin to the nearest scrolling ancestor — frameless that is
-  the window, and `.table-scroll` only scrolls sideways. An offset (`top:`) meant
-  to dock a header under a sticky bar then leaves an empty band or hides the first
-  row. Fix: keep sticky `top: 0` (or drop the `--sticky*` modifiers entirely), or
-  wrap content in your own `overflow-y:auto` scroll root.
+  `page-header--sticky` pin to the nearest scrolling ancestor. With the builder's
+  `main.app-frame__main` (`overflow-y:auto`) that root exists; without it the
+  nearest scroller is the window and `.table-scroll` only scrolls sideways, so an
+  offset (`top:`) meant to dock a header under a sticky bar leaves an empty band or
+  hides the first row. Fix: keep sticky `top: 0` (or drop the `--sticky*`
+  modifiers entirely), or wrap content in your own `overflow-y:auto` scroll root.
 - **`[hidden]` can't hide a `.card`.** The UA `[hidden]{display:none}` rule loses
   to `.card`'s own `display:flex` (same for `.tabs__content` / any composite with
   an explicit `display`). So toggling a wizard step or tab panel via the `hidden`
-  attribute shows them all at once. Fix: add one guard to your page-local
-  `<style>` — `[hidden]{display:none!important}` — or toggle a display class
-  instead of the attribute.
+  attribute would show them all at once. The builder's
+  `[hidden]{display:none!important}` guard fixes this; if you hand-author the shell,
+  add that one line to your page-local `<style>` (or toggle a display class).
 
 Both fixes are page-local composition (a wrapper + one reset line), not new design
 vocabulary — they stay inside the closed set.

@@ -39,7 +39,9 @@ node scripts/check-artifact.mjs --strict path/to/artifact.html
 
 `build-artifact.mjs` is the preferred starting point for AI-generated pages: it
 ports the page content from a pattern example, inlines the current foundation CSS
-layers, applies the frameless width-lock shell, and runs the strict checker.
+layers, applies the frameless full-width shell (the app-frame skeleton minus the
+sidebar/header chrome, `main.app-frame__main` as the scroll root), and runs the
+strict checker.
 After hand edits, run the strict checker again.
 
 It reports usage outside the catalog — hardcoded colors, unknown `var(--…)`
@@ -64,9 +66,10 @@ The remaining items are an eye/design pass:
 - [ ] Any visual not expressible from tokens/primitives is raised as a token-change
       proposal (`token-change.md`), not hardcoded.
 - [ ] Dark mode works by toggling `[data-theme="dark"]` — not by editing colors.
-- [ ] Frameless functional page is **full-width** — the `.artifact-shell` sets
-      `width: 100%` with no `max-width` lock. Height scrolls. (Use `.app-frame`
-      only when you want full production chrome.) See `AGENTS.md` → "Two traps in a frameless page".
+- [ ] Frameless functional page is **full-width** — the builder's
+      `main.app-frame__main` scroll root fills the width with no `max-width` lock.
+      Height scrolls. (Use the full `.app-frame` with chrome only when you want a
+      production sidebar + header.) See `AGENTS.md` → "Two traps in a frameless page".
 
 ## When the two disagree
 

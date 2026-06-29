@@ -98,7 +98,8 @@ node scripts/build-artifact.mjs --pattern list-page --out artifacts/customers.ht
 ```
 
 It ports the page inside `.app-frame__main`, inlines the three CSS layers, wraps
-the result in the frameless artifact shell, and runs the strict artifact check.
+the result in the frameless shell (the app-frame skeleton minus the sidebar/header
+chrome, `main.app-frame__main` as the scroll root), and runs the strict artifact check.
 
 For natural-language requests, read `patterns/router.json` first. It maps intent
 phrases like "registration", "multi-step onboarding", "customer management", and
