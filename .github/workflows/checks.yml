@@ -17,9 +17,10 @@ jobs:
         with:
           node-version: "22"
 
-      # dist/ is generated — fail if a rebuild changes it (hand-edited / stale).
-      - name: dist is in sync with sources
-        run: node scripts/check-dist.mjs
+      # release/ + versions/ are generated — fail if a rebuild changes them
+      # (hand-edited snapshot / forgotten `pnpm build`).
+      - name: release snapshots are in sync with sources
+        run: node scripts/check-release.mjs
 
       # The example HTML is the AI's primary reference — keep it inside the closed
       # set. Strict: also fail on off-set classes and altered icon paths, the same
