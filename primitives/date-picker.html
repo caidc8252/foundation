@@ -126,14 +126,14 @@
         tone (<code>content-tertiary</code>).
       </p>
 
-      <div class="date-trigger">
+      <button class="date-trigger" type="button" aria-label="Pick a date">
         <svg class="date-trigger__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
           <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
           <line x1="3" y1="10" x2="21" y2="10"/>
         </svg>
         <span class="date-trigger__value date-trigger__value--placeholder">Pick a date</span>
-      </div>
+      </button>
     </div>
 
     <!-- ══════════════════════════════════════════════════════════════════
@@ -157,7 +157,7 @@
           </svg>
           <span class="date-trigger__value">Mar 14, 2026</span>
         </button>
-        <button class="date-trigger__clear" type="button" aria-label="Clear">
+        <button class="date-trigger__clear" type="button" tabindex="-1" aria-label="Clear">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;">
             <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
           </svg>
@@ -179,34 +179,34 @@
 
       <div class="demo-row">
         <!-- sm -->
-        <div class="date-trigger date-trigger--sm">
+        <button class="date-trigger date-trigger--sm" type="button" aria-label="Pick a date">
           <svg class="date-trigger__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
             <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
             <line x1="3" y1="10" x2="21" y2="10"/>
           </svg>
           <span class="date-trigger__value date-trigger__value--placeholder">Pick a date</span>
-        </div>
+        </button>
 
         <!-- md -->
-        <div class="date-trigger date-trigger--md">
+        <button class="date-trigger date-trigger--md" type="button" aria-label="Pick a date">
           <svg class="date-trigger__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
             <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
             <line x1="3" y1="10" x2="21" y2="10"/>
           </svg>
           <span class="date-trigger__value date-trigger__value--placeholder">Pick a date</span>
-        </div>
+        </button>
 
         <!-- lg -->
-        <div class="date-trigger date-trigger--lg">
+        <button class="date-trigger date-trigger--lg" type="button" aria-label="Pick a date">
           <svg class="date-trigger__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
             <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
             <line x1="3" y1="10" x2="21" y2="10"/>
           </svg>
           <span class="date-trigger__value date-trigger__value--placeholder">Pick a date</span>
-        </div>
+        </button>
       </div>
     </div>
 
@@ -221,14 +221,14 @@
         The clear button is suppressed.
       </p>
 
-      <div class="date-trigger" aria-disabled="true">
+      <button class="date-trigger" type="button" disabled aria-label="Pick a date">
         <svg class="date-trigger__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
           <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
           <line x1="3" y1="10" x2="21" y2="10"/>
         </svg>
         <span class="date-trigger__value">Mar 14, 2026</span>
-      </div>
+      </button>
     </div>
 
     <!-- ══════════════════════════════════════════════════════════════════
@@ -242,14 +242,14 @@
         ring. Same recipe as <code>.input[aria-invalid="true"]</code>.
       </p>
 
-      <div class="date-trigger date-trigger--invalid" aria-invalid="true">
+      <button class="date-trigger date-trigger--invalid" type="button" aria-invalid="true" aria-label="Pick a date">
         <svg class="date-trigger__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
           <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
           <line x1="3" y1="10" x2="21" y2="10"/>
         </svg>
         <span class="date-trigger__value date-trigger__value--placeholder">Pick a date</span>
-      </div>
+      </button>
     </div>
 
     <!-- ══════════════════════════════════════════════════════════════════
@@ -276,7 +276,7 @@
             </svg>
             <span class="date-trigger__value date-trigger__value--placeholder" id="dp-value">Pick a date</span>
           </button>
-          <button class="date-trigger__clear" type="button" id="dp-clear" aria-label="Clear" style="display:none;">
+          <button class="date-trigger__clear" type="button" id="dp-clear" tabindex="-1" aria-label="Clear" style="display:none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;">
               <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
             </svg>

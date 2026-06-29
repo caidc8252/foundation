@@ -120,9 +120,11 @@
         </div>
         <!-- /OPTIONAL condition band -->
 
-        <!-- ■ REQUIRED CORE — results card = table-frame wrapping summary-bar + table + pagination
+        <!-- ■ REQUIRED CORE — results card = .card > .card__content--flush > table-frame
              (the count bar, table, and pagination are the results block's required internals; keep all three). -->
-        <div class="table-frame">
+        <div class="card">
+        <div class="card__content card__content--flush">
+        <div class="table-frame table-frame--flush">
 
           <!-- summary bar (sticky) — count appends "matching filters" when any filter is applied -->
           <div class="summary-bar">
@@ -337,7 +339,9 @@
             <div class="empty-state__action"><button class="btn btn--secondary" type="button">Retry</button></div>
           </div>
           -->
-        </div>
+        </div><!-- /table-frame -->
+        </div><!-- /card__content--flush -->
+        </div><!-- /card -->
         <!-- /REQUIRED CORE results card -->
       </div>
 

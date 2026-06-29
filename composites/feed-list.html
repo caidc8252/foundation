@@ -100,17 +100,17 @@
               <div class="feed-item__main">
                 <div class="feed-item__head">INCIDENT</div>
                 <div class="feed-item__title">CPU usage exceeded 90% on prod-api-3</div>
-                <div class="feed-item__row">
-                  <div class="feed-item__body">Threshold breached at 14:32 UTC. Auto-scaling triggered.</div>
-                  <div class="feed-item__actions">
-                    <button class="btn btn--secondary btn--sm">Acknowledge</button>
-                    <button class="btn btn--ghost btn--sm">View details</button>
-                  </div>
-                </div>
+                <div class="feed-item__body">Threshold breached at 14:32 UTC. Auto-scaling triggered.</div>
               </div>
-              <div class="feed-item__time">
-                <span class="unread-dot" aria-label="Unread"></span>
-                2h ago
+              <div class="feed-item__trailing">
+                <div class="feed-item__time">
+                  <span class="unread-dot" aria-label="Unread"></span>
+                  2h ago
+                </div>
+                <div class="feed-item__actions">
+                  <button class="btn btn--secondary btn--sm">Acknowledge</button>
+                  <button class="btn btn--ghost btn--sm">View details</button>
+                </div>
               </div>
             </div>
 
@@ -125,16 +125,16 @@
               <div class="feed-item__main">
                 <div class="feed-item__head">DEPLOYMENT</div>
                 <div class="feed-item__title">v2.14.3 deployed to production</div>
-                <div class="feed-item__row">
-                  <div class="feed-item__body">All 12 pods rolled out successfully. Health checks passing.</div>
-                  <div class="feed-item__actions">
-                    <button class="btn btn--secondary btn--sm">View runbook</button>
-                  </div>
-                </div>
+                <div class="feed-item__body">All 12 pods rolled out successfully. Health checks passing.</div>
               </div>
-              <div class="feed-item__time">
-                <span class="unread-dot" aria-label="Unread"></span>
-                45m ago
+              <div class="feed-item__trailing">
+                <div class="feed-item__time">
+                  <span class="unread-dot" aria-label="Unread"></span>
+                  45m ago
+                </div>
+                <div class="feed-item__actions">
+                  <button class="btn btn--secondary btn--sm">View runbook</button>
+                </div>
               </div>
             </div>
 
@@ -150,17 +150,17 @@
               <div class="feed-item__main">
                 <div class="feed-item__head">ALERT</div>
                 <div class="feed-item__title">Disk space at 87% on db-primary-1</div>
-                <div class="feed-item__row">
-                  <div class="feed-item__body">Projected to reach capacity within 48 hours.</div>
-                  <div class="feed-item__actions">
-                    <button class="btn btn--danger btn--sm">Retry now</button>
-                    <button class="btn btn--ghost btn--sm">Dismiss</button>
-                  </div>
-                </div>
+                <div class="feed-item__body">Projected to reach capacity within 48 hours.</div>
               </div>
-              <div class="feed-item__time">
-                <span class="unread-dot" aria-label="Unread"></span>
-                1h ago
+              <div class="feed-item__trailing">
+                <div class="feed-item__time">
+                  <span class="unread-dot" aria-label="Unread"></span>
+                  1h ago
+                </div>
+                <div class="feed-item__actions">
+                  <button class="btn btn--danger btn--sm">Retry now</button>
+                  <button class="btn btn--ghost btn--sm">Dismiss</button>
+                </div>
               </div>
             </div>
 
@@ -177,18 +177,18 @@
               <div class="feed-item__main">
                 <div class="feed-item__head">ACCESS</div>
                 <div class="feed-item__title">New device login from Chrome, macOS</div>
-                <div class="feed-item__row">
-                  <div class="feed-item__body">San Francisco, CA &middot; IP: 203.0.113.42</div>
-                  <div class="feed-item__actions">
-                    <button class="btn btn--secondary btn--sm">Accept</button>
-                    <button class="btn btn--ghost btn--sm">Decline</button>
-                  </div>
+                <div class="feed-item__body">San Francisco, CA &middot; IP: 203.0.113.42</div>
+              </div>
+              <div class="feed-item__trailing">
+                <div class="feed-item__time">30m ago</div>
+                <div class="feed-item__actions">
+                  <button class="btn btn--secondary btn--sm">Accept</button>
+                  <button class="btn btn--ghost btn--sm">Decline</button>
                 </div>
               </div>
-              <div class="feed-item__time">30m ago</div>
             </div>
 
-            <!-- Row 5: success tone, read, body only (no actions, no row wrapper) -->
+            <!-- Row 5: success tone, read, body only (no actions) -->
             <div class="feed-item feed-item--read">
               <div class="feed-item__icon feed-item__icon--success" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -201,10 +201,12 @@
                 <div class="feed-item__title">Daily backup completed</div>
                 <div class="feed-item__body">4.2 GB stored to s3://backups/prod/2026-06-28</div>
               </div>
-              <div class="feed-item__time">3h ago</div>
+              <div class="feed-item__trailing">
+                <div class="feed-item__time">3h ago</div>
+              </div>
             </div>
 
-            <!-- Row 6: info tone, read (last item), body only (no actions, no row wrapper) -->
+            <!-- Row 6: info tone, read (last item), body only (no actions) -->
             <div class="feed-item feed-item--read">
               <div class="feed-item__icon feed-item__icon--info" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -218,7 +220,9 @@
                 <div class="feed-item__title">Scheduled maintenance window updated</div>
                 <div class="feed-item__body">The maintenance for db-primary-1 has been rescheduled to July 2.</div>
               </div>
-              <div class="feed-item__time">5h ago</div>
+              <div class="feed-item__trailing">
+                <div class="feed-item__time">5h ago</div>
+              </div>
             </div>
 
           </div>
@@ -230,8 +234,8 @@
     <div class="demo-section">
       <h2 class="demo-section__title">Approvals feed</h2>
       <p class="demo-section__desc">
-        An approval feed with per-row Approve / Deny actions. The last row has no
-        actions (body only, no row wrapper).
+        An approval feed with per-row Approve / Deny actions. The last row has
+        body only (no actions).
       </p>
 
       <div class="card">
@@ -254,15 +258,15 @@
                   APPROVAL &middot; <code>role change</code>
                 </div>
                 <div class="feed-item__title">Promote a.lee to Admin</div>
-                <div class="feed-item__row">
-                  <div class="feed-item__body">Requested by m.ortiz &middot; expires in 5d</div>
-                  <div class="feed-item__actions">
-                    <button class="btn btn--secondary btn--sm">Approve</button>
-                    <button class="btn btn--ghost btn--sm">Deny</button>
-                  </div>
+                <div class="feed-item__body">Requested by m.ortiz &middot; expires in 5d</div>
+              </div>
+              <div class="feed-item__trailing">
+                <div class="feed-item__time">2h ago</div>
+                <div class="feed-item__actions">
+                  <button class="btn btn--secondary btn--sm">Approve</button>
+                  <button class="btn btn--ghost btn--sm">Deny</button>
                 </div>
               </div>
-              <div class="feed-item__time">2h ago</div>
             </div>
 
             <!-- Row 2: body + Approve/Deny actions -->
@@ -278,18 +282,18 @@
                   APPROVAL &middot; <code>permission scope</code>
                 </div>
                 <div class="feed-item__title">Grant s.builder access to payments-v2</div>
-                <div class="feed-item__row">
-                  <div class="feed-item__body">Requested by p.walsh &middot; expires in 3d</div>
-                  <div class="feed-item__actions">
-                    <button class="btn btn--secondary btn--sm">Approve</button>
-                    <button class="btn btn--ghost btn--sm">Deny</button>
-                  </div>
+                <div class="feed-item__body">Requested by p.walsh &middot; expires in 3d</div>
+              </div>
+              <div class="feed-item__trailing">
+                <div class="feed-item__time">4h ago</div>
+                <div class="feed-item__actions">
+                  <button class="btn btn--secondary btn--sm">Approve</button>
+                  <button class="btn btn--ghost btn--sm">Deny</button>
                 </div>
               </div>
-              <div class="feed-item__time">4h ago</div>
             </div>
 
-            <!-- Row 3: body only (no actions, no row wrapper) -->
+            <!-- Row 3: body only (no actions) -->
             <div class="feed-item">
               <div class="feed-item__icon feed-item__icon--neutral" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -304,7 +308,9 @@
                 <div class="feed-item__title">Increase project-alpha budget by $5,000</div>
                 <div class="feed-item__body">Requested by j.zhang &middot; approved by L8+</div>
               </div>
-              <div class="feed-item__time">1d ago</div>
+              <div class="feed-item__trailing">
+                <div class="feed-item__time">1d ago</div>
+              </div>
             </div>
 
           </div>

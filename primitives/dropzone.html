@@ -89,7 +89,7 @@
         "Drop files here or click to browse" text, and a hidden <code>&lt;input type="file"&gt;</code>.
       </p>
 
-      <div class="dropzone">
+      <label class="dropzone">
         <svg data-lucide="upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:var(--space-6);height:var(--space-6);">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
           <polyline points="17 8 12 3 7 8"/>
@@ -97,7 +97,7 @@
         </svg>
         <span>Drop files here or click to browse</span>
         <input type="file" hidden multiple>
-      </div>
+      </label>
     </div>
 
     <!-- ══════════════════════════════════════════════════════════════════
@@ -111,7 +111,7 @@
         <code>--color-primary-50</code>.
       </p>
 
-      <div class="dropzone dropzone--drag">
+      <label class="dropzone dropzone--drag">
         <svg data-lucide="upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:var(--space-6);height:var(--space-6);">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
           <polyline points="17 8 12 3 7 8"/>
@@ -119,7 +119,7 @@
         </svg>
         <span>Drop files here or click to browse</span>
         <input type="file" hidden multiple>
-      </div>
+      </label>
     </div>
 
     <!-- ══════════════════════════════════════════════════════════════════
@@ -132,7 +132,7 @@
         dims (<code>opacity: 0.6</code>) and the cursor becomes <code>not-allowed</code>.
       </p>
 
-      <div class="dropzone dropzone--disabled" aria-disabled="true">
+      <label class="dropzone dropzone--disabled" aria-disabled="true">
         <svg data-lucide="upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:var(--space-6);height:var(--space-6);">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
           <polyline points="17 8 12 3 7 8"/>
@@ -140,7 +140,7 @@
         </svg>
         <span>File upload is disabled</span>
         <input type="file" hidden multiple disabled>
-      </div>
+      </label>
     </div>
 
     <!-- ══════════════════════════════════════════════════════════════════
@@ -245,7 +245,7 @@
 
       <div class="demo-dropzone-area">
         <!-- Interactive dropzone -->
-        <div class="dropzone" id="demo-dropzone">
+        <label class="dropzone" id="demo-dropzone">
           <svg data-lucide="upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:var(--space-6);height:var(--space-6);">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
             <polyline points="17 8 12 3 7 8"/>
@@ -253,7 +253,7 @@
           </svg>
           <span>Drop files here or click to browse</span>
           <input type="file" id="demo-file-input" hidden multiple>
-        </div>
+        </label>
 
         <!-- File list (populated dynamically) -->
         <ul class="file-list" id="demo-file-list">
@@ -271,13 +271,6 @@
       var dropzone = document.getElementById('demo-dropzone');
       var fileInput = document.getElementById('demo-file-input');
       var fileList  = document.getElementById('demo-file-list');
-
-      /* ── Click to open file picker ── */
-      dropzone.addEventListener('click', function (e) {
-        // Don't re-trigger if the click landed on the file input itself
-        if (e.target === fileInput) return;
-        fileInput.click();
-      });
 
       /* ── File selected via input ── */
       fileInput.addEventListener('change', function () {

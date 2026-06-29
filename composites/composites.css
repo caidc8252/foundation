@@ -419,6 +419,10 @@
    place, so its verbs are never hidden behind hover. (Hover-reveal is a LIST
    affordance for info-first, self-authored list-items, not a table behavior.) */
 .data-table .row-actions {
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.data-table .row-actions__inner {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
@@ -1798,30 +1802,28 @@
   color: var(--color-content-primary);
 }
 .feed-item__body {
+  margin-top: var(--space-1);
   font-size: var(--text-xs);
   line-height: 1.5;
   color: var(--color-content-secondary);
 }
-/* Body + actions share one row: body left, actions right (contract line 2). */
-.feed-item__row {
+.feed-item__trailing {
   display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-3);
-  margin-top: var(--space-1);
-}
-.feed-item__actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-end;
   gap: var(--space-2);
-  flex-shrink: 0;
 }
 .feed-item__time {
   font-size: var(--text-xs);
   color: var(--color-content-tertiary);
   white-space: nowrap;
+}
+.feed-item__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
 }
 /* unread vs read — the title weight/ink carries it (pair with a lead dot). */
 .feed-item--read .feed-item__title {

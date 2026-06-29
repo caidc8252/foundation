@@ -32,8 +32,10 @@ where order is recency, not a connected sequence, and rows can carry actions.
   `content-tertiary`, may hold a mono code), a **title** (`text-sm`, weight 600),
   an optional **body** line (`text-xs`, `content-secondary`), and an optional
   **actions** row.
-- **Trailing** — the **time** (`content-tertiary`, `nowrap`); may also hold a
-  status chip or an unread dot.
+- **Trailing** — a right-aligned column (`__trailing`) holding the **time**
+  (`content-tertiary`, `nowrap`) at the top, with optional **actions** (`__actions`,
+  `justify-end`) stacked below. May also hold a status chip or an unread dot beside
+  the time.
 
 ## Rules
 
@@ -64,7 +66,8 @@ where order is recency, not a connected sequence, and rows can carry actions.
 - **Next / @cloud/ui** — a list of rows composed from `Badge` / icon tiles +
   `Button` actions inside a `Card` (`flush` content); this contract names the row
   shape shared with the notifications + approvals screens. See the `ui` skill.
-- **Artifact** — `.feed-list` → `.feed-item` (grid) with `.feed-item__icon`
-  (`--info` / `--success` / `--warning` / `--neutral`), `.feed-item__main`
-  (`__head` / `__title` / `__body` / `__actions`), and `.feed-item__time`. Empty
-  reuses `.empty-state`; rows of buttons reuse `.btn--*`. In `composites.css`.
+- **Artifact** — `.feed-list` → `.feed-item` (3-column grid: icon | main | trailing)
+  with `.feed-item__icon` (`--info` / `--success` / `--warning` / `--neutral`),
+  `.feed-item__main` (`__head` / `__title` / `__body`), and `.feed-item__trailing`
+  (`__time` on top; optional `__actions` below — `justify-content: flex-end`). Empty
+  reuses `.empty-state`; row buttons reuse `.btn--*`. In `composites.css`.

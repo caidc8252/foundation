@@ -109,7 +109,7 @@ Cross-consumer guards:
   See the `ui` skill (layout reference).
 - **Artifact** — `.detail-header` (+ `--sticky`) → `.detail-header__bar`
   (holding `.btn--ghost.detail-header__back`, `.detail-header__logo`,
-  `.detail-header__main` → `.detail-header__title` [+ `.badge`] /
-  `.detail-header__meta` / `.detail-header__chips`, then
+  `.detail-header__main` → `.detail-header__title` [contains `.detail-header__name`
+  + status `.badge`(s) + `.detail-header__chips`] / `.detail-header__meta`, then
   `.detail-header__actions` with `.btn--*`) → `.detail-header__tabs` wrapping a
   `.tabs__list--line`. In `composites.css`.

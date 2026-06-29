@@ -74,7 +74,7 @@
         Each alert has an icon, title, optional description, and optional action.
       </p>
 
-      <div class="alert alert--with-icon">
+      <div class="alert alert--with-icon" role="alert">
         <svg class="alert__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
         <div>
           <div class="alert__title">Default alert</div>
@@ -82,7 +82,7 @@
         </div>
       </div>
 
-      <div class="alert alert--info alert--with-icon">
+      <div class="alert alert--info alert--with-icon" role="alert">
         <svg class="alert__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
         <div>
           <div class="alert__title">Information</div>
@@ -93,7 +93,7 @@
         </div>
       </div>
 
-      <div class="alert alert--success alert--with-icon">
+      <div class="alert alert--success alert--with-icon" role="alert">
         <svg class="alert__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
         <div>
           <div class="alert__title">Deployment successful</div>
@@ -101,7 +101,7 @@
         </div>
       </div>
 
-      <div class="alert alert--warning alert--with-icon">
+      <div class="alert alert--warning alert--with-icon" role="alert">
         <svg class="alert__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
         <div>
           <div class="alert__title">Storage warning</div>
@@ -112,7 +112,7 @@
         </div>
       </div>
 
-      <div class="alert alert--error alert--with-icon">
+      <div class="alert alert--error alert--with-icon" role="alert">
         <svg class="alert__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
         <div>
           <div class="alert__title">Connection failed</div>
@@ -134,27 +134,27 @@
         flow — no leading icon, just the title and description.
       </p>
 
-      <div class="alert">
+      <div class="alert" role="alert">
         <div class="alert__title">Default — no icon</div>
         <p class="alert__description">A plain alert without a leading icon.</p>
       </div>
 
-      <div class="alert alert--info">
+      <div class="alert alert--info" role="alert">
         <div class="alert__title">Info — no icon</div>
         <p class="alert__description">Informational message without a glyph.</p>
       </div>
 
-      <div class="alert alert--success">
+      <div class="alert alert--success" role="alert">
         <div class="alert__title">Success — no icon</div>
         <p class="alert__description">Everything completed without issues.</p>
       </div>
 
-      <div class="alert alert--warning">
+      <div class="alert alert--warning" role="alert">
         <div class="alert__title">Warning — no icon</div>
         <p class="alert__description">Something needs attention.</p>
       </div>
 
-      <div class="alert alert--error">
+      <div class="alert alert--error" role="alert">
         <div class="alert__title">Error — no icon</div>
         <p class="alert__description">Something went wrong.</p>
       </div>
@@ -171,7 +171,7 @@
       </p>
 
       <div class="demo-col2">
-        <div class="alert alert--warning alert--with-icon">
+        <div class="alert alert--warning alert--with-icon" role="alert">
           <svg class="alert__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
           <div class="alert__title">Session expiring</div>
           <div class="alert__action">
@@ -179,7 +179,7 @@
           </div>
         </div>
 
-        <div class="alert alert--error alert--with-icon">
+        <div class="alert alert--error alert--with-icon" role="alert">
           <svg class="alert__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
           <div class="alert__title">Payment declined</div>
           <div class="alert__action">

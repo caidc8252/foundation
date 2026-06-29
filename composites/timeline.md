@@ -98,7 +98,12 @@ Badge's `tone`. `primary` maps to the **accent** ramp (not the gray-blue
 - **Artifact (self-contained HTML)** — `.timeline` (ul) › `.timeline__item` (li)
   › `.timeline__marker` (column) + `.timeline__content`. Set the marker shape
   with `.timeline__marker--dot` / `--icon` (the static skin can't observe whether
-  an icon is present) and the tone with `.timeline__marker--<tone>`. Apply
+  an icon is present) and the tone with `.timeline__marker--<tone>`. Inside
+  `.timeline__marker`: a `.timeline__marker-node` (the tinted circle container —
+  24px for `--icon`, 12px for `--dot`; receives the tone's border + bg) holding
+  either a `.timeline__marker-dot` (the hollow 12px ring, dot variant only) or a
+  raw SVG (icon variant); plus a sibling `.timeline__rail` (the 2px connecting
+  track that extends to the next item — hidden on `.timeline__item--last`). Apply
   `.timeline--compact` / `.timeline--stacked` on the root, and
   `.timeline__item--last` on the final item to drop its rail + bottom gap (the
   static skin can't observe `:last-child` group state the way the source's

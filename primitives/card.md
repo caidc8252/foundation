@@ -41,6 +41,7 @@ Resting cards stay at `1`; reserve `2` for hover/overlay.
 ## States
 
 - **interactive** (`interactive` prop) — hover lifts border to `line-strong` + `shadow-3` + `cursor-pointer`. Use only on genuinely clickable cards.
+- **collapsible** — add `.card--collapsible` on the root. Wrap the header content in a `card__toggle` (`<button>` with `aria-expanded` / `aria-controls`), which holds the `card__title` and a `card__chevron` (the chevron icon rotates −90° when closed). Set `data-open="false"` on the root card to collapse: `card__content` hides and the `card__header` bottom hairline drops. By default the card is open (no attribute).
 - No focus/disabled state on the container itself — interactive cards should wrap a real link/button for keyboard access.
 
 ## Anatomy
@@ -53,6 +54,16 @@ Card
 ```
 
 `CardHeader` is a grid: it grows to two columns when a `CardAction` is present and two rows when a `CardDescription` is present. Header and footer carry hairline rules (`line-subtle`); content does not. Images placed as first/last child get their top/bottom corners rounded to match the card radius.
+
+**Collapsible anatomy** — when `.card--collapsible` is set, the `CardHeader` content is a `card__toggle` button spanning the full header:
+
+```
+Card (card--collapsible)
+└─ CardHeader
+   └─ card__toggle (button, aria-expanded)
+      ├─ CardTitle
+      └─ card__chevron (svg, aria-hidden — rotates −90° when data-open="false")
+```
 
 ## Accessibility
 
@@ -69,4 +80,4 @@ Card
 ## Implementations
 
 - **Next / @cloud/ui** — `import { Card, CardHeader, CardTitle, CardDescription, CardAction, CardContent, CardFooter } from "@cloud/ui"`. Root props `size` `elevation` `interactive`; slot props include `flush`. API details: the `ui` skill. Compose slots; do not hand-pad the root.
-- **Artifact (self-contained HTML)** — use `.card` + `.card__header` / `.card__content` / `.card__footer` in `./primitives.css`, on top of the inlined `dist/tokens.inline.css`. Padding lives on the slot classes, matching the contract.
+- **Artifact (self-contained HTML)** — use `.card` + `.card__header` / `.card__content` / `.card__footer` in `./primitives.css`, on top of the inlined `dist/tokens.inline.css`. Padding lives on the slot classes, matching the contract. For collapsible: add `.card--collapsible` on the root; replace the header content with a `card__toggle` `<button>` (carries `aria-expanded` / `aria-controls`) containing the `card__title` and a `card__chevron` `<span>` wrapping the chevron SVG; toggle `data-open="false"` on the root to collapse.

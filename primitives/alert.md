@@ -43,7 +43,7 @@ Alert is a static presentational box — it has no hover / active / focus / disa
 - **icon** *(optional)* — a leading status glyph. When present the root switches to a two-column grid (`auto 1fr`) with a `--space-2`-ish gutter; the icon spans both rows, sits `size-3.5` (14px), nudged down a hair to align to the title cap-height, and `shrink-0`. The title and description then start in column 2. With no icon the box is a plain single-column flow.
 - **title** — `text-sm`, `font-semibold`, tight line-height. The primary line.
 - **description** *(optional)* — `text-xs`, `content-secondary`, a small top margin below the title. Inherits nothing from the tone color (deliberately dimmer than the title).
-- **action** *(optional)* — a control (typically a soft-tone `.btn`) absolutely positioned in the top-right corner. Use it for one inline affordance ("Retry", "Dismiss").
+- **action** *(optional)* — a control (typically a `.btn--ghost`) absolutely positioned in the top-right corner. Use it for one inline affordance ("Retry", "Dismiss").
 
 ## Accessibility
 
@@ -54,4 +54,4 @@ Alert is a static presentational box — it has no hover / active / focus / disa
 ## Implementations
 
 - **Next / @cloud/ui** — `import { Alert, AlertTitle, AlertDescription, AlertAction } from "@cloud/ui"`. `Alert` takes `variant`; compose the `AlertTitle` / `AlertDescription` / `AlertAction` slots inside. The two-column icon layout is auto-applied when a direct `<svg>` child is present (`has-[>svg]`). Prop/API details: the `ui` skill. Don't re-skin via `className`; pick a `variant`.
-- **Artifact (self-contained HTML)** — use `.alert` + `.alert--<tone>` on the box, with `.alert__icon` / `.alert__title` / `.alert__description` / `.alert__action` slots, on top of the inlined `dist/tokens.inline.css`. The `.alert--with-icon` modifier opts the box into the two-column grid (the static skin can't observe a child `<svg>` the way the React `has-[>svg]` selector does, so it's an explicit class). Same tone recipe, same names. Reuse `.btn` (e.g. `.btn--soft .btn--xs`) inside `.alert__action`.
+- **Artifact (self-contained HTML)** — use `.alert` + `.alert--<tone>` on the box, with `.alert__icon` / `.alert__title` / `.alert__description` / `.alert__action` slots, on top of the inlined `dist/tokens.inline.css`. The `.alert--with-icon` modifier opts the box into the two-column grid (the static skin can't observe a child `<svg>` the way the React `has-[>svg]` selector does, so it's an explicit class). Same tone recipe, same names. Reuse `.btn` (e.g. `.btn--ghost .btn--xs`) inside `.alert__action`.

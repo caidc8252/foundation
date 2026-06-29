@@ -1,20 +1,21 @@
 <!--
   data-table.html
   ──────────────────────────────────────────────────────────────────────
-  Demonstrates the data-table composite in the foundation design system.
-  Covers:
-    - Three density presets: compact, comfortable (default), spacious
-    - Framed appearance via .table-frame / .table-frame--flush
-    - Sortable headers (tri-state: unsorted → asc → desc)
-    - Multi-row selection with .col-select checkbox column
-    - Selected row state (state-selected bg + 2px primary left bar)
-    - Cell type recipes: .cell-2line, .cell-num/cell-right, .cell-tags,
-      .cell-chevron, .cell-empty
-    - Row actions (always-visible verbs, icon-only ghost actions,
-      kebab menu for many verbs)
-    - Sticky header (--sticky-head) + sticky first column (--sticky-col)
-    - Striped rows (--striped)
-    - Rows-per-page selector + simple nav below the table
+  Demonstrates the data-table composite. Each section is a self-contained
+  pattern — do not copy rows from one section into another.
+
+  Sections
+  ─────────────────────────────────────────────────────────────────────
+  1. Action table  — selection column + row-actions. Every row has
+     inline verbs (Edit / Delete / More). No navigation chevron.
+     Shows all three sort-icon states across columns.
+
+  2. Navigation table — rows are navigation targets. Trailing chevron
+     only; no selection column, no row-action buttons.
+
+  3. Compact density  — tighter padding, no selection, no sticky.
+
+  4. Spacious density — generous padding for reports.
   ──────────────────────────────────────────────────────────────────────
 -->
 <!DOCTYPE html>
@@ -27,7 +28,6 @@
   <link rel="stylesheet" href="../primitives/primitives.css">
   <link rel="stylesheet" href="../composites/composites.css">
   <style>
-    /* Page-local overrides for this demo page */
     body {
       margin: 0;
       padding: 0;
@@ -60,23 +60,33 @@
       color: var(--color-content-tertiary);
       margin: 0;
     }
-    .demo-frame {
-      min-height: 300px;
-    }
   </style>
 </head>
 <body>
   <div class="demo-page">
 
-    <!-- ── Section: Default density (comfortable) with all features ── -->
+    <!--
+      ══════════════════════════════════════════════════════════════════
+      §1  ACTION TABLE
+          Pattern: rows have inline verbs → selection column + row-actions.
+          Never mix with navigation rows (no cell-chevron here).
+
+          Sort-icon three-state demo across columns:
+            Name   → ascending  active  (chevron-up,        primary-tinted)
+            Role   → unsorted   idle    (chevrons-up-down,  dim on hover)
+            ID     → unsorted   idle    (chevrons-up-down,  dim on hover)
+            Status → not sortable       (plain th, no button)
+      ══════════════════════════════════════════════════════════════════
+    -->
     <div class="demo-section">
-      <h2 class="demo-section__title">Data table · comfortable (default) · sticky header · striped · with selection</h2>
+      <h2 class="demo-section__title">Action table · selection + row-actions · sticky header · striped</h2>
       <p class="demo-section__desc">
-        Full-featured table: sortable headers, multi-row selection, all cell types,
-        row actions, sticky header + first column, striped rows.
+        Use when rows support inline operations. Every row exposes its verbs at rest — no
+        hover-reveal. Name column shows ascending sort (active); Role / ID show idle sortable
+        state (chevron appears on hover). Status is not sortable.
       </p>
 
-      <div class="table-frame demo-frame">
+      <div class="table-frame">
         <div class="table-scroll" style="max-height:420px">
           <table class="data-table data-table--sticky-head data-table--sticky-col data-table--striped" style="min-width:960px">
             <thead>
@@ -86,38 +96,35 @@
                     <input type="checkbox" class="checkbox" aria-label="Select all rows">
                   </label>
                 </th>
-                <th scope="col" style="width:220px">
-                  <button class="th-sort" aria-label="Sort by name">
+                <!-- active ascending sort -->
+                <th scope="col" aria-sort="ascending" style="width:220px">
+                  <button class="th-sort" aria-label="Sort by name, currently ascending">
                     Name
-                    <svg class="th-sort__icon--active" data-lucide="arrow-up-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/>
+                    <svg data-lucide="chevron-up" class="th-sort__icon--active" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="m18 15-6-6-6 6"/>
                     </svg>
                   </button>
                 </th>
-                <th scope="col" style="width:140px">
+                <!-- idle sortable -->
+                <th scope="col" aria-sort="none" style="width:140px">
                   <button class="th-sort" aria-label="Sort by role">
                     Role
-                    <svg class="th-sort__icon--idle" data-lucide="arrow-up-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/>
+                    <svg data-lucide="chevrons-up-down" class="th-sort__icon--idle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>
                     </svg>
                   </button>
                 </th>
-                <th scope="col" style="width:100px">
+                <!-- idle sortable -->
+                <th scope="col" aria-sort="none" style="width:100px">
                   <button class="th-sort" aria-label="Sort by ID">
                     ID
-                    <svg class="th-sort__icon--idle" data-lucide="arrow-up-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/>
+                    <svg data-lucide="chevrons-up-down" class="th-sort__icon--idle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>
                     </svg>
                   </button>
                 </th>
-                <th scope="col" style="width:120px">
-                  <button class="th-sort" aria-label="Sort by status">
-                    Status
-                    <svg class="th-sort__icon--idle" data-lucide="arrow-up-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/>
-                    </svg>
-                  </button>
-                </th>
+                <!-- not sortable -->
+                <th scope="col" style="width:120px">Status</th>
                 <th scope="col" style="width:100px">Region</th>
                 <th scope="col" style="width:100px" class="cell-right">Amount</th>
                 <th scope="col" style="width:110px" class="cell-right"></th>
@@ -137,8 +144,8 @@
                     <span class="cell-2line__sub">olivia.chen@example.com</span>
                   </div>
                 </td>
+                <td class="cell-num">Admin</td>
                 <td><span class="cell-num">#A-0423</span></td>
-                <td><span class="cell-empty">&mdash;</span></td>
                 <td>
                   <div class="cell-tags">
                     <span class="badge badge--success">Active</span>
@@ -147,15 +154,17 @@
                 <td class="cell-num">APAC</td>
                 <td class="cell-num cell-right">$12,450</td>
                 <td class="row-actions">
-                  <button class="btn btn--secondary btn--xs">Edit</button>
-                  <button class="btn btn--ghost btn--icon-sm" aria-label="More actions">
-                    <svg data-lucide="more-horizontal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
-                    </svg>
-                  </button>
+                  <div class="row-actions__inner">
+                    <button class="btn btn--secondary btn--xs">Edit</button>
+                    <button class="btn btn--ghost btn--icon-sm" aria-label="More actions">
+                      <svg data-lucide="ellipsis" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
+                      </svg>
+                    </button>
+                  </div>
                 </td>
               </tr>
-              <!-- Normal row with all cell types -->
+              <!-- Row: Edit + Delete (icon) + More -->
               <tr>
                 <td class="col-select">
                   <label class="checkbox-toggle">
@@ -168,8 +177,8 @@
                     <span class="cell-2line__sub">m.johnson@example.com</span>
                   </div>
                 </td>
+                <td class="cell-num">Developer</td>
                 <td><span class="cell-num">#B-1789</span></td>
-                <td class="cell-num">DEV-001</td>
                 <td>
                   <div class="cell-tags">
                     <span class="badge badge--warning">Pending</span>
@@ -179,48 +188,22 @@
                 <td class="cell-num">EMEA</td>
                 <td class="cell-num cell-right">$3,200</td>
                 <td class="row-actions">
-                  <button class="btn btn--secondary btn--xs">Edit</button>
-                  <button class="btn btn--ghost-danger btn--icon-sm" aria-label="Delete">
-                    <svg data-lucide="trash-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
-                    </svg>
-                  </button>
-                  <button class="btn btn--ghost btn--icon-sm" aria-label="More actions">
-                    <svg data-lucide="more-horizontal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
-                    </svg>
-                  </button>
-                </td>
-              </tr>
-              <!-- Row with trailing chevron (navigable row) -->
-              <tr class="is-clickable">
-                <td class="col-select">
-                  <label class="checkbox-toggle">
-                    <input type="checkbox" class="checkbox" aria-label="Select row">
-                  </label>
-                </td>
-                <td>
-                  <div class="cell-2line">
-                    <span class="cell-2line__main">Aisha Patel</span>
-                    <span class="cell-2line__sub">aisha.p@example.com</span>
+                  <div class="row-actions__inner">
+                    <button class="btn btn--secondary btn--xs">Edit</button>
+                    <button class="btn btn--ghost-danger btn--icon-sm" aria-label="Delete">
+                      <svg data-lucide="trash-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                      </svg>
+                    </button>
+                    <button class="btn btn--ghost btn--icon-sm" aria-label="More actions">
+                      <svg data-lucide="ellipsis" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
+                      </svg>
+                    </button>
                   </div>
                 </td>
-                <td><span class="cell-num">#A-0891</span></td>
-                <td class="cell-num">OPS-042</td>
-                <td>
-                  <div class="cell-tags">
-                    <span class="badge badge--success">Active</span>
-                  </div>
-                </td>
-                <td class="cell-num">AMER</td>
-                <td class="cell-num cell-right">$8,700</td>
-                <td class="cell-chevron cell-right">
-                  <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="m9 18 6-6-6-6"/>
-                  </svg>
-                </td>
               </tr>
-              <!-- Row with empty cell -->
+              <!-- Row: empty cell -->
               <tr>
                 <td class="col-select">
                   <label class="checkbox-toggle">
@@ -233,8 +216,8 @@
                     <span class="cell-2line__sub">elena.k@example.com</span>
                   </div>
                 </td>
-                <td><span class="cell-num">#C-3412</span></td>
                 <td><span class="cell-empty">&mdash;</span></td>
+                <td><span class="cell-num">#C-3412</span></td>
                 <td>
                   <div class="cell-tags">
                     <span class="badge badge--danger">Inactive</span>
@@ -243,12 +226,14 @@
                 <td class="cell-num">APAC</td>
                 <td class="cell-num cell-right"><span class="cell-empty">&mdash;</span></td>
                 <td class="row-actions">
-                  <button class="btn btn--secondary btn--xs">Edit</button>
-                  <button class="btn btn--ghost btn--icon-sm" aria-label="More actions">
-                    <svg data-lucide="more-horizontal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
-                    </svg>
-                  </button>
+                  <div class="row-actions__inner">
+                    <button class="btn btn--secondary btn--xs">Edit</button>
+                    <button class="btn btn--ghost btn--icon-sm" aria-label="More actions">
+                      <svg data-lucide="ellipsis" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
+                      </svg>
+                    </button>
+                  </div>
                 </td>
               </tr>
               <!-- Disabled row -->
@@ -264,8 +249,8 @@
                     <span class="cell-2line__sub">t.rivera@example.com (deactivated)</span>
                   </div>
                 </td>
+                <td class="cell-num">Ops</td>
                 <td><span class="cell-num">#B-2301</span></td>
-                <td class="cell-num">TEMP-88</td>
                 <td>
                   <div class="cell-tags">
                     <span class="badge badge--neutral">Archived</span>
@@ -274,10 +259,12 @@
                 <td class="cell-num">EMEA</td>
                 <td class="cell-num cell-right">$0</td>
                 <td class="row-actions">
-                  <button class="btn btn--secondary btn--xs" disabled>Edit</button>
+                  <div class="row-actions__inner">
+                    <button class="btn btn--secondary btn--xs" disabled>Edit</button>
+                  </div>
                 </td>
               </tr>
-              <!-- Normal row -->
+              <!-- Row: Edit + Delete (icon) -->
               <tr>
                 <td class="col-select">
                   <label class="checkbox-toggle">
@@ -290,8 +277,8 @@
                     <span class="cell-2line__sub">s.tanaka@example.com</span>
                   </div>
                 </td>
+                <td class="cell-num">Engineer</td>
                 <td><span class="cell-num">#A-6712</span></td>
-                <td class="cell-num">ENG-203</td>
                 <td>
                   <div class="cell-tags">
                     <span class="badge badge--success">Active</span>
@@ -301,12 +288,14 @@
                 <td class="cell-num">APAC</td>
                 <td class="cell-num cell-right">$15,200</td>
                 <td class="row-actions">
-                  <button class="btn btn--secondary btn--xs">Edit</button>
-                  <button class="btn btn--ghost-danger btn--icon-sm" aria-label="Delete">
-                    <svg data-lucide="trash-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
-                    </svg>
-                  </button>
+                  <div class="row-actions__inner">
+                    <button class="btn btn--secondary btn--xs">Edit</button>
+                    <button class="btn btn--ghost-danger btn--icon-sm" aria-label="Delete">
+                      <svg data-lucide="trash-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                      </svg>
+                    </button>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -315,13 +304,154 @@
       </div>
     </div>
 
-    <!-- ── Section: Compact density ── -->
+    <!--
+      ══════════════════════════════════════════════════════════════════
+      §2  NAVIGATION TABLE
+          Pattern: each row is a navigation target → trailing chevron.
+          No selection column. No row-action buttons.
+          The entire row is the click target (is-clickable).
+
+          Sort-icon demo: Name = descending active (chevron-down).
+      ══════════════════════════════════════════════════════════════════
+    -->
     <div class="demo-section">
-      <h2 class="demo-section__title">Data table · compact density</h2>
+      <h2 class="demo-section__title">Navigation table · trailing chevron · no selection · no row-actions</h2>
       <p class="demo-section__desc">
-        Compact preset: tighter cell padding (8px block) for data-dense screens.
-        Use <code>--compact</code> on the table. No selection column, no sticky
-        first column — a simpler table.
+        Use when clicking a row navigates to a detail page. The whole row is the
+        click target — no inline buttons. No checkbox column. Sort header shows
+        descending active state (chevron-down) on Name.
+      </p>
+
+      <div class="table-frame">
+        <div class="table-scroll">
+          <table class="data-table data-table--sticky-head" style="min-width:680px">
+            <thead>
+              <tr>
+                <!-- active descending sort -->
+                <th scope="col" aria-sort="descending" style="width:220px">
+                  <button class="th-sort" aria-label="Sort by name, currently descending">
+                    Name
+                    <svg data-lucide="chevron-down" class="th-sort__icon--active" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="m6 9 6 6 6-6"/>
+                    </svg>
+                  </button>
+                </th>
+                <!-- idle sortable -->
+                <th scope="col" aria-sort="none" style="width:140px">
+                  <button class="th-sort" aria-label="Sort by department">
+                    Department
+                    <svg data-lucide="chevrons-up-down" class="th-sort__icon--idle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/>
+                    </svg>
+                  </button>
+                </th>
+                <!-- not sortable -->
+                <th scope="col" style="width:120px">Status</th>
+                <th scope="col" style="width:100px" class="cell-right">Amount</th>
+                <!-- chevron column — no label -->
+                <th scope="col" style="width:40px"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="is-clickable">
+                <td>
+                  <div class="cell-2line">
+                    <span class="cell-2line__main">Aisha Patel</span>
+                    <span class="cell-2line__sub">aisha.p@example.com</span>
+                  </div>
+                </td>
+                <td class="cell-num">Operations</td>
+                <td>
+                  <div class="cell-tags">
+                    <span class="badge badge--success">Active</span>
+                  </div>
+                </td>
+                <td class="cell-num cell-right">$8,700</td>
+                <td class="cell-chevron">
+                  <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m9 18 6-6-6-6"/>
+                  </svg>
+                </td>
+              </tr>
+              <tr class="is-clickable">
+                <td>
+                  <div class="cell-2line">
+                    <span class="cell-2line__main">Wei Zhang</span>
+                    <span class="cell-2line__sub">w.zhang@example.com</span>
+                  </div>
+                </td>
+                <td class="cell-num">Engineering</td>
+                <td>
+                  <div class="cell-tags">
+                    <span class="badge badge--success">Active</span>
+                    <span class="badge badge--info">Lead</span>
+                  </div>
+                </td>
+                <td class="cell-num cell-right">$21,000</td>
+                <td class="cell-chevron">
+                  <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m9 18 6-6-6-6"/>
+                  </svg>
+                </td>
+              </tr>
+              <tr class="is-clickable">
+                <td>
+                  <div class="cell-2line">
+                    <span class="cell-2line__main">Sara Lindqvist</span>
+                    <span class="cell-2line__sub">s.lindqvist@example.com</span>
+                  </div>
+                </td>
+                <td class="cell-num">Design</td>
+                <td>
+                  <div class="cell-tags">
+                    <span class="badge badge--warning">On leave</span>
+                  </div>
+                </td>
+                <td class="cell-num cell-right"><span class="cell-empty">&mdash;</span></td>
+                <td class="cell-chevron">
+                  <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m9 18 6-6-6-6"/>
+                  </svg>
+                </td>
+              </tr>
+              <tr class="is-clickable">
+                <td>
+                  <div class="cell-2line">
+                    <span class="cell-2line__main">Carlos Mendes</span>
+                    <span class="cell-2line__sub">c.mendes@example.com</span>
+                  </div>
+                </td>
+                <td class="cell-num">Finance</td>
+                <td>
+                  <div class="cell-tags">
+                    <span class="badge badge--danger">Inactive</span>
+                  </div>
+                </td>
+                <td class="cell-num cell-right">$0</td>
+                <td class="cell-chevron">
+                  <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m9 18 6-6-6-6"/>
+                  </svg>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!--
+      ══════════════════════════════════════════════════════════════════
+      §3  COMPACT DENSITY
+          --compact preset: 8px block padding, data-dense screens.
+          No selection column. Simple row-actions.
+      ══════════════════════════════════════════════════════════════════
+    -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Compact density</h2>
+      <p class="demo-section__desc">
+        Use <code>--compact</code> for ops or data-dense screens. Block padding
+        snaps to <code>space-2</code> (8px).
       </p>
 
       <div class="table-frame">
@@ -348,7 +478,9 @@
                 <td><span class="badge badge--success">Active</span></td>
                 <td class="cell-num cell-right">$5,400</td>
                 <td class="row-actions">
-                  <button class="btn btn--secondary btn--xs">Edit</button>
+                  <div class="row-actions__inner">
+                    <button class="btn btn--secondary btn--xs">Edit</button>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -362,7 +494,9 @@
                 <td><span class="badge badge--warning">Pending</span></td>
                 <td class="cell-num cell-right">$1,200</td>
                 <td class="row-actions">
-                  <button class="btn btn--secondary btn--xs">Edit</button>
+                  <div class="row-actions__inner">
+                    <button class="btn btn--secondary btn--xs">Edit</button>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -376,7 +510,9 @@
                 <td><span class="badge badge--danger">Inactive</span></td>
                 <td class="cell-num cell-right"><span class="cell-empty">&mdash;</span></td>
                 <td class="row-actions">
-                  <button class="btn btn--secondary btn--xs">Edit</button>
+                  <div class="row-actions__inner">
+                    <button class="btn btn--secondary btn--xs">Edit</button>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -385,12 +521,18 @@
       </div>
     </div>
 
-    <!-- ── Section: Spacious density ── -->
+    <!--
+      ══════════════════════════════════════════════════════════════════
+      §4  SPACIOUS DENSITY
+          --spacious preset: generous block padding for reports /
+          presentation tables. No selection. No row-actions.
+      ══════════════════════════════════════════════════════════════════
+    -->
     <div class="demo-section">
-      <h2 class="demo-section__title">Data table · spacious density</h2>
+      <h2 class="demo-section__title">Spacious density</h2>
       <p class="demo-section__desc">
-        Spacious preset: generous block padding (32px) for reports and
-        presentation tables. Use <code>--spacious</code> on the table.
+        Use <code>--spacious</code> for reports and presentation tables.
+        Block padding is <code>space-4</code> (16px) on both sides.
       </p>
 
       <div class="table-frame">
@@ -399,9 +541,9 @@
             <thead>
               <tr>
                 <th scope="col">Metric</th>
-                <th scope="col">Q1</th>
-                <th scope="col">Q2</th>
-                <th scope="col">Q3</th>
+                <th scope="col" class="cell-right">Q1</th>
+                <th scope="col" class="cell-right">Q2</th>
+                <th scope="col" class="cell-right">Q3</th>
                 <th scope="col" class="cell-right">Total</th>
               </tr>
             </thead>
@@ -426,75 +568,6 @@
                 <td class="cell-num cell-right">$17,600</td>
                 <td class="cell-num cell-right">$17,700</td>
                 <td class="cell-num cell-right"><strong>$48,400</strong></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── Section: No selection (no bulk ops) ── -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">Data table · no selection column</h2>
-      <p class="demo-section__desc">
-        When the table has no bulk operations, the checkbox column is
-        omitted entirely — never a default. Row actions are always visible.
-      </p>
-
-      <div class="table-frame">
-        <div class="table-scroll">
-          <table class="data-table" style="min-width:600px">
-            <thead>
-              <tr>
-                <th scope="col">Item</th>
-                <th scope="col">SKU</th>
-                <th scope="col" class="cell-right">Price</th>
-                <th scope="col">Stock</th>
-                <th scope="col" class="cell-right"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Wireless Mouse Pro</td>
-                <td class="cell-num">WM-2024-001</td>
-                <td class="cell-num cell-right">$49.99</td>
-                <td><span class="badge badge--success">In Stock</span></td>
-                <td class="row-actions">
-                  <button class="btn btn--secondary btn--xs">View</button>
-                  <button class="btn btn--ghost btn--icon-sm" aria-label="More actions">
-                    <svg data-lucide="more-horizontal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
-                    </svg>
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td>Mechanical Keyboard</td>
-                <td class="cell-num">MK-2024-042</td>
-                <td class="cell-num cell-right">$129.00</td>
-                <td><span class="badge badge--warning">Low Stock</span></td>
-                <td class="row-actions">
-                  <button class="btn btn--secondary btn--xs">View</button>
-                  <button class="btn btn--ghost btn--icon-sm" aria-label="More actions">
-                    <svg data-lucide="more-horizontal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
-                    </svg>
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td>USB-C Hub 7-in-1</td>
-                <td class="cell-num">UC-2024-017</td>
-                <td class="cell-num cell-right">$34.50</td>
-                <td><span class="badge badge--danger">Out of Stock</span></td>
-                <td class="row-actions">
-                  <button class="btn btn--secondary btn--xs">View</button>
-                  <button class="btn btn--ghost btn--icon-sm" aria-label="More actions">
-                    <svg data-lucide="more-horizontal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
-                    </svg>
-                  </button>
-                </td>
               </tr>
             </tbody>
           </table>

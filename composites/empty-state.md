@@ -42,5 +42,7 @@ space. Also covers no-results-for-filters and (with a different icon/verb) error
 - **Next / @cloud/ui** — `Empty` (`title` / `description` / `action`). `ui` skill →
   data-display.
 - **Artifact** — `.empty-state` › `.empty-state__icon` (svg) + `.empty-state__title`
-  + `.empty-state__description` + `.empty-state__action` (a `.btn--primary`). In
-  `composites.css`.
+  + `.empty-state__description` + `.empty-state__action` (a `.btn--primary` or
+  `.btn--secondary`; use `primary` when this is the page's sole primary verb, `secondary`
+  when a primary action already appears nearby or the context warrants lower visual weight).
+  In `composites.css`.

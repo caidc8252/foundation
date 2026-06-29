@@ -47,6 +47,10 @@ color via `currentColor`. No size modifier.
   text column = caption (optional, uppercase) over title
 ```
 
+- **Body** (`step__body`) — the clickable/static block that groups dot + text. When
+  navigation is enabled the consumer renders it as a `<button>` with
+  `step__body--clickable`; otherwise it is a plain `<div>`. It is a sibling of
+  the connector, not its parent.
 - **Dot** carries the ordinal (`index + 1`), or the step's own `icon`, or — once
   completed — a check. An `icon` **wins in every state**: it persists through
   completed (shown in success green, not replaced by the check), so keep the
@@ -55,7 +59,8 @@ color via `currentColor`. No size modifier.
   `tracking-wide`, `content-tertiary`) over the `title` (`leading-tight`).
 - **Connector** is a 1px flex-grow track filling the gap to the next step; absent
   after the last step (last item is `flex-none`, the rest are `flex-1` so the rail
-  spreads to fill its width).
+  spreads to fill its width). It is a sibling of `__body` inside `<li>`, not
+  nested within it.
 - The component renders **bare** (just the dot row + connectors) so it composes
   anywhere; wrap it yourself for the card look (`border` `line-default` · bg
   `surface-2` · `radius-xl` · `shadow-1` · `px-6 py-4`).
@@ -112,8 +117,9 @@ Use captions to show stage dates or IDs where available.
   `stepDotVariants` for the dot recipe. API details: the `ui` skill.
 - **Artifact (self-contained HTML)** — `.step-indicator` (an `<ol>`) › `.step` per
   item, modified by `.step--completed` / `.step--active` / `.step--upcoming`. Each
-  item holds `.step__dot` (with the number / icon / check), a `.step__text` column
-  (`.step__caption` + `.step__title`), and a trailing `.step__connector` (omit on
-  the last). The skin paints all three static states by class; **which** state a
-  step is in, and the click-to-jump behavior, are computed by the consumer (here,
-  by hand-setting the modifier). In `composites.css`.
+  `<li>` holds a `.step__body` (a `<div>`, or `<button>` with `step__body--clickable`
+  when navigable), which contains `.step__dot` (number / icon / check) and
+  `.step__text` (`.step__caption` + `.step__title`); plus a sibling
+  `.step__connector` (trailing 1px track — omit on the last step). The skin paints
+  all three static states by class; **which** state a step is in, and the
+  click-to-jump behavior, are computed by the consumer. In `composites.css`.
