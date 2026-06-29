@@ -78,19 +78,19 @@ when this record's job calls for it.
   they dock in the **`detail-header` band** (below the name), not in `page-body`.
 - **Overview is a key-value grid** via `grid-auto-fit-kv` (no hand-written
   `repeat(auto-fit,…)`); labels `text-content-tertiary`, values `content-primary`.
-- **A section that lists a collection is a `section-card` wrapping a `data-table`** —
+- **A section that lists a collection is a `card` wrapping a `data-table`** —
   the one consistent block for every record-list section / tab (contracts, operators,
   members, devices, …). The shape is fixed:
-  `section-card` › `card__header` ( **title** · optional **count** · **at most one**
+  `card` › `card__header` ( **title** · optional **count** · **at most one**
   action — the section's add / primary verb ) › a **flush** `card__content`
   (`.card__content--flush` — never an inline `padding:0` hack) › `data-table`
   (row actions **always-visible** per [`data-table`](../composites/data-table.md);
   an `empty-state` in place of rows when the collection is empty). The count +
-  action live in the **section-card header**, *not* a `summary-bar` — the
+  action live in the **card header**, *not* a `summary-bar` — the
   [`summary-bar`](../composites/summary-bar.md) belongs to the list page, not a
   detail section. Multiple such sections in one tab **stack vertically in a
   `.stack--5`** (the sibling-card rung, principles §13 — they **never touch / 0-gap**;
-  e.g. Operators = an accounts `section-card` + a pending-invitations `section-card`).
+  e.g. Operators = an accounts `card` + a pending-invitations `card`).
   Don't hand-roll a different card/table shape per tab — every collection section
   reads the same.
 - **At most one primary action**, rightmost (mirrors `detail-header` /
@@ -155,8 +155,8 @@ overflow menu or a `danger` button (see **Destructive actions** in Rules).
 
 Composites: [`detail-header`](../composites/detail-header.md) (the identity +
 status + meta + tab-strip band at the top), [`kv-grid`](../composites/kv-grid.md)
-(the Overview), [`section-card`](../composites/section-card.md) (each labelled
-section / collapsible panel), [`feed-list`](../composites/feed-list.md) or
+(the Overview), `card` (each labelled section / panel),
+[`feed-list`](../composites/feed-list.md) or
 [`timeline`](../composites/timeline.md) (activity), and
 [`diff`](../composites/diff.md) (the confirm-change step). Primitives underneath:
 `Card`, `Badge`, `Tabs`, `Button`, `Separator`, `Avatar`. `@cloud/ui`: `layout/`

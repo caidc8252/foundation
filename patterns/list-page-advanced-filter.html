@@ -102,7 +102,7 @@
     width: var(--space-4);
     height: var(--space-4);
     color: var(--color-primary-700);
-    margin-right: var(--space-2_5);
+    margin-right: var(--spacing-cx-sm);
   }
   .filter-sheet__text {
     flex: 1;
@@ -263,7 +263,7 @@
                   <!-- LP7: active sort column carries aria-sort + --active icon -->
                   <th aria-sort="descending">
                     <button class="th-sort" type="button">Registered
-                      <svg class="th-sort__icon th-sort__icon--active" data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                      <svg class="th-sort__icon--active" data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                     </button>
                   </th>
                   <th>City</th>
@@ -466,7 +466,7 @@
   <!-- Header — horizontal row: funnel icon + title/desc column + inline close
        (matches advanced-filter-sheet.tsx SheetHeader override) -->
   <div class="sheet__header filter-sheet__header">
-    <svg class="filter-sheet__icon" data-lucide="funnel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.74 1.67L9.483 12.66A2 2 0 0 1 10 14z"/></svg>
+    <svg class="filter-sheet__icon" data-lucide="funnel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"/></svg>
     <div class="filter-sheet__text">
       <div class="sheet__title" id="adv-title">Advanced filters</div>
       <div class="sheet__description">Narrow results with additional criteria. Changes apply when you click "Apply".</div>

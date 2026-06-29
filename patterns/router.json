@@ -42,7 +42,7 @@
       "exampleRequests": ["请帮我做一个注册界面", "Create a user registration page", "做一个新增客户表单", "Build an edit profile form"],
       "defaultTitle": "Create record",
       "outputNameHints": ["register", "signup", "create", "new-record", "edit"],
-      "composites": ["page-header", "page-body", "section-card"],
+      "composites": ["page-header", "page-body"],
       "clarifyIf": [
         "The request mentions registration but also says onboarding, review, approval, or multiple stages."
       ]
@@ -66,7 +66,7 @@
       "exampleRequests": ["做一个企业入驻向导", "Create a multi-step onboarding flow", "做一个带复核步骤的新增流程"],
       "defaultTitle": "Create record",
       "outputNameHints": ["wizard", "onboarding", "setup"],
-      "composites": ["page-header", "page-body", "step-indicator", "section-card", "summary-bar"],
+      "composites": ["page-header", "page-body", "step-indicator"],
       "clarifyIf": [
         "The request says onboarding but only lists a few fields and no stages."
       ]
@@ -89,7 +89,7 @@
       "exampleRequests": ["做一个客户详情页", "Create an account profile page", "Build an order detail page"],
       "defaultTitle": "Record detail",
       "outputNameHints": ["detail", "profile", "overview"],
-      "composites": ["detail-header", "page-body", "kv-grid", "section-card", "timeline", "empty-state", "diff"],
+      "composites": ["detail-header", "page-body", "kv-grid", "stat-card", "timeline", "data-table", "empty-state", "diff"],
       "clarifyIf": [
         "The request says customer page but does not say whether it is a list or one customer's profile."
       ]
