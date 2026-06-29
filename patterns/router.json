@@ -19,7 +19,7 @@
       "exampleRequests": ["Show action patterns", "做一个删除确认示例", "展示批量操作"],
       "defaultTitle": "Actions",
       "outputNameHints": ["actions", "action-patterns"],
-      "composites": ["diff", "empty-state"],
+      "composites": [],
       "clarifyIf": []
     },
     "create-form": {

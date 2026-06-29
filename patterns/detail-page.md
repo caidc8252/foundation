@@ -158,7 +158,11 @@ status + meta + tab-strip band at the top), [`kv-grid`](../composites/kv-grid.md
 (the Overview), `card` (each labelled section / panel),
 [`feed-list`](../composites/feed-list.md) or
 [`timeline`](../composites/timeline.md) (activity), and
-[`diff`](../composites/diff.md) (the confirm-change step). Primitives underneath:
+[`diff`](../composites/diff.md) (the confirm-change step),
+[`page-body`](../composites/page-body.md) (the guttered content region),
+[`stat-card`](../composites/stat-card.md) (headline metrics), and
+[`empty-state`](../composites/empty-state.md) (empty activity / sections).
+Primitives underneath:
 `Card`, `Badge`, `Tabs`, `Button`, `Separator`, `Avatar`. `@cloud/ui`: `layout/`
 content-header + page-body; an artifact composes the same from `primitives.css` +
 these composites.

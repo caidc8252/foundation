@@ -107,6 +107,7 @@ rail; this pattern fixes which appear and how they sequence:
 |---|---|
 | shell (context, **not ported**) | [`app-frame`](../composites/app-frame.md) — the page renders inside `.app-frame__main` |
 | header band (secondary Cancel) | [`page-header`](../composites/page-header.md) |
+| content region (gutters + stack) | [`page-body`](../composites/page-body.md) |
 | steps rail | [`step-indicator`](../composites/step-indicator.md) — wrap the bare `ol` for the card look (`border` `line-default` · `surface-2` · `radius-xl` · `shadow-1` · `px-6 py-4`) |
 | current-step body | [`field`](../primitives/field.md) units inside per-concern [`card`](../primitives/card.md) form-sections |
 | nav (Back / Continue / Create) | [`button`](../primitives/button.md) — ghost Back, primary Continue/verb |

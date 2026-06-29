@@ -106,6 +106,10 @@ The variant drives the primary verb in the (required) header actions slot:
 
 ## Building blocks
 
+Composites: [`page-header`](../composites/page-header.md) (the title band) +
+[`page-body`](../composites/page-body.md) (the guttered content region the form
+card sits in).
+
 Primitives: `Field`, `Label`, `Input`/`Textarea`/`Select`/`Checkbox`/`RadioGroup`,
 `Button`, `Modal`/`Sheet`, `Card` (the form card and per-concern section cards).
 `@cloud/ui` realizes these; an artifact composes from `primitives.css`.

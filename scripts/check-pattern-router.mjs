@@ -84,8 +84,25 @@ for (const [routeId, entry] of Object.entries(routes)) {
     if (!entry[field] || typeof entry[field] !== "string") report(`${routeId}: ${field} is required`);
   }
 
+  // Each composite the route claims must (a) be a real catalog composite and
+  // (b) actually be documented in the pattern's own contract — otherwise the
+  // router drifts from the contract (lists a composite the pattern never uses,
+  // or the contract is an incomplete stub). The contract is the source of truth.
+  let contractText = "";
+  if (entry.contract && existsSync(join(root, entry.contract))) {
+    contractText = readFileSync(join(root, entry.contract), "utf8");
+  }
   for (const compositeName of entry.composites ?? []) {
-    if (!compositeNames.has(compositeName)) report(`${routeId}: unknown composite ${compositeName}`);
+    if (!compositeNames.has(compositeName)) {
+      report(`${routeId}: unknown composite ${compositeName}`);
+      continue;
+    }
+    const mentioned =
+      contractText.includes(`composites/${compositeName}.md`) ||
+      new RegExp(`\\b${compositeName.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&")}\\b`).test(contractText);
+    if (!mentioned) {
+      report(`${routeId}: composite "${compositeName}" is in route.composites but not documented in ${entry.contract}`);
+    }
   }
 }
 
