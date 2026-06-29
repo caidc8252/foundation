@@ -194,7 +194,7 @@
         <p>Are you sure you want to delete this item? This action cannot be undone.</p>
       </div>
       <div class="modal__footer">
-        <button class="btn btn--ghost btn-modal-close" type="button">Cancel</button>
+        <button class="btn btn--ghost" data-modal-close type="button">Cancel</button>
         <button class="btn btn--danger" type="button">Delete</button>
       </div>
     </div>
@@ -233,7 +233,7 @@
         </form>
       </div>
       <div class="modal__footer">
-        <button class="btn btn--ghost btn-modal-close" type="button">Cancel</button>
+        <button class="btn btn--ghost" data-modal-close type="button">Cancel</button>
         <button class="btn btn--primary" type="button">Save changes</button>
       </div>
     </div>
@@ -260,7 +260,7 @@
         </dl>
       </div>
       <div class="modal__footer">
-        <button class="btn btn--ghost btn-modal-close" type="button">Close</button>
+        <button class="btn btn--ghost" data-modal-close type="button">Close</button>
         <button class="btn btn--primary" type="button">Add member</button>
       </div>
     </div>
@@ -303,7 +303,7 @@
         </div>
       </div>
       <div class="modal__footer">
-        <button class="btn btn--ghost btn-modal-close" type="button">Cancel</button>
+        <button class="btn btn--ghost" data-modal-close type="button">Cancel</button>
         <button class="btn btn--primary" type="button">Save configuration</button>
       </div>
     </div>
@@ -339,7 +339,7 @@ modal gives you room to focus on complex tasks.</textarea>
         </div>
       </div>
       <div class="modal__footer">
-        <button class="btn btn--ghost btn-modal-close" type="button">Cancel</button>
+        <button class="btn btn--ghost" data-modal-close type="button">Cancel</button>
         <button class="btn btn--primary" type="button">Save</button>
       </div>
     </div>
@@ -387,9 +387,9 @@ modal gives you room to focus on complex tasks.</textarea>
         });
       });
 
-      // Close buttons inside modals (both .modal__close and .btn-modal-close)
+      // Close buttons inside modals (both .modal__close and [data-modal-close])
       document.addEventListener('click', function (e) {
-        var target = e.target.closest('.modal__close, .btn-modal-close');
+        var target = e.target.closest('.modal__close, [data-modal-close]');
         if (!target) return;
         var overlay = target.closest('.modal-overlay');
         if (overlay) closeModal(overlay);

@@ -20,7 +20,7 @@
       surrounding words are content-secondary
     - / disabled at page boundaries
     - The simple nav (prev · current page display · next) — NOT numbered
-    - Accessibility: <label> for the rows-per-page select (visually-hidden),
+    - Accessibility: <label> for the rows-per-page select (.sr-only),
       nav has aria-label
   ──────────────────────────────────────────────────────────────────────
 -->
@@ -116,7 +116,7 @@
           <div class="rich-pagination__left">
             <!-- Rows-per-page selector -->
             <div class="rich-pagination__rows">
-              <label for="rpp-full" class="visually-hidden">Rows per page</label>
+              <label for="rpp-full" class="sr-only">Rows per page</label>
               <select id="rpp-full" class="select select--sm">
                 <option value="10">10</option>
                 <option value="25" selected>25</option>
@@ -165,7 +165,7 @@
         <div class="rich-pagination">
           <div class="rich-pagination__left">
             <div class="rich-pagination__rows">
-              <label for="rpp-mid" class="visually-hidden">Rows per page</label>
+              <label for="rpp-mid" class="sr-only">Rows per page</label>
               <select id="rpp-mid" class="select select--sm">
                 <option value="10" selected>10</option>
                 <option value="25">25</option>
@@ -212,7 +212,7 @@
         <div class="rich-pagination">
           <div class="rich-pagination__left">
             <div class="rich-pagination__rows">
-              <label for="rpp-last" class="visually-hidden">Rows per page</label>
+              <label for="rpp-last" class="sr-only">Rows per page</label>
               <select id="rpp-last" class="select select--sm">
                 <option value="10">10</option>
                 <option value="25" selected>25</option>
@@ -299,7 +299,7 @@
         <div class="rich-pagination" style="padding-block:var(--space-3)">
           <div class="rich-pagination__left">
             <div class="rich-pagination__rows">
-              <label for="rpp-flush" class="visually-hidden">Rows per page</label>
+              <label for="rpp-flush" class="sr-only">Rows per page</label>
               <select id="rpp-flush" class="select select--sm">
                 <option value="10">10</option>
                 <option value="25" selected>25</option>
