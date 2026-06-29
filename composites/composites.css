@@ -373,11 +373,12 @@
 }
 /* Tag / multi-badge set: one wrapping row of badges. */
 .data-table .cell-tags { display: flex; flex-wrap: wrap; gap: var(--space-1); }
-/* Trailing passive arrow (the row is the navigation target). 14px = size-3.5 via half-step calc. */
+/* Trailing passive arrow (the row is the navigation target). 16px = space-4
+   (matches the list-page.html reference). */
 .data-table .cell-chevron { color: var(--color-content-tertiary); }
 .data-table .cell-chevron svg {
-  width: calc(var(--space-4) - var(--space-1) / 2);
-  height: calc(var(--space-4) - var(--space-1) / 2);
+  width: var(--space-4);
+  height: var(--space-4);
 }
 /* Empty value: em-dash in a muted tone. */
 .data-table .cell-empty { color: var(--color-content-tertiary); }
