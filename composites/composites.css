@@ -278,6 +278,17 @@
    table should butt against it (frame owns the corners, parts own padding). */
 .table-frame--flush { overflow: clip; } /* clip rounds corners w/o trapping sticky */
 
+/* When a .table-frame nests flush inside a .card (.card > .card__content--flush >
+   .table-frame), the card already paints the identical border / radius / shadow /
+   surface — without this, the two stack into a false 2px border with double rings.
+   The table-frame yields its chrome; the card owns it. Standalone .table-frame
+   (no wrapping .card) is unaffected. */
+.card__content--flush > .table-frame {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
 /* Horizontal scroll lives on the table's own region; the page never scrolls.
    overflow-y: clip — CSS spec: overflow-x:auto alone computes overflow-y to auto,
    making this a vertical scroll container and trapping position:sticky on thead th.
