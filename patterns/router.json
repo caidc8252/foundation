@@ -151,7 +151,7 @@
   "aiFlow": [
     "Read this router and choose one route.",
     "Use route.builderPattern with scripts/build-artifact.mjs.",
-    "Read route.contract and composites/schema.json for slot configuration.",
+    "Read route.contract and route.composites; configure each composite from its .md contract and .html sample.",
     "Edit the generated artifact for business content.",
     "Run scripts/check-artifact.mjs --strict on the output."
   ]

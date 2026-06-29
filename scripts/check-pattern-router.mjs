@@ -2,8 +2,8 @@
 /* ---------------------------------------------------------------------------
    Foundation pattern router check
 
-   Ensures patterns/router.json stays aligned with dist/catalog.json, pattern
-   examples, and composites/schema.json.
+   Ensures patterns/router.json stays aligned with dist/catalog.json and pattern
+   examples.
    --------------------------------------------------------------------------- */
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -12,7 +12,6 @@ import { fileURLToPath } from "node:url";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const catalogPath = join(root, "dist", "catalog.json");
 const routerPath = join(root, "patterns", "router.json");
-const compositeSchemaPath = join(root, "composites", "schema.json");
 
 const failSetup = (message) => {
   console.error(`✗ ${message}`);
@@ -21,15 +20,13 @@ const failSetup = (message) => {
 
 if (!existsSync(catalogPath)) failSetup("dist/catalog.json missing — run `pnpm build` first.");
 if (!existsSync(routerPath)) failSetup("patterns/router.json missing.");
-if (!existsSync(compositeSchemaPath)) failSetup("composites/schema.json missing.");
 
 const catalog = JSON.parse(readFileSync(catalogPath, "utf8"));
 const router = JSON.parse(readFileSync(routerPath, "utf8"));
-const compositeSchema = JSON.parse(readFileSync(compositeSchemaPath, "utf8"));
 
 const catalogPatterns = new Set(catalog.patterns.map((item) => item.name));
 const catalogPatternContracts = new Map(catalog.patterns.map((item) => [item.name, item.contract]));
-const compositeNames = new Set(Object.keys(compositeSchema.composites ?? {}));
+const compositeNames = new Set(catalog.composites.map((item) => item.name));
 const routes = router.routes ?? {};
 
 let failures = 0;
@@ -98,5 +95,5 @@ if (failures) {
   process.exit(1);
 }
 
-console.log(`  routes: ${routeCount} entries · all aligned with catalog/examples/schema`);
+console.log(`  routes: ${routeCount} entries · all aligned with catalog/examples`);
 console.log("  → PASS");

@@ -100,18 +100,12 @@ node scripts/build-artifact.mjs --pattern list-page --out artifacts/customers.ht
 It ports the page inside `.app-frame__main`, inlines the three CSS layers, wraps
 the result in the frameless artifact shell, and runs the strict artifact check.
 
-AI generation can also read `composites/schema.json` after choosing a pattern.
-That schema lists each composite's intent, required/optional slots, legal classes,
-and artifact recipe. Keep it aligned with the catalog:
-
-```bash
-node scripts/check-composite-schema.mjs
-```
-
 For natural-language requests, read `patterns/router.json` first. It maps intent
 phrases like "registration", "multi-step onboarding", "customer management", and
 "detail page" to a catalog pattern plus the `build-artifact` example to start
-from. Keep it aligned with the catalog, examples, and composite schema:
+from. Each route lists the composites it uses in `route.composites`; configure
+each from its own contract (`composites/<x>.md`) and HTML sample. Keep the router
+aligned with the catalog and examples:
 
 ```bash
 node scripts/check-pattern-router.mjs

@@ -14,7 +14,6 @@
     "./tokens.json": "./dist/tokens.json",
     "./primitives.css": "./primitives/primitives.css",
     "./composites.css": "./composites/composites.css",
-    "./composites.schema.json": "./composites/schema.json",
     "./patterns.router.json": "./patterns/router.json",
     "./catalog.json": "./dist/catalog.json",
     "./catalog.md": "./dist/catalog.md"
@@ -37,7 +36,6 @@
     "icon": "node scripts/icon/icon.mjs",
     "icons:refresh": "node scripts/icon/refresh.mjs",
     "check": "node scripts/check-artifact.mjs",
-    "check:composites": "node scripts/check-composite-schema.mjs",
     "check:patterns": "node scripts/check-pattern-router.mjs",
     "docs": "node emit/docs.mjs",
     "docs:serve": "node emit/docs.mjs && python3 emit/serve.py 4000",
