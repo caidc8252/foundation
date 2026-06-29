@@ -55,6 +55,6 @@ block layout (in a confirm modal)            inline layout (in a row / feed)
 - **Next / @cloud/ui** — a small old/new comparison composed inside the confirm
   dialog (`AlertDialog`) and the audit/approval rows; this contract names the
   shared shape. See the `ui` skill.
-- **Artifact** — `.diff` (block) → `.diff__col--old` / `.diff__arrow` /
-  `.diff__col--new`, each column an optional `.diff__label` over a `.diff__value`;
-  `.diff--inline` collapses to a single mono line. In `composites.css`.
+- **Artifact** — `.diff` (block) → `.diff__col` `.diff__col--old` / `.diff__arrow` /
+  `.diff__col` `.diff__col--new`, each column an optional `.diff__label` over a
+  `.diff__value`; `.diff--inline` collapses to a single mono line. In `composites.css`.

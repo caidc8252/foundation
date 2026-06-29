@@ -1900,6 +1900,8 @@
   color: var(--color-content-primary);
   word-break: break-all;
 }
+/* the two value columns; min-width:0 lets a long value wrap inside its 1fr track */
+.diff__col { min-width: 0; }
 /* old = struck + muted; new = the value the eye should land on (success ink) */
 .diff__col--old .diff__value {
   color: var(--color-content-tertiary);
