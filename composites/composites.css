@@ -28,6 +28,7 @@
    ───────────────────────────────────────────────────────────── */
 
 /* ═══════════════════════════ Page body ═══════════════════════════ */
+/* @component page-body */
 /* Mirrors @cloud/ui layout/PageBody. The content region BENEATH the full-bleed
    page-header: a vertical stack (gap space-6) with the page's gutters. The
    header band sits OUTSIDE this, drawing its hairline edge-to-edge; page-body
@@ -71,6 +72,7 @@
 }
 
 /* ═══════════════════════════ Page header ═══════════════════════════ */
+/* @component page-header */
 /* Mirrors @cloud/ui layout/page-header. Full-bleed band flush under the
    app header: title (+ count / status adornment) on the left, actions on
    the right. ONE primary action, rightmost. */
@@ -131,6 +133,7 @@
 }
 
 /* ═══════════════════════════ List condition band ═══════════════════════════ */
+/* @component list-filter */
 /* Mirrors @cloud/ui list-filter/ListConditionBand: a toolbar row (search +
    quick filters + advanced trigger) stacked over the applied-filter row. */
 
@@ -220,6 +223,7 @@
 }
 
 /* ═══════════════════════════ List summary bar ═══════════════════════════ */
+/* @component summary-bar */
 /* Mirrors @cloud/ui list-filter/ListSummaryBar (LIST_SUMMARY_BAR_HEIGHT = 48 =
    --space-12). Sits between the list card's top edge and the table: mono
    result count + label left, actions (Export / bulk ops) right. When sticky,
@@ -260,6 +264,7 @@
 }
 
 /* ═══════════════════════════ Data table ═══════════════════════════ */
+/* @component data-table */
 /* Mirrors @cloud/ui ui/Table. Framed wrapper (.table-frame) + the table.
    Density presets, sortable headers, hover, selected row (tinted + 2px
    primary left bar via --shadow-row-selected), sticky header + sticky
@@ -440,6 +445,7 @@
 }
 
 /* ═══════════════════════════ Pagination ═══════════════════════════ */
+/* @component pagination */
 /* Tables/lists use the SIMPLE nav: prev + current-page DISPLAY (.pagination__current,
    not a jump target) + next. The RICH list-footer (RichPagination) puts an optional
    rows-per-page select + range summary in .pagination__info on the LEFT and the simple
@@ -538,6 +544,7 @@
 }
 
 /* ═══════════════════════════ Empty state ═══════════════════════════ */
+/* @component empty-state */
 /* First-class state, not an afterthought. Centered icon + title + description
    + a primary action that invites the page's main verb. */
 
@@ -574,6 +581,7 @@
 .empty-state__action { margin-top: var(--space-2); }
 
 /* ═══════════════════════════ Skeleton ═══════════════════════════ */
+/* @component skeleton */
 /* Loading placeholder. A pulsing surface block; compose lines/rows from it. */
 
 @keyframes skeleton-pulse {
@@ -606,6 +614,7 @@
 }
 
 /* ═══════════════════════════ App frame (prototype shell) ═══════════════════════════ */
+/* @component app-frame */
 /* Mirrors @cloud/ui layout/Layout. CONTEXT ONLY — NOT ported (the real app already
    provides Layout). It exists so a prototype renders its page in the TRUE box: content
    width = viewport − sidebar, a real sticky h-14 header, and `main` (not the window) as
@@ -699,6 +708,7 @@
 .app-frame__main { flex: 1; overflow-y: auto; background-color: var(--color-surface-1); }
 
 /* ═══════════════════════════ Step indicator ═══════════════════════════ */
+/* @component step-indicator */
 /* Mirrors @cloud/ui ui/StepIndicator: a horizontal wizard rail of numbered
    dots joined by connectors. State (completed / active / upcoming) is DERIVED
    in the React source from each step's index vs. `current`; the skin can't
@@ -709,6 +719,7 @@
 /* Composites: 7 components authored from @cloud/ui, token-only. */
 
 /* ═══════════════════════════ Chart ═══════════════════════════ */
+/* @component chart */
 /* Mirrors @cloud/ui/components/chart (Recharts v3 + the chart palette in
    tokens/chart.css). The React side draws geometry with Recharts and skins its
    own SVG classes under [data-slot="chart"]; an artifact has no Recharts, so it
@@ -943,6 +954,7 @@
 }
 
 /* ═══════════════════════════ Load more ═══════════════════════════ */
+/* @component load-more */
 /* Mirrors @cloud/ui ui/LoadMore. Append-on-click list footer: a centered stack
    (optional summary, an action slot, optional progress bar) under a top hairline.
    The action slot holds EITHER a load-more button OR — once exhausted — an end
@@ -984,6 +996,7 @@
 }
 
 /* ═══════════════════════════ Stat card ═══════════════════════════ */
+/* @component stat-card */
 /* Mirrors @cloud/ui ui/StatCard (style-spec §4). A single metric surface —
    overline label + big mono value + optional trend / icon / description — that
    is pure display or an interactive quick-filter. Floor height is
@@ -1093,6 +1106,7 @@
 }
 
 /* ═══════════════════════════ Step indicator ═══════════════════════════ */
+/* @component step-indicator */
 /* Mirrors @cloud/ui ui/StepIndicator: a horizontal wizard rail of numbered
    dots joined by connectors. State (completed / active / upcoming) is DERIVED
    in the React source from each step's index vs. `current`; the skin can't
@@ -1228,6 +1242,7 @@
 }
 
 /* ═══════════════════════════ Stepper ═══════════════════════════ */
+/* @component stepper */
 /* A numeric input flanked by −/+ buttons. Pure composition over .input-group:
    the group owns the border / focus ring / invalid / whole-control disabled
    (all inherited from the Input Group skin); this block adds only the stepper
@@ -1268,6 +1283,7 @@
 }
 
 /* ═══════════════════════════ Theme toggle ═══════════════════════════ */
+/* @component theme-toggle */
 /* Mirrors @cloud/ui ThemeToggle: an icon-only button flipping light/dark. It is
    the .btn--ghost recipe at icon size — so reuse those primitive classes and add
    .theme-toggle only to quiet the resting text to content-secondary (bare
@@ -1289,6 +1305,7 @@
 }
 
 /* ═══════════════════════════ Timeline ═══════════════════════════ */
+/* @component timeline */
 /* Mirrors @cloud/ui ui/Timeline: a vertical event log — tone-coded markers
    joined by a continuous rail, each beside a content block. Display-only.
    Two root axes: density (.timeline--compact) sets item vertical rhythm + title
@@ -1495,6 +1512,7 @@
    .radio recipe, feed-list empties reuse .empty-state. */
 
 /* ═══════════════════════════ Detail header ═══════════════════════════ */
+/* @component detail-header */
 /* The detail-page counterpart to .page-header: a full-bleed surface-2 band
    docking under the app header, carrying one record's identity (back · logo ·
    name + status · meta · chips), its action cluster (ONE primary, rightmost),
@@ -1602,6 +1620,7 @@
 }
 
 /* ═══════════════════════════ Key-value grid ═══════════════════════════ */
+/* @component kv-grid */
 /* The detail-page Overview: a <dl> of stacked label→value pairs whose column
    count follows the CONTAINER (mirrors .grid-auto-fit-kv), not the viewport.
    Labels are the muted axis, values carry the ink. A long value spans --full. */
@@ -1641,6 +1660,7 @@
 /* A titled, optionally-collapsible content panel — the block a detail/settings
    page divides into. Pure composition over .card (surface + header rule + slot
 /* ═══════════════════════════ Option card ═══════════════════════════ */
+/* @component option-card */
 /* A large clickable card that IS a radio/checkbox: the card is a <label> over a
    visually-hidden native control, so selection + roving focus + group semantics
    come from the control and the card only paints them. Selected beats hover with
@@ -1758,6 +1778,7 @@
 }
 
 /* ═══════════════════════════ Feed list ═══════════════════════════ */
+/* @component feed-list */
 /* A flat, hairline-separated inbox of event rows (notifications / approvals):
    tone-coded icon | main (overline · title · body · actions) | trailing time.
    The list cousin of the timeline — order is recency, not a connected rail, and
@@ -1848,6 +1869,7 @@
 }
 
 /* ═══════════════════════════ Diff ═══════════════════════════ */
+/* @component diff */
 /* A before→after comparison: old value struck + muted, an arrow, new value in
    success ink. The reviewable core of any confirm-change flow (approval confirm,
    audit entry, permission preview). Two layouts on one recipe: `block` (three
@@ -1903,6 +1925,7 @@
 .diff--inline .diff__label { display: none; }
 
 /* ═══════════════════════════ Product card ═══════════════════════════ */
+/* @component product-card */
 /* A catalog tile — the storefront list's card cousin of the data-table row:
    image panel (contained, with placeholder/glyph + optional status ribbon),
    body (name · sku · clamped description · price-row · cta). The price-row pins
@@ -2078,6 +2101,7 @@
 }
 
 /* ═══════════════════════════════ Rich Pagination ═══════════════════════════════ */
+/* @component rich-pagination */
 /* Full list/table footer bar — optional rows-per-page selector + "Showing X–Y of Z"
    range summary on the left; page-number navigation (.pagination) on the right.
    All i18n text is the host's responsibility. */
@@ -2115,6 +2139,7 @@
 }
 
 /* ═══════════════════════════════ Toggles ═══════════════════════════════ */
+/* @component toggles */
 /* Inline control-with-label wrappers — pairs a checkbox, radio, or switch
    primitive (.checkbox / .radio / .switch) with an optional text label (.label).
    This wrapper owns ONLY the flex layout; all control styling is the primitive's. */
@@ -2186,6 +2211,7 @@
   color: var(--color-content-primary);
 }
 /* ═══════════════════════════ List row ═══════════════════════════ */
+/* @component list-row */
 /* The non-tabular list row: a settings / account / permission / contract /
    entity row that is NOT a feed event (feed-list = tone icon + timestamp) and
    NOT a table row (data-table). A 3-column grid — leading visual | main (a title

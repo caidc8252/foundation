@@ -853,12 +853,12 @@
       "contract": "primitives/accordion.md",
       "example": "primitives/accordion.html",
       "classes": [
-        ".accordion__content",
-        ".accordion__item--open",
-        ".accordion__arrow",
-        "--accordion-panel-height",
         ".accordion",
+        ".accordion__arrow",
+        ".accordion__content",
         ".accordion__item",
+        ".accordion__item--open",
+        ".accordion__label",
         ".accordion__trigger"
       ]
     },
@@ -870,13 +870,12 @@
       "contract": "primitives/alert-dialog.md",
       "example": "primitives/alert-dialog.html",
       "classes": [
-        ".alert-dialog-overlay",
         ".alert-dialog",
-        ".alert-dialog__header",
-        ".alert-dialog__title",
+        ".alert-dialog-overlay",
         ".alert-dialog__description",
         ".alert-dialog__footer",
-        ".btn"
+        ".alert-dialog__header",
+        ".alert-dialog__title"
       ]
     },
     {
@@ -888,12 +887,16 @@
       "example": "primitives/alert.html",
       "classes": [
         ".alert",
-        ".alert__icon",
-        ".alert__title",
-        ".alert__description",
-        ".alert__action",
+        ".alert--default",
+        ".alert--error",
+        ".alert--info",
+        ".alert--success",
+        ".alert--warning",
         ".alert--with-icon",
-        ".btn"
+        ".alert__action",
+        ".alert__description",
+        ".alert__icon",
+        ".alert__title"
       ]
     },
     {
@@ -904,7 +907,7 @@
       "contract": "primitives/aspect-ratio.md",
       "example": "primitives/aspect-ratio.html",
       "classes": [
-        "--ratio"
+        ".aspect-ratio"
       ]
     },
     {
@@ -916,7 +919,13 @@
       "example": "primitives/avatar.html",
       "classes": [
         ".avatar",
-        ".avatar-group"
+        ".avatar--lg",
+        ".avatar--md",
+        ".avatar--sm",
+        ".avatar--xl",
+        ".avatar-group",
+        ".avatar__fallback",
+        ".avatar__image"
       ]
     },
     {
@@ -928,7 +937,18 @@
       "example": "primitives/badge.html",
       "classes": [
         ".badge",
+        ".badge--default",
+        ".badge--destructive",
+        ".badge--error",
+        ".badge--ghost",
+        ".badge--info",
+        ".badge--link",
+        ".badge--neutral",
+        ".badge--outline",
+        ".badge--secondary",
+        ".badge--success",
         ".badge--tag",
+        ".badge--warning",
         ".badge__dot"
       ]
     },
@@ -940,12 +960,12 @@
       "contract": "primitives/breadcrumb.md",
       "example": "primitives/breadcrumb.html",
       "classes": [
-        ".breadcrumb__list",
+        ".breadcrumb__ellipsis",
         ".breadcrumb__item",
         ".breadcrumb__link",
+        ".breadcrumb__list",
         ".breadcrumb__page",
-        ".breadcrumb__separator",
-        ".breadcrumb__ellipsis"
+        ".breadcrumb__separator"
       ]
     },
     {
@@ -956,7 +976,24 @@
       "contract": "primitives/button.md",
       "example": "primitives/button.html",
       "classes": [
-        ".btn"
+        ".btn",
+        ".btn--danger",
+        ".btn--ghost",
+        ".btn--ghost-danger",
+        ".btn--icon",
+        ".btn--icon-lg",
+        ".btn--icon-sm",
+        ".btn--icon-xs",
+        ".btn--lg",
+        ".btn--link",
+        ".btn--md",
+        ".btn--outline",
+        ".btn--primary",
+        ".btn--secondary",
+        ".btn--sm",
+        ".btn--soft",
+        ".btn--tertiary",
+        ".btn--xs"
       ]
     },
     {
@@ -968,25 +1005,23 @@
       "example": "primitives/calendar.html",
       "classes": [
         ".calendar",
-        ".calendar__header",
-        ".calendar__nav-btn",
         ".calendar__caption",
-        ".calendar__grid",
-        ".calendar__weekday",
         ".calendar__day",
-        ".calendar__footer",
-        ".calendar__link",
+        ".calendar__day--disabled",
+        ".calendar__day--focused",
+        ".calendar__day--hidden",
+        ".calendar__day--outside",
+        ".calendar__day--range-end",
+        ".calendar__day--range-middle",
+        ".calendar__day--range-start",
+        ".calendar__day--selected",
         ".calendar__day--today",
-        "--selected",
-        "--range-start",
-        "--range-end",
-        "--range-middle",
-        "--outside",
-        "--disabled",
-        "--focused",
-        "--cell-size",
-        "--cell-radius",
-        ".popover"
+        ".calendar__footer",
+        ".calendar__grid",
+        ".calendar__header",
+        ".calendar__link",
+        ".calendar__nav-btn",
+        ".calendar__weekday"
       ]
     },
     {
@@ -998,10 +1033,25 @@
       "example": "primitives/card.html",
       "classes": [
         ".card",
-        ".card__header",
+        ".card--collapsible",
+        ".card--elevation-0",
+        ".card--elevation-1",
+        ".card--elevation-2",
+        ".card--interactive",
+        ".card--lg",
+        ".card--md",
+        ".card--sm",
+        ".card__action",
+        ".card__chevron",
         ".card__content",
+        ".card__content--flush",
+        ".card__description",
         ".card__footer",
-        ".card--collapsible"
+        ".card__footer--flush",
+        ".card__header",
+        ".card__header--flush",
+        ".card__title",
+        ".card__toggle"
       ]
     },
     {
@@ -1013,17 +1063,16 @@
       "example": "primitives/carousel.html",
       "classes": [
         ".carousel",
-        ".carousel__viewport",
-        ".carousel__track",
-        ".carousel__item",
-        ".carousel__prev",
-        ".carousel__next",
-        ".carousel__nav",
-        ".carousel__dots",
+        ".carousel--vertical",
         ".carousel__dot",
         ".carousel__dot--active",
-        ".carousel--vertical",
-        "--active"
+        ".carousel__dots",
+        ".carousel__item",
+        ".carousel__nav",
+        ".carousel__next",
+        ".carousel__prev",
+        ".carousel__track",
+        ".carousel__viewport"
       ]
     },
     {
@@ -1033,7 +1082,9 @@
       "summary": "A binary on/off toggle for a single boolean, or a tri-state \"select all\" header.",
       "contract": "primitives/checkbox.md",
       "example": "primitives/checkbox.html",
-      "classes": []
+      "classes": [
+        ".checkbox"
+      ]
     },
     {
       "layer": "primitive",
@@ -1044,11 +1095,10 @@
       "example": "primitives/collapsible.html",
       "classes": [
         ".collapsible",
-        ".collapsible__trigger",
-        ".btn",
         ".collapsible__chevron",
         ".collapsible__content",
-        ".collapsible__content--open"
+        ".collapsible__content--open",
+        ".collapsible__trigger"
       ]
     },
     {
@@ -1059,9 +1109,20 @@
       "contract": "primitives/combobox.md",
       "example": "primitives/combobox.html",
       "classes": [
-        ".combobox",
+        ".combobox__chevron",
+        ".combobox__content",
+        ".combobox__empty",
+        ".combobox__input",
+        ".combobox__item",
         ".combobox__item--highlighted",
-        ".combobox__item--selected"
+        ".combobox__item--selected",
+        ".combobox__item-indicator",
+        ".combobox__list",
+        ".combobox__search",
+        ".combobox__trigger",
+        ".combobox__trigger--sm",
+        ".combobox__value",
+        ".combobox__value--placeholder"
       ]
     },
     {
@@ -1073,19 +1134,19 @@
       "example": "primitives/command.html",
       "classes": [
         ".command",
-        ".command__input",
-        ".command__list",
+        ".command-dialog",
+        ".command-dialog__backdrop",
         ".command__empty",
         ".command__group",
         ".command__group-heading",
-        ".command__separator",
+        ".command__input",
+        ".command__input-wrapper",
         ".command__item",
         ".command__item--active",
+        ".command__list",
+        ".command__separator",
         ".command__shortcut",
-        ".command-dialog__backdrop",
-        ".command-dialog",
-        ".input-group",
-        "--active"
+        ".input-group"
       ]
     },
     {
@@ -1097,15 +1158,18 @@
       "example": "primitives/context-menu.html",
       "classes": [
         ".context-menu__content",
+        ".context-menu__indicator",
         ".context-menu__item",
-        "--destructive",
-        "--inset",
         ".context-menu__item--checkbox",
-        "--radio",
-        ".context-menu__sub-trigger",
+        ".context-menu__item--destructive",
+        ".context-menu__item--inset",
+        ".context-menu__item--radio",
         ".context-menu__label",
+        ".context-menu__label--inset",
         ".context-menu__separator",
-        ".context-menu__shortcut"
+        ".context-menu__shortcut",
+        ".context-menu__sub-trigger",
+        ".context-menu__sub-trigger--inset"
       ]
     },
     {
@@ -1116,13 +1180,24 @@
       "contract": "primitives/date-picker.md",
       "example": "primitives/date-picker.html",
       "classes": [
+        ".date-picker",
+        ".date-presets",
+        ".date-presets__item",
+        ".date-time-row",
+        ".date-time-row--stacked",
+        ".date-time-row__label",
+        ".date-time-row__line",
+        ".date-time-row__line--actions",
         ".date-trigger",
-        ".date-trigger--sm",
-        "--lg",
+        ".date-trigger--clearable",
         ".date-trigger--invalid",
-        ".date-trigger__icon",
+        ".date-trigger--lg",
+        ".date-trigger--md",
+        ".date-trigger--sm",
         ".date-trigger__clear",
-        ".popover"
+        ".date-trigger__icon",
+        ".date-trigger__value",
+        ".date-trigger__value--placeholder"
       ]
     },
     {
@@ -1133,11 +1208,24 @@
       "contract": "primitives/date-range-picker.md",
       "example": "primitives/date-range-picker.html",
       "classes": [
-        ".date-trigger",
-        "--invalid",
-        ".popover",
+        ".date-picker",
         ".date-presets",
-        ".date-presets__item"
+        ".date-presets__item",
+        ".date-time-row",
+        ".date-time-row--stacked",
+        ".date-time-row__label",
+        ".date-time-row__line",
+        ".date-time-row__line--actions",
+        ".date-trigger",
+        ".date-trigger--clearable",
+        ".date-trigger--invalid",
+        ".date-trigger--lg",
+        ".date-trigger--md",
+        ".date-trigger--sm",
+        ".date-trigger__clear",
+        ".date-trigger__icon",
+        ".date-trigger__value",
+        ".date-trigger__value--placeholder"
       ]
     },
     {
@@ -1148,11 +1236,24 @@
       "contract": "primitives/date-time-picker.md",
       "example": "primitives/date-time-picker.html",
       "classes": [
-        ".date-trigger",
-        "--invalid",
-        ".popover",
+        ".date-picker",
+        ".date-presets",
+        ".date-presets__item",
         ".date-time-row",
-        ".btn--sm"
+        ".date-time-row--stacked",
+        ".date-time-row__label",
+        ".date-time-row__line",
+        ".date-time-row__line--actions",
+        ".date-trigger",
+        ".date-trigger--clearable",
+        ".date-trigger--invalid",
+        ".date-trigger--lg",
+        ".date-trigger--md",
+        ".date-trigger--sm",
+        ".date-trigger__clear",
+        ".date-trigger__icon",
+        ".date-trigger__value",
+        ".date-trigger__value--placeholder"
       ]
     },
     {
@@ -1163,13 +1264,24 @@
       "contract": "primitives/date-time-range-picker.md",
       "example": "primitives/date-time-range-picker.html",
       "classes": [
-        ".date-trigger",
-        "--invalid",
-        ".popover",
+        ".date-picker",
         ".date-presets",
+        ".date-presets__item",
         ".date-time-row",
+        ".date-time-row--stacked",
         ".date-time-row__label",
-        ".btn--sm"
+        ".date-time-row__line",
+        ".date-time-row__line--actions",
+        ".date-trigger",
+        ".date-trigger--clearable",
+        ".date-trigger--invalid",
+        ".date-trigger--lg",
+        ".date-trigger--md",
+        ".date-trigger--sm",
+        ".date-trigger__clear",
+        ".date-trigger__icon",
+        ".date-trigger__value",
+        ".date-trigger__value--placeholder"
       ]
     },
     {
@@ -1180,20 +1292,17 @@
       "contract": "primitives/drawer.md",
       "example": "primitives/drawer.html",
       "classes": [
-        ".drawer-overlay",
         ".drawer",
         ".drawer--bottom",
-        "--top",
-        "--left",
-        "--right",
-        ".drawer__handle",
-        ".drawer__header",
-        ".drawer__title",
+        ".drawer--left",
+        ".drawer--right",
+        ".drawer--top",
+        ".drawer-overlay",
         ".drawer__description",
         ".drawer__footer",
-        ".btn",
-        "--color-scrim-light",
-        "--space"
+        ".drawer__handle",
+        ".drawer__header",
+        ".drawer__title"
       ]
     },
     {
@@ -1205,7 +1314,24 @@
       "example": "primitives/dropdown-menu.html",
       "classes": [
         ".dropdown-menu",
-        ".dropdown-menu__item--active"
+        ".dropdown-menu__checkbox-item",
+        ".dropdown-menu__checkbox-item--active",
+        ".dropdown-menu__item",
+        ".dropdown-menu__item--active",
+        ".dropdown-menu__item--destructive",
+        ".dropdown-menu__item--inset",
+        ".dropdown-menu__item-indicator",
+        ".dropdown-menu__label",
+        ".dropdown-menu__label--inset",
+        ".dropdown-menu__radio-item",
+        ".dropdown-menu__radio-item--active",
+        ".dropdown-menu__separator",
+        ".dropdown-menu__shortcut",
+        ".dropdown-menu__sub-content",
+        ".dropdown-menu__sub-trigger",
+        ".dropdown-menu__sub-trigger--inset",
+        ".dropdown-menu__sub-trigger--open",
+        ".dropdown-menu__sub-trigger__chevron"
       ]
     },
     {
@@ -1217,10 +1343,19 @@
       "example": "primitives/dropzone.html",
       "classes": [
         ".dropzone",
-        ".dropzone--drag",
         ".dropzone--disabled",
+        ".dropzone--drag",
         ".file-list",
-        ".file-row"
+        ".file-row",
+        ".file-row__body",
+        ".file-row__error",
+        ".file-row__icon",
+        ".file-row__name",
+        ".file-row__name-row",
+        ".file-row__size",
+        ".file-row__status",
+        ".file-row__status--done",
+        ".file-row__status--error"
       ]
     },
     {
@@ -1231,6 +1366,9 @@
       "contract": "primitives/field.md",
       "example": "primitives/field.html",
       "classes": [
+        ".field",
+        ".field__error",
+        ".field__hint",
         ".field__required"
       ]
     },
@@ -1263,17 +1401,16 @@
       "example": "primitives/input-group.html",
       "classes": [
         ".input-group",
+        ".input-group--block",
+        ".input-group--disabled",
+        ".input-group--invalid",
         ".input-group__addon",
-        "--inline-start",
-        "--inline-end",
-        "--block-start",
-        "--block-end",
-        ".input-group__text",
+        ".input-group__addon--block-end",
+        ".input-group__addon--block-start",
+        ".input-group__addon--inline-end",
+        ".input-group__addon--inline-start",
         ".input-group__control",
-        ".btn",
-        ".btn--ghost",
-        ".btn--xs",
-        ".btn--icon"
+        ".input-group__text"
       ]
     },
     {
@@ -1285,11 +1422,13 @@
       "example": "primitives/input-otp.html",
       "classes": [
         ".input-otp",
+        ".input-otp__caret",
         ".input-otp__group",
+        ".input-otp__separator",
         ".input-otp__slot",
         ".input-otp__slot--active",
-        ".input-otp__caret",
-        ".input-otp__separator"
+        ".label",
+        ".label--disabled"
       ]
     },
     {
@@ -1300,7 +1439,13 @@
       "contract": "primitives/input.md",
       "example": "primitives/input.html",
       "classes": [
-        ".input"
+        ".input",
+        ".input--filled",
+        ".input--lg",
+        ".input--md",
+        ".input--ok",
+        ".input--sm",
+        ".input--warn"
       ]
     },
     {
@@ -1311,11 +1456,8 @@
       "contract": "primitives/label.md",
       "example": "primitives/label.html",
       "classes": [
-        ".label--disabled",
-        ".field",
-        ".field__required",
-        ".field__hint",
-        ".field__error"
+        ".label",
+        ".label--disabled"
       ]
     },
     {
@@ -1326,16 +1468,20 @@
       "contract": "primitives/modal.md",
       "example": "primitives/modal.html",
       "classes": [
-        ".modal-overlay",
         ".modal",
+        ".modal--fullscreen",
+        ".modal--lg",
+        ".modal--md",
+        ".modal--sm",
+        ".modal--xl",
+        ".modal-overlay",
+        ".modal__body",
+        ".modal__close",
+        ".modal__description",
+        ".modal__footer",
         ".modal__header",
         ".modal__heading",
-        ".modal__title",
-        ".modal__description",
-        ".modal__close",
-        ".modal__body",
-        ".modal__footer",
-        ".btn"
+        ".modal__title"
       ]
     },
     {
@@ -1347,7 +1493,16 @@
       "example": "primitives/object-tile.html",
       "classes": [
         ".object-tile",
+        ".object-tile--cat-1",
+        ".object-tile--cat-2",
+        ".object-tile--cat-3",
+        ".object-tile--cat-4",
+        ".object-tile--cat-5",
+        ".object-tile--cat-6",
+        ".object-tile--lg",
+        ".object-tile--md",
         ".object-tile--neutral",
+        ".object-tile--sm",
         ".object-tile__icon"
       ]
     },
@@ -1359,12 +1514,12 @@
       "contract": "primitives/popover.md",
       "example": "primitives/popover.html",
       "classes": [
-        ".popover",
-        ".popover__header",
-        ".popover__title",
-        ".popover__description",
         ".menu-item",
-        ".menu-item--destructive"
+        ".menu-item--destructive",
+        ".popover",
+        ".popover__description",
+        ".popover__header",
+        ".popover__title"
       ]
     },
     {
@@ -1376,9 +1531,13 @@
       "example": "primitives/progress.html",
       "classes": [
         ".progress",
-        ".progress__track",
         ".progress__indicator",
+        ".progress__indicator--error",
+        ".progress__indicator--info",
+        ".progress__indicator--success",
+        ".progress__indicator--warning",
         ".progress__label",
+        ".progress__track",
         ".progress__value"
       ]
     },
@@ -1389,7 +1548,9 @@
       "summary": "A set of mutually exclusive options where exactly one is selected.",
       "contract": "primitives/radio-group.md",
       "example": "primitives/radio-group.html",
-      "classes": []
+      "classes": [
+        ".radio"
+      ]
     },
     {
       "layer": "primitive",
@@ -1401,10 +1562,10 @@
       "classes": [
         ".resizable-group",
         ".resizable-group--vertical",
-        ".resizable-panel",
         ".resizable-handle",
         ".resizable-handle--horizontal",
-        ".resizable-handle__grip"
+        ".resizable-handle__grip",
+        ".resizable-panel"
       ]
     },
     {
@@ -1415,8 +1576,10 @@
       "contract": "primitives/scroll-area.md",
       "example": "primitives/scroll-area.html",
       "classes": [
+        ".scroll-area",
         ".scroll-area__scrollbar",
-        ".scroll-area__thumb"
+        ".scroll-area__thumb",
+        ".scroll-area__viewport"
       ]
     },
     {
@@ -1426,7 +1589,10 @@
       "summary": "A dropdown for choosing one option from a list.",
       "contract": "primitives/select.md",
       "example": "primitives/select.html",
-      "classes": []
+      "classes": [
+        ".select",
+        ".select--sm"
+      ]
     },
     {
       "layer": "primitive",
@@ -1436,7 +1602,10 @@
       "contract": "primitives/separator.md",
       "example": "primitives/separator.html",
       "classes": [
-        ".separator--vertical"
+        ".separator",
+        ".separator--vertical",
+        ".separator-labeled",
+        ".separator-labeled__label"
       ]
     },
     {
@@ -1447,17 +1616,17 @@
       "contract": "primitives/sheet.md",
       "example": "primitives/sheet.html",
       "classes": [
-        ".sheet-overlay",
         ".sheet",
+        ".sheet--bottom",
+        ".sheet--left",
         ".sheet--right",
-        "--left",
-        "--top",
-        "--bottom",
-        ".sheet__header",
-        ".sheet__title",
+        ".sheet--top",
+        ".sheet-overlay",
+        ".sheet__close",
         ".sheet__description",
         ".sheet__footer",
-        ".btn"
+        ".sheet__header",
+        ".sheet__title"
       ]
     },
     {
@@ -1468,10 +1637,11 @@
       "contract": "primitives/slider.md",
       "example": "primitives/slider.html",
       "classes": [
-        ".slider__thumb",
         ".slider",
-        ".slider__track",
-        ".slider__indicator"
+        ".slider--vertical",
+        ".slider__indicator",
+        ".slider__thumb",
+        ".slider__track"
       ]
     },
     {
@@ -1481,7 +1651,13 @@
       "summary": "A circular, indeterminate loading indicator — a spinning ring shown while content or an action is in flight (in-button loading, inline \"fetching\", small section busy state).",
       "contract": "primitives/spinner.md",
       "example": "primitives/spinner.html",
-      "classes": []
+      "classes": [
+        ".spinner",
+        ".spinner--lg",
+        ".spinner--md",
+        ".spinner--sm",
+        ".spinner--xl"
+      ]
     },
     {
       "layer": "primitive",
@@ -1504,11 +1680,11 @@
       "contract": "primitives/tabs.md",
       "example": "primitives/tabs.html",
       "classes": [
-        ".tabs__content",
         ".tabs",
+        ".tabs__content",
         ".tabs__list",
-        ".tabs__list--line",
         ".tabs__list--default",
+        ".tabs__list--line",
         ".tabs__trigger",
         ".tabs__trigger--active"
       ]
@@ -1531,11 +1707,7 @@
       "summary": "A time-only field built on the native <input type=\"time\">.",
       "contract": "primitives/time-picker.md",
       "example": "primitives/time-picker.html",
-      "classes": [
-        ".date-trigger__clear",
-        ".input-group",
-        ".input-group__addon"
-      ]
+      "classes": []
     },
     {
       "layer": "primitive",
@@ -1546,13 +1718,18 @@
       "example": "primitives/toast.html",
       "classes": [
         ".toast",
+        ".toast--countdown",
         ".toast--with-icon",
-        ".toast__icon",
-        ".toast__content",
-        ".toast__title",
-        ".toast__description",
         ".toast__close",
-        "--toast-duration"
+        ".toast__content",
+        ".toast__description",
+        ".toast__icon",
+        ".toast__icon--error",
+        ".toast__icon--info",
+        ".toast__icon--loading",
+        ".toast__icon--success",
+        ".toast__icon--warning",
+        ".toast__title"
       ]
     },
     {
@@ -1564,10 +1741,16 @@
       "example": "primitives/toggle-group.html",
       "classes": [
         ".toggle-group",
+        ".toggle-group--cloud",
+        ".toggle-group--outline",
+        ".toggle-group--plain",
+        ".toggle-group--segmented",
         ".toggle-group__item",
+        ".toggle-group__item--auto",
+        ".toggle-group__item--md",
         ".toggle-group__item--sm",
-        "--md",
-        "--auto"
+        ".tooltip",
+        ".tooltip__arrow"
       ]
     },
     {
@@ -1579,7 +1762,18 @@
       "example": "primitives/toggle.html",
       "classes": [
         ".toggle",
-        ".toggle-group"
+        ".toggle--auto",
+        ".toggle--default",
+        ".toggle--in-cloud",
+        ".toggle--in-outline",
+        ".toggle--in-segmented",
+        ".toggle--md",
+        ".toggle--outline",
+        ".toggle--sm",
+        ".toggle-group--cloud",
+        ".toggle-group--outline",
+        ".toggle-group--plain",
+        ".toggle-group--segmented"
       ]
     },
     {
@@ -1605,11 +1799,18 @@
       "example": null,
       "classes": [
         ".app-frame",
-        ".app-frame__sidebar",
-        "--active",
+        ".app-frame--collapsed",
+        ".app-frame__avatar",
+        ".app-frame__brand",
         ".app-frame__col",
         ".app-frame__header",
-        ".app-frame__main"
+        ".app-frame__main",
+        ".app-frame__nav",
+        ".app-frame__nav-item",
+        ".app-frame__nav-item--active",
+        ".app-frame__nav-label",
+        ".app-frame__sidebar",
+        ".app-frame__spacer"
       ]
     },
     {
@@ -1621,35 +1822,36 @@
       "example": null,
       "classes": [
         ".chart",
-        ".chart__grid",
-        ".chart__axis",
-        ".chart__tick",
-        ".chart__bar",
-        ".chart__curve",
-        ".chart__series--selected",
-        "--dimmed",
-        "--filtered",
-        ".chart-legend",
-        ".chart-legend__item",
-        "--toggle",
-        "--off",
-        ".chart-legend__swatch",
-        "--line",
-        ".chart-legend__label",
-        ".chart-tooltip",
-        ".chart-tooltip__header",
-        ".chart-tooltip__row",
-        ".chart-tooltip__indicator",
-        "--dashed",
-        ".chart-tooltip__name",
-        ".chart-tooltip__value",
-        ".chart-tooltip__total",
-        ".chart-sparkline",
         ".chart-empty",
+        ".chart-empty__description",
         ".chart-empty__icon",
         ".chart-empty__title",
-        ".chart-empty__description",
-        ".chart-skeleton"
+        ".chart-legend",
+        ".chart-legend__item",
+        ".chart-legend__item--off",
+        ".chart-legend__item--toggle",
+        ".chart-legend__swatch",
+        ".chart-legend__swatch--line",
+        ".chart-skeleton",
+        ".chart-sparkline",
+        ".chart-tooltip",
+        ".chart-tooltip__header",
+        ".chart-tooltip__indicator",
+        ".chart-tooltip__indicator--dashed",
+        ".chart-tooltip__indicator--line",
+        ".chart-tooltip__name",
+        ".chart-tooltip__row",
+        ".chart-tooltip__total",
+        ".chart-tooltip__value",
+        ".chart__axis",
+        ".chart__bar",
+        ".chart__curve",
+        ".chart__grid",
+        ".chart__label",
+        ".chart__series--dimmed",
+        ".chart__series--filtered",
+        ".chart__series--selected",
+        ".chart__tick"
       ]
     },
     {
@@ -1660,21 +1862,32 @@
       "contract": "composites/data-table.md",
       "example": "composites/data-table.html",
       "classes": [
-        ".table-frame",
-        ".table-scroll",
-        "--compact",
-        "--spacious",
-        "--sticky-head",
-        "--sticky-col",
-        "--striped",
-        ".cell-num",
-        ".cell-right",
+        ".card__content--flush",
         ".cell-2line",
-        ".cell-tags",
+        ".cell-2line__main",
+        ".cell-2line__sub",
+        ".cell-center",
         ".cell-chevron",
         ".cell-empty",
+        ".cell-num",
+        ".cell-right",
+        ".cell-tags",
+        ".col-select",
+        ".data-table",
+        ".data-table--compact",
+        ".data-table--spacious",
+        ".data-table--sticky-col",
+        ".data-table--sticky-head",
+        ".data-table--striped",
+        ".is-clickable",
         ".row-actions",
-        ".col-select"
+        ".row-actions__inner",
+        ".table-frame",
+        ".table-frame--flush",
+        ".table-scroll",
+        ".th-sort",
+        ".th-sort__icon--active",
+        ".th-sort__icon--idle"
       ]
     },
     {
@@ -1686,17 +1899,17 @@
       "example": "composites/detail-header.html",
       "classes": [
         ".detail-header",
-        "--sticky",
+        ".detail-header--sticky",
+        ".detail-header__actions",
+        ".detail-header__back",
         ".detail-header__bar",
+        ".detail-header__chips",
         ".detail-header__logo",
         ".detail-header__main",
-        ".detail-header__title",
-        ".detail-header__name",
-        ".badge",
-        ".detail-header__chips",
         ".detail-header__meta",
-        ".detail-header__actions",
+        ".detail-header__name",
         ".detail-header__tabs",
+        ".detail-header__title",
         ".tabs__list--line"
       ]
     },
@@ -1709,12 +1922,12 @@
       "example": "composites/diff.html",
       "classes": [
         ".diff",
-        ".diff__col--old",
+        ".diff--inline",
         ".diff__arrow",
         ".diff__col--new",
+        ".diff__col--old",
         ".diff__label",
-        ".diff__value",
-        ".diff--inline"
+        ".diff__value"
       ]
     },
     {
@@ -1726,12 +1939,10 @@
       "example": "composites/empty-state.html",
       "classes": [
         ".empty-state",
-        ".empty-state__icon",
-        ".empty-state__title",
-        ".empty-state__description",
         ".empty-state__action",
-        ".btn--primary",
-        ".btn--secondary"
+        ".empty-state__description",
+        ".empty-state__icon",
+        ".empty-state__title"
       ]
     },
     {
@@ -1742,16 +1953,21 @@
       "contract": "composites/feed-list.md",
       "example": "composites/feed-list.html",
       "classes": [
-        ".feed-list",
         ".feed-item",
+        ".feed-item--read",
+        ".feed-item__actions",
+        ".feed-item__body",
+        ".feed-item__head",
         ".feed-item__icon",
-        "--info",
-        "--success",
-        "--warning",
-        "--neutral",
+        ".feed-item__icon--info",
+        ".feed-item__icon--neutral",
+        ".feed-item__icon--success",
+        ".feed-item__icon--warning",
         ".feed-item__main",
+        ".feed-item__time",
+        ".feed-item__title",
         ".feed-item__trailing",
-        ".empty-state"
+        ".feed-list"
       ]
     },
     {
@@ -1764,8 +1980,7 @@
       "classes": [
         ".kv-grid",
         ".kv-grid__row",
-        "--full",
-        ".grid-auto-fit-kv"
+        ".kv-grid__row--full"
       ]
     },
     {
@@ -1776,16 +1991,16 @@
       "contract": "composites/list-filter.md",
       "example": "composites/list-filter.html",
       "classes": [
-        ".condition-band",
-        ".condition-band__toolbar",
-        ".search-input",
-        ".search-input__icon",
-        ".input",
-        ".select",
-        ".condition-band__spacer",
         ".applied-filters",
         ".applied-filters__label",
-        ".filter-chip"
+        ".condition-band",
+        ".condition-band__spacer",
+        ".condition-band__toolbar",
+        ".filter-chip",
+        ".filter-chip__remove",
+        ".input",
+        ".search-input",
+        ".search-input__icon"
       ]
     },
     {
@@ -1796,24 +2011,19 @@
       "contract": "composites/list-row.md",
       "example": "composites/list-row.html",
       "classes": [
-        ".list-rows",
         ".list-row",
-        ".list-row__icon",
-        ".avatar",
-        ".list-row__main",
-        ".list-row__title",
-        ".badge",
-        ".list-row__sub",
-        ".list-row__trailing",
-        ".switch",
-        ".btn",
-        ".list-row__value",
-        ".list-row__actions",
-        ".list-row__chevron",
+        ".list-row--disabled",
         ".list-row--interactive",
         ".list-row--selected",
-        ".list-row--disabled",
-        ".empty-state"
+        ".list-row__actions",
+        ".list-row__chevron",
+        ".list-row__icon",
+        ".list-row__main",
+        ".list-row__sub",
+        ".list-row__title",
+        ".list-row__trailing",
+        ".list-row__value",
+        ".list-rows"
       ]
     },
     {
@@ -1825,10 +2035,9 @@
       "example": "composites/load-more.html",
       "classes": [
         ".load-more",
-        ".load-more__summary",
         ".load-more__end",
-        ".progress",
-        ".load-more__progress"
+        ".load-more__progress",
+        ".load-more__summary"
       ]
     },
     {
@@ -1840,12 +2049,14 @@
       "example": "composites/option-card.html",
       "classes": [
         ".option-card",
-        "--selected",
-        ".option-card__check",
-        ".option-card__icon",
+        ".option-card--radio",
+        ".option-card--selected",
         ".option-card__body",
+        ".option-card__check",
+        ".option-card__desc",
+        ".option-card__icon",
         ".option-card__input",
-        ".option-card--radio"
+        ".option-card__title"
       ]
     },
     {
@@ -1856,8 +2067,7 @@
       "contract": "composites/page-body.md",
       "example": null,
       "classes": [
-        ".page-body",
-        ".page-header"
+        ".page-body"
       ]
     },
     {
@@ -1869,15 +2079,14 @@
       "example": "composites/page-header.html",
       "classes": [
         ".page-header",
-        "--sticky",
+        ".page-header--sticky",
+        ".page-header__actions",
         ".page-header__bar",
-        ".page-header__titles",
+        ".page-header__count",
+        ".page-header__description",
         ".page-header__heading",
         ".page-header__title",
-        ".page-header__count",
-        ".badge",
-        ".page-header__description",
-        ".page-header__actions"
+        ".page-header__titles"
       ]
     },
     {
@@ -1888,14 +2097,14 @@
       "contract": "composites/pagination.md",
       "example": "composites/pagination.html",
       "classes": [
-        ".pagination__pages",
-        ".pagination__page",
-        ".pagination__current",
         ".pagination",
+        ".pagination__current",
+        ".pagination__ellipsis",
         ".pagination__info",
-        ".select--sm",
-        ".pagination__summary",
-        ".pagination__ellipsis"
+        ".pagination__page",
+        ".pagination__pages",
+        ".pagination__rows",
+        ".pagination__summary"
       ]
     },
     {
@@ -1906,12 +2115,25 @@
       "contract": "composites/product-card.md",
       "example": "composites/product-card.html",
       "classes": [
+        ".btn",
         ".product-card",
-        ".product-card__image",
-        ".product-card__placeholder",
-        ".product-card__body",
-        ".btn--primary",
+        ".product-card--out-of-stock",
         ".product-card__add",
+        ".product-card__body",
+        ".product-card__cta",
+        ".product-card__description",
+        ".product-card__glyph",
+        ".product-card__image",
+        ".product-card__name",
+        ".product-card__options",
+        ".product-card__placeholder",
+        ".product-card__price",
+        ".product-card__price-row",
+        ".product-card__ribbon",
+        ".product-card__ribbon--info",
+        ".product-card__ribbon--success",
+        ".product-card__ribbon--warning",
+        ".product-card__sku",
         ".product-grid"
       ]
     },
@@ -1926,8 +2148,7 @@
         ".rich-pagination",
         ".rich-pagination__left",
         ".rich-pagination__rows",
-        ".rich-pagination__summary",
-        ".pagination"
+        ".rich-pagination__summary"
       ]
     },
     {
@@ -1939,11 +2160,11 @@
       "example": "composites/skeleton.html",
       "classes": [
         ".skeleton",
-        "--line",
-        "--text",
-        "--title",
-        "--block",
-        "--circle",
+        ".skeleton--block",
+        ".skeleton--circle",
+        ".skeleton--line",
+        ".skeleton--text",
+        ".skeleton--title",
         ".skeleton-row"
       ]
     },
@@ -1956,15 +2177,25 @@
       "example": "composites/stat-card.html",
       "classes": [
         ".stat-card",
-        ".stat-card--selected",
         ".stat-card--interactive",
-        ".stat-card__head",
-        ".stat-card__label",
-        ".stat-card__icon",
-        ".stat-card__value",
+        ".stat-card--selected",
         ".stat-card__delta",
+        ".stat-card__delta--down",
+        ".stat-card__delta--flat",
+        ".stat-card__delta--up",
         ".stat-card__description",
-        ".stat-grid"
+        ".stat-card__head",
+        ".stat-card__icon",
+        ".stat-card__label",
+        ".stat-card__value",
+        ".stat-card__value--error",
+        ".stat-card__value--info",
+        ".stat-card__value--success",
+        ".stat-card__value--warning",
+        ".stat-grid",
+        ".stat-grid--cols-2",
+        ".stat-grid--cols-3",
+        ".stat-grid--cols-4"
       ]
     },
     {
@@ -1975,17 +2206,18 @@
       "contract": "composites/step-indicator.md",
       "example": "composites/step-indicator.html",
       "classes": [
-        ".step-indicator",
         ".step",
-        ".step--completed",
         ".step--active",
+        ".step--completed",
         ".step--upcoming",
+        ".step-indicator",
         ".step__body",
+        ".step__body--clickable",
+        ".step__caption",
+        ".step__connector",
         ".step__dot",
         ".step__text",
-        ".step__caption",
-        ".step__title",
-        ".step__connector"
+        ".step__title"
       ]
     },
     {
@@ -1997,10 +2229,8 @@
       "example": "composites/stepper.html",
       "classes": [
         ".stepper",
-        ".input-group",
-        ".input-group__addon--inline-start",
-        "--inline-end",
-        ".input-group--disabled"
+        ".stepper__button",
+        ".stepper__input"
       ]
     },
     {
@@ -2012,10 +2242,9 @@
       "example": "composites/summary-bar.html",
       "classes": [
         ".summary-bar",
-        "--sticky",
-        ".summary-bar__count",
+        ".summary-bar--sticky",
         ".summary-bar__actions",
-        ".table-frame--flush"
+        ".summary-bar__count"
       ]
     },
     {
@@ -2026,8 +2255,7 @@
       "contract": "composites/theme-toggle.md",
       "example": "composites/theme-toggle.html",
       "classes": [
-        ".theme-toggle",
-        ".btn--ghost"
+        ".theme-toggle"
       ]
     },
     {
@@ -2039,24 +2267,29 @@
       "example": "composites/timeline.html",
       "classes": [
         ".timeline",
-        ".timeline__item",
-        ".timeline__marker",
-        ".timeline__content",
-        ".timeline__marker--dot",
-        "--icon",
-        ".timeline__marker-node",
-        "--dot",
-        ".timeline__marker-dot",
-        ".timeline__rail",
-        ".timeline__item--last",
         ".timeline--compact",
         ".timeline--stacked",
+        ".timeline__actor",
+        ".timeline__content",
+        ".timeline__description",
         ".timeline__header",
-        ".timeline__title",
+        ".timeline__item",
+        ".timeline__item--last",
+        ".timeline__marker",
+        ".timeline__marker--dot",
+        ".timeline__marker--error",
+        ".timeline__marker--icon",
+        ".timeline__marker--info",
+        ".timeline__marker--neutral",
+        ".timeline__marker--primary",
+        ".timeline__marker--success",
+        ".timeline__marker--warning",
+        ".timeline__marker-dot",
+        ".timeline__marker-node",
+        ".timeline__rail",
         ".timeline__time",
         ".timeline__time-row",
-        ".timeline__description",
-        ".timeline__actor"
+        ".timeline__title"
       ]
     },
     {
@@ -2069,11 +2302,7 @@
       "classes": [
         ".toggle-checkbox",
         ".toggle-radio",
-        ".toggle-switch",
-        ".checkbox",
-        ".radio",
-        ".switch",
-        ".label"
+        ".toggle-switch"
       ]
     }
   ],

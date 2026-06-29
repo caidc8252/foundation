@@ -97,20 +97,56 @@ if (fileURLToPath(import.meta.url) === process.argv[1]) {
   // 3a. Exact class whitelist from a reference CSS file. Strip comments, then
   // remove every rule body (repeat for nested @media/@keyframes) so only selector
   // text remains — every `.x` left is a real, usable class.
-  const cssClassNames = (file) => {
-    let css = stripComments(readFileSync(file, "utf8"));
+  const classNamesFromCss = (css) => {
+    let body = stripComments(css);
     let prev;
-    do { prev = css; css = css.replace(/\{[^{}]*\}/g, " "); } while (css !== prev);
+    do { prev = body; body = body.replace(/\{[^{}]*\}/g, " "); } while (body !== prev);
     const set = new Set();
-    for (const m of css.matchAll(/\.(-?[A-Za-z_][\w-]*)/g)) set.add(m[1]);
+    for (const m of body.matchAll(/\.(-?[A-Za-z_][\w-]*)/g)) set.add(m[1]);
     return set;
   };
+  const cssClassNames = (file) => classNamesFromCss(readFileSync(file, "utf8"));
+  const primCss = readFileSync(join(root, "primitives", "primitives.css"), "utf8");
+  const compCss = readFileSync(join(root, "composites", "composites.css"), "utf8");
   const allClasses = [
-    ...new Set([
-      ...cssClassNames(join(root, "primitives", "primitives.css")),
-      ...cssClassNames(join(root, "composites", "composites.css")),
-    ]),
+    ...new Set([...classNamesFromCss(primCss), ...classNamesFromCss(compCss)]),
   ].sort();
+
+  // 3a-bis. Per-component class lists, derived FROM the reference CSS (never from
+  // hand-written prose). Each component owns the classes in its
+  // `/* @component <slug> */` section (bounded by the ═══ section headers), plus
+  // any BEM-namespaced class (slug / slug__x / slug--x) anywhere as a safety net.
+  // One source, can't drift: the same CSS the closed set comes from.
+  const SECTION_HEADER = /\/\*\s*═[^*]*\*\//g;
+  const sectionClassMap = (css) => {
+    const heads = [...css.matchAll(SECTION_HEADER)].map((m) => m.index);
+    heads.push(css.length);
+    const map = {};
+    for (let i = 0; i < heads.length - 1; i++) {
+      const section = css.slice(heads[i], heads[i + 1]);
+      const marker = section.match(/@component\s+([a-z0-9 -]+?)\s*\*\//);
+      if (!marker) continue;
+      const classes = classNamesFromCss(section);
+      // One shared section can serve several closely-related contracts (the date
+      // pickers): `@component a b c` tags all of them.
+      for (const slug of marker[1].trim().split(/\s+/)) {
+        (map[slug] ||= new Set());
+        for (const c of classes) map[slug].add(c);
+      }
+    }
+    return map;
+  };
+  const sectionMaps = {
+    primitives: sectionClassMap(primCss),
+    composites: sectionClassMap(compCss),
+  };
+  const componentClasses = (slug, dir) => {
+    const out = new Set(sectionMaps[dir]?.[slug] ?? []);
+    for (const c of allClasses) {
+      if (c === slug || c.startsWith(`${slug}__`) || c.startsWith(`${slug}--`)) out.add(c);
+    }
+    return [...out].sort().map((c) => `.${c}`);
+  };
 
   // 3b. Per-component index from each contract *.md.
   const firstSentence = (body) => {
@@ -132,20 +168,6 @@ if (fileURLToPath(import.meta.url) === process.argv[1]) {
     const m = text.match(/^(.*?[.。])(\s|$)/);
     return (m ? m[1] : text).trim();
   };
-  // Classes named in the "Artifact" implementation note — the human-written
-  // per-component list (the exact whole-set lives in `classes`).
-  const contractClasses = (md) => {
-    const i = md.indexOf("Artifact");
-    const scope = i === -1 ? md : md.slice(i);
-    const out = [];
-    for (const m of scope.matchAll(/`(\.[A-Za-z_][\w-]*|--[A-Za-z_][\w-]*)`/g)) {
-      // Keep classes (`.x`) and modifier suffixes (`--x`), but drop bare token
-      // names the prose happens to cite (e.g. `--space-12`) — they aren't classes.
-      if (m[1].startsWith("--") && light[m[1].slice(2)] !== undefined) continue;
-      if (!out.includes(m[1])) out.push(m[1]);
-    }
-    return out;
-  };
   const readComponents = (layer, dir) =>
     readdirSync(join(root, dir))
       .filter((f) => f.endsWith(".md"))
@@ -163,7 +185,7 @@ if (fileURLToPath(import.meta.url) === process.argv[1]) {
           contract: `${dir}/${f}`,
           example: existsSync(join(root, dir, `${name}.html`)) ? `${dir}/${name}.html` : null,
           // Patterns compose composites (listed in their contract), not raw classes.
-          classes: layer === "pattern" ? [] : contractClasses(md),
+          classes: layer === "pattern" ? [] : componentClasses(name, dir),
         };
       });
   const primitives = readComponents("primitive", "primitives");

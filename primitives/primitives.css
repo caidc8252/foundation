@@ -49,6 +49,7 @@
 body { margin: 0; }
 
 /* ═══════════════════════════════ Button ═══════════════════════════════ */
+/* @component button */
 
 .btn {
   display: inline-flex;
@@ -224,6 +225,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Input ═══════════════════════════════ */
+/* @component input */
 
 .input {
   display: block;
@@ -300,6 +302,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Textarea ═══════════════════════════════ */
+/* @component textarea */
 
 .textarea {
   display: block;
@@ -332,6 +335,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Select ═══════════════════════════════ */
+/* @component select */
 /* Styles a native <select> to match the SelectTrigger recipe. A native
    select cannot reproduce the portalled popup or per-item check glyph. */
 
@@ -368,6 +372,7 @@ body { margin: 0; }
 .select--sm { height: var(--spacing-control-sm); }
 
 /* ═══════════════════════════════ Checkbox ═══════════════════════════════ */
+/* @component checkbox */
 
 .checkbox {
   appearance: none;
@@ -422,6 +427,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Radio ═══════════════════════════════ */
+/* @component radio-group */
 
 .radio {
   appearance: none;
@@ -463,6 +469,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Badge ═══════════════════════════════ */
+/* @component badge */
 
 .badge {
   display: inline-flex;
@@ -563,6 +570,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Card ═══════════════════════════════ */
+/* @component card */
 
 .card {
   display: flex;
@@ -709,6 +717,7 @@ body { margin: 0; }
 /* Primitives: 39 components authored from @cloud/ui, token-only. */
 
 /* ═══════════════════════════════ Accordion ═══════════════════════════════ */
+/* @component accordion */
 /* Vertical stack of collapsible disclosure sections. The single-vs-multiple
    open behavior, controlled value, and the panel height open/close animation
    (--accordion-panel-height, animate-accordion-down/up) are React/base-ui
@@ -807,6 +816,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Alert ═══════════════════════════════ */
+/* @component alert */
 /* Inline status box. One form (tonal filled), tone selected via modifier.
    The icon two-column layout is opt-in via .alert--with-icon — the React
    source auto-applies it with has-[>svg], which a static skin can't observe. */
@@ -887,6 +897,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Alert Dialog ═══════════════════════════════ */
+/* @component alert-dialog */
 /* Forced-action confirm (base-ui AlertDialog) — a centered dialog with NO close
    affordance that Escape and overlay-click can't dismiss; the user must pick
    Cancel or Confirm. A destructive-or-consequential variant of Modal, sharing
@@ -975,6 +986,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Aspect Ratio ═══════════════════════════════ */
+/* @component aspect-ratio */
 /* Layout-only box: locks content to a width:height ratio. Holds NO token-bearing
    visual props (no surface/border/radius/shadow/color/type) — it's pure layout,
    so the only declarations are position + aspect-ratio. The ratio is a unitless
@@ -988,6 +1000,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Avatar ═══════════════════════════════ */
+/* @component avatar */
 /* Circular identity chip: an image that clips to the circle, falling back to
    initials. The image→fallback swap on load/error is a React/base-ui behavior;
    this static skin renders whichever slot is present (image clips over the
@@ -1064,6 +1077,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Breadcrumb ═══════════════════════════════ */
+/* @component breadcrumb */
 /* Horizontal navigation trail: an ordered list of crumbs separated by a glyph,
    ending in the non-link current page. Which middle crumbs collapse into the
    ellipsis is consumer logic (React/markup) — this skin paints the static shell
@@ -1140,6 +1154,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Calendar ═══════════════════════════════ */
+/* @component calendar */
 /* The base month grid date pickers build their popup on: a flex header (prev /
    caption / next), a single 7-column CSS grid that holds the weekday header row
    PLUS the 6×7 day matrix on one uniform 2px gap, and an optional footer
@@ -1343,6 +1358,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Carousel ═══════════════════════════════ */
+/* @component carousel */
 /* Scrollable track of equal-width slides with optional nav buttons + dots
    (embla-carousel-react). The scroll engine, snap points, canScroll* flags,
    dot count/selection sync, and ArrowKey handling are React behaviors — out of
@@ -1446,6 +1462,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Collapsible ═══════════════════════════════ */
+/* @component collapsible */
 /* Single show/hide disclosure (base-ui Collapsible). The @cloud/ui wrapper is
    HEADLESS — "callers own all visual styling" — so there is no authored surface
    to mirror. This bare skin governs only the disclosure mechanic + an optional
@@ -1502,6 +1519,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Combobox ═══════════════════════════════ */
+/* @component combobox */
 /* Searchable single-/multi-select (base-ui Combobox). The trigger sits in the
    layout; the popup is portalled and holds a filter input + the option list.
    Triggering, portalling, positioning, open/close keyframes, label-text
@@ -1664,6 +1682,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Command ═══════════════════════════════ */
+/* @component command */
 /* Keyboard-driven command palette: a search input over a filtered, grouped
    list of runnable items. Fuzzy filtering, the arrow-key roving `data-selected`
    highlight, and (for the dialog form) base-ui open/close + focus trap are
@@ -1827,6 +1846,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Context Menu ═══════════════════════════════ */
+/* @component context-menu */
 /* Right-click action menu (base-ui ContextMenu). Open/close, pointer-position
    anchoring, portalling, side/align positioning, keyboard roving, submenu timing,
    and dismissal are React/base-ui behaviors; this static skin paints the resting
@@ -1986,6 +2006,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Date Pickers ═══════════════════════════════ */
+/* @component date-picker date-range-picker date-time-picker date-time-range-picker */
 /* The five-sibling date-picker family (date / date-range / date-time /
    date-time-range / time). Every variant is an input-styled TRIGGER that opens a
    .popover holding the .calendar skin (+ optional presets rail / time row). The
@@ -2166,6 +2187,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Drawer ═══════════════════════════════ */
+/* @component drawer */
 /* Edge-docked panel over a dimmed scrim (vaul). Open/close lifecycle, the
    edge slide, drag-to-dismiss + snap points, focus trap, scroll lock, and
    portalling are vaul (React) behaviors — out of scope for this static skin.
@@ -2279,6 +2301,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Dropdown Menu ═══════════════════════════════ */
+/* @component dropdown-menu */
 /* Triggered overlay of grouped actions (base-ui Menu). Triggering, portalling,
    side/align positioning, open/close keyframes, roaming focus, type-ahead, and
    checkbox/radio/sub-menu state are React/base-ui behaviors — out of scope for
@@ -2450,6 +2473,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Field ═══════════════════════════════ */
+/* @component field */
 /* Form-row wrapper: stacks label → control → hint/error. Pure layout +
    caption tones; draws no border/background/shadow of its own. Compose with
    .label (+ .label--disabled) for the caption. */
@@ -2472,6 +2496,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Hover Card ═══════════════════════════════ */
+/* @component hover-card */
 /* Rich hover popover (base-ui PreviewCard). A floating content panel — heavier
    elevation than the tooltip. Open/close (fade + zoom-95 + directional slide),
    portalling, and side/align positioning are React/base-ui behaviors; this
@@ -2617,6 +2642,7 @@ body { margin: 0; }
 .input-group kbd { border-radius: var(--radius-sm); }
 
 /* ═══════════════════════════════ InputOTP ═══════════════════════════════ */
+/* @component input-otp */
 /* Segmented verification-code input. The active-slot highlight + fake caret +
    focus traversal are owned by the React `input-otp` library; this layer is the
    static skin only. The ERROR ring is drawn by the GROUP (via :has), never by an
@@ -2718,6 +2744,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Modal ═══════════════════════════════ */
+/* @component modal */
 /* Centered dialog over a dimmed scrim (base-ui Dialog). Open/close lifecycle,
    portalling, focus trap, Escape/overlay dismissal gating, and the fade+zoom
    keyframes are React/base-ui behaviors — out of scope for this static skin.
@@ -2985,6 +3012,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Popover ═══════════════════════════════ */
+/* @component popover */
 /* Elevated floating panel anchored to a trigger. Open/close, portalling,
    positioning, focus return, and dismissal are React/base-ui behaviors; this
    static skin renders a single OPEN panel (default bottom placement) — no
@@ -3067,6 +3095,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Progress ═══════════════════════════════ */
+/* @component progress */
 /* Determinate completion bar. No variant/size/state axis — the only visual
    axis is tone, which swaps the indicator fill. The fill % is static inline
    markup on the artifact side (width: <n>%); base-ui's value plumbing is owned
@@ -3121,6 +3150,7 @@ body { margin: 0; }
 .progress__indicator--info    { background-color: var(--color-info); }
 
 /* ═══════════════════════════════ Resizable ═══════════════════════════════ */
+/* @component resizable */
 /* Draggable split-pane layout: flex panels separated by a hairline handle. Drag
    math, min/max/collapse, keyboard nudging, and the orientation flip are owned
    by the React impl (react-resizable-panels) — this skin paints the static
@@ -3204,6 +3234,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Scroll Area ═══════════════════════════════ */
+/* @component scroll-area */
 /* Styled overflow container that swaps the OS scrollbar for a thin, token-skinned
    one. In the React source, scroll detection, the scrollbar fade-in/out on
    interaction, pointer-drag, and the corner where two bars meet are base-ui
@@ -3271,6 +3302,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Separator ═══════════════════════════════ */
+/* @component separator */
 /* A 1px hairline divider. Plain form delegates to base-ui's Separator (role +
    aria-orientation) in the Next consumer; this static skin draws the shell only.
    1px is a conventionally-exempt hairline (no token expresses sub-spacing-step
@@ -3313,6 +3345,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Sheet ═══════════════════════════════ */
+/* @component sheet */
 /* Edge-docked side panel over a dimmed scrim (base-ui Dialog). The base-ui
    counterpart to the vaul Drawer — same overlay-and-panel shape, docked to
    right (default) / left / top / bottom, but with a built-in close button and
@@ -3411,6 +3444,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Slider ═══════════════════════════════ */
+/* @component slider */
 /* Static skin only — drag / keyboard / value mapping are owned by the React
    (base-ui) implementation. In an artifact, set the indicator width and thumb
    left/top inline to depict a chosen value. */
@@ -3498,6 +3532,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Spinner ═══════════════════════════════ */
+/* @component spinner */
 /* Circular indeterminate loading glyph: one bordered circle whose top edge is
    the accent "head" and other 3 edges the neutral "track", spun 360°. role=
    "status" lives on the element. The 750ms spin period is not a token (source
@@ -3541,6 +3576,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Switch ═══════════════════════════════ */
+/* @component switch */
 /* Binary on/off toggle: a radius-full pill track with a sliding thumb. No
    native HTML switch element — the artifact drives state via a [data-checked]
    / [aria-checked="true"] attribute rather than :checked. Toggle behavior is
@@ -3618,6 +3654,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Tabs ═══════════════════════════════ */
+/* @component tabs */
 /* Tabbed control: a bar of triggers switching content panels. Selection,
    roving arrow-key focus, panel wiring, and the active-trigger state are
    React/base-ui behaviors — out of scope for this static skin. The reference
@@ -3741,6 +3778,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Toast ═══════════════════════════════ */
+/* @component toast */
 /* Transient auto-dismissing notification (sonner). Showing, stacking, dismissal,
    position, aria-live, and the real countdown timer are React/sonner behaviors —
    out of scope for this static skin. The reference layer paints ONE resting toast
@@ -3858,6 +3896,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Toggle ═══════════════════════════════ */
+/* @component toggle */
 /* A press-toggle BUTTON (not a switch): shares button interaction tokens, the
    on state is aria-pressed="true" (static stand-in for base-ui data-pressed).
    Group-driven looks (outline/segmented/cloud) live in .toggle-group below —
@@ -3996,6 +4035,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Toggle Group ═══════════════════════════════ */
+/* @component toggle-group */
 /* A set of press-toggle items acting as one control. The container variant
    drives the look; items react via .toggle-group--<variant> .toggle-group__item.
    Roving focus / selection / keyboard nav are owned by the React (base-ui)
@@ -4180,6 +4220,7 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Dropzone ═══════════════════════════════ */
+/* @component dropzone */
 /* Presentation-only file-select zone with drag-and-drop affordance. Emits
    picked files; never performs the upload — the host wires @cloud/storage and
    feeds per-file status/progress back via FileRow. CSP-safe; no network code. */
@@ -4290,6 +4331,7 @@ body { margin: 0; }
 .file-row__status--error { color: var(--color-error-strong); }
 
 /* ═══════════════════════════════ Object Tile ═══════════════════════════════ */
+/* @component object-tile */
 /* Square, filled entity/object identity mark — for companies, apps, device
    models, etc. Consolidates the old InitialsTile + ColorTile: one tile that
    shows a glyph icon, name-derived initials, or a short code, on a neutral
