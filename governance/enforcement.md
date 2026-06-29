@@ -69,7 +69,7 @@ The remaining items are an eye/design pass:
 - [ ] Frameless functional page is **full-width** — the builder's
       `main.app-frame__main` scroll root fills the width with no `max-width` lock.
       Height scrolls. (Use the full `.app-frame` with chrome only when you want a
-      production sidebar + header.) See `AGENTS.md` → "Two traps in a frameless page".
+      production sidebar + header.) See `.claude/docs/artifact-build-guide.md` §6 "frameless shell 的 sticky 滚动根".
 
 ## When the two disagree
 

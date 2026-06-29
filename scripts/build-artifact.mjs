@@ -137,7 +137,9 @@ ${primitives}
 /* 4/5 release/composites.css */
 ${composites}
 
-/* 5/5 page boilerplate (html/body background + [hidden] guard) + page-local composition */
+/* 5/5 page boilerplate (html/body background) + page-local composition.
+   The [hidden]{display:none!important} guard now lives in the primitives.css
+   baseline above, so every inlined-layer artifact carries it — builder or not. */
 html {
   background-color: var(--color-surface-1);
 }
@@ -147,10 +149,6 @@ body {
   background-color: var(--color-surface-1);
   color: var(--color-content-primary);
   font-family: var(--font-sans);
-}
-
-[hidden] {
-  display: none !important;
 }
 
 ${pageLocalCss}

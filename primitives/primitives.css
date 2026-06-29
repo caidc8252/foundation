@@ -48,6 +48,15 @@
    pages / dialogs / sheets drawn on <body> don't get a stray outer gap. */
 body { margin: 0; }
 
+/* `[hidden]` hard reset. The UA `[hidden]{display:none}` loses to a composite's
+   own `display` — `.card` / `.tabs__content` and friends set `display:flex`, so
+   toggling a wizard step or tab panel by the `hidden` attribute would leave it
+   visible. The Next consumer never hits this (Tailwind Preflight + class-based
+   toggling); a self-contained artifact toggles `hidden` directly, so the
+   reference layer forces it here. `!important` because it must beat a
+   component's explicit `display`. */
+[hidden] { display: none !important; }
+
 /* ═══════════════════════════ Screen-reader only ═══════════════════════════ */
 /* A11y utility (no contract / no @component — a behaviour helper like the baseline
    resets, not a design component). Hides an element VISUALLY while keeping it in

@@ -63,7 +63,7 @@ config-driven table — columns + rows — not hand-written cell markup.
   Wide tables scroll **inside `.table-scroll`** — the page never scrolls sideways.
   That scroll root is `.app-frame__main` in the shell; a **frameless** page must
   give its own `overflow-y:auto` root or drop `--sticky-head` + the `top:` offset
-  (see AGENTS.md "Two traps in a frameless page").
+  (see `.claude/docs/artifact-build-guide.md` §6 "frameless shell 的 sticky 滚动根").
 - **Pagination is `simple`** — the list/table footer shows `‹ Prev · current page
   · Next ›` only (no numbered jump, no ellipsis); it is `RichPagination`, which is
   always simple. The total lives in its range summary. See `pagination.md`.
