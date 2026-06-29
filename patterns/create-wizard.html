@@ -10,8 +10,7 @@
   its own pattern: ./create-form.md (./create-form.html).
 
   HOW THE STYLES LOAD
-    This file LINKS the reference CSS (relative to patterns/), so edits to tokens,
-    primitives, or composites flow straight through — no forked copy that can drift.
+    This file LINKS the reference CSS (relative to patterns/), so run `pnpm build` after source edits to refresh release — no forked copy that can drift.
     Order is load-bearing:  tokens → primitives → composites.
     To ship as a self-contained artifact (CSP, no external fetch), inline those
     three blocks into a <style> instead — see README "How each consumer uses it".
@@ -21,9 +20,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pattern · Create wizard — foundation example</title>
 
-<link rel="stylesheet" href="../dist/tokens.inline.css">
+<link rel="stylesheet" href="../release/tokens.inline.css">
 <link rel="stylesheet" href="../primitives/primitives.css">
-<link rel="stylesheet" href="../composites/composites.css">
+<link rel="stylesheet" href="../release/composites.css">
 
 <style>
 

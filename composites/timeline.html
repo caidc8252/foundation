@@ -17,8 +17,8 @@
   compact density, inside realistic card and section-card contexts.
 
   HOW THE STYLES LOAD
-    This file LINKS the reference CSS (relative to composites/), so edits to
-    tokens, primitives, or composites flow straight through — no forked copy
+    This file LINKS the reference CSS (relative to composites/), so run
+    `pnpm build` after source edits to refresh release — no forked copy
     that can drift. Order is load-bearing: tokens → primitives → composites.
     To ship as a self-contained artifact (CSP, no external fetch), inline those
     three blocks into a <style> instead.
@@ -27,7 +27,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Composite · Timeline — foundation example</title>
 
-<link rel="stylesheet" href="../dist/tokens.inline.css">
+<link rel="stylesheet" href="../release/tokens.inline.css">
 <link rel="stylesheet" href="../primitives/primitives.css">
 <link rel="stylesheet" href="composites.css">
 

@@ -1,0 +1,30 @@
+{
+  "version": "v1",
+  "baseVersion": "",
+  "publishedAt": "",
+  "source": {
+    "page": "foundation-base",
+    "title": "Foundation base",
+    "href": ""
+  },
+  "counts": {
+    "tokens": 0,
+    "compositeDeclarations": 0,
+    "selectors": 0,
+    "elementPaths": 0
+  },
+  "changedTokens": [],
+  "tokenOverrides": {},
+  "classOverrides": {},
+  "changes": {
+    "tokens": [],
+    "composites": []
+  },
+  "elementOverrides": {},
+  "conflicts": [],
+  "skipped": {
+    "tokens": [],
+    "classOverrides": []
+  },
+  "base": true
+}

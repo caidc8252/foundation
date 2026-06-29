@@ -14,9 +14,9 @@ test("recipeForClasses tags sourceLayer", () => {
   assert.equal(bg.sourceSelector, ".btn--primary");
 });
 
-test("pattern render inlines its page-local <style> (kv styles present)", () => {
+test("pattern render inlines its page-local <style> (kv reveal styles present)", () => {
   const html = renderComponent("pattern", "detail-page");
-  assert.match(html, /\.kv__label\s*\{/, "page-local kv styles inlined for fidelity");
+  assert.match(html, /\.kv__value--reveal\s*\{/, "page-local kv styles inlined for fidelity");
 });
 
 test("element-recipe is EXACT — no variant discovery (Fix B)", () => {
@@ -47,7 +47,7 @@ test("pattern render works in draft mode and reflects edited token (Fix A)", () 
     let html;
     assert.doesNotThrow(() => { html = renderComponent("pattern", "detail-page"); },
       "pattern render must not throw (ENOENT) in draft mode");
-    assert.match(html, /\.kv__label\s*\{/, "pattern markup still inlined from ROOT");
+    assert.match(html, /\.kv__value--reveal\s*\{/, "pattern markup still inlined from ROOT");
     assert.match(html, /oklch\(50% 0\.1 30\)/, "edited token reflected via activeRoot CSS");
   } finally {
     discardDraft();

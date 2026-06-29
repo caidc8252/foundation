@@ -61,4 +61,4 @@ A single circular element — no children, no label slot. The visible ring is it
 ## Implementations
 
 - **Next / @cloud/ui** — `import { Spinner } from "@cloud/ui"`. Plain `<div role="status">` (no base-ui); props `size` (`sm` | `md` | `lg` | `xl`, default `md`) plus pass-through `div` props / `className`. API details: the `ui` skill. The animation (continuous rotate, 750ms) is owned by the implementation/CSS, not configurable per the contract.
-- **Artifact (self-contained HTML)** — use `<div class="spinner spinner--<size>" role="status" aria-label="Loading"></div>` styled by `./primitives.css`, on top of the inlined `dist/tokens.inline.css`. Same ring recipe (`line-default` track + `primary-700` head), same diameters, same 750ms spin.
+- **Artifact (self-contained HTML)** — use `<div class="spinner spinner--<size>" role="status" aria-label="Loading"></div>` styled by `./primitives.css`, on top of the inlined `release/tokens.inline.css`. Same ring recipe (`line-default` track + `primary-700` head), same diameters, same 750ms spin.

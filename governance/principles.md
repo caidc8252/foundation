@@ -18,7 +18,7 @@ side — a utility generated from a token (`bg-primary`, `text-content-secondary
 
 Token VALUES exist only in `foundation/tokens/*.css`. Neither consumer redefines
 them. The Next app imports the `@theme` source; artifacts inline the emitted
-`dist/tokens.inline.css`. Two copies of a value is the failure mode this whole
+`release/tokens.inline.css`. Two copies of a value is the failure mode this whole
 foundation exists to prevent.
 
 ## 3. Semantic names over raw ramps

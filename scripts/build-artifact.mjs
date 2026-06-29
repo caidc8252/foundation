@@ -12,7 +12,7 @@
      node scripts/build-artifact.mjs --pattern list-page --out artifacts/list.html
      node scripts/build-artifact.mjs --list
    --------------------------------------------------------------------------- */
-import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -109,23 +109,32 @@ const pageLocalCss = [...htmlWithoutComments.matchAll(/<style\b[^>]*>([\s\S]*?)<
   .filter(Boolean)
   .join("\n\n");
 
-const readLayer = (path) => readFileSync(join(root, path), "utf8");
-const tokens = readLayer("dist/tokens.inline.css");
+const readLayer = (path) => {
+  const file = join(root, path);
+  if (!existsSync(file)) {
+    console.error(`missing foundation layer: ${path}`);
+    console.error("Run `pnpm build` or publish a release snapshot first.");
+    process.exit(2);
+  }
+  return readFileSync(file, "utf8");
+};
+const tokens = readLayer("release/tokens.inline.css");
 const primitives = readLayer("primitives/primitives.css");
-const composites = readLayer("composites/composites.css");
-const pkgVersion = JSON.parse(readLayer("package.json")).version; // G3 version stamp source
+const composites = readLayer("release/composites.css");
+const releaseManifest = JSON.parse(readLayer("release/manifest.json"));
+const releaseVersion = releaseManifest.release?.version || releaseManifest.version || "unknown";
 
 const artifactCss = `
 /* 1/5 embedded Geist font layer */
 ${FONT_CSS}
 
-/* 2/5 dist/tokens.inline.css */
+/* 2/5 release/tokens.inline.css */
 ${tokens}
 
 /* 3/5 primitives/primitives.css */
 ${primitives}
 
-/* 4/5 composites/composites.css */
+/* 4/5 release/composites.css */
 ${composites}
 
 /* 5/5 page boilerplate (html/body background + [hidden] guard) + page-local composition */
@@ -147,7 +156,7 @@ body {
 ${pageLocalCss}
 `.trim();
 
-const output = `<!-- foundation: v${pkgVersion} -->
+const output = `<!-- foundation: release:${releaseVersion} -->
 <!doctype html>
 <html lang="en">
 <head>

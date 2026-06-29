@@ -40,4 +40,4 @@ No discrete size variants. The field is `min-h-16` (64px) and grows with content
 ## Implementations
 
 - **Next / @cloud/ui** — `import { Textarea } from "@cloud/ui"`. Native `<textarea>` under the hood; props `showCount` plus standard textarea attrs (`maxLength`, `value`/`defaultValue`, `onChange`). API details: the `ui` skill.
-- **Artifact (self-contained HTML)** — use the `.textarea` class in `./primitives.css`, on top of the inlined `dist/tokens.inline.css`. Same token recipe.
+- **Artifact (self-contained HTML)** — use the `.textarea` class in `./primitives.css`, on top of the inlined `release/tokens.inline.css`. Same token recipe.

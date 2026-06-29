@@ -105,4 +105,4 @@ states: see `calendar.md`.
 - **Artifact (self-contained HTML)** — `.date-trigger` (+ size/`--invalid`); a
   `.popover` with `.date-presets`, the range calendar skin, then a stacked group of
   `.date-time-row`s (each `.date-time-row__label` + `<input type="time" class="input
-  input--sm">`) and a `.btn--sm` *OK*. On top of the inlined `dist/tokens.inline.css`.
+  input--sm">`) and a `.btn--sm` *OK*. On top of the inlined `release/tokens.inline.css`.

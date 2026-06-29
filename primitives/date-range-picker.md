@@ -94,4 +94,4 @@ by the React implementation.
 - **Artifact (self-contained HTML)** — `.date-trigger` (+ size/`--invalid`) for the
   closed control; a `.popover` containing `.date-presets` › `.date-presets__item`
   rows and the calendar skin (`numberOfMonths={2}` layout). On top of the inlined
-  `dist/tokens.inline.css`.
+  `release/tokens.inline.css`.

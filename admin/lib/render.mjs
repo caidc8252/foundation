@@ -1,11 +1,20 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { listComponents } from "./catalog.mjs";
 import { demoFor } from "./demos.mjs";
 import { activeRoot, ROOT } from "./paths.mjs";
 
-// CSS layers come from activeRoot() so edited tokens/CSS show in the render.
+// Root renders the committed release snapshot; draft renders its local cache so
+// edited tokens/CSS show before publishing.
 const read = (p) => readFileSync(join(activeRoot(), p), "utf8");
+const readFirst = (...paths) => {
+  const root = activeRoot();
+  for (const path of paths) {
+    const file = join(root, path);
+    if (existsSync(file)) return readFileSync(file, "utf8");
+  }
+  throw new Error(`missing CSS layer: ${paths.join(" or ")}`);
+};
 // Pattern .html files are NOT draft-editable (only the tokens/CSS they reference
 // are); ensureDraft() never copies patterns/, so always read them from ROOT.
 const readRoot = (p) => readFileSync(join(ROOT, p), "utf8");
@@ -13,10 +22,10 @@ const readRoot = (p) => readFileSync(join(ROOT, p), "utf8");
 // No module-level cache: activeRoot() can change between calls (draft edits).
 function inlineCss() {
   return [
-    "dist/tokens.inline.css",
-    "primitives/primitives.css",
-    "composites/composites.css",
-  ].map(read).join("\n");
+    readFirst("release/tokens.inline.css", "dist/tokens.inline.css"),
+    read("primitives/primitives.css"),
+    readFirst("release/composites.css", "composites/composites.css"),
+  ].join("\n");
 }
 
 const SELECTION_HELPER_CSS = `

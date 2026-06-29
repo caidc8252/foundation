@@ -25,19 +25,18 @@ There is **no fifth source**. Everything an artifact renders comes from here:
 
 | # | Layer | Lives in | What you take |
 |---|---|---|---|
-| ① | **Tokens** | `dist/tokens.inline.css` | the `--*` custom properties (color, space, text, radius, shadow, …) |
+| ① | **Tokens** | `release/tokens.inline.css` | the `--*` custom properties (color, space, text, radius, shadow, …) |
 | ② | **Primitives** | `primitives/primitives.css` | the atom classes (`.btn`, `.input`, `.badge`, `.field`, …) |
-| ③ | **Composites** | `composites/composites.css` | the page-building-block classes (`.page-header`, `.data-table`, `.summary-bar`, …) |
+| ③ | **Composites** | `release/composites.css` | the page-building-block classes (`.page-header`, `.data-table`, `.summary-bar`, …) |
 | ④ | **Patterns** | `patterns/*.md` (+ `.html`) | the named screen archetypes (list / detail / create-form) |
 
-**The legal names are enumerated in [`dist/catalog.md`](dist/catalog.md)** (human)
-and **[`dist/catalog.json`](dist/catalog.json)** (machine). If a token name, a
+**The legal names are enumerated in [`release/catalog.md`](release/catalog.md)** (human)
+and **[`release/catalog.json`](release/catalog.json)** (machine). If a token name, a
 class, or a pattern is not in the catalog, **it is not part of this system.**
 
-When consuming a generated `release/` package, those generated `dist/*` files are
-flattened at the release root: `tokens.inline.css`, `tokens.json`, `catalog.md`,
-`catalog.json`, and `composites.css`. The release package does **not** contain a
-`dist/` directory.
+`release/` is committed and is the current artifact snapshot. `versions/v1/` is
+the committed base style snapshot shared by the team; later `versions/vN/`
+entries are saved prototype snapshots. There is no top-level `dist/` source.
 
 **Icons** are the one other piece of raw material — inline **Lucide** SVGs, like
 token *values* rather than a component layer. They have no class; you obtain one
@@ -87,15 +86,16 @@ reuse `.btn`/`.input`, so primitives must come first):
 
 ```html
 <style>
-  /* 1 · paste dist/tokens.inline.css   — token values   */
+  /* 1 · paste release/tokens.inline.css — token values   */
   /* 2 · paste primitives/primitives.css — atoms          */
-  /* 3 · paste composites/composites.css — building blocks */
+  /* 3 · paste release/composites.css    — building blocks */
 </style>
 ```
 
 (Working **inside this repo**, the `patterns/*.html` examples instead `<link>`
-those same files so edits flow through live — see the README. For a shipped
-artifact, inline them: CSP blocks external fetches.)
+the release snapshot plus primitive source; run `pnpm build` after source edits
+to refresh `release/`. For a shipped artifact, inline them: CSP blocks external
+fetches.)
 
 - **A frameless page is full-width — no max-width lock.** These artifacts are
   standalone functional pages with **the sidebar + header chrome removed** (that is
@@ -137,7 +137,7 @@ vocabulary — they stay inside the closed set.
 
 ## Find what you need — fast
 
-1. **[`dist/catalog.md`](dist/catalog.md)** — one row per primitive/composite/
+1. **[`release/catalog.md`](release/catalog.md)** — one row per primitive/composite/
    pattern: what it's for, its classes, and links to its **contract** (`.md`) and,
    for patterns, a copyable **example** (`.html`). Start here.
 2. **[`patterns/router.json`](patterns/router.json)** — the machine-readable

@@ -10,10 +10,10 @@
      @theme inline shadcn aliases, grid-auto-fit) — it no longer defines
      token values.
 
-   • Artifact (self-contained HTML)  →  consumes the EMITTED, Tailwind-free
-     ../dist/tokens.inline.css (a flat :root {…} + [data-theme="dark"] {…}
-     block), inlined into <style>. Run `pnpm build` to regenerate; never
-     hand-edit dist/.
+   • Artifact (self-contained HTML)  →  consumes the committed release
+     snapshot at ../release/tokens.inline.css (a flat :root {…} +
+     [data-theme="dark"] {…} block), inlined into <style>. Run `pnpm build`
+     to refresh generated snapshots; never hand-edit them.
 
    Order matters only for readability — @theme declarations merge regardless.
    Keep this file import-only; put declarations in the layer files.

@@ -2,15 +2,15 @@
 /* ---------------------------------------------------------------------------
    Foundation pattern router check
 
-   Ensures patterns/router.json stays aligned with dist/catalog.json and pattern
-   examples.
+   Ensures patterns/router.json stays aligned with release/catalog.json, pattern
+   examples, and composites/schema.json.
    --------------------------------------------------------------------------- */
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const catalogPath = join(root, "dist", "catalog.json");
+const catalogPath = join(root, "release", "catalog.json");
 const routerPath = join(root, "patterns", "router.json");
 
 const failSetup = (message) => {
@@ -18,7 +18,7 @@ const failSetup = (message) => {
   process.exit(2);
 };
 
-if (!existsSync(catalogPath)) failSetup("dist/catalog.json missing — run `pnpm build` first.");
+if (!existsSync(catalogPath)) failSetup("release/catalog.json missing — run `pnpm build` first.");
 if (!existsSync(routerPath)) failSetup("patterns/router.json missing.");
 
 const catalog = JSON.parse(readFileSync(catalogPath, "utf8"));

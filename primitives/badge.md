@@ -55,4 +55,4 @@ No size prop — fixed height `h-5` (20px), `text-xs`, `font-medium`, `px-2`. In
 ## Implementations
 
 - **Next / @cloud/ui** — `import { Badge } from "@cloud/ui"`. Renders a `<span>` (or any element via `render`); props `tone` `shape` `dot`. API details: the `ui` skill. Color is set entirely by `tone`; there is no `variant` prop.
-- **Artifact (self-contained HTML)** — use `.badge` + `.badge--<tone>` (5 tones), optionally `.badge--tag` for the tag shape and `.badge__dot` for a leading status dot, in `./primitives.css`, on top of the inlined `dist/tokens.inline.css`. Same tonal recipe and names.
+- **Artifact (self-contained HTML)** — use `.badge` + `.badge--<tone>` (5 tones), optionally `.badge--tag` for the tag shape and `.badge__dot` for a leading status dot, in `./primitives.css`, on top of the inlined `release/tokens.inline.css`. Same tonal recipe and names.

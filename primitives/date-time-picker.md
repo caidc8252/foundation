@@ -90,4 +90,4 @@ states: see `calendar.md`.
 - **Artifact (self-contained HTML)** — `.date-trigger` (+ size/`--invalid`) for the
   closed control; a `.popover` containing the calendar skin and a `.date-time-row`
   with an `<input type="time" class="input input--sm">` and a `.btn--sm` *OK*. On top
-  of the inlined `dist/tokens.inline.css`.
+  of the inlined `release/tokens.inline.css`.

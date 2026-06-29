@@ -49,4 +49,4 @@ Body text is `text-md`; the `lg` size bumps to `text-lg`. Horizontal padding fol
 ## Implementations
 
 - **Next / @cloud/ui** — `import { Input } from "@cloud/ui"`. base-ui `Input` under the hood; props `inputSize` `variant` `invalid` `validation` `prefix` `suffix`. API details: the `ui` skill. Do not re-skin via `className`; pick a variant/size.
-- **Artifact (self-contained HTML)** — use the `.input` class (plus size/state modifiers) in `./primitives.css`, on top of the inlined `dist/tokens.inline.css`. Same token recipe, same names.
+- **Artifact (self-contained HTML)** — use the `.input` class (plus size/state modifiers) in `./primitives.css`, on top of the inlined `release/tokens.inline.css`. Same token recipe, same names.

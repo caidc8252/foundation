@@ -10,17 +10,18 @@
   "exports": {
     "./tokens": "./tokens/index.css",
     "./tokens/*": "./tokens/*.css",
-    "./tokens.inline.css": "./dist/tokens.inline.css",
-    "./tokens.json": "./dist/tokens.json",
+    "./tokens.inline.css": "./release/tokens.inline.css",
+    "./tokens.json": "./release/tokens.json",
     "./primitives.css": "./primitives/primitives.css",
     "./composites.css": "./composites/composites.css",
     "./patterns.router.json": "./patterns/router.json",
-    "./catalog.json": "./dist/catalog.json",
-    "./catalog.md": "./dist/catalog.md"
+    "./catalog.json": "./release/catalog.json",
+    "./catalog.md": "./release/catalog.md"
   },
   "files": [
     "tokens",
-    "dist",
+    "release",
+    "versions",
     "primitives",
     "composites",
     "patterns",

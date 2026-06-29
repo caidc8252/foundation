@@ -4,7 +4,7 @@
 
    Makes governance/enforcement.md's artifact checklist RUNNABLE. Scans an
    artifact HTML and reports anything OUTSIDE the foundation closed set
-   (dist/catalog.json):
+   (release/catalog.json):
 
      ✗ hardcoded color literals   — a token covers every brand color
      ✗ unknown var(--…) refs      — token name not in the set (typo / invented)
@@ -25,7 +25,7 @@
    artifact colors.
 
    Usage:  node scripts/check-artifact.mjs [--strict] <file.html> [more.html …]
-   Build the catalog first if missing:  pnpm build
+   Build the release snapshot first if missing:  pnpm build
    ───────────────────────────────────────────────────────────── */
 import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -33,18 +33,27 @@ import { dirname, join } from "node:path";
 import { hasIcon, bodyMatches, VERSION as ICON_VERSION } from "./icon/registry.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const catalogPath = join(root, "dist", "catalog.json");
+const requireFoundationFile = (path) => {
+  const file = join(root, path);
+  if (!existsSync(file)) {
+    console.error(`✗ ${path} missing — run \`pnpm build\` first.`);
+    process.exit(2);
+  }
+  return readFileSync(file, "utf8");
+};
+
+const catalogPath = join(root, "release", "catalog.json");
 if (!existsSync(catalogPath)) {
-  console.error("✗ dist/catalog.json missing — run `pnpm build` first.");
+  console.error("✗ release/catalog.json missing — run `pnpm build` first.");
   process.exit(2);
 }
 const catalog = JSON.parse(readFileSync(catalogPath, "utf8"));
 const TOKENS = new Set(catalog.tokens);
 const CLASSES = new Set(catalog.classes);
 const FOUNDATION_LAYERS = [
-  ["dist/tokens.inline.css", readFileSync(join(root, "dist", "tokens.inline.css"), "utf8")],
-  ["primitives/primitives.css", readFileSync(join(root, "primitives", "primitives.css"), "utf8")],
-  ["composites/composites.css", readFileSync(join(root, "composites", "composites.css"), "utf8")],
+  ["release/tokens.inline.css", requireFoundationFile("release/tokens.inline.css")],
+  ["primitives/primitives.css", requireFoundationFile("primitives/primitives.css")],
+  ["release/composites.css", requireFoundationFile("release/composites.css")],
 ];
 
 const usage = () => {

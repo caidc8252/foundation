@@ -7,7 +7,15 @@ import { ensureDraft, draftExists, discardDraft, buildDraftTokens } from "./draf
 import { join } from "node:path";
 
 test("emit CLI output unchanged after refactor", () => {
-  const outputs = ["dist/tokens.inline.css", "dist/tokens.json", "dist/catalog.json"];
+  const outputs = [
+    "versions/v1/tokens.inline.css",
+    "versions/v1/composites.css",
+    "versions/v1/manifest.json",
+    "release/catalog.json",
+    "release/catalog.md",
+    "release/tokens.json",
+  ];
+  execFileSync("node", [join(ROOT, "emit/build.mjs")], { cwd: ROOT });
   const before = outputs.map((f) => readFileSync(join(ROOT, f), "utf8"));
   execFileSync("node", [join(ROOT, "emit/build.mjs")], { cwd: ROOT });
   outputs.forEach((f, i) => {

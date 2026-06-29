@@ -70,7 +70,7 @@ when the resolved theme is light, sun when it is dark.
   `content-secondary` (the bare `.btn--ghost` rests at `content-primary`); hover
   lifts it back via the inherited ghost recipe. Wiring the actual flip is the
   artifact author's JS. In `composites.css`, on top of `primitives.css` + the
-  inlined `dist/tokens.inline.css`.
+  inlined `release/tokens.inline.css`.
 
 ## Notes
 

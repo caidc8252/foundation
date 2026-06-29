@@ -243,5 +243,5 @@ own contract — this pattern only fixes which appear and in what order:
 Those composites in turn lean on primitives (`Button`, `Input`, `Badge`,
 `Select`, `Card`, `Checkbox`). In `@cloud/ui` they are the `layout/` +
 `list-filter/` + `ui/Table` families; an artifact composes the same anatomy from
-`composites.css` (on top of `primitives.css` + `dist/tokens.inline.css`). Same
+`composites.css` (on top of `primitives.css` + `release/tokens.inline.css`). Same
 parts, same names, both sides.

@@ -4,7 +4,7 @@
    This is the ARTIFACT-SIDE reference implementation of the primitive
    design contracts in ./*.md. It is plain, framework-free CSS — no
    Tailwind, no @apply, no build step, CSP-safe — meant to be inlined
-   into a self-contained HTML <style> AFTER ../dist/tokens.inline.css.
+   into a self-contained HTML <style> AFTER ../release/tokens.inline.css.
 
    It is drift-checked against the contract docs (button.md, input.md,
    textarea.md, select.md, checkbox.md, radio-group.md, badge.md,

@@ -9,8 +9,7 @@
   see is composed from foundation's reference layers — no bespoke component CSS.
 
   HOW THE STYLES LOAD
-    This file LINKS the reference CSS (relative to patterns/), so edits to tokens,
-    primitives, or composites flow straight through — there is no forked copy that
+    This file LINKS the reference CSS (relative to patterns/), so run `pnpm build` after source edits to refresh release — there is no forked copy that
     can drift (that is the whole point of this repo). Order is load-bearing:
         tokens  →  primitives  →  composites      (composites reuse .btn/.input/…)
     To ship as a self-contained artifact (CSP, no external fetch), inline those
@@ -21,9 +20,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pattern · List page — foundation example</title>
 
-<link rel="stylesheet" href="../dist/tokens.inline.css">
+<link rel="stylesheet" href="../release/tokens.inline.css">
 <link rel="stylesheet" href="../primitives/primitives.css">
-<link rel="stylesheet" href="../composites/composites.css">
+<link rel="stylesheet" href="../release/composites.css">
 
 <style>
 

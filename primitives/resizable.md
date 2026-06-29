@@ -68,4 +68,4 @@ PanelGroup (row)
 ## Implementations
 
 - **Next / @cloud/ui** — `import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@cloud/ui"`. `react-resizable-panels` under the hood; pass `direction` to the group, `withHandle` to the handle for the grip nub. Prop/API details: the `ui` skill. Do not re-skin the handle via `className`; the track/hover/grip recipe is fixed here.
-- **Artifact (self-contained HTML)** — compose `.resizable-group` (add `.resizable-group--vertical` for stacked panels) with `.resizable-panel` children and `.resizable-handle` dividers, on top of the inlined `dist/tokens.inline.css`. Add `.resizable-handle--horizontal` when the divider runs horizontally, and drop a `.resizable-handle__grip` child for the nub. Static only — no drag.
+- **Artifact (self-contained HTML)** — compose `.resizable-group` (add `.resizable-group--vertical` for stacked panels) with `.resizable-panel` children and `.resizable-handle` dividers, on top of the inlined `release/tokens.inline.css`. Add `.resizable-handle--horizontal` when the divider runs horizontally, and drop a `.resizable-handle__grip` child for the nub. Static only — no drag.

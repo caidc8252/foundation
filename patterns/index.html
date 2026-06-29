@@ -10,7 +10,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>patterns · copyable examples</title>
 
-<link rel="stylesheet" href="../dist/tokens.inline.css">
+<link rel="stylesheet" href="../release/tokens.inline.css">
 
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -66,9 +66,9 @@
   </p>
 
   <div class="note">
-    Each example <b>links</b> the reference CSS — <code>../dist/tokens.inline.css</code> →
-    <code>../primitives/primitives.css</code> → <code>../composites/composites.css</code> (that load
-    order matters) — so edits to tokens / primitives / composites flow straight through and nothing forks.
+    Each example <b>links</b> the reference CSS — <code>../release/tokens.inline.css</code> →
+    <code>../primitives/primitives.css</code> → <code>../release/composites.css</code> (that load
+    order matters) — so <code>pnpm build</code> refreshes the release snapshot after source edits and nothing forks.
     To ship one as a self-contained artifact (CSP, no external fetch), inline those three blocks into a
     <code>&lt;style&gt;</code> instead, per the README. Each file is a ready-to-copy frameless page — the
     markup starts directly with <code>&lt;main class="app-frame__main"&gt;</code>, no shell to strip.

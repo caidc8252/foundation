@@ -43,4 +43,4 @@ No size variants — fixed `size-4` (16px) circle with a `size-1.5` (6px) center
 ## Implementations
 
 - **Next / @cloud/ui** — `import { RadioGroup, RadioGroupItem } from "@cloud/ui"`. base-ui radio under the hood. API details: the `ui` skill. For labeled options use `ToggleRadioGroup`/`ToggleRadio`.
-- **Artifact (self-contained HTML)** — use `<input type="radio" class="radio">` styled by `./primitives.css`, on top of the inlined `dist/tokens.inline.css`. Same checked recipe (`primary-700` fill, `content-on-primary` dot).
+- **Artifact (self-contained HTML)** — use `<input type="radio" class="radio">` styled by `./primitives.css`, on top of the inlined `release/tokens.inline.css`. Same checked recipe (`primary-700` fill, `content-on-primary` dot).

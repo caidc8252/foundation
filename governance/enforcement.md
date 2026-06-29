@@ -26,9 +26,9 @@ token values — it imports the foundation `@theme` source.
 
 The closed set an artifact may use — and where to find each piece — is the
 `AGENTS.md` at the repo root; the legal token/class/pattern names are enumerated
-in the generated `dist/catalog.md` (+ `dist/catalog.json`). Start there.
+in the committed `release/catalog.md` (+ `release/catalog.json`). Start there.
 
-No AST lint can run on a self-contained HTML file, so enforcement is part
+No AST l int can run on a self-contained HTML file, so enforcement is part
 **runnable check**, part authoring checklist:
 
 ```bash
@@ -47,8 +47,8 @@ After hand edits, run the strict checker again.
 It reports usage outside the catalog — hardcoded colors, unknown `var(--…)`
 tokens, and classes that are neither a foundation class nor defined in the file's
 own page-local `<style>`. It can check the shipped self-contained artifact
-directly: when `dist/tokens.inline.css`, `primitives/primitives.css`, and
-`composites/composites.css` are inlined, those known layer bodies are ignored so
+directly: when `release/tokens.inline.css`, `primitives/primitives.css`, and
+`release/composites.css` are inlined, those known layer bodies are ignored so
 their token values do not count as hardcoded artifact colors. In default mode,
 off-set classes are review warnings; `--strict` makes them hard violations and is
 the recommended gate for AI-generated artifacts.
@@ -58,7 +58,7 @@ The remaining items are an eye/design pass:
 - [ ] `node scripts/check-artifact.mjs --strict <file>` is clean (no out-of-set
       tokens/colors/classes; page-local composition classes must be defined in
       the artifact's own `<style>`).
-- [ ] Inlined the current `dist/tokens.inline.css`; no stale snapshot.
+- [ ] Inlined the current `release/tokens.inline.css`; no stale snapshot.
 - [ ] Every color/size/radius/shadow is `var(--token-…)` — zero hex/px literals
       for anything a token covers.
 - [ ] Primitives/composites use the `primitives.css` / `composites.css` classes

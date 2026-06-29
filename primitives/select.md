@@ -55,4 +55,4 @@ There is no `md`/`lg` — the only two values are `sm` and `default`.
 ## Implementations
 
 - **Next / @cloud/ui** — `import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem, SelectGroup, SelectLabel, SelectSeparator } from "@cloud/ui"`. base-ui `Select` under the hood. API details: the `ui` skill. Compose the slots; do not re-skin via `className`.
-- **Artifact (self-contained HTML)** — for a static prototype use a native `<select class="select">` styled by `./primitives.css` (matches the trigger recipe), on top of the inlined `dist/tokens.inline.css`. A native select cannot reproduce the portalled popup / per-item check; use it for layout fidelity only.
+- **Artifact (self-contained HTML)** — for a static prototype use a native `<select class="select">` styled by `./primitives.css` (matches the trigger recipe), on top of the inlined `release/tokens.inline.css`. A native select cannot reproduce the portalled popup / per-item check; use it for layout fidelity only.

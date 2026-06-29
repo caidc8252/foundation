@@ -518,7 +518,8 @@
     document.body.appendChild(bar);
   }
 
-  var selectedVersion = '';
+  var DEFAULT_VERSION = 'v1';
+  var selectedVersion = DEFAULT_VERSION;
   var versionSelect = null, versionStatus = null;
   var versionTokenLink = null, versionCompositeLink = null;
   function apiUrl(path) { return location.protocol === 'file:' ? 'http://localhost:4177' + path : path; }
@@ -527,13 +528,13 @@
     return apiUrl('/versions/' + encodeURIComponent(version) + '/' + file) + '?t=' + Date.now();
   }
   function applyVersion(version) {
-    selectedVersion = version || '';
+    selectedVersion = version || DEFAULT_VERSION;
     clearDraftOverrides();
     if (!version) {
       if (versionTokenLink) versionTokenLink.remove();
       if (versionCompositeLink) versionCompositeLink.remove();
       versionTokenLink = null; versionCompositeLink = null;
-      setVersionStatus('Base');
+      setVersionStatus('未选择版本');
       return;
     }
     if (!versionTokenLink) {
@@ -561,9 +562,8 @@
       });
     }).then(function (data) {
       var versions = data.versions || [];
-      var chosen = preferred || selectedVersion || '';
+      var chosen = preferred || selectedVersion || DEFAULT_VERSION;
       versionSelect.innerHTML = '';
-      var base = document.createElement('option'); base.value = ''; base.textContent = 'Base'; versionSelect.appendChild(base);
       versions.forEach(function (item) {
         var opt = document.createElement('option');
         opt.value = item.version;
@@ -572,7 +572,8 @@
         versionSelect.appendChild(opt);
       });
       if (chosen && versions.some(function (item) { return item.version === chosen; })) versionSelect.value = chosen;
-      else versionSelect.value = '';
+      else if (versions.some(function (item) { return item.version === DEFAULT_VERSION; })) versionSelect.value = DEFAULT_VERSION;
+      else versionSelect.value = versions[0] ? versions[0].version : '';
       applyVersion(versionSelect.value);
     }).catch(function () {
       setVersionStatus('版本服务未连接');
@@ -918,7 +919,7 @@
     appendSaveStats(body, [
       { label: 'Token', value: String(meta.tokenCount) },
       { label: 'Composite', value: String(meta.styleCount) },
-      { label: 'Base', value: payload.baseVersion || 'Base' },
+      { label: '来源版本', value: payload.baseVersion || DEFAULT_VERSION },
     ]);
     if (collected.conflicts.length) {
       body.appendChild(saveNode('div', 'se-save-callout', '有 ' + collected.conflicts.length + ' 个同 class 同属性存在不同取值，保存时会使用最后一次编辑的值。'));
@@ -1008,7 +1009,7 @@
       href: location.href,
       title: document.title || '',
       publishedAt: new Date().toISOString(),
-      baseVersion: versionSelect && versionSelect.value ? versionSelect.value : '',
+      baseVersion: versionSelect && versionSelect.value ? versionSelect.value : DEFAULT_VERSION,
       tokens: tokenStore,
       classOverrides: collected.overrides,
       elementOverrides: store,
@@ -1023,9 +1024,9 @@
   function renderReleaseNoVersion() {
     saveBusy = false;
     clearSaveModal();
-    appendSaveHero('请选择要发布的版本', '先在 header 的 Version 下拉框里选择一个已保存版本，再发布到 release。', 'R');
+    appendSaveHero('没有可发布的版本', '请先确认 versions/v1 存在，或保存一个新版本后再发布到 release。', 'R');
     var body = div('se-save-modal__body');
-    body.appendChild(saveNode('div', 'se-save-empty', '当前选择是 Base，Base 不能直接发布。'));
+    body.appendChild(saveNode('div', 'se-save-empty', 'Version 下拉框里没有可用版本。'));
     saveModal.appendChild(body);
     appendSaveFooter([mkbtn('关闭', closeSaveModal, 'se-btn--primary')]);
     openSaveModal();

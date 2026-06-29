@@ -1,6 +1,7 @@
 import { mkdirSync, readdirSync, rmSync } from "node:fs";
 import { basename, dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { writeBaseVersion } from "../../emit/build.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, "..", "..");
@@ -22,8 +23,10 @@ let removed = 0;
 
 mkdirSync(versionsDir, { recursive: true });
 for (const entry of readdirSync(versionsDir, { withFileTypes: true })) {
+  if (entry.name === "v1") continue;
   rmSync(join(versionsDir, entry.name), { recursive: true, force: true });
   removed++;
 }
+writeBaseVersion(ROOT);
 
-console.log(`Cleared ${removed} item${removed === 1 ? "" : "s"} from ${versionsDir}`);
+console.log(`Cleared ${removed} item${removed === 1 ? "" : "s"} from ${versionsDir}; preserved v1`);

@@ -92,4 +92,4 @@ implies `step=1`); these are browser behaviors, not skin.
 - **Artifact (self-contained HTML)** — an `<input type="time" class="input">` (add a
   size modifier), with a leading clock glyph and a trailing `.date-trigger__clear`;
   for the affix layout reuse the input-group shape (`.input-group` +
-  `.input-group__addon`). On top of the inlined `dist/tokens.inline.css`.
+  `.input-group__addon`). On top of the inlined `release/tokens.inline.css`.

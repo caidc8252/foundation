@@ -87,6 +87,6 @@ hidden middle crumbs.
 - **Artifact (self-contained HTML)** — build the trail by hand with the
   `.breadcrumb__list` / `.breadcrumb__item` / `.breadcrumb__link` /
   `.breadcrumb__page` / `.breadcrumb__separator` / `.breadcrumb__ellipsis`
-  classes in `./primitives.css`, on top of the inlined `dist/tokens.inline.css`.
+  classes in `./primitives.css`, on top of the inlined `release/tokens.inline.css`.
   Wrap them in `<nav aria-label="breadcrumb"><ol class="breadcrumb__list">…`.
   Same type, tone, and hover recipe as the React side.

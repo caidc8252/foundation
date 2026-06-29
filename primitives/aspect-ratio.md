@@ -43,4 +43,4 @@ A single positioned block. `position: relative` establishes a containing block s
 ## Implementations
 
 - **Next / @cloud/ui** — `import { AspectRatio } from "@cloud/ui"`. A plain `<div>` (no base-ui dependency); pass the required `ratio` number (e.g. `ratio={16/9}`); extra `className`/props pass through. API details: the `ui` skill.
-- **Artifact (self-contained HTML)** — wrap the content in `<div class="aspect-ratio" style="--ratio: 16/9">…</div>` styled by `./primitives.css`, on top of the inlined `dist/tokens.inline.css`. Same recipe: `position: relative` + `aspect-ratio: var(--ratio)`. Set `--ratio` inline per use; the child fills the box.
+- **Artifact (self-contained HTML)** — wrap the content in `<div class="aspect-ratio" style="--ratio: 16/9">…</div>` styled by `./primitives.css`, on top of the inlined `release/tokens.inline.css`. Same recipe: `position: relative` + `aspect-ratio: var(--ratio)`. Set `--ratio` inline per use; the child fills the box.

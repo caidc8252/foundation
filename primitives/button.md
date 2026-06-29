@@ -67,4 +67,4 @@ Horizontal padding follows the `cx-*` scale (`px-cx-sm/md/lg`); never an arbitra
 ## Implementations
 
 - **Next / @cloud/ui** — `import { Button } from "@cloud/ui"`. base-ui `Button` under the hood; props `variant` `size` `loading` `block` `iconLeft` `iconRight`. Prop/API details: the `ui` skill. Do not re-skin via `className`; pick a variant.
-- **Artifact (self-contained HTML)** — use the `.btn` + `.btn--<variant>` + `.btn--<size>` classes in `../primitives/primitives.css`, on top of the inlined `dist/tokens.inline.css`. Same token recipe, same names.
+- **Artifact (self-contained HTML)** — use the `.btn` + `.btn--<variant>` + `.btn--<size>` classes in `../primitives/primitives.css`, on top of the inlined `release/tokens.inline.css`. Same token recipe, same names.

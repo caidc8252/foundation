@@ -175,7 +175,7 @@ CSS shows `.accordion__content` when the parent `.accordion__item--open` is set,
   slot. API details: the `ui` skill. Don't re-skin via `className`.
 - **Artifact (self-contained HTML)** — compose `.accordion` › `.accordion__item`
   › (`.accordion__trigger` with an `.accordion__arrow` span) + `.accordion__content`,
-  on top of the inlined `dist/tokens.inline.css`. Mark an open item with
+  on top of the inlined `release/tokens.inline.css`. Mark an open item with
   `aria-expanded="true"` on the trigger (rotates the arrow); the static skin
   shows the panel of an `.accordion__item--open` item — it can't run base-ui's
   height animation. Same token recipe, same names.

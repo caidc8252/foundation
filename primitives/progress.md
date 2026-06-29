@@ -100,6 +100,6 @@ itself to the row end with `ml-auto`. The track always clips its indicator
   `.progress__track` whose child `.progress__indicator` has an inline
   `width: <n>%`; add `.progress__indicator--<tone>` to swap the fill. Optional
   `.progress__label` / `.progress__value` slots sit above the track. Styled by
-  `./primitives.css` on top of the inlined `dist/tokens.inline.css`. Same track/
+  `./primitives.css` on top of the inlined `release/tokens.inline.css`. Same track/
   indicator recipe and tone names. The fill % is static markup here — there is no
   base-ui value plumbing on the artifact side.

@@ -12,8 +12,8 @@ it can use.
 
 > **Building an artifact (esp. with an AI agent)?** Read [`AGENTS.md`](AGENTS.md) —
 > the closed set you may use and how to find each piece fast. The legal token /
-> class / pattern names are enumerated in the generated [`dist/catalog.md`](dist/catalog.md)
-> (machine mirror: `dist/catalog.json`); validate with `node scripts/check-artifact.mjs <file>`.
+> class / pattern names are enumerated in the committed [`release/catalog.md`](release/catalog.md)
+> (machine mirror: `release/catalog.json`); validate with `node scripts/check-artifact.mjs <file>`.
 
 > Scope: **one brand**, same-brand prototype→production pipeline. Not a generic
 > theme — off-brand artifact work forks its own tokens. See
@@ -23,7 +23,7 @@ it can use.
 
 | Layer | Lives in | What's shared | What stays per-consumer |
 |---|---|---|---|
-| **L1 · Tokens** | `tokens/` (+ emitted `dist/`) | the values | — |
+| **L1 · Tokens** | `tokens/` (+ emitted `versions/v1` / `release`) | the values | — |
 | **L2 · Primitives** | `primitives/` | contract (`*.md`) + reference CSS | React impl (Next) · bespoke HTML (artifact) |
 | **L2.5 · Composites** | `composites/` | contract (`*.md`) + reference CSS | React impl (Next) · bespoke HTML (artifact) |
 | **L3 · Patterns** | `patterns/` | named archetype structure | the page implementations |
@@ -49,10 +49,18 @@ foundation/
   tokens/            L1 — @theme source (the single source of truth for values)
     palette·surface·typography·elevation·motion·layout·chart·dark.css
     index.css          import-only entry
-  emit/build.mjs     emitter: @theme source → Tailwind-free artifact outputs
-  dist/              GENERATED — never hand-edit
+  emit/build.mjs     emitter: source → versions/v1 base + release metadata
+  versions/
+    v1/              committed base style snapshot shared by the team
+      tokens.inline.css
+      composites.css
+      manifest.json
+  release/           committed current artifact snapshot used by agents
     tokens.inline.css  flat :root{} + dark, paste into an artifact <style>
     tokens.json        { light, dark } maps for artifact JS
+    composites.css      current composite snapshot
+    catalog.md/json     closed-set catalog
+    manifest.json       snapshot metadata
   primitives/        L2 — button.md … (contracts) + primitives.css (reference)
   composites/        L2.5 — app-frame · page-body · page-header · data-table · list-filter ·
                        summary-bar · pagination · empty-state · skeleton (list archetype) ·
@@ -81,9 +89,9 @@ the primitive reference classes:
 
 ```html
 <style>
-  /* paste dist/tokens.inline.css       here — token values first */
+  /* paste release/tokens.inline.css    here — token values first */
   /* paste primitives/primitives.css    here — atoms next */
-  /* paste composites/composites.css    here — building blocks last (reuse atoms) */
+  /* paste release/composites.css       here — building blocks last (reuse atoms) */
 </style>
 ```
 
@@ -129,18 +137,17 @@ foundation layout tokens that `Layout` consumes is the open single-source
 follow-up (it reaches into the consumer's component package, so it needs a deliberate go-ahead).
 
 Artifacts are frozen snapshots by nature (CSP, no external fetch). "Syncing" an
-artifact = re-inlining the current `dist/` — there is no live link, and that's
-correct.
+artifact = re-inlining the current `release/` — there is no live link, and
+that's correct.
 
 ## Sync model
 
-One upstream (this repo). Each consumer pins a version (pnpm git dependency, e.g.
-`"@cloud/foundation": "github:<org>/foundation#v0.1.0"`) and bumps when ready.
-Token/contract changes are PRs **here**, then a tagged release — never a local
-patch in a consumer. Full process: `governance/token-change.md`.
-
-> `dist/` is committed so git-dependency consumers get it without a build step.
-> Regenerate with `pnpm build` (or `node emit/build.mjs`) after editing `tokens/`.
+One upstream (this repo). `release/` is committed as the current artifact
+snapshot, and `versions/v1/` is committed as the shared base style snapshot for
+prototype versioning. Token/contract changes are PRs **here**, then `pnpm build`
+refreshes `versions/v1` and release catalog/token metadata. Publishing a saved
+prototype version updates `release/` to that selected snapshot. Full process:
+`governance/token-change.md`.
 
 ## Status — first draft
 

@@ -77,7 +77,7 @@ Unlike Modal, the Drawer has no built-in close-button slot or header hairline �
 ## Implementations
 
 - **Next / @cloud/ui** — `import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerFooter, DrawerTitle, DrawerDescription, DrawerClose, DrawerOverlay, DrawerPortal } from "@cloud/ui"`. **Behavior owned by the `vaul` React implementation** (open/close, edge slide, drag-to-dismiss, snap points, focus trap, portalling); pass `direction` for the docked edge. Prop/API details: the `ui` skill. Do not re-skin via `className`; the reference CSS expresses the static skin only.
-- **Artifact (self-contained HTML)** — use `.drawer-overlay` wrapping `.drawer` (+ `.drawer--bottom` / `--top` / `--left` / `--right`) with `.drawer__handle` (bottom only), `.drawer__header` › `.drawer__title` + `.drawer__description`, and `.drawer__footer` (holding `.btn` actions), on top of the inlined `dist/tokens.inline.css`. The reference CSS paints the resting OPEN panel; the consumer drives visibility and the slide is out of scope. Same surface recipe and direction vocabulary as the source.
+- **Artifact (self-contained HTML)** — use `.drawer-overlay` wrapping `.drawer` (+ `.drawer--bottom` / `--top` / `--left` / `--right`) with `.drawer__handle` (bottom only), `.drawer__header` › `.drawer__title` + `.drawer__description`, and `.drawer__footer` (holding `.btn` actions), on top of the inlined `release/tokens.inline.css`. The reference CSS paints the resting OPEN panel; the consumer drives visibility and the slide is out of scope. Same surface recipe and direction vocabulary as the source.
 
 ## Notes
 

@@ -145,7 +145,7 @@ Recharts forwards onto the SVG primitive):
   `recharts` directly or hand-pick palette steps.
 - **Artifact (self-contained HTML)** — geometry must be drawn as **hand-authored
   SVG** (no Recharts); apply the `.chart` skin classes from `composites.css` on
-  top of the inlined `dist/tokens.inline.css`:
+  top of the inlined `release/tokens.inline.css`:
   - `.chart` (container) › `.chart__grid` line · `.chart__axis` baseline ·
     `.chart__tick` (mono 9.5px) · `.chart__bar` (free end `radius-md`) ·
     `.chart__curve` (round caps) · datum-state `.chart__series--selected` /

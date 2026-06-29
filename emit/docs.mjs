@@ -1,6 +1,6 @@
 /* ─────────────────────────────────────────────────────────────
    Foundation · Docs emitter
-   Reads the GENERATED dist/ outputs (tokens.json + tokens.inline.css)
+   Reads the committed release outputs (tokens.json + tokens.inline.css)
    and writes a self-contained, data-driven style-guide page to
    docs/index.html. The page never drifts from the tokens: re-run
    `pnpm build` then `node emit/docs.mjs` (or `pnpm docs`).
@@ -12,14 +12,14 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, "..");
 
-const tokens = JSON.parse(readFileSync(resolve(root, "dist/tokens.json"), "utf8"));
-const inlineCss = readFileSync(resolve(root, "dist/tokens.inline.css"), "utf8");
+const tokens = JSON.parse(readFileSync(resolve(root, "release/tokens.json"), "utf8"));
+const inlineCss = readFileSync(resolve(root, "release/tokens.inline.css"), "utf8");
 // Composites reuse primitive classes (.btn / .input / .input-group / .progress),
 // so both reference layers are inlined — token values → atoms → building blocks,
 // the order README mandates. Interpolated as data, so backticks in their comments
 // are harmless.
 const primitivesCss = readFileSync(resolve(root, "primitives/primitives.css"), "utf8");
-const compositesCss = readFileSync(resolve(root, "composites/composites.css"), "utf8");
+const compositesCss = readFileSync(resolve(root, "release/composites.css"), "utf8");
 
 // ── Contracts (the AUTHORITATIVE source) ──────────────────────────────────
 // The *.md files are the design contracts the CSS implementations answer to.
@@ -375,7 +375,7 @@ const page = `<!doctype html>
 <meta http-equiv="Pragma" content="no-cache" />
 <title>Foundation · 设计规范</title>
 <style>
-/* ── 1. inlined token values (generated dist/tokens.inline.css) ── */
+/* ── 1. inlined token values (release/tokens.inline.css) ── */
 ${inlineCss}
 
 /* ── 2. primitive atoms (.btn / .input / .badge …) ── */
@@ -708,7 +708,7 @@ h6.md-h { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 
     <div class="topbar">
       <div>
         <h2 style="font-size:var(--text-3xl);margin:0;letter-spacing:-0.02em;">设计规范</h2>
-        <p>颜色、字体、间距的单一事实来源 —— 全部从 <code>dist/tokens.json</code> 实时读取。本页没有任何手写的值；每个使用方（Next 应用与 artifact 原型）都读取同一套 token。</p>
+        <p>颜色、字体、间距的单一事实来源 —— 全部从 <code>release/tokens.json</code> 实时读取。本页没有任何手写的值；每个使用方（Next 应用与 artifact 原型）都读取同一套 token。</p>
       </div>
       <button class="theme-btn" id="themeToggle">◐ 深色</button>
     </div>

@@ -6,7 +6,4 @@ node_modules/
 /docs
 /.playwright-mcp
 /admin/.draft
-
-# NOTE: dist/ is intentionally NOT ignored — it is committed so that
-# pnpm git-dependency consumers receive the emitted tokens without a
-# build step. Regenerate with `pnpm build` after editing tokens/.
+/dist/

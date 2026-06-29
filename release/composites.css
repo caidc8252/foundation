@@ -12,7 +12,7 @@
    composes composites.
 
    Inline ORDER in a self-contained artifact's <style>:
-     1. ../dist/tokens.inline.css      (token values)
+     1. ../release/tokens.inline.css   (token values)
      2. ../primitives/primitives.css   (atoms — .btn, .input, .badge …)
      3. this file                      (composites — may reuse .btn/.input)
 
@@ -28,6 +28,7 @@
    ───────────────────────────────────────────────────────────── */
 
 /* ═══════════════════════════ Page body ═══════════════════════════ */
+/* @component page-body */
 /* Mirrors @cloud/ui layout/PageBody. The content region BENEATH the full-bleed
    page-header: a vertical stack (gap space-6) with the page's gutters. The
    header band sits OUTSIDE this, drawing its hairline edge-to-edge; page-body
@@ -71,6 +72,7 @@
 }
 
 /* ═══════════════════════════ Page header ═══════════════════════════ */
+/* @component page-header */
 /* Mirrors @cloud/ui layout/page-header. Full-bleed band flush under the
    app header: title (+ count / status adornment) on the left, actions on
    the right. ONE primary action, rightmost. */
@@ -131,6 +133,7 @@
 }
 
 /* ═══════════════════════════ List condition band ═══════════════════════════ */
+/* @component list-filter */
 /* Mirrors @cloud/ui list-filter/ListConditionBand: a toolbar row (search +
    quick filters + advanced trigger) stacked over the applied-filter row. */
 
@@ -220,6 +223,7 @@
 }
 
 /* ═══════════════════════════ List summary bar ═══════════════════════════ */
+/* @component summary-bar */
 /* Mirrors @cloud/ui list-filter/ListSummaryBar (LIST_SUMMARY_BAR_HEIGHT = 48 =
    --space-12). Sits between the list card's top edge and the table: mono
    result count + label left, actions (Export / bulk ops) right. When sticky,
@@ -260,6 +264,7 @@
 }
 
 /* ═══════════════════════════ Data table ═══════════════════════════ */
+/* @component data-table */
 /* Mirrors @cloud/ui ui/Table. Framed wrapper (.table-frame) + the table.
    Density presets, sortable headers, hover, selected row (tinted + 2px
    primary left bar via --shadow-row-selected), sticky header + sticky
@@ -277,6 +282,17 @@
 /* Use --flush when a summary-bar/header sits inside the same frame and the
    table should butt against it (frame owns the corners, parts own padding). */
 .table-frame--flush { overflow: clip; } /* clip rounds corners w/o trapping sticky */
+
+/* When a .table-frame nests flush inside a .card (.card > .card__content--flush >
+   .table-frame), the card already paints the identical border / radius / shadow /
+   surface — without this, the two stack into a false 2px border with double rings.
+   The table-frame yields its chrome; the card owns it. Standalone .table-frame
+   (no wrapping .card) is unaffected. */
+.card__content--flush > .table-frame {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
 
 /* Horizontal scroll lives on the table's own region; the page never scrolls.
    overflow-y: clip — CSS spec: overflow-x:auto alone computes overflow-y to auto,
@@ -357,11 +373,12 @@
 }
 /* Tag / multi-badge set: one wrapping row of badges. */
 .data-table .cell-tags { display: flex; flex-wrap: wrap; gap: var(--space-1); }
-/* Trailing passive arrow (the row is the navigation target). 14px = size-3.5 via half-step calc. */
+/* Trailing passive arrow (the row is the navigation target). 16px = space-4
+   (matches the list-page.html reference). */
 .data-table .cell-chevron { color: var(--color-content-tertiary); }
 .data-table .cell-chevron svg {
-  width: calc(var(--space-4) - var(--space-1) / 2);
-  height: calc(var(--space-4) - var(--space-1) / 2);
+  width: var(--space-4);
+  height: var(--space-4);
 }
 /* Empty value: em-dash in a muted tone. */
 .data-table .cell-empty { color: var(--color-content-tertiary); }
@@ -419,12 +436,17 @@
    place, so its verbs are never hidden behind hover. (Hover-reveal is a LIST
    affordance for info-first, self-authored list-items, not a table behavior.) */
 .data-table .row-actions {
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.data-table .row-actions__inner {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
 }
 
 /* ═══════════════════════════ Pagination ═══════════════════════════ */
+/* @component pagination */
 /* Tables/lists use the SIMPLE nav: prev + current-page DISPLAY (.pagination__current,
    not a jump target) + next. The RICH list-footer (RichPagination) puts an optional
    rows-per-page select + range summary in .pagination__info on the LEFT and the simple
@@ -449,32 +471,34 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-1);          /* icon ↔ label */
+  gap: var(--space-1);
   min-width: var(--spacing-control-sm); /* 28px */
   height: var(--spacing-control-sm);
   padding-inline: var(--space-2);
-  border: 0;
+  border: 1px solid transparent;       /* reserve space so active border doesn't shift */
   border-radius: var(--radius-md);
   background-color: transparent;
   font-family: var(--font-sans);
   font-size: var(--text-md);
   color: var(--color-content-secondary);
-  white-space: nowrap;          /* prev/next reuse the button recipe; a CJK
-                                   label ("上一页") must not break per-character */
+  white-space: nowrap;
   cursor: pointer;
-  transition: background-color var(--duration-fast) var(--ease-standard);
+  transition: background-color var(--duration-fast) var(--ease-standard),
+              border-color var(--duration-fast) var(--ease-standard),
+              color var(--duration-fast) var(--ease-standard);
 }
-/* Prev/next chevrons — same no-dimension-svg collapse as .btn; size + shrink-0. */
 .pagination__page svg {
   width: calc(var(--space-4) - var(--space-1) / 2);   /* 14px = size-3.5 */
   height: calc(var(--space-4) - var(--space-1) / 2);
   flex-shrink: 0;
 }
 .pagination__page:hover:not(:disabled) { background-color: var(--color-surface-hover); }
+/* active page — neutral surface + visible border, matches cloud/ui Pagination */
 .pagination__page[aria-current="page"] {
-  background-color: var(--color-primary-50);
-  color: var(--color-primary-700);
-  font-weight: 600;
+  background-color: var(--color-surface-2);
+  border-color: var(--color-line-default);
+  color: var(--color-content-primary);
+  font-weight: 500;
 }
 .pagination__page:disabled { opacity: 0.5; cursor: not-allowed; }
 .pagination__ellipsis {
@@ -521,6 +545,7 @@
 }
 
 /* ═══════════════════════════ Empty state ═══════════════════════════ */
+/* @component empty-state */
 /* First-class state, not an afterthought. Centered icon + title + description
    + a primary action that invites the page's main verb. */
 
@@ -557,6 +582,7 @@
 .empty-state__action { margin-top: var(--space-2); }
 
 /* ═══════════════════════════ Skeleton ═══════════════════════════ */
+/* @component skeleton */
 /* Loading placeholder. A pulsing surface block; compose lines/rows from it. */
 
 @keyframes skeleton-pulse {
@@ -589,6 +615,7 @@
 }
 
 /* ═══════════════════════════ App frame (prototype shell) ═══════════════════════════ */
+/* @component app-frame */
 /* Mirrors @cloud/ui layout/Layout. CONTEXT ONLY — NOT ported (the real app already
    provides Layout). It exists so a prototype renders its page in the TRUE box: content
    width = viewport − sidebar, a real sticky h-14 header, and `main` (not the window) as
@@ -682,6 +709,7 @@
 .app-frame__main { flex: 1; overflow-y: auto; background-color: var(--color-surface-1); }
 
 /* ═══════════════════════════ Step indicator ═══════════════════════════ */
+/* @component step-indicator */
 /* Mirrors @cloud/ui ui/StepIndicator: a horizontal wizard rail of numbered
    dots joined by connectors. State (completed / active / upcoming) is DERIVED
    in the React source from each step's index vs. `current`; the skin can't
@@ -692,6 +720,7 @@
 /* Composites: 7 components authored from @cloud/ui, token-only. */
 
 /* ═══════════════════════════ Chart ═══════════════════════════ */
+/* @component chart */
 /* Mirrors @cloud/ui/components/chart (Recharts v3 + the chart palette in
    tokens/chart.css). The React side draws geometry with Recharts and skins its
    own SVG classes under [data-slot="chart"]; an artifact has no Recharts, so it
@@ -926,6 +955,7 @@
 }
 
 /* ═══════════════════════════ Load more ═══════════════════════════ */
+/* @component load-more */
 /* Mirrors @cloud/ui ui/LoadMore. Append-on-click list footer: a centered stack
    (optional summary, an action slot, optional progress bar) under a top hairline.
    The action slot holds EITHER a load-more button OR — once exhausted — an end
@@ -967,6 +997,7 @@
 }
 
 /* ═══════════════════════════ Stat card ═══════════════════════════ */
+/* @component stat-card */
 /* Mirrors @cloud/ui ui/StatCard (style-spec §4). A single metric surface —
    overline label + big mono value + optional trend / icon / description — that
    is pure display or an interactive quick-filter. Floor height is
@@ -1076,6 +1107,7 @@
 }
 
 /* ═══════════════════════════ Step indicator ═══════════════════════════ */
+/* @component step-indicator */
 /* Mirrors @cloud/ui ui/StepIndicator: a horizontal wizard rail of numbered
    dots joined by connectors. State (completed / active / upcoming) is DERIVED
    in the React source from each step's index vs. `current`; the skin can't
@@ -1211,6 +1243,7 @@
 }
 
 /* ═══════════════════════════ Stepper ═══════════════════════════ */
+/* @component stepper */
 /* A numeric input flanked by −/+ buttons. Pure composition over .input-group:
    the group owns the border / focus ring / invalid / whole-control disabled
    (all inherited from the Input Group skin); this block adds only the stepper
@@ -1251,6 +1284,7 @@
 }
 
 /* ═══════════════════════════ Theme toggle ═══════════════════════════ */
+/* @component theme-toggle */
 /* Mirrors @cloud/ui ThemeToggle: an icon-only button flipping light/dark. It is
    the .btn--ghost recipe at icon size — so reuse those primitive classes and add
    .theme-toggle only to quiet the resting text to content-secondary (bare
@@ -1272,6 +1306,7 @@
 }
 
 /* ═══════════════════════════ Timeline ═══════════════════════════ */
+/* @component timeline */
 /* Mirrors @cloud/ui ui/Timeline: a vertical event log — tone-coded markers
    joined by a continuous rail, each beside a content block. Display-only.
    Two root axes: density (.timeline--compact) sets item vertical rhythm + title
@@ -1478,6 +1513,7 @@
    .radio recipe, feed-list empties reuse .empty-state. */
 
 /* ═══════════════════════════ Detail header ═══════════════════════════ */
+/* @component detail-header */
 /* The detail-page counterpart to .page-header: a full-bleed surface-2 band
    docking under the app header, carrying one record's identity (back · logo ·
    name + status · meta · chips), its action cluster (ONE primary, rightmost),
@@ -1578,8 +1614,14 @@
      separation — the tab strip docks tight to the band's bottom edge. */
   padding-inline: var(--space-6);
 }
+/* The band's own border-bottom is the hairline; suppress the tabs list's inset
+   box-shadow so there is only one line at the bottom edge. */
+.detail-header__tabs .tabs__list--line {
+  box-shadow: none;
+}
 
 /* ═══════════════════════════ Key-value grid ═══════════════════════════ */
+/* @component kv-grid */
 /* The detail-page Overview: a <dl> of stacked label→value pairs whose column
    count follows the CONTAINER (mirrors .grid-auto-fit-kv), not the viewport.
    Labels are the muted axis, values carry the ink. A long value spans --full. */
@@ -1618,53 +1660,8 @@
 /* ═══════════════════════════ Section card ═══════════════════════════ */
 /* A titled, optionally-collapsible content panel — the block a detail/settings
    page divides into. Pure composition over .card (surface + header rule + slot
-   padding) and the collapsible behavior; this adds only the chevron, its
-   rotation, and the collapsed-state rule. Wear .card + .card__header +
-   .card__content as usual, then add .section-card on the root. */
-
-.section-card { /* the .card shell carries the surface; nothing to add at rest */ }
-/* Collapsible variant marker — enumerate this on the root alongside .section-card
-   when the panel is opt-in collapsible. The collapse behavior is driven by the
-   [data-open] attribute + __toggle/__chevron children; this class scopes the
-   affordance and makes the enumerated catalog entry real. */
-.section-card--collapsible > .card__header { cursor: pointer; }
-/* collapsible header is a full-width button (reuses the .card__header padding) */
-.section-card__toggle {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-  width: 100%;
-  border: 0;
-  background-color: transparent;
-  font: inherit;
-  color: inherit;
-  text-align: left;
-  cursor: pointer;
-  transition: background-color var(--duration-fast) var(--ease-standard);
-}
-.section-card__toggle:hover { background-color: var(--color-surface-hover); }
-.section-card__toggle:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
-.section-card__chevron {
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: var(--space-6);
-  height: var(--space-6);
-  color: var(--color-content-tertiary);
-  transition: transform var(--duration-fast) var(--ease-standard);
-}
-.section-card__chevron svg { width: var(--space-4); height: var(--space-4); }
-/* closed — content hidden, chevron lifted, header rule dropped so the bar reads
-   as a single closed row. Set data-open on the root (the skin can't observe it). */
-.section-card[data-open="false"] .card__content { display: none; }
-.section-card[data-open="false"] .card__header { border-bottom-color: transparent; }
-.section-card[data-open="false"] .section-card__chevron { transform: rotate(-90deg); }
-@media (prefers-reduced-motion: reduce) {
-  .section-card__chevron { transition: none; }
-}
-
 /* ═══════════════════════════ Option card ═══════════════════════════ */
+/* @component option-card */
 /* A large clickable card that IS a radio/checkbox: the card is a <label> over a
    visually-hidden native control, so selection + roving focus + group semantics
    come from the control and the card only paints them. Selected beats hover with
@@ -1782,6 +1779,7 @@
 }
 
 /* ═══════════════════════════ Feed list ═══════════════════════════ */
+/* @component feed-list */
 /* A flat, hairline-separated inbox of event rows (notifications / approvals):
    tone-coded icon | main (overline · title · body · actions) | trailing time.
    The list cousin of the timeline — order is recency, not a connected rail, and
@@ -1847,17 +1845,23 @@
   line-height: 1.5;
   color: var(--color-content-secondary);
 }
-.feed-item__actions {
+.feed-item__trailing {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-end;
   gap: var(--space-2);
-  margin-top: var(--space-2);
 }
 .feed-item__time {
   font-size: var(--text-xs);
   color: var(--color-content-tertiary);
   white-space: nowrap;
+}
+.feed-item__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
 }
 /* unread vs read — the title weight/ink carries it (pair with a lead dot). */
 .feed-item--read .feed-item__title {
@@ -1866,6 +1870,7 @@
 }
 
 /* ═══════════════════════════ Diff ═══════════════════════════ */
+/* @component diff */
 /* A before→after comparison: old value struck + muted, an arrow, new value in
    success ink. The reviewable core of any confirm-change flow (approval confirm,
    audit entry, permission preview). Two layouts on one recipe: `block` (three
@@ -1896,6 +1901,8 @@
   color: var(--color-content-primary);
   word-break: break-all;
 }
+/* the two value columns; min-width:0 lets a long value wrap inside its 1fr track */
+.diff__col { min-width: 0; }
 /* old = struck + muted; new = the value the eye should land on (success ink) */
 .diff__col--old .diff__value {
   color: var(--color-content-tertiary);
@@ -1921,6 +1928,7 @@
 .diff--inline .diff__label { display: none; }
 
 /* ═══════════════════════════ Product card ═══════════════════════════ */
+/* @component product-card */
 /* A catalog tile — the storefront list's card cousin of the data-table row:
    image panel (contained, with placeholder/glyph + optional status ribbon),
    body (name · sku · clamped description · price-row · cta). The price-row pins
@@ -2096,6 +2104,7 @@
 }
 
 /* ═══════════════════════════════ Rich Pagination ═══════════════════════════════ */
+/* @component rich-pagination */
 /* Full list/table footer bar — optional rows-per-page selector + "Showing X–Y of Z"
    range summary on the left; page-number navigation (.pagination) on the right.
    All i18n text is the host's responsibility. */
@@ -2133,6 +2142,7 @@
 }
 
 /* ═══════════════════════════════ Toggles ═══════════════════════════════ */
+/* @component toggles */
 /* Inline control-with-label wrappers — pairs a checkbox, radio, or switch
    primitive (.checkbox / .radio / .switch) with an optional text label (.label).
    This wrapper owns ONLY the flex layout; all control styling is the primitive's. */
@@ -2203,6 +2213,105 @@
   font-size: var(--text-md);
   color: var(--color-content-primary);
 }
+/* ═══════════════════════════ List row ═══════════════════════════ */
+/* @component list-row */
+/* The non-tabular list row: a settings / account / permission / contract /
+   entity row that is NOT a feed event (feed-list = tone icon + timestamp) and
+   NOT a table row (data-table). A 3-column grid — leading visual | main (a title
+   line that may carry inline .badge-s + an optional sub) | trailing (a control,
+   an action cluster, or a value + chevron). Rows are hairline-separated inside
+   one frame (a section-card's flush content / a card); the last row drops the
+   rule. Make the whole row a navigation target with --interactive. Lifted from
+   the carbon-admin portal's settings / account / contract list rows. */
+
+.list-rows { display: flex; flex-direction: column; }
+
+.list-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;   /* lead | main | trailing */
+  gap: var(--space-3);
+  align-items: center;
+  padding-inline: var(--space-4);
+  padding-block: var(--space-3);
+  border-bottom: 1px solid var(--color-line-subtle);
+}
+.list-rows > .list-row:last-child { border-bottom: 0; }
+
+/* Leading — an optional neutral icon tile or a primitive .avatar. Omit the slot
+   for a text-only row (the grid's auto column collapses to nothing). */
+.list-row__icon {
+  display: grid;
+  place-items: center;
+  width: var(--space-8);    /* 32px */
+  height: var(--space-8);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-3);
+  color: var(--color-content-secondary);
+}
+.list-row__icon svg { width: var(--space-4); height: var(--space-4); }
+
+.list-row__main { min-width: 0; }   /* lets the title wrap/ellipsize, not overflow */
+.list-row__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-content-primary);
+}
+.list-row__sub {
+  margin-top: var(--space-1);
+  font-size: var(--text-xs);
+  line-height: 1.5;
+  color: var(--color-content-secondary);
+}
+
+/* Trailing — the right cluster: a control (.switch / .btn), a value, a chevron,
+   or several. Right-aligned, never grows. */
+.list-row__trailing {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+.list-row__value {
+  font-size: var(--text-sm);
+  color: var(--color-content-secondary);
+  white-space: nowrap;
+}
+.list-row__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+/* Chevron — the affordance on an --interactive (navigational) row. */
+.list-row__chevron {
+  display: grid;
+  place-items: center;
+  color: var(--color-content-tertiary);
+}
+.list-row__chevron svg { width: var(--space-4); height: var(--space-4); }
+
+/* Interactive — the whole row is the click target (open a setting, drill in).
+   Wrap a real <button>/<a> for keyboard access; cursor-pointer alone is not
+   interactive (same rule as product-card / option-card). */
+.list-row--interactive {
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+.list-row--interactive:hover { background-color: var(--color-surface-hover); }
+.list-row--interactive:active { background-color: var(--color-surface-active); }
+.list-row--interactive:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+  border-radius: var(--radius-md);
+}
+/* Selected — a persisted active row (the open item in a master/detail list). */
+.list-row--selected { background-color: var(--color-state-selected); }
+/* Disabled — a row whose control is unavailable. */
+.list-row--disabled { opacity: 0.5; pointer-events: none; }
 
 /* Prototype published overrides
    Version: v3

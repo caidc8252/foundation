@@ -117,6 +117,6 @@ rail; this pattern fixes which appear and how they sequence:
 Those composites lean on primitives (`Button`, `Input`, `Field`, `Card`, `Checkbox`,
 `RadioGroup`). In `@cloud/ui` they are the `step-indicator` + form families; an
 artifact composes the same anatomy from `composites.css` (on top of `primitives.css`
-+ `dist/tokens.inline.css`). Same parts, same names, both sides.
++ `release/tokens.inline.css`). Same parts, same names, both sides.
 
 > First-draft stub — expand with per-step transition + summary-rail specs as real wizards land.

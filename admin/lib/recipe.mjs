@@ -4,17 +4,25 @@
 // (those functions already passed that tool's own unit tests — behavior preserved).
 // ROOT adjusted for admin/lib (two levels up to foundation root).
 
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { listComponents } from "./catalog.mjs";
 import { activeRoot } from "./paths.mjs";
 
 const read = (p) => readFileSync(join(activeRoot(), p), "utf8");
+const readFirst = (...paths) => {
+  const root = activeRoot();
+  for (const path of paths) {
+    const file = join(root, path);
+    if (existsSync(file)) return readFileSync(file, "utf8");
+  }
+  throw new Error(`missing source: ${paths.join(" or ")}`);
+};
 
 // ── Ported internals from extract.mjs ────────────────────────────────────────
 
 /** Flatten every :root{} / [data-theme]{} block's `--x: value;` into one map.
- *  For light theme we take the FIRST occurrence (dist light :root precedes dark). */
+ *  For light theme we take the FIRST occurrence (light :root precedes dark). */
 export function parseRootVars(css) {
   const map = new Map();
   const decl = /(--[\w-]+)\s*:\s*([^;]+);/g;
@@ -87,15 +95,29 @@ export function buildTokenDict(varMap, sourceTexts) {
   return dict;
 }
 
-/** Load all sources needed for token resolution + blast-radius.
- *  CONTROLLER FIX: includes dist/tokens.inline.css so tokenDict() can call
- *  parseRootVars() on it directly — no require_inline() needed. */
+/** Load all sources needed for token resolution + blast-radius. */
 export function loadSources() {
   const o = {};
-  // Include tokens.inline.css for parseRootVars (the var-map source)
-  try { o["dist/tokens.inline.css"] = read("dist/tokens.inline.css"); } catch { o["dist/tokens.inline.css"] = ""; }
+  // Include tokens.inline.css for parseRootVars (the var-map source). Root mode
+  // reads the committed release; draft mode falls back to its local cache.
+  try {
+    const tokenCss = readFirst("release/tokens.inline.css", "dist/tokens.inline.css");
+    o["tokens.inline.css"] = tokenCss;
+    o["release/tokens.inline.css"] = tokenCss;
+    o["dist/tokens.inline.css"] = tokenCss;
+  } catch {
+    o["tokens.inline.css"] = "";
+    o["release/tokens.inline.css"] = "";
+    o["dist/tokens.inline.css"] = "";
+  }
   for (const f of USAGE_SOURCES) {
-    try { o[f] = read(f); } catch { o[f] = ""; }
+    try {
+      o[f] = f === "composites/composites.css"
+        ? readFirst("release/composites.css", "composites/composites.css")
+        : read(f);
+    } catch {
+      o[f] = "";
+    }
   }
   return o;
 }
@@ -277,14 +299,14 @@ function sources() {
 /**
  * tokenDict() → { "--x": { type, chain, literal, isColor, defFile, blastRadius } }
  *
- * CONTROLLER FIX: uses dist/tokens.inline.css (included in loadSources) as
- * the var-map source for parseRootVars — no require_inline() call needed.
+ * Uses the active tokens.inline.css snapshot as the var-map source for
+ * parseRootVars — no require_inline() call needed.
  * No module-level cache: each call re-reads from activeRoot() so draft edits
  * are reflected immediately.
  */
 export function tokenDict() {
   const src = sources();
-  const varMap = parseRootVars(src["dist/tokens.inline.css"] ?? "");
+  const varMap = parseRootVars(src["tokens.inline.css"] ?? "");
   return buildTokenDict(varMap, src);
 }
 
@@ -294,9 +316,10 @@ export function tokenDict() {
  */
 export function loadSourcesForRecipe() {
   const safeRead = (p) => { try { return read(p); } catch { return ""; } };
+  const safeReadFirst = (...paths) => { try { return readFirst(...paths); } catch { return ""; } };
   return {
     primitives: safeRead("primitives/primitives.css"),
-    composites: safeRead("composites/composites.css"),
+    composites: safeReadFirst("release/composites.css", "composites/composites.css"),
   };
 }
 

@@ -135,7 +135,7 @@ filter sections):
 - **Artifact (self-contained HTML)** — compose `.collapsible` ›
   (`.collapsible__trigger` — typically also a `.btn` variant — optionally
   holding a `.collapsible__chevron` span) + `.collapsible__content`, on top of
-  the inlined `dist/tokens.inline.css`. Mark the open state with
+  the inlined `release/tokens.inline.css`. Mark the open state with
   `data-panel-open` on the trigger (rotates the chevron) and add
   `.collapsible__content--open` (or `data-open`) to reveal the panel; the static
   skin shows/hides via `display` — it can't run base-ui's height animation. Same

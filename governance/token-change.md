@@ -29,12 +29,16 @@ Changing an existing token's *value* is heavier than adding one: it moves every
 surface that references it, in both consumers. Treat it as a reviewed design
 decision, not a tweak.
 
-1. Edit `tokens/*.css` (the one source). Add to the right layer file and, if it has
-   a light value that changes in dark, add the override to `dark.css`. Keep semantic
-   shortcuts pointing at ramp steps via `var()`.
-2. `pnpm build` to regenerate `dist/`. Never hand-edit `dist/`.
-3. PR to the foundation repo. Review covers: name follows the group's convention,
-   value is OKLCH, dark override present if needed, no duplicate of an existing token.
+## The flow
+
+1. Edit `foundation/tokens/*.css` (the one source). Add to the right layer file
+   and, if it has a light value that changes in dark, add the override to
+   `dark.css`. Keep semantic shortcuts pointing at ramp steps via `var()`.
+2. Run `pnpm build` to regenerate `versions/v1/` and refresh `release/`
+   metadata. Never hand-edit generated snapshot files.
+3. Open a PR to the foundation repo. Review covers: name follows the group's
+   convention, value is OKLCH, dark override present if needed, no duplicate of
+   an existing token.
 4. Merge and tag a release (`vX.Y.Z`). Adding tokens is a minor bump; changing a
    value that shifts existing UI is a major bump — call it out.
 5. Each consumer syncs on its own schedule by bumping the dependency ref.

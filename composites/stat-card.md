@@ -110,5 +110,5 @@ filter-sync live in the consuming page — the card is a presentational leaf.
   (+ tone modifier `.stat-card__value--success|warning|error|info`) with an inline
   `.stat-card__delta` (+ `--up|--down|--flat`), and a trailing
   `.stat-card__description`. Lay cards out in `.stat-grid` (`--cols-2|3|4`). In
-  `composites.css`, on top of the inlined `dist/tokens.inline.css`. Same surface
+  `composites.css`, on top of the inlined `release/tokens.inline.css`. Same surface
   recipe and tone names.

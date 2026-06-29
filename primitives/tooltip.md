@@ -74,4 +74,4 @@ bubble skin.
 ## Implementations
 
 - **Next / @cloud/ui** — `import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@cloud/ui"`. base-ui `Tooltip` under the hood; wrap the trigger in `TooltipTrigger`, text in `TooltipContent` (props `side` `sideOffset` `align` `alignOffset`). Open/close, portalling, positioning, and the arrow placement are **behavior owned by the React implementation** — the reference CSS expresses the static bubble skin only. API details: the `ui` skill.
-- **Artifact (self-contained HTML)** — use `.tooltip` for the bubble + `.tooltip__arrow` for the pointer, on top of the inlined `dist/tokens.inline.css`. The artifact side renders a *static* open bubble (positioning/show-hide is the React side's job); same inverted recipe (`content-primary` fill, `content-inverse` text).
+- **Artifact (self-contained HTML)** — use `.tooltip` for the bubble + `.tooltip__arrow` for the pointer, on top of the inlined `release/tokens.inline.css`. The artifact side renders a *static* open bubble (positioning/show-hide is the React side's job); same inverted recipe (`content-primary` fill, `content-inverse` text).

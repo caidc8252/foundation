@@ -99,4 +99,4 @@ their own states — see `calendar.md`.
   `--lg`, `.date-trigger--invalid`) for the closed control, with
   `.date-trigger__icon`, a value/placeholder `<span>`, and `.date-trigger__clear`;
   drop the calendar into a `.popover` (the calendar skin owns the grid). On top of
-  the inlined `dist/tokens.inline.css`. Same trigger recipe as `Input`/`Select`.
+  the inlined `release/tokens.inline.css`. Same trigger recipe as `Input`/`Select`.

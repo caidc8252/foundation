@@ -11,6 +11,14 @@ import {
 } from "node:fs";
 import { basename, dirname, extname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  applyTokenJsonOverrides,
+  emitCatalog,
+  emitCatalogMarkdown,
+  emitTokensJson,
+  RELEASE_STRUCTURE,
+  writeBaseVersion,
+} from "../../emit/build.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, "..", "..");
@@ -150,10 +158,23 @@ function parseSimpleClassDeclarations(css, target = {}) {
   return target;
 }
 
+function ensureBaseVersion(repoRoot) {
+  const baseDir = join(repoRoot, "versions", "v1");
+  if (
+    !existsSync(join(baseDir, "tokens.inline.css")) ||
+    !existsSync(join(baseDir, "composites.css")) ||
+    !existsSync(join(baseDir, "manifest.json"))
+  ) {
+    writeBaseVersion(repoRoot);
+  }
+  return baseDir;
+}
+
 function readBaseStyleSnapshot(repoRoot) {
-  const tokenCss = readFileSync(join(repoRoot, "dist", "tokens.inline.css"), "utf8");
+  const baseDir = ensureBaseVersion(repoRoot);
+  const tokenCss = readFileSync(join(baseDir, "tokens.inline.css"), "utf8");
   const primitiveCss = readFileSync(join(repoRoot, "primitives", "primitives.css"), "utf8");
-  const compositeCss = readFileSync(join(repoRoot, "composites", "composites.css"), "utf8");
+  const compositeCss = readFileSync(join(baseDir, "composites.css"), "utf8");
   const classDeclarations = parseSimpleClassDeclarations(primitiveCss);
   parseSimpleClassDeclarations(compositeCss, classDeclarations);
   return {
@@ -348,41 +369,18 @@ function assertVersionName(version) {
   return version;
 }
 
-function copyReleaseFiles(outDir, versionDir, manifest) {
-  copyFileSync(join(ROOT, "dist", "catalog.json"), join(outDir, "catalog.json"));
-  writeFileSync(join(outDir, "catalog.md"), releaseCatalogMarkdown(readFileSync(join(ROOT, "dist", "catalog.md"), "utf8")), "utf8");
+function copyReleaseFiles(repoRoot, outDir, versionDir, manifest) {
+  const catalog = emitCatalog(repoRoot);
+  writeFileSync(join(outDir, "catalog.json"), `${JSON.stringify(catalog, null, 2)}\n`, "utf8");
+  writeFileSync(join(outDir, "catalog.md"), emitCatalogMarkdown(catalog), "utf8");
   copyFileSync(join(versionDir, "tokens.inline.css"), join(outDir, "tokens.inline.css"));
   copyFileSync(join(versionDir, "composites.css"), join(outDir, "composites.css"));
 
   const tokenJson = applyTokenJsonOverrides(
-    JSON.parse(readFileSync(join(ROOT, "dist", "tokens.json"), "utf8")),
+    emitTokensJson(repoRoot),
     manifest.tokenOverrides || {},
   );
   writeFileSync(join(outDir, "tokens.json"), `${JSON.stringify(tokenJson, null, 2)}\n`, "utf8");
-}
-
-function releaseCatalogMarkdown(markdown) {
-  return markdown
-    .replace(/machine mirror: `dist\/catalog\.json`/g, "machine mirror: `catalog.json`")
-    .replace(/Inline `dist\/tokens\.inline\.css`/g, "Inline `tokens.inline.css`");
-}
-
-function applyTokenJsonOverrides(tokenJson, tokenOverrides) {
-  for (const [tokenName, value] of Object.entries(tokenOverrides || {})) {
-    const key = tokenName.replace(/^--/, "");
-    let wrote = false;
-    for (const group of Object.values(tokenJson)) {
-      if (group && typeof group === "object" && Object.prototype.hasOwnProperty.call(group, key)) {
-        group[key] = value;
-        wrote = true;
-      }
-    }
-    if (!wrote) {
-      tokenJson.light = tokenJson.light || {};
-      tokenJson.light[key] = value;
-    }
-  }
-  return tokenJson;
 }
 
 function resetReleaseDir(releaseRoot) {
@@ -404,14 +402,14 @@ export function releaseSnapshot(version, options = {}) {
   const manifest = existsSync(manifestFile) ? JSON.parse(readFileSync(manifestFile, "utf8")) : { version: versionName };
   const outDir = releaseRoot;
   resetReleaseDir(outDir);
-  copyReleaseFiles(outDir, versionDir, manifest);
+  copyReleaseFiles(repoRoot, outDir, versionDir, manifest);
 
   const releaseManifest = {
     ...manifest,
     releasedAt: new Date().toISOString(),
     release: {
       version: versionName,
-      structure: ["catalog.json", "catalog.md", "tokens.inline.css", "tokens.json", "composites.css", "manifest.json"],
+      structure: RELEASE_STRUCTURE,
     },
   };
   writeFileSync(join(outDir, "manifest.json"), `${JSON.stringify(releaseManifest, null, 2)}\n`, "utf8");
@@ -462,6 +460,7 @@ export function createHandler() {
     const url = new URL(req.url, "http://localhost");
     try {
       if (url.pathname === "/__prototype_versions" && req.method === "GET") {
+        ensureBaseVersion(ROOT);
         const versions = listVersions();
         return json(res, { ok: true, versions, latest: versions.at(-1)?.version || "" });
       }
