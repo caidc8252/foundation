@@ -366,17 +366,6 @@
     "collapsible__content",
     "collapsible__content--open",
     "collapsible__trigger",
-    "color-tile",
-    "color-tile--cat-1",
-    "color-tile--cat-2",
-    "color-tile--cat-3",
-    "color-tile--cat-4",
-    "color-tile--cat-5",
-    "color-tile--cat-6",
-    "color-tile--lg",
-    "color-tile--md",
-    "color-tile--sm",
-    "color-tile__label",
     "combobox__chevron",
     "combobox__content",
     "combobox__empty",
@@ -512,9 +501,9 @@
     "feed-item__icon--success",
     "feed-item__icon--warning",
     "feed-item__main",
-    "feed-item__row",
     "feed-item__time",
     "feed-item__title",
+    "feed-item__trailing",
     "feed-list",
     "field",
     "field__error",
@@ -535,11 +524,6 @@
     "filter-chip__remove",
     "grid-auto-fit-kv",
     "hover-card",
-    "initials-tile",
-    "initials-tile--lg",
-    "initials-tile--md",
-    "initials-tile--sm",
-    "initials-tile--xs",
     "input",
     "input--filled",
     "input--lg",
@@ -589,9 +573,6 @@
     "load-more__summary",
     "menu-item",
     "menu-item--destructive",
-    "menubar",
-    "menubar__trigger",
-    "menubar__trigger--open",
     "modal",
     "modal--fullscreen",
     "modal--lg",
@@ -699,6 +680,7 @@
     "rich-pagination__rows",
     "rich-pagination__summary",
     "row-actions",
+    "row-actions__inner",
     "scroll-area",
     "scroll-area__scrollbar",
     "scroll-area__thumb",
@@ -869,7 +851,7 @@
       "title": "Accordion",
       "summary": "A vertical stack of collapsible disclosure sections.",
       "contract": "primitives/accordion.md",
-      "example": null,
+      "example": "primitives/accordion.html",
       "classes": [
         ".accordion__content",
         ".accordion__item--open",
@@ -886,7 +868,7 @@
       "title": "Alert Dialog",
       "summary": "A forced-action confirm.",
       "contract": "primitives/alert-dialog.md",
-      "example": null,
+      "example": "primitives/alert-dialog.html",
       "classes": [
         ".alert-dialog-overlay",
         ".alert-dialog",
@@ -903,7 +885,7 @@
       "title": "Alert",
       "summary": "An inline, in-flow status message box.",
       "contract": "primitives/alert.md",
-      "example": null,
+      "example": "primitives/alert.html",
       "classes": [
         ".alert",
         ".alert__icon",
@@ -920,7 +902,7 @@
       "title": "Aspect Ratio",
       "summary": "A layout box that locks its content to a fixed width:height ratio (16/9 video thumbnails, 1/1 avatars-in-cards, 4/3 media tiles).",
       "contract": "primitives/aspect-ratio.md",
-      "example": null,
+      "example": "primitives/aspect-ratio.html",
       "classes": [
         "--ratio"
       ]
@@ -931,7 +913,7 @@
       "title": "Avatar",
       "summary": "A user/entity identity chip: a circular image that falls back to initials when the image is missing or fails to load.",
       "contract": "primitives/avatar.md",
-      "example": null,
+      "example": "primitives/avatar.html",
       "classes": [
         ".avatar",
         ".avatar-group"
@@ -943,9 +925,11 @@
       "title": "Badge",
       "summary": "A small inline label for status or category.",
       "contract": "primitives/badge.md",
-      "example": null,
+      "example": "primitives/badge.html",
       "classes": [
-        ".badge"
+        ".badge",
+        ".badge--tag",
+        ".badge__dot"
       ]
     },
     {
@@ -954,7 +938,7 @@
       "title": "Breadcrumb",
       "summary": "A horizontal navigation trail showing the current page's location in the hierarchy.",
       "contract": "primitives/breadcrumb.md",
-      "example": null,
+      "example": "primitives/breadcrumb.html",
       "classes": [
         ".breadcrumb__list",
         ".breadcrumb__item",
@@ -970,7 +954,7 @@
       "title": "Button",
       "summary": "A clickable action.",
       "contract": "primitives/button.md",
-      "example": null,
+      "example": "primitives/button.html",
       "classes": [
         ".btn"
       ]
@@ -981,7 +965,7 @@
       "title": "Calendar",
       "summary": "The base month grid — a weekday header over a 6×7 day matrix with month navigation.",
       "contract": "primitives/calendar.md",
-      "example": null,
+      "example": "primitives/calendar.html",
       "classes": [
         ".calendar",
         ".calendar__header",
@@ -1016,7 +1000,8 @@
         ".card",
         ".card__header",
         ".card__content",
-        ".card__footer"
+        ".card__footer",
+        ".card--collapsible"
       ]
     },
     {
@@ -1025,7 +1010,7 @@
       "title": "Carousel",
       "summary": "A horizontally (or vertically) scrollable track of equal-width slides, with optional prev/next buttons and dot indicators.",
       "contract": "primitives/carousel.md",
-      "example": null,
+      "example": "primitives/carousel.html",
       "classes": [
         ".carousel",
         ".carousel__viewport",
@@ -1047,7 +1032,7 @@
       "title": "Checkbox",
       "summary": "A binary on/off toggle for a single boolean, or a tri-state \"select all\" header.",
       "contract": "primitives/checkbox.md",
-      "example": null,
+      "example": "primitives/checkbox.html",
       "classes": []
     },
     {
@@ -1056,7 +1041,7 @@
       "title": "Collapsible",
       "summary": "A single show/hide disclosure: one trigger reveals or hides one panel of content.",
       "contract": "primitives/collapsible.md",
-      "example": null,
+      "example": "primitives/collapsible.html",
       "classes": [
         ".collapsible",
         ".collapsible__trigger",
@@ -1068,22 +1053,11 @@
     },
     {
       "layer": "primitive",
-      "name": "color-tile",
-      "title": "ColorTile",
-      "summary": "A square identity tile that shows a full label on a background tinted deterministically from its content — e.g.",
-      "contract": "primitives/color-tile.md",
-      "example": null,
-      "classes": [
-        "--cat-N"
-      ]
-    },
-    {
-      "layer": "primitive",
       "name": "combobox",
       "title": "Combobox",
       "summary": "A searchable single- or multi-select dropdown.",
       "contract": "primitives/combobox.md",
-      "example": null,
+      "example": "primitives/combobox.html",
       "classes": [
         ".combobox",
         ".combobox__item--highlighted",
@@ -1096,7 +1070,7 @@
       "title": "Command",
       "summary": "A keyboard-driven command palette: a search input over a filtered, grouped list of runnable items.",
       "contract": "primitives/command.md",
-      "example": null,
+      "example": "primitives/command.html",
       "classes": [
         ".command",
         ".command__input",
@@ -1120,7 +1094,7 @@
       "title": "Context Menu",
       "summary": "A right-click contextual action menu.",
       "contract": "primitives/context-menu.md",
-      "example": null,
+      "example": "primitives/context-menu.html",
       "classes": [
         ".context-menu__content",
         ".context-menu__item",
@@ -1140,7 +1114,7 @@
       "title": "Date Picker",
       "summary": "A single-date field.",
       "contract": "primitives/date-picker.md",
-      "example": null,
+      "example": "primitives/date-picker.html",
       "classes": [
         ".date-trigger",
         ".date-trigger--sm",
@@ -1157,7 +1131,7 @@
       "title": "Date Range Picker",
       "summary": "A from→to date range field.",
       "contract": "primitives/date-range-picker.md",
-      "example": null,
+      "example": "primitives/date-range-picker.html",
       "classes": [
         ".date-trigger",
         "--invalid",
@@ -1172,7 +1146,7 @@
       "title": "Date Time Picker",
       "summary": "A single date + time field.",
       "contract": "primitives/date-time-picker.md",
-      "example": null,
+      "example": "primitives/date-time-picker.html",
       "classes": [
         ".date-trigger",
         "--invalid",
@@ -1187,7 +1161,7 @@
       "title": "Date Time Range Picker",
       "summary": "A from→to range where each end carries its own time-of-day.",
       "contract": "primitives/date-time-range-picker.md",
-      "example": null,
+      "example": "primitives/date-time-range-picker.html",
       "classes": [
         ".date-trigger",
         "--invalid",
@@ -1204,7 +1178,7 @@
       "title": "Drawer",
       "summary": "An edge-docked panel that slides in from a viewport edge over a dimmed scrim.",
       "contract": "primitives/drawer.md",
-      "example": null,
+      "example": "primitives/drawer.html",
       "classes": [
         ".drawer-overlay",
         ".drawer",
@@ -1228,7 +1202,7 @@
       "title": "Dropdown Menu",
       "summary": "A triggered overlay of grouped actions.",
       "contract": "primitives/dropdown-menu.md",
-      "example": null,
+      "example": "primitives/dropdown-menu.html",
       "classes": [
         ".dropdown-menu",
         ".dropdown-menu__item--active"
@@ -1240,7 +1214,7 @@
       "title": "Dropzone",
       "summary": "Presentation-only file-select zone with drag-and-drop affordance.",
       "contract": "primitives/dropzone.md",
-      "example": null,
+      "example": "primitives/dropzone.html",
       "classes": [
         ".dropzone",
         ".dropzone--drag",
@@ -1255,7 +1229,7 @@
       "title": "Field",
       "summary": "The form-row wrapper.",
       "contract": "primitives/field.md",
-      "example": null,
+      "example": "primitives/field.html",
       "classes": [
         ".field__required"
       ]
@@ -1266,7 +1240,7 @@
       "title": "Hover Card",
       "summary": "A rich popover that opens on hover (and keyboard focus) over a trigger — for preview cards and detail popovers.",
       "contract": "primitives/hover-card.md",
-      "example": null,
+      "example": "primitives/hover-card.html",
       "classes": [
         ".hover-card"
       ]
@@ -1277,16 +1251,7 @@
       "title": "Icon",
       "summary": "An inline Lucide SVG used as a glyph inside another control or beside text.",
       "contract": "primitives/icon.md",
-      "example": null,
-      "classes": []
-    },
-    {
-      "layer": "primitive",
-      "name": "initials-tile",
-      "title": "InitialsTile",
-      "summary": "A square, neutral identity tile that derives its initials from a name — a logo / icon placeholder for companies, apps, and people when no image exists.",
-      "contract": "primitives/initials-tile.md",
-      "example": null,
+      "example": "primitives/icon.html",
       "classes": []
     },
     {
@@ -1295,7 +1260,7 @@
       "title": "Input Group",
       "summary": "A single-border container that fuses an Input/Textarea with leading/trailing addons (icons, text affixes, action buttons, keyboard hints).",
       "contract": "primitives/input-group.md",
-      "example": null,
+      "example": "primitives/input-group.html",
       "classes": [
         ".input-group",
         ".input-group__addon",
@@ -1317,7 +1282,7 @@
       "title": "InputOTP",
       "summary": "A segmented one-time-code / verification-code input: a row of single-character slots the user types a PIN/OTP into, optionally split into groups by a separator.",
       "contract": "primitives/input-otp.md",
-      "example": null,
+      "example": "primitives/input-otp.html",
       "classes": [
         ".input-otp",
         ".input-otp__group",
@@ -1333,7 +1298,7 @@
       "title": "Input",
       "summary": "A single-line text field.",
       "contract": "primitives/input.md",
-      "example": null,
+      "example": "primitives/input.html",
       "classes": [
         ".input"
       ]
@@ -1344,7 +1309,7 @@
       "title": "Label",
       "summary": "The caption for a form control.",
       "contract": "primitives/label.md",
-      "example": null,
+      "example": "primitives/label.html",
       "classes": [
         ".label--disabled",
         ".field",
@@ -1355,29 +1320,16 @@
     },
     {
       "layer": "primitive",
-      "name": "menubar",
-      "title": "Menubar",
-      "summary": "A horizontal application-style menu bar — a row of top-level triggers (\"File\", \"Edit\", \"View\") that each drop a menu of grouped actions.",
-      "contract": "primitives/menubar.md",
-      "example": null,
-      "classes": [
-        ".menubar",
-        ".menubar__trigger",
-        ".menubar__trigger--open",
-        ".dropdown-menu"
-      ]
-    },
-    {
-      "layer": "primitive",
       "name": "modal",
       "title": "Modal",
       "summary": "A centered dialog over a dimmed scrim.",
       "contract": "primitives/modal.md",
-      "example": null,
+      "example": "primitives/modal.html",
       "classes": [
         ".modal-overlay",
         ".modal",
         ".modal__header",
+        ".modal__heading",
         ".modal__title",
         ".modal__description",
         ".modal__close",
@@ -1388,25 +1340,11 @@
     },
     {
       "layer": "primitive",
-      "name": "navigation-menu",
-      "title": "Navigation Menu",
-      "summary": "Top-level site navigation with flyout panels — a horizontal bar of triggers/links where a trigger opens a portalled content panel beneath the bar.",
-      "contract": "primitives/navigation-menu.md",
-      "example": null,
-      "classes": [
-        ".nav-menu",
-        ".nav-menu__trigger--open",
-        ".nav-menu__link--active",
-        ".nav-menu__content"
-      ]
-    },
-    {
-      "layer": "primitive",
       "name": "object-tile",
       "title": "Object Tile",
       "summary": "Square, filled entity/object identity mark for companies, apps, device models, etc.",
       "contract": "primitives/object-tile.md",
-      "example": null,
+      "example": "primitives/object-tile.html",
       "classes": [
         ".object-tile",
         ".object-tile--neutral",
@@ -1419,7 +1357,7 @@
       "title": "Popover",
       "summary": "A small floating panel anchored to a trigger, portalled above the page.",
       "contract": "primitives/popover.md",
-      "example": null,
+      "example": "primitives/popover.html",
       "classes": [
         ".popover",
         ".popover__header",
@@ -1435,7 +1373,7 @@
       "title": "Progress",
       "summary": "A horizontal bar showing numeric completion (0–100%).",
       "contract": "primitives/progress.md",
-      "example": null,
+      "example": "primitives/progress.html",
       "classes": [
         ".progress",
         ".progress__track",
@@ -1450,7 +1388,7 @@
       "title": "Radio Group",
       "summary": "A set of mutually exclusive options where exactly one is selected.",
       "contract": "primitives/radio-group.md",
-      "example": null,
+      "example": "primitives/radio-group.html",
       "classes": []
     },
     {
@@ -1459,7 +1397,7 @@
       "title": "Resizable",
       "summary": "A draggable split-pane layout: sibling panels separated by a hairline handle the user drags to redistribute space.",
       "contract": "primitives/resizable.md",
-      "example": null,
+      "example": "primitives/resizable.html",
       "classes": [
         ".resizable-group",
         ".resizable-group--vertical",
@@ -1475,7 +1413,7 @@
       "title": "Scroll Area",
       "summary": "A styled overflow container that swaps the OS scrollbar for a thin, token-skinned one that matches the design system.",
       "contract": "primitives/scroll-area.md",
-      "example": null,
+      "example": "primitives/scroll-area.html",
       "classes": [
         ".scroll-area__scrollbar",
         ".scroll-area__thumb"
@@ -1487,7 +1425,7 @@
       "title": "Select",
       "summary": "A dropdown for choosing one option from a list.",
       "contract": "primitives/select.md",
-      "example": null,
+      "example": "primitives/select.html",
       "classes": []
     },
     {
@@ -1496,7 +1434,7 @@
       "title": "Separator",
       "summary": "A hairline divider that splits content along one axis.",
       "contract": "primitives/separator.md",
-      "example": null,
+      "example": "primitives/separator.html",
       "classes": [
         ".separator--vertical"
       ]
@@ -1507,7 +1445,7 @@
       "title": "Sheet",
       "summary": "An edge-docked side panel that slides in over a dimmed scrim.",
       "contract": "primitives/sheet.md",
-      "example": null,
+      "example": "primitives/sheet.html",
       "classes": [
         ".sheet-overlay",
         ".sheet",
@@ -1528,7 +1466,7 @@
       "title": "Slider",
       "summary": "A draggable track-and-thumb input for selecting a numeric value, or a range (two thumbs) along a continuous scale.",
       "contract": "primitives/slider.md",
-      "example": null,
+      "example": "primitives/slider.html",
       "classes": [
         ".slider__thumb",
         ".slider",
@@ -1542,7 +1480,7 @@
       "title": "Spinner",
       "summary": "A circular, indeterminate loading indicator — a spinning ring shown while content or an action is in flight (in-button loading, inline \"fetching\", small section busy state).",
       "contract": "primitives/spinner.md",
-      "example": null,
+      "example": "primitives/spinner.html",
       "classes": []
     },
     {
@@ -1551,7 +1489,7 @@
       "title": "Switch",
       "summary": "A binary on/off toggle for an immediate state change (enable/disable, light/dark).",
       "contract": "primitives/switch.md",
-      "example": null,
+      "example": "primitives/switch.html",
       "classes": [
         ".switch",
         ".switch--sm",
@@ -1564,7 +1502,7 @@
       "title": "Tabs",
       "summary": "A tabbed control: a horizontal bar of triggers that switch which content panel is shown.",
       "contract": "primitives/tabs.md",
-      "example": null,
+      "example": "primitives/tabs.html",
       "classes": [
         ".tabs__content",
         ".tabs",
@@ -1581,7 +1519,7 @@
       "title": "Textarea",
       "summary": "A multi-line text field.",
       "contract": "primitives/textarea.md",
-      "example": null,
+      "example": "primitives/textarea.html",
       "classes": [
         ".textarea"
       ]
@@ -1592,7 +1530,7 @@
       "title": "Time Picker",
       "summary": "A time-only field built on the native <input type=\"time\">.",
       "contract": "primitives/time-picker.md",
-      "example": null,
+      "example": "primitives/time-picker.html",
       "classes": [
         ".date-trigger__clear",
         ".input-group",
@@ -1605,7 +1543,7 @@
       "title": "Toast",
       "summary": "A transient, auto-dismissing notification (sonner).",
       "contract": "primitives/toast.md",
-      "example": null,
+      "example": "primitives/toast.html",
       "classes": [
         ".toast",
         ".toast--with-icon",
@@ -1623,7 +1561,7 @@
       "title": "Toggle Group",
       "summary": "A set of press-toggle buttons that act as one control: a segmented switch (radio-like, max one pressed) or a multi-select chip/segment cluster.",
       "contract": "primitives/toggle-group.md",
-      "example": null,
+      "example": "primitives/toggle-group.html",
       "classes": [
         ".toggle-group",
         ".toggle-group__item",
@@ -1638,7 +1576,7 @@
       "title": "Toggle",
       "summary": "A press-toggle button with on/off (pressed) state.",
       "contract": "primitives/toggle.md",
-      "example": null,
+      "example": "primitives/toggle.html",
       "classes": [
         ".toggle",
         ".toggle-group"
@@ -1650,7 +1588,7 @@
       "title": "Tooltip",
       "summary": "A short text hint shown on hover/focus of a trigger.",
       "contract": "primitives/tooltip.md",
-      "example": null,
+      "example": "primitives/tooltip.html",
       "classes": [
         ".tooltip",
         ".tooltip__arrow"
@@ -1753,9 +1691,10 @@
         ".detail-header__logo",
         ".detail-header__main",
         ".detail-header__title",
+        ".detail-header__name",
         ".badge",
-        ".detail-header__meta",
         ".detail-header__chips",
+        ".detail-header__meta",
         ".detail-header__actions",
         ".detail-header__tabs",
         ".tabs__list--line"
@@ -1791,7 +1730,8 @@
         ".empty-state__title",
         ".empty-state__description",
         ".empty-state__action",
-        ".btn--primary"
+        ".btn--primary",
+        ".btn--secondary"
       ]
     },
     {
@@ -1810,7 +1750,7 @@
         "--warning",
         "--neutral",
         ".feed-item__main",
-        ".feed-item__time",
+        ".feed-item__trailing",
         ".empty-state"
       ]
     },
@@ -1854,7 +1794,7 @@
       "title": "List row · composite",
       "summary": "A non-tabular interactive list row — a leading visual, a title line that can carry inline badges over an optional sub-line, and a trailing control / action cluster / value, with the whole row optionally a click target.",
       "contract": "composites/list-row.md",
-      "example": null,
+      "example": "composites/list-row.html",
       "classes": [
         ".list-rows",
         ".list-row",
@@ -2040,6 +1980,7 @@
         ".step--completed",
         ".step--active",
         ".step--upcoming",
+        ".step__body",
         ".step__dot",
         ".step__text",
         ".step__caption",
@@ -2103,9 +2044,13 @@
         ".timeline__content",
         ".timeline__marker--dot",
         "--icon",
+        ".timeline__marker-node",
+        "--dot",
+        ".timeline__marker-dot",
+        ".timeline__rail",
+        ".timeline__item--last",
         ".timeline--compact",
         ".timeline--stacked",
-        ".timeline__item--last",
         ".timeline__header",
         ".timeline__title",
         ".timeline__time",

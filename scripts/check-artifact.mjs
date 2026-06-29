@@ -80,6 +80,12 @@ const stripScriptBlocks = (html) => html.replace(/<script\b[^>]*>[\s\S]*?<\/scri
 const stripStyleBlocks = (html) => html.replace(/<style\b[^>]*>[\s\S]*?<\/style\s*>/gi, " ");
 const stripCssComments = (css) => css.replace(/\/\*[\s\S]*?\*\//g, " ");
 
+// A color literal is only a violation in a CSS context — a <style> body or an
+// element attribute (style="…", fill="…", stroke="…"). In text content, "#10482"
+// is an order number, not a color. Keep tags (their attributes) + page CSS, but
+// drop the text nodes between tags so demo copy never trips the color check.
+const colorScanSurface = (markup, pageCss) => `${markup.replace(/>[^<]*</g, "><")}\n${pageCss}`;
+
 const extractStyleCss = (html) =>
   [...html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style\s*>/gi)].map((m) => m[1]).join("\n");
 
@@ -139,6 +145,19 @@ const tokenRefsFromAuthored = (text) => {
     refs.add(m[1].slice(2));
   }
   return refs;
+};
+
+// Custom properties the artifact DEFINES itself — page-local CSS variables (an
+// animation/state var like --toast-duration, set in its own <style>, an inline
+// style="--x:…", or via JS setProperty). Allowed exactly like page-local classes:
+// a var() resolving to one of these is page-local composition, not an off-set
+// foundation-token reference. A var() to a `--x` that is never defined and not a
+// foundation token stays flagged (catches typos / renamed tokens).
+const locallyDefinedTokensFromHtml = (html) => {
+  const defs = new Set();
+  for (const m of html.matchAll(/(--[A-Za-z_][\w-]*)\s*:/g)) defs.add(m[1].slice(2));
+  for (const m of html.matchAll(/setProperty\(\s*["'](--[A-Za-z_][\w-]*)["']/g)) defs.add(m[1].slice(2));
+  return defs;
 };
 
 // Inline Lucide icons. Every icon must carry `data-lucide="<name>"`: the name
@@ -207,13 +226,16 @@ for (const file of files) {
   const used = usedClassesFromMarkup(markup);
   const offSetClasses = [...used].filter((c) => !CLASSES.has(c) && !local.has(c)).sort();
 
-  // 2. var(--x) refs must name a real token.
+  // 2. var(--x) refs must name a real token — unless the artifact defines that
+  //    custom property itself (page-local CSS variable, allowed like a local class).
   const refs = tokenRefsFromAuthored(authored);
-  const unknownTokens = [...refs].filter((t) => !TOKENS.has(t)).sort();
+  const localTokens = locallyDefinedTokensFromHtml(html);
+  const unknownTokens = [...refs].filter((t) => !TOKENS.has(t) && !localTokens.has(t)).sort();
 
   // 3. Hardcoded color literals (every brand color has a token). SVG uses
   //    stroke="currentColor", so any hex / raw color function is a literal.
-  const hardColors = hardcodedColorsFromAuthored(authored);
+  //    Scan CSS + attributes only — never text content (an order "#10482" is not a color).
+  const hardColors = hardcodedColorsFromAuthored(colorScanSurface(markup, pageCss));
 
   // 4. Inline Lucide icons: unknown names always fail; altered paths fail in
   //    strict (warn otherwise); untagged icon-shaped svgs always warn.
