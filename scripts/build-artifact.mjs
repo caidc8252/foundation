@@ -3,10 +3,10 @@
    Foundation artifact builder
 
    Builds a shipped, self-contained HTML artifact from a copyable pattern
-   example. The pattern examples keep the production app-frame as context; this
-   builder ports only the page inside .app-frame__main, wraps it in the frameless
-   width-lock shell required by AGENTS.md, inlines the three foundation CSS
-   layers, then runs the strict artifact checker.
+   example. Pattern examples use the production app-frame shell; this builder
+   ports the page inside .app-frame__main, re-wraps it in the same
+   .app-frame > .app-frame__col > main.app-frame__main structure, inlines the
+   three foundation CSS layers, then runs the strict artifact checker.
 
    Usage:
      node scripts/build-artifact.mjs --pattern list-page --out artifacts/list.html
@@ -128,7 +128,7 @@ ${primitives}
 /* 4/5 composites/composites.css */
 ${composites}
 
-/* 5/5 artifact shell + page-local composition */
+/* 5/5 page boilerplate (html/body background + [hidden] guard) + page-local composition */
 html {
   background-color: var(--color-surface-1);
 }
@@ -142,12 +142,6 @@ body {
 
 [hidden] {
   display: none !important;
-}
-
-.artifact-shell {
-  width: 100%;
-  min-height: 100vh;
-  background-color: var(--color-surface-1);
 }
 
 ${pageLocalCss}
@@ -165,8 +159,12 @@ ${artifactCss}
   </style>
 </head>
 <body>
-  <div class="artifact-shell">
-${pageHtml.split("\n").map((line) => `    ${line}`).join("\n")}
+  <div class="app-frame">
+    <div class="app-frame__col">
+      <main class="app-frame__main">
+${pageHtml.split("\n").map((line) => `        ${line}`).join("\n")}
+      </main>
+    </div>
   </div>
 </body>
 </html>
