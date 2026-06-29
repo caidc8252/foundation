@@ -21,9 +21,11 @@ jobs:
       - name: dist is in sync with sources
         run: node scripts/check-dist.mjs
 
-      # The example HTML is the AI's primary reference — keep it inside the closed set.
+      # The example HTML is the AI's primary reference — keep it inside the closed
+      # set. Strict: also fail on off-set classes and altered icon paths, the same
+      # gate AGENTS.md mandates for AI-generated artifacts.
       - name: examples stay inside the closed set
-        run: node scripts/check-examples.mjs
+        run: node scripts/check-examples.mjs --strict
 
       # router.json stays aligned with the catalog + the pattern contracts.
       - name: pattern router is aligned
