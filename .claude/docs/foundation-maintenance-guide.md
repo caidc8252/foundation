@@ -148,7 +148,7 @@ in-repo example 过了一遍这道关。
 
    默认写出 `versions/vN/promote.md`；需要只看内容可用
    `node scripts/promote-version.mjs vN --stdout`。
-3. **Agent 读 brief 后改真实 source**，不是改 `release/` / `versions/v1/`：
+3. **Agent 读 brief 后改真实 source**，不是改 `release/` / `build/current/` / `versions/vN/`：
    - token 值候选 → `tokens/*.css`（必要时同步 `tokens/dark.css`）；
    - primitive 候选 → `primitives/primitives.css` + `primitives/<name>.md`
      + 必要的 `primitives/<name>.html`；
@@ -163,15 +163,17 @@ in-repo example 过了一遍这道关。
    pnpm check:all
    ```
 
-6. **再发布/提交 release**：发布端会拒绝仍带 `manifest.classOverrides` 的版本，
-   错误信息会提示运行 `node scripts/promote-version.mjs vN`。token-only override 仍由
+6. **再发布/提交 release**：发布端会拒绝仍带
+   `manifest.classOverrides` 的保存版本，错误信息会提示运行
+   `node scripts/promote-version.mjs vN`。promotion 后用 `pnpm build`
+   刷新 `build/current/` 和 `release/`，再保存/发布干净版本。token-only override 仍由
    `check:release` 兜底：只要它没有进入 source，clean rebuild 就会改写 `release/` 并让检查失败。
 
 `promote-version.mjs` 只生成 handoff brief，不自动改 `.md`。这是刻意的边界：
 editor 负责记录“发生了什么”，Agent 负责起草 source/contract/example patch，
 人 review 最终 diff。
 
-如果 Agent promote 改坏了根目录 source，不要从 `versions/v1/` 反拷文件：
+如果 Agent promote 改坏了根目录 source，不要从 `versions/` 反拷文件：
 `versions/` 是轻量样式快照，不是完整源码备份。改用版本 manifest 记录的 Git
 source commit 恢复受管 source：
 

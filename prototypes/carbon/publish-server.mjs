@@ -13,11 +13,13 @@ import { basename, dirname, extname, join, relative, resolve, sep } from "node:p
 import { fileURLToPath } from "node:url";
 import {
   applyTokenJsonOverrides,
+  CURRENT_BUILD_ROOT,
   emitCatalog,
   emitCatalogMarkdown,
   emitTokensJson,
   RELEASE_STRUCTURE,
-  writeBaseVersion,
+  CURRENT_VERSION,
+  writeCurrentVersion,
 } from "../../emit/build.mjs";
 import {
   assertVersionSourceRestorable,
@@ -28,6 +30,7 @@ import {
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, "..", "..");
 const VERSION_ROOT = join(ROOT, "versions");
+const BUILD_ROOT = join(ROOT, CURRENT_BUILD_ROOT);
 const RELEASE_ROOT = join(ROOT, "release");
 const DEFAULT_PORT = 4177;
 const MIME = {
@@ -204,27 +207,51 @@ function parseSimpleClassDeclarations(css, target = {}) {
   return target;
 }
 
-function ensureBaseVersion(repoRoot) {
-  const baseDir = join(repoRoot, "versions", "v1");
-  if (
-    !existsSync(join(baseDir, "tokens.inline.css")) ||
-    !existsSync(join(baseDir, "composites.css")) ||
-    !existsSync(join(baseDir, "manifest.json"))
-  ) {
-    writeBaseVersion(repoRoot);
-  }
-  return baseDir;
+function currentDir(repoRoot) {
+  return join(repoRoot, CURRENT_BUILD_ROOT, CURRENT_VERSION);
 }
 
-function readBaseStyleSnapshot(repoRoot) {
-  const baseDir = ensureBaseVersion(repoRoot);
-  const tokenCss = readFileSync(join(baseDir, "tokens.inline.css"), "utf8");
-  const primitiveCss = readFileSync(join(repoRoot, "primitives", "primitives.css"), "utf8");
-  const compositeCss = readFileSync(join(baseDir, "composites.css"), "utf8");
+function snapshotDir(repoRoot, versionRoot, version) {
+  return version === CURRENT_VERSION ? currentDir(repoRoot) : join(versionRoot, version);
+}
+
+function ensureCurrentVersion(repoRoot) {
+  const dir = currentDir(repoRoot);
+  if (
+    !existsSync(join(dir, "tokens.inline.css")) ||
+    !existsSync(join(dir, "primitives.css")) ||
+    !existsSync(join(dir, "composites.css")) ||
+    !existsSync(join(dir, "manifest.json"))
+  ) {
+    writeCurrentVersion(repoRoot);
+  }
+  return dir;
+}
+
+function readVersionManifest(versionRoot, repoRoot, version) {
+  const versionName = assertVersionName(version || CURRENT_VERSION);
+  if (versionName === CURRENT_VERSION) ensureCurrentVersion(repoRoot);
+  const manifestFile = join(snapshotDir(repoRoot, versionRoot, versionName), "manifest.json");
+  if (!existsSync(manifestFile)) throw new Error(`version not found: ${versionName}`);
+  return JSON.parse(readFileSync(manifestFile, "utf8"));
+}
+
+function readStyleSnapshot(repoRoot, versionRoot, version = CURRENT_VERSION) {
+  const versionName = assertVersionName(version || CURRENT_VERSION);
+  const versionDir = versionName === CURRENT_VERSION
+    ? ensureCurrentVersion(repoRoot)
+    : snapshotDir(repoRoot, versionRoot, versionName);
+  const tokenCss = readFileSync(join(versionDir, "tokens.inline.css"), "utf8");
+  const primitivePath = join(versionDir, "primitives.css");
+  const primitiveCss = existsSync(primitivePath)
+    ? readFileSync(primitivePath, "utf8")
+    : readFileSync(join(repoRoot, "primitives", "primitives.css"), "utf8");
+  const compositeCss = readFileSync(join(versionDir, "composites.css"), "utf8");
   const classDeclarations = parseSimpleClassDeclarations(primitiveCss);
   parseSimpleClassDeclarations(compositeCss, classDeclarations);
   return {
     tokenCss,
+    primitiveCss,
     compositeCss,
     tokenDeclarations: parseTokenDeclarations(tokenCss),
     classDeclarations,
@@ -314,45 +341,88 @@ function nextVersionName(versionRoot) {
   return `v${max + 1}`;
 }
 
-function listVersions(versionRoot = VERSION_ROOT) {
-  if (!existsSync(versionRoot)) return [];
-  return readdirSync(versionRoot, { withFileTypes: true })
-    .filter(entry => entry.isDirectory() && /^v\d+$/.test(entry.name))
-    .map(entry => {
-      const dir = join(versionRoot, entry.name);
-      const manifestFile = join(dir, "manifest.json");
-      let manifest = {};
-      if (existsSync(manifestFile)) {
-        try {
-          manifest = JSON.parse(readFileSync(manifestFile, "utf8"));
-        } catch {
-          manifest = {};
-        }
+function versionSummary(entry, repoRoot = ROOT) {
+  const dir = entry.dir;
+  const manifestFile = join(dir, "manifest.json");
+  let manifest = {};
+  if (existsSync(manifestFile)) {
+    try {
+      manifest = JSON.parse(readFileSync(manifestFile, "utf8"));
+    } catch {
+      return null;
+    }
+  } else {
+    return null;
+  }
+  const classOverrideDeclarations = classOverrideCount(manifest);
+  const tokenOverrideCount = Object.keys(manifest.tokenOverrides || {}).length;
+  const isCurrent = entry.name === CURRENT_VERSION || Boolean(manifest.current);
+  const hasPrimitiveCss = existsSync(join(dir, "primitives.css"));
+  const liveSourceGit = isCurrent ? readSourceGitState(repoRoot) : null;
+  const sourceGit = liveSourceGit || manifest.sourceGit || {};
+  const sourceCommit = sourceGit.commit || manifest.sourceCommit || "";
+  const sourceDirty = Boolean(sourceGit.dirty ?? manifest.sourceDirty);
+  const hasSourceCommit = Boolean(sourceCommit);
+  const releaseable = classOverrideDeclarations === 0 && hasSourceCommit && !sourceDirty;
+  const status = isCurrent
+    ? "current"
+    : classOverrideDeclarations > 0
+      ? "draft"
+      : releaseable
+        ? "clean"
+        : "blocked";
+  return {
+    version: entry.name,
+    kind: isCurrent ? "current" : "snapshot",
+    status,
+    releaseable,
+    releaseBlockReason: releaseable
+      ? ""
+      : classOverrideDeclarations > 0
+        ? "promote required"
+        : !hasSourceCommit
+          ? "source commit missing"
+          : sourceDirty
+            ? (isCurrent ? "current source dirty" : "source dirty at save")
+            : "not releaseable",
+    publishedAt: manifest.publishedAt || "",
+    source: manifest.source || {},
+    sourceCommit,
+    sourceDirty,
+    sourceGit,
+    classOverrideDeclarations,
+    tokenOverrideCount,
+    hasPrimitiveCss,
+    counts: manifest.counts || {},
+  };
+}
+
+function currentVersionSummary(repoRoot = ROOT) {
+  ensureCurrentVersion(repoRoot);
+  return versionSummary({ name: CURRENT_VERSION, dir: currentDir(repoRoot) }, repoRoot);
+}
+
+function listVersions(versionRoot = VERSION_ROOT, repoRoot = ROOT) {
+  const entries = [];
+  if (existsSync(versionRoot)) {
+    for (const entry of readdirSync(versionRoot, { withFileTypes: true })) {
+      if (entry.isDirectory() && /^v\d+$/.test(entry.name)) {
+        entries.push({ name: entry.name, dir: join(versionRoot, entry.name) });
       }
-      return {
-        version: entry.name,
-        publishedAt: manifest.publishedAt || "",
-        source: manifest.source || {},
-        sourceCommit: manifest.sourceCommit || manifest.sourceGit?.commit || "",
-        sourceDirty: Boolean(manifest.sourceDirty || manifest.sourceGit?.dirty),
-        sourceGit: manifest.sourceGit || {},
-        counts: manifest.counts || {},
-      };
-    })
+    }
+  }
+  return entries
+    .map(entry => versionSummary(entry, repoRoot))
+    .filter(Boolean)
     .sort((a, b) => Number(a.version.slice(1)) - Number(b.version.slice(1)));
 }
 
 export function publishSnapshot(payload, options = {}) {
   const repoRoot = options.repoRoot || ROOT;
   const versionRoot = options.versionRoot || VERSION_ROOT;
-  const baseVersion = payload.baseVersion && assertVersionName(payload.baseVersion);
-  let baseManifest = {};
-  if (baseVersion) {
-    const baseManifestFile = join(versionRoot, baseVersion, "manifest.json");
-    if (!existsSync(baseManifestFile)) throw new Error(`base version not found: ${baseVersion}`);
-    baseManifest = JSON.parse(readFileSync(baseManifestFile, "utf8"));
-  }
-  const baseSnapshot = readBaseStyleSnapshot(repoRoot);
+  const baseVersion = assertVersionName(payload.baseVersion || CURRENT_VERSION);
+  const baseManifest = readVersionManifest(versionRoot, repoRoot, baseVersion);
+  const baseSnapshot = readStyleSnapshot(repoRoot, versionRoot, baseVersion);
   const { tokens: incomingTokens, skipped: skippedTokens } = normalizeTokens(payload.tokens || {});
   const { classOverrides: incomingClassOverrides, skipped: skippedClassOverrides } = normalizeClassOverrides(payload.classOverrides || {});
   const incomingClassOverrideMeta = normalizeClassOverrideMeta(payload.classOverrideMeta || {});
@@ -377,11 +447,12 @@ export function publishSnapshot(payload, options = {}) {
   );
 
   writeFileSync(join(outDir, "tokens.inline.css"), tokenCss, "utf8");
+  writeFileSync(join(outDir, "primitives.css"), baseSnapshot.primitiveCss, "utf8");
   writeFileSync(join(outDir, "composites.css"), compositeCss, "utf8");
 
   const manifest = {
     version,
-    baseVersion: baseVersion || "",
+    baseVersion,
     publishedAt,
     source: {
       page: payload.page || "",
@@ -415,7 +486,7 @@ export function publishSnapshot(payload, options = {}) {
     version,
     dir: outDir,
     relativeDir: relative(repoRoot, outDir).replace(/\\/g, "/"),
-    files: ["tokens.inline.css", "composites.css", "manifest.json"],
+    files: ["tokens.inline.css", "primitives.css", "composites.css", "manifest.json"],
     counts: manifest.counts,
     changes,
     sourceCommit: manifest.sourceCommit,
@@ -424,8 +495,8 @@ export function publishSnapshot(payload, options = {}) {
 }
 
 function assertVersionName(version) {
-  if (!/^v\d+$/.test(version || "")) throw new Error("invalid version");
-  return version;
+  if (version === CURRENT_VERSION || /^v\d+$/.test(version || "")) return version;
+  throw new Error("invalid version");
 }
 
 function classOverrideCount(manifest) {
@@ -468,7 +539,7 @@ function resetReleaseDir(releaseRoot) {
 function restoreVersionSourceForRelease(repoRoot, versionName, manifest) {
   const sourceGit = assertVersionSourceRestorable(versionName, manifest);
   const restored = restoreGovernedSource(repoRoot, sourceGit.commit);
-  writeBaseVersion(repoRoot, { sourceGit });
+  writeCurrentVersion(repoRoot, { sourceGit });
   return {
     applied: true,
     ...restored,
@@ -479,22 +550,39 @@ export function releaseSnapshot(version, options = {}) {
   const repoRoot = options.repoRoot || ROOT;
   const versionRoot = options.versionRoot || VERSION_ROOT;
   const releaseRoot = options.releaseRoot || RELEASE_ROOT;
-  const versionName = assertVersionName(version || listVersions(versionRoot).at(-1)?.version);
-  const versionDir = join(versionRoot, versionName);
+  const versionName = assertVersionName(version || CURRENT_VERSION);
+  if (versionName === CURRENT_VERSION) ensureCurrentVersion(repoRoot);
+  const versionDir = snapshotDir(repoRoot, versionRoot, versionName);
   if (!existsSync(versionDir)) throw new Error(`version not found: ${versionName}`);
 
   const manifestFile = join(versionDir, "manifest.json");
   const manifest = existsSync(manifestFile) ? JSON.parse(readFileSync(manifestFile, "utf8")) : { version: versionName };
   assertReleaseableManifest(versionName, manifest);
-  const sourceRestore = options.restoreSource === false
-    ? { applied: false, reason: "disabled" }
-    : restoreVersionSourceForRelease(repoRoot, versionName, manifest);
+  let releaseSourceGit = manifest.sourceGit || {};
+  const sourceRestore = versionName === CURRENT_VERSION
+    ? (() => {
+        const sourceGit = readSourceGitState(repoRoot);
+        releaseSourceGit = sourceGit;
+        if (!sourceGit.commit) throw new Error("current source has no Git commit; commit source before release.");
+        if (sourceGit.dirty) {
+          const paths = sourceGit.dirtyPaths.length ? ` (${sourceGit.dirtyPaths.join(", ")})` : "";
+          throw new Error(`current source is dirty${paths}. Commit or discard source edits before release.`);
+        }
+        writeCurrentVersion(repoRoot);
+        return { applied: false, reason: "current source already live", commit: sourceGit.commit, shortCommit: sourceGit.shortCommit };
+      })()
+    : options.restoreSource === false
+      ? { applied: false, reason: "disabled" }
+      : restoreVersionSourceForRelease(repoRoot, versionName, manifest);
   const outDir = releaseRoot;
   resetReleaseDir(outDir);
   copyReleaseFiles(repoRoot, outDir, versionDir, manifest);
 
   const releaseManifest = {
     ...manifest,
+    sourceCommit: versionName === CURRENT_VERSION ? releaseSourceGit.commit || "" : manifest.sourceCommit,
+    sourceDirty: versionName === CURRENT_VERSION ? Boolean(releaseSourceGit.dirty) : Boolean(manifest.sourceDirty),
+    sourceGit: versionName === CURRENT_VERSION ? releaseSourceGit : manifest.sourceGit,
     releasedAt: new Date().toISOString(),
     release: {
       version: versionName,
@@ -516,6 +604,7 @@ export function releaseSnapshot(version, options = {}) {
 function serveStatic(url, res) {
   const pathname = decodeURIComponent(url.pathname);
   if (pathname.startsWith("/versions/")) return serveRootAsset(pathname, "/versions/", VERSION_ROOT, res);
+  if (pathname.startsWith("/build/")) return serveRootAsset(pathname, "/build/", BUILD_ROOT, res);
   if (pathname.startsWith("/release/")) return serveRootAsset(pathname, "/release/", RELEASE_ROOT, res);
   const rel = pathname === "/" ? "app-publish-list.html" : pathname.replace(/^\/+/, "");
   const file = resolve(HERE, rel);
@@ -551,9 +640,15 @@ export function createHandler() {
     const url = new URL(req.url, "http://localhost");
     try {
       if (url.pathname === "/__prototype_versions" && req.method === "GET") {
-        ensureBaseVersion(ROOT);
+        ensureCurrentVersion(ROOT);
+        const current = currentVersionSummary(ROOT);
         const versions = listVersions();
-        return json(res, { ok: true, versions, latest: versions.at(-1)?.version || "" });
+        return json(res, {
+          ok: true,
+          current,
+          versions,
+          latest: versions.at(-1)?.version || "",
+        });
       }
       if ((url.pathname === "/__prototype_save" || url.pathname === "/__prototype_publish") && req.method === "POST") {
         const payload = await readJson(req);

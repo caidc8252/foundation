@@ -33,6 +33,14 @@ source Git commit (`sourceCommit` / `sourceGit`); release and
 `tokens/`, `primitives/`, `composites/`, `patterns/`, and `governance/` if a
 promote attempt dirties the real source.
 
+The carbon editor's header selector lists only numbered `vN` entries from
+`versions/`. It is for previewing saved prototype versions, not the current
+source tree. `build/current/` remains the generated preview of the real
+four-layer source for build/release checks, but it is not exposed as a selectable
+version in the prototype UI. Drafts that still contain `classOverrides` may be
+previewed, but the release button is disabled until those overrides are promoted
+into source and saved as a clean version.
+
 ## Golden rule: the GUI writes a draft, never the source
 
 **Every graphical edit is sandboxed.** It is written to `admin/.draft/` — a
@@ -105,8 +113,9 @@ draft into the governed source is a manual step. The draft is a staging area;
      `diff -u primitives/primitives.css admin/.draft/primitives/primitives.css`
      (and the composites equivalent). The draft differs from source only in the
      edited declarations, so the diff is small and surgical.
-4. **Rebuild** the snapshots: `pnpm build` (regenerates `release/*` and
-   `versions/v1/*` from the now-edited source). Never hand-edit generated files.
+4. **Rebuild** the generated snapshots: `pnpm build` (regenerates `release/*` and
+   `build/current/*` from the now-edited source). Never hand-edit generated
+   files, and do not expect numbered `versions/vN/` snapshots to change.
 5. **Discard the draft** so it can't drift — the discard button,
    `POST /api/draft/discard`, or `rm -rf admin/.draft`.
 6. **Validate** (next section).

@@ -1,0 +1,46 @@
+{
+  "version": "current",
+  "baseVersion": "",
+  "publishedAt": "",
+  "source": {
+    "page": "foundation-current",
+    "title": "Foundation current source",
+    "href": ""
+  },
+  "counts": {
+    "tokens": 0,
+    "compositeDeclarations": 0,
+    "selectors": 0,
+    "elementPaths": 0
+  },
+  "changedTokens": [],
+  "tokenOverrides": {},
+  "classOverrides": {},
+  "changes": {
+    "tokens": [],
+    "composites": []
+  },
+  "elementOverrides": {},
+  "conflicts": [],
+  "skipped": {
+    "tokens": [],
+    "classOverrides": []
+  },
+  "sourceCommit": "",
+  "sourceDirty": false,
+  "sourceGit": {
+    "available": false,
+    "commit": "",
+    "shortCommit": "",
+    "dirty": false,
+    "dirtyPaths": [],
+    "restorePaths": [
+      "tokens",
+      "primitives",
+      "composites",
+      "patterns",
+      "governance"
+    ]
+  },
+  "current": true
+}

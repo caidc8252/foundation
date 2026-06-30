@@ -8,9 +8,10 @@ import { join } from "node:path";
 
 test("emit CLI output unchanged after refactor", () => {
   const outputs = [
-    "versions/v1/tokens.inline.css",
-    "versions/v1/composites.css",
-    "versions/v1/manifest.json",
+    "build/current/tokens.inline.css",
+    "build/current/primitives.css",
+    "build/current/composites.css",
+    "build/current/manifest.json",
     "release/catalog.json",
     "release/catalog.md",
     "release/tokens.json",

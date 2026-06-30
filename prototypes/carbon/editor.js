@@ -621,13 +621,43 @@
     document.body.appendChild(bar);
   }
 
-  var DEFAULT_VERSION = 'v1';
-  var selectedVersion = DEFAULT_VERSION;
-  var versionSelect = null, versionStatus = null;
-  var versionTokenLink = null, versionCompositeLink = null;
+  var selectedVersion = '';
+  var versionSelect = null, versionStatus = null, versionReleaseBtn = null;
+  var versionMeta = {};
+  var versionTokenLink = null, versionPrimitiveLink = null, versionCompositeLink = null;
   var versionLoading = null, versionLoadingDesc = null, versionLoadId = 0;
   function apiUrl(path) { return location.protocol === 'file:' ? 'http://localhost:4177' + path : path; }
   function setVersionStatus(text) { if (versionStatus) versionStatus.textContent = text || ''; }
+  function selectedVersionMeta(version) { return versionMeta[version || selectedVersion] || null; }
+  function versionOptionLabel(item) {
+    var label = item.version;
+    if (item.version === 'v1' && item.status === 'clean') return label + ' · initial snapshot';
+    if (item.status === 'draft') return label + ' · draft · promote required';
+    if (item.status === 'clean') return label + ' · clean snapshot';
+    return label + ' · blocked';
+  }
+  function versionStatusText(version) {
+    var meta = selectedVersionMeta(version);
+    if (!meta) return version ? ('已应用 ' + version) : '未选择版本';
+    if (meta.status === 'draft') {
+      return '已应用 ' + meta.version + ' · draft，需先 promote（' +
+        (meta.classOverrideDeclarations || 0) + ' 处 class override）';
+    }
+    if (meta.releaseable) return '已应用 ' + meta.version + ' · 可发布';
+    return '已应用 ' + meta.version + ' · 不可发布：' + (meta.releaseBlockReason || 'blocked');
+  }
+  function refreshReleaseButton() {
+    if (!versionReleaseBtn) return;
+    var meta = selectedVersionMeta();
+    var disabled = !meta || !meta.releaseable;
+    versionReleaseBtn.disabled = !!disabled;
+    versionReleaseBtn.title = disabled
+      ? ('不能发布：' + (meta && meta.releaseBlockReason || '未选择版本'))
+      : '发布选中的 clean snapshot 到 release';
+  }
+  function syncVersionControl() {
+    if (versionSelect) versionSelect.value = selectedVersion || '';
+  }
   function assetUrl(version, file) {
     return apiUrl('/versions/' + encodeURIComponent(version) + '/' + file) + '?t=' + Date.now();
   }
@@ -670,19 +700,23 @@
   }
   function applyVersion(version, showLoading) {
     var loadId = ++versionLoadId;
-    selectedVersion = version || DEFAULT_VERSION;
+    selectedVersion = version || '';
+    version = selectedVersion;
+    syncVersionControl();
+    refreshReleaseButton();
     clearDraftOverrides();
     if (!version) {
       if (versionTokenLink) versionTokenLink.remove();
+      if (versionPrimitiveLink) versionPrimitiveLink.remove();
       if (versionCompositeLink) versionCompositeLink.remove();
-      versionTokenLink = null; versionCompositeLink = null;
+      versionTokenLink = null; versionPrimitiveLink = null; versionCompositeLink = null;
       setVersionStatus('未选择版本');
       setVersionLoading(false);
       return;
     }
     if (showLoading) {
       setVersionStatus('正在应用 ' + version + '...');
-      setVersionLoading(true, '加载 ' + version + ' 的 tokens 和 composites');
+      setVersionLoading(true, '加载 ' + version + ' 的 tokens、primitives 和 composites');
     }
     if (!versionTokenLink) {
       versionTokenLink = document.createElement('link');
@@ -690,20 +724,34 @@
       versionTokenLink.setAttribute('data-editor', '');
       document.head.appendChild(versionTokenLink);
     }
+    if (!versionPrimitiveLink) {
+      versionPrimitiveLink = document.createElement('link');
+      versionPrimitiveLink.rel = 'stylesheet';
+      versionPrimitiveLink.setAttribute('data-editor', '');
+      document.head.insertBefore(versionPrimitiveLink, versionCompositeLink || null);
+    }
     if (!versionCompositeLink) {
       versionCompositeLink = document.createElement('link');
       versionCompositeLink.rel = 'stylesheet';
       versionCompositeLink.setAttribute('data-editor', '');
       document.head.appendChild(versionCompositeLink);
     }
-    var pending = 2;
+    var meta = selectedVersionMeta(version);
+    var loadPrimitive = !meta || !!meta.hasPrimitiveCss;
+    if (!loadPrimitive && versionPrimitiveLink) {
+      versionPrimitiveLink.remove();
+      versionPrimitiveLink = null;
+    }
+    var pending = loadPrimitive ? 3 : 2;
     function done() {
       pending -= 1;
       if (pending > 0 || loadId !== versionLoadId) return;
       setVersionLoading(false);
-      setVersionStatus('已应用 ' + version);
+      setVersionStatus(versionStatusText(version));
+      refreshReleaseButton();
     }
     waitForStylesheet(versionTokenLink, assetUrl(version, 'tokens.inline.css'), done);
+    if (loadPrimitive) waitForStylesheet(versionPrimitiveLink, assetUrl(version, 'primitives.css'), done);
     waitForStylesheet(versionCompositeLink, assetUrl(version, 'composites.css'), done);
   }
   function loadVersions(preferred) {
@@ -715,19 +763,30 @@
       });
     }).then(function (data) {
       var versions = data.versions || [];
-      var chosen = preferred || selectedVersion || DEFAULT_VERSION;
+      var latest = data.latest || (versions.length ? versions[versions.length - 1].version : '');
+      var chosen = preferred || selectedVersion || latest;
+      versionMeta = {};
       versionSelect.innerHTML = '';
       versions.forEach(function (item) {
+        versionMeta[item.version] = item;
         var opt = document.createElement('option');
         opt.value = item.version;
-        opt.textContent = item.version;
-        if (item.publishedAt) opt.title = item.publishedAt;
+        opt.textContent = versionOptionLabel(item);
+        opt.title = item.releaseable
+          ? 'Can release'
+          : ('Cannot release: ' + (item.releaseBlockReason || 'blocked'));
         versionSelect.appendChild(opt);
       });
-      if (chosen && versions.some(function (item) { return item.version === chosen; })) versionSelect.value = chosen;
-      else if (versions.some(function (item) { return item.version === DEFAULT_VERSION; })) versionSelect.value = DEFAULT_VERSION;
-      else versionSelect.value = versions[0] ? versions[0].version : '';
-      applyVersion(versionSelect.value);
+      if (!versions.length) {
+        var empty = document.createElement('option');
+        empty.value = '';
+        empty.textContent = '无保存版本';
+        versionSelect.appendChild(empty);
+        chosen = '';
+      } else if (!versions.some(function (item) { return item.version === chosen; })) {
+        chosen = latest;
+      }
+      applyVersion(chosen);
     }).catch(function () {
       setVersionStatus('版本服务未连接');
     });
@@ -739,11 +798,11 @@
     var label = document.createElement('span'); label.className = 'se-version__label'; label.setAttribute('data-editor', ''); label.textContent = 'Version';
     versionSelect = document.createElement('select'); versionSelect.setAttribute('data-editor', ''); versionSelect.setAttribute('aria-label', 'Select style version');
     versionSelect.onchange = function () { applyVersion(versionSelect.value, true); };
-    var releaseBtn = mkbtn('发布', releaseCurrentVersion, 'se-btn--primary');
+    versionReleaseBtn = mkbtn('发布', releaseSelectedVersion, 'se-btn--primary');
     versionStatus = document.createElement('span'); versionStatus.className = 'se-version__status'; versionStatus.setAttribute('data-editor', '');
     wrap.appendChild(label);
     wrap.appendChild(versionSelect);
-    wrap.appendChild(releaseBtn);
+    wrap.appendChild(versionReleaseBtn);
     wrap.appendChild(versionStatus);
     var spacer = header.querySelector('.app-frame__spacer');
     if (spacer && spacer.nextSibling) header.insertBefore(wrap, spacer.nextSibling);
@@ -1129,7 +1188,7 @@
     appendSaveStats(body, [
       { label: 'Token', value: String(meta.tokenCount) },
       { label: 'Composite', value: String(meta.styleCount) },
-      { label: '来源版本', value: payload.baseVersion || DEFAULT_VERSION },
+      { label: '来源版本', value: payload.baseVersion || '-' },
     ]);
     if (collected.conflicts.length) {
       body.appendChild(saveNode('div', 'se-save-callout', '有 ' + collected.conflicts.length + ' 个同 class 同属性存在不同取值，保存时会使用最后一次编辑的值。'));
@@ -1145,7 +1204,7 @@
   function renderSaveLoading() {
     saveBusy = true;
     clearSaveModal();
-    appendSaveHero('正在保存', '正在写入 versions，并生成 tokens.inline.css / composites.css。', 'S');
+    appendSaveHero('正在保存', '正在写入 versions，并生成 tokens.inline.css / primitives.css / composites.css。', 'S');
     var body = div('se-save-modal__body');
     var row = div('se-save-empty');
     row.style.display = 'flex';
@@ -1217,13 +1276,17 @@
       renderSaveNoChanges();
       return;
     }
+    if (!selectedVersion) {
+      renderSaveError(new Error('请先选择一个保存版本作为编辑基准。'), saveChanges);
+      return;
+    }
 
     var payload = {
       page: location.pathname.split('/').pop() || 'index.html',
       href: location.href,
       title: document.title || '',
       publishedAt: new Date().toISOString(),
-      baseVersion: versionSelect && versionSelect.value ? versionSelect.value : DEFAULT_VERSION,
+      baseVersion: selectedVersion,
       tokens: tokenStore,
       classOverrides: collected.overrides,
       classOverrideMeta: collected.meta,
@@ -1239,9 +1302,29 @@
   function renderReleaseNoVersion() {
     saveBusy = false;
     clearSaveModal();
-    appendSaveHero('没有可发布的版本', '请先确认 versions/v1 存在，或保存一个新版本后再发布到 release。', 'R');
+    appendSaveHero('没有可发布的版本', '请先保存一个版本后再发布到 release。', 'R');
     var body = div('se-save-modal__body');
     body.appendChild(saveNode('div', 'se-save-empty', 'Version 下拉框里没有可用版本。'));
+    saveModal.appendChild(body);
+    appendSaveFooter([mkbtn('关闭', closeSaveModal, 'se-btn--primary')]);
+    openSaveModal();
+  }
+  function renderReleaseBlocked(version, meta) {
+    saveBusy = false;
+    clearSaveModal();
+    appendSaveHero('不能发布这个版本', version + ' 还不是 clean release snapshot。', '!');
+    var body = div('se-save-modal__body');
+    appendSaveStats(body, [
+      { label: 'Snapshot', value: version || '-' },
+      { label: 'Status', value: meta && meta.status || 'unknown' },
+      { label: 'Class overrides', value: String(meta && meta.classOverrideDeclarations || 0) },
+    ]);
+    var reason = meta && meta.releaseBlockReason || '未选择版本';
+    body.appendChild(saveNode('div', 'se-save-callout',
+      reason === 'promote required'
+        ? '这个版本仍包含 classOverrides。请先运行 pnpm promote -- ' + version + '，把变化提升到 source 并 pnpm build 后，再发布干净版本。'
+        : '阻止原因：' + reason
+    ));
     saveModal.appendChild(body);
     appendSaveFooter([mkbtn('关闭', closeSaveModal, 'se-btn--primary')]);
     openSaveModal();
@@ -1328,10 +1411,15 @@
       renderReleaseError(err, version);
     });
   }
-  function releaseCurrentVersion() {
-    var version = versionSelect && versionSelect.value;
+  function releaseSelectedVersion() {
+    var version = selectedVersion || '';
     if (!version) {
       renderReleaseNoVersion();
+      return;
+    }
+    var meta = selectedVersionMeta(version);
+    if (!meta || !meta.releaseable) {
+      renderReleaseBlocked(version, meta);
       return;
     }
     renderReleaseConfirm(version);

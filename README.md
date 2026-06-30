@@ -23,7 +23,7 @@ it can use.
 
 | Layer | Lives in | What's shared | What stays per-consumer |
 |---|---|---|---|
-| **L1 · Tokens** | `tokens/` (+ emitted `versions/v1` / `release`) | the values | — |
+| **L1 · Tokens** | `tokens/` (+ emitted `build/current` / `release`) | the values | — |
 | **L2 · Primitives** | `primitives/` | contract (`*.md`) + reference CSS | React impl (Next) · bespoke HTML (artifact) |
 | **L2.5 · Composites** | `composites/` | contract (`*.md`) + reference CSS | React impl (Next) · bespoke HTML (artifact) |
 | **L3 · Patterns** | `patterns/` | named archetype structure | the page implementations |
@@ -49,9 +49,15 @@ foundation/
   tokens/            L1 — @theme source (the single source of truth for values)
     palette·surface·typography·elevation·motion·layout·chart·dark.css
     index.css          import-only entry
-  emit/build.mjs     emitter: source → versions/v1 base + release metadata
+  emit/build.mjs     emitter: source → build/current + release metadata
+  build/
+    current/         generated current-source style snapshot for prototype preview
+      tokens.inline.css
+      primitives.css
+      composites.css
+      manifest.json
   versions/
-    v1/              committed base style snapshot shared by the team
+    v1/              first saved prototype snapshot
       tokens.inline.css
       composites.css
       manifest.json
@@ -143,16 +149,19 @@ that's correct.
 ## Sync model
 
 One upstream (this repo). `release/` is committed as the current artifact
-snapshot, and `versions/v1/` is committed as the shared base style snapshot for
-prototype versioning. Token/contract changes are PRs **here**, then `pnpm build`
-refreshes `versions/v1` and release catalog/token metadata. Publishing a saved
-prototype version updates `release/` to that selected snapshot only after editor
-class overrides have been promoted back into source CSS/contracts. Generate the
-Agent handoff brief with `node scripts/promote-version.mjs vN` (or
-`pnpm promote -- vN`), then update source, run `pnpm build`, and publish the
-rebuilt clean snapshot. Saved version manifests record the governed source Git
-commit; release restores `tokens/`, `primitives/`, `composites/`, `patterns/`,
-and `governance/` from that commit before writing `release/`. Manual restore:
+snapshot, and `build/current/` is the generated current-source style snapshot
+for prototype preview. Numbered `versions/vN/` directories are saved prototype
+snapshots; `pnpm build` does not overwrite them. Token/contract changes are PRs
+**here**, then `pnpm build` refreshes `build/current` and release
+catalog/token metadata. Publishing a saved prototype version updates `release/`
+to that selected snapshot only after editor class overrides have been promoted
+back into source CSS/contracts. Generate the Agent handoff brief with
+`node scripts/promote-version.mjs vN` (or `pnpm promote -- vN`), then update
+source and run `pnpm build`. The prototype selector remains focused on saved
+`vN` snapshots; `build/current` is a generated build/release check artifact.
+Saved version manifests record the governed source Git commit; release
+restores `tokens/`, `primitives/`, `composites/`, `patterns/`, and
+`governance/` from that commit before writing `release/`. Manual restore:
 `pnpm restore:source -- vN --build`. Full process: `governance/token-change.md`.
 
 ## Status — first draft

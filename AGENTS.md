@@ -74,8 +74,9 @@ See [`governance/enforcement.md`](governance/enforcement.md) → "visual review 
 Keep tokens / primitives / composites / patterns coherent and versioned. The
 source of truth is `tokens/*.css`, `primitives/primitives.css`,
 `composites/composites.css`, and `patterns/`; `pnpm build` regenerates `release/`
-and `versions/v1/`. **Adding to the closed set is a versioned event, not a local
-edit** — reuse first, then propose.
+and `build/current/`. Numbered `versions/vN/` directories are saved prototype
+snapshots and are not overwritten by build. **Adding to the closed set is a
+versioned event, not a local edit** — reuse first, then propose.
 
 - **The maintenance flow** (reuse-first, the guards, versioning, and how to add a
   token / primitive / composite / pattern, with the file map):
@@ -86,7 +87,7 @@ edit** — reuse first, then propose.
 Guards (run before every PR + in CI):
 
 ```bash
-pnpm build          # regenerate release/ + versions/v1/ from source — never hand-edit generated files
+pnpm build          # regenerate release/ + build/current/ from source — never hand-edit generated files
 pnpm check:all      # = check:release → check:examples --strict → check:patterns
 ```
 
@@ -104,8 +105,8 @@ versions that still contain unpromoted class overrides.
 Saved versions record the governed source Git commit. If an Agent promote edits
 the real source incorrectly, restore the governed source paths with
 `node scripts/restore-version-source.mjs vN --build` (or release that version
-from the prototype dropdown). Do not copy files back from `versions/v1/`;
-`versions/` is a style snapshot, not a complete source backup.
+from the prototype dropdown). Do not copy files back from `versions/`;
+the snapshots are not complete source backups.
 
 ---
 

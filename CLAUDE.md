@@ -9,4 +9,4 @@ Quick map:
 - **What may I use?** → the closed set in [`AGENTS.md`](AGENTS.md); enumerated names in [`release/catalog.md`](release/catalog.md) / [`release/catalog.json`](release/catalog.json).
 - **The design law** → [`governance/principles.md`](governance/principles.md).
 - **How violations are caught** → [`governance/enforcement.md`](governance/enforcement.md) (+ `node scripts/check-artifact.mjs <file>`).
-- **Changing a token/contract** → [`governance/token-change.md`](governance/token-change.md). Edits to values go in `tokens/`, then `pnpm build`; never hand-edit `release/` or `versions/v1/`.
+- **Changing a token/contract** → [`governance/token-change.md`](governance/token-change.md). Edits to values go in `tokens/`, then `pnpm build`; never hand-edit `release/` or `build/current/`.
