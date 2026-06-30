@@ -28,7 +28,15 @@ exactly this band at the top of its anatomy.
 ```
 
 - **Back** — optional icon-only ghost button (`.btn--ghost` at icon size),
-  first in the bar. Returns to the list it was reached from.
+  first in the bar. Returns to the list it was reached from. Its glyph is the
+  **`chevron-left`** icon (per `primitives/icon.md` — Back = `chevron-left`), the
+  same back affordance used across wizards and pagination — **not** `arrow-left`.
+- **Vertical alignment** — the bar's row is **vertically centered**
+  (`align-items: center`): back button, logo, the identity block, and the action
+  cluster all share one vertical center. The back button is **not** nudged to the
+  title's top line — against a 56px logo / two-line identity that would leave it
+  (and the actions) sitting high. Centering keeps them balanced for both one- and
+  two-line identities.
 - **Logo / avatar** — optional 56px square (entity logo) or an `Avatar` /
   `InitialsTile` primitive. Omit for records with no visual identity.
 - **Main** — at most **two lines**: (1) the `title` (one `h1` `name`) with optional

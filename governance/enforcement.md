@@ -71,6 +71,35 @@ The remaining items are an eye/design pass:
       Height scrolls. (Use the full `.app-frame` with chrome only when you want a
       production sidebar + header.) See `.claude/docs/artifact-build-guide.md` §6 "frameless shell 的 sticky 滚动根".
 
+### Optional: visual review pass (opt-in, default OFF)
+
+The eye/design pass above can be performed by an agent against real renders — it
+is `composition.md`'s synthesis gate (rule 5) done by a vision model on
+screenshots, the one mechanism that catches *subjective* composition problems (an
+unbalanced split, a starved column) that no closed-set lint can express.
+
+**Default OFF.** It runs ONLY when the generation instructions carry the directive
+line **`Visual review: on`** — absence, or `Visual review: off`, skips it (the
+canonical form is greppable; natural equivalents like "run a visual review pass"
+are honoured too). It runs AFTER `check-artifact --strict` passes — legality first.
+
+When on:
+
+```bash
+pnpm visual:setup   # once: downloads chromium (Linux may also need: npx playwright install-deps chromium)
+node scripts/visual/render.mjs <artifact.html> <outDir> <base> ["view=#hash" | "view=@selector" ...]
+```
+
+This renders each view light+dark (+ a 64px squint thumbnail); the agent then
+reads each shot and judges it against `composition.md` rules 1–5 — completeness,
+one-world, density, **proportion**, reads-as-delivered — plus light/dark parity
+and declared-state visibility. Output: per-view findings, each tagged with the
+rule it breaks and classified ① page/composition fix vs ② foundation gap.
+
+It is **advisory** — judgement, never a build-failing gate (proportion has no
+fixed ratio; only *starvation* reads as wrong). Fix ① and re-render; raise ② as a
+contract/token change.
+
 ## When the two disagree
 
 If an artifact needs something the app's primitives can't express, that's a

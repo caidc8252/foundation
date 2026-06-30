@@ -57,6 +57,15 @@ body { margin: 0; }
    component's explicit `display`. */
 [hidden] { display: none !important; }
 
+/* Native <button> UA reset. The Next consumer gets this from Tailwind Preflight;
+   a self-contained artifact otherwise inherits UA button chrome — the ~1px block
+   padding nudges fixed-size icon buttons (.filter-chip__remove, .modal__close)
+   off-center, and the native border/background can flash through a bespoke ghost
+   button. Foundation buttons are always class-driven (.btn sets its own padding;
+   icon buttons set their own width/height), so shedding the UA defaults here is
+   safe. `:where()` keeps specificity 0 — any .btn / component padding still wins. */
+:where(button) { padding: 0; border: 0; background: none; }
+
 /* ═══════════════════════════ Screen-reader only ═══════════════════════════ */
 /* A11y utility (no contract / no @component — a behaviour helper like the baseline
    resets, not a design component). Hides an element VISUALLY while keeping it in

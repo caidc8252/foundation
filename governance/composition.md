@@ -44,8 +44,28 @@ counts / timestamps / codes that signal a live system. Never "Lorem", never
 - HOLD: realism + volume.
 - VARY: the domain and the actual values.
 
-## 4. Reads as delivered, not scaffolded — the synthesis gate
+## 4. Proportion serves the content
+Each region is sized to **what it holds**: a column is wide enough that its
+*primary* content — the name, label, or value the user scans — fits at rest
+without truncating, and no region is starved so narrow it clips while a sibling
+carries slack. In a split layout (master/detail, list + rail), the column
+holding the thing the user scans is never the cramped one.
+
+- HOLD: every region fits its primary content at rest; no column starves while a
+  neighbour has slack; in a split, the primary-scan column reads comfortably.
+- VARY: the widths and the ratio — a wide master, a narrow rail, a 50/50 split.
+  There is **no fixed ratio**; it follows the content. Prefer `minmax()` /
+  `clamp()` bounds over a hard fixed width so it flexes sanely.
+- Proportion signal: a *secondary* line clamped to one line on purpose (the full
+  value lives on the detail side) is fine; a *primary identifier* truncating at
+  rest (a name cut to `Platform Adm…`) is **starvation** — widen the column or
+  lighten the row. Squint at a 64px thumbnail: if one column reads as a starved
+  strip, recompose before shipping.
+
+## 5. Reads as delivered, not scaffolded — the synthesis gate
 Before you ship, read each screen and answer: *would I show this to a
 stakeholder as a finished screen?* If a screen reads as empty, thin, or
-placeholder, it fails — recompose it (rules 1–3) before shipping. This is a
-generation-time self-check, not a tool.
+placeholder, it fails — recompose it (rules 1–4) before shipping. This is a
+generation-time self-check, not a pass/fail tool; optionally an agent performs it
+against real renders (opt-in `Visual review: on` — see
+[`enforcement.md`](enforcement.md)).

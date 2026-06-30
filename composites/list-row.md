@@ -27,7 +27,10 @@ A non-tabular interactive list row — a leading visual, a title line that can c
   `.avatar`. Omit it for a text-only row; the column collapses.
 - **Main** — a **title** (`text-sm`, weight 600) that may hold inline `.badge`s /
   status chips, over an optional **sub** line (`text-xs`, `content-secondary`) —
-  a description, a handle, a secondary metadata line.
+  a description, a handle, a secondary metadata line. The title's text goes in a
+  `__name` span that **truncates** (the badges stay inline, never wrap), and the
+  sub is a single truncating line — so a list of rows reads at one **uniform
+  height** instead of some rows wrapping taller than others.
 - **Trailing** *(optional)* — the right cluster: a control (`.switch` for a
   preference, a `.btn` cluster for actions), a `__value` (a read-only setting's
   current value), and/or a `__chevron` when the row navigates.
@@ -38,6 +41,14 @@ A non-tabular interactive list row — a leading visual, a title line that can c
   `section-card`'s flush content, or a `card`), rows divide with a `line-subtle`
   rule, the last row drops it. Don't box each row. (Same framing rule as
   `feed-list`.)
+- **Rows share a uniform height** — the title is one line (the `__name` truncates;
+  inline badges never wrap below it) and the sub is one line (truncates). Don't let
+  a long name/description wrap a single row taller than its neighbours; the full
+  value lives on the detail side, not in the master row.
+- **A single-select list shows its selection** — when the list is a master/detail
+  picker (pick one row → a panel/page shows its detail, like the roles list), the
+  active row carries `--selected` (tint + 2px primary left bar). It is the row's
+  *persisted* state, distinct from transient hover, and stays visible while hovered.
 - **Pick ONE primary trailing affordance per row** — a switch *or* an action
   button *or* a value+chevron. A row that both toggles and navigates is
   ambiguous; split it.
@@ -57,8 +68,10 @@ A non-tabular interactive list row — a leading visual, a title line that can c
 - **interactive hover / active** — `surface-hover`, then `surface-active` on
   press; only on `--interactive` rows.
 - **focus-visible** (interactive) — `shadow-focus` ring on the row.
-- **selected** — `--selected` tints the row `state-selected` (the open item in a
-  master/detail list).
+- **selected** — `--selected` tints the row `state-selected` **and** draws a 2px
+  primary left bar (`--shadow-row-selected`, the same recipe as a selected
+  `data-table` row) — the open item in a single-select master/detail list. It
+  outranks hover so the selection never disappears when the row is hovered.
 - **disabled** — `--disabled` dims the row to 0.5 and drops pointer events (a
   setting that isn't available yet).
 - **empty** — render an `empty-state` in place of rows, never a blank frame.
@@ -72,7 +85,8 @@ A non-tabular interactive list row — a leading visual, a title line that can c
   members screens. See the `ui` skill.
 - **Artifact** — `.list-rows` wraps `.list-row` (grid). Leading is
   `.list-row__icon` (or a `.avatar`); main is `.list-row__main` (`.list-row__title`
-  holding inline `.badge`s + `.list-row__sub`); trailing is `.list-row__trailing`
+  holding a `.list-row__name` truncating text + inline `.badge`s, over
+  `.list-row__sub`); trailing is `.list-row__trailing`
   holding a `.switch` / `.btn`, a `.list-row__value`, a `.list-row__actions`
   cluster, and/or a `.list-row__chevron`. A whole-row click target adds
   `.list-row--interactive`; persisted selection adds `.list-row--selected`;

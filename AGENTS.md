@@ -62,6 +62,11 @@ node scripts/check-artifact.mjs --strict artifacts/customers.html
 Start by mapping the request through [`patterns/router.json`](patterns/router.json)
 (intent → route → `builderPattern` + the composites it uses).
 
+Optional — a **visual quality pass** (default OFF): if the input prompt carries
+`Visual review: on`, then *after* the strict check passes, render each view and
+self-critique it against [`governance/composition.md`](governance/composition.md).
+See [`governance/enforcement.md`](governance/enforcement.md) → "visual review pass".
+
 ---
 
 ## ② Maintain the four-layer structure

@@ -13,7 +13,8 @@ The "quick bar + applied chips" filtering apparatus of a list page. One family
 |---|---|
 | **condition-band** | the shell: a toolbar row stacked over the applied-filter row |
 | **search-input** | quick-bar text search: a `.search-input` wrapping a `.search-input__icon` (leading magnifier — **wrap the `<svg>`, never drop it bare into `.search-input`**) + the `.input` field. Fixed max width, Enter triggers |
-| **filter-chip** | one active, removable filter (label + ✕) |
+| **search button** | `btn--secondary` that commits the draft. Carries a **leading magnifier** (`data-lucide="search"`) — the SAME glyph as the search-input icon, **never a funnel**. The funnel (`data-lucide="funnel"`) belongs to the **Advanced** trigger only; reusing it here makes "submit search" read as "open advanced filters" |
+| **filter-chip** | one active, removable filter: label + a `.filter-chip__remove` ghost button whose glyph is the **Cancel** icon `data-lucide="x"` (per `primitives/icon.md` — removing a chip = cancel that filter). Not `trash-2`/`ban`/`circle-x` |
 | **applied-filters** | the row of chips + a "clear all"; renders nothing when empty |
 
 (Advanced/secondary filters open a sheet from a trigger pushed to the toolbar's
@@ -23,7 +24,7 @@ right edge — `condition-band__spacer`.)
 
 ```
 ┌ condition-band ──────────────────────────────────────────────┐
-│ [🔍 search        ]  [ quick filter ▾ ]  [ Search ]  Advanced ▸│  toolbar
+│ [🔍 search        ]  [ quick filter ▾ ]  [🔍 Search]  ▽ Advanced│  toolbar
 │ Filters:  ⊗ Status: Active   ⊗ Region: APAC  clear all        │  applied (or absent)
 └───────────────────────────────────────────────────────────────┘
 ```
