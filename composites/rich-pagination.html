@@ -14,7 +14,6 @@
   Covers:
     - Full bar: rows-per-page selector + "Showing X–Y of Z" range summary
       on the left, SIMPLE pagination nav on the right
-    - Bar without rows-per-page (fixed page size) — only summary + nav
     - Rows-per-page is a native <select class="select select--sm">
     - Range summary uses tabular-nums; matching @cloud/ui, ONLY the total is
       bolded content-primary — "Showing", the from–to range, and "of" stay
@@ -89,7 +88,6 @@
        layout; we just need a separator so the contents are visible. */
     .rich-pagination {
       border-top: 1px solid var(--color-line-default);
-      padding-block: var(--space-3);
     }
   </style>
 </head>
@@ -101,8 +99,9 @@
       <h2 class="demo-section__title">Rich pagination · full bar (rows-per-page + summary + nav)</h2>
       <p class="demo-section__desc">
         The complete list/table footer: rows-per-page selector + range summary
-        on the left, simple pagination on the right. The selector is optional
-        (see next example). The summary uses tabular-nums so figures don't
+        on the left, simple pagination on the right. The rows-per-page selector
+        is optional (omit it for fixed-page-size lists). The summary uses
+        tabular-nums so figures don't
         reflow on update. <strong>Always uses SIMPLE nav</strong> (no numbered
         page buttons) — this is the only allowed pagination in a table/list footer.
       </p>
@@ -117,14 +116,13 @@
           <div class="rich-pagination__left">
             <!-- Rows-per-page selector -->
             <div class="rich-pagination__rows">
-              <label for="rpp-full" class="sr-only">Rows per page</label>
-              <select id="rpp-full" class="select select--sm">
+              Rows
+              <select id="rpp-full" class="select select--sm" aria-label="Rows per page">
                 <option value="10">10</option>
                 <option value="25" selected>25</option>
                 <option value="50">50</option>
                 <option value="100">100</option>
               </select>
-              <span>rows</span>
             </div>
             <!-- Range summary -->
             <span class="rich-pagination__summary">
@@ -133,8 +131,7 @@
           </div>
 
           <!-- Simple pagination nav (right slot) -->
-          <nav class="pagination" aria-label="Pagination" style="padding-inline:0;padding-block:0">
-            <div class="pagination__pages">
+          <nav class="pagination" aria-label="Pagination">
               <button class="pagination__page" disabled aria-label="Previous page">
                 <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
                 
@@ -144,7 +141,6 @@
                 
                 <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
               </button>
-            </div>
           </nav>
         </div>
       </div>
@@ -166,22 +162,20 @@
         <div class="rich-pagination">
           <div class="rich-pagination__left">
             <div class="rich-pagination__rows">
-              <label for="rpp-mid" class="sr-only">Rows per page</label>
-              <select id="rpp-mid" class="select select--sm">
+              Rows
+              <select id="rpp-mid" class="select select--sm" aria-label="Rows per page">
                 <option value="10" selected>10</option>
                 <option value="25">25</option>
                 <option value="50">50</option>
                 <option value="100">100</option>
               </select>
-              <span>rows</span>
             </div>
             <span class="rich-pagination__summary">
               Showing 21&ndash;30 of <strong>1,248</strong>
             </span>
           </div>
 
-          <nav class="pagination" aria-label="Pagination" style="padding-inline:0;padding-block:0">
-            <div class="pagination__pages">
+          <nav class="pagination" aria-label="Pagination">
               <button class="pagination__page" aria-label="Previous page">
                 <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
                 
@@ -191,7 +185,6 @@
                 
                 <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
               </button>
-            </div>
           </nav>
         </div>
       </div>
@@ -213,22 +206,20 @@
         <div class="rich-pagination">
           <div class="rich-pagination__left">
             <div class="rich-pagination__rows">
-              <label for="rpp-last" class="sr-only">Rows per page</label>
-              <select id="rpp-last" class="select select--sm">
+              Rows
+              <select id="rpp-last" class="select select--sm" aria-label="Rows per page">
                 <option value="10">10</option>
                 <option value="25" selected>25</option>
                 <option value="50">50</option>
                 <option value="100">100</option>
               </select>
-              <span>rows</span>
             </div>
             <span class="rich-pagination__summary">
               Showing 1,226&ndash;1,248 of <strong>1,248</strong>
             </span>
           </div>
 
-          <nav class="pagination" aria-label="Pagination" style="padding-inline:0;padding-block:0">
-            <div class="pagination__pages">
+          <nav class="pagination" aria-label="Pagination">
               <button class="pagination__page" aria-label="Previous page">
                 <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
                 
@@ -238,45 +229,6 @@
                 
                 <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
               </button>
-            </div>
-          </nav>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── Section: Rich pagination without rows-per-page ── -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">Rich pagination · no rows-per-page selector (fixed page size)</h2>
-      <p class="demo-section__desc">
-        When the list has a fixed page size, omit the rows-per-page selector.
-        The bar shows only the range summary + navigation. This is the minimal
-        rich-pagination.
-      </p>
-
-      <div class="demo-card">
-        <div class="demo-card__body">
-          <em>Fixed-page-size table content would appear here</em>
-        </div>
-
-        <div class="rich-pagination">
-          <div class="rich-pagination__left">
-            <span class="rich-pagination__summary">
-              Showing 1&ndash;20 of <strong>640</strong>
-            </span>
-          </div>
-
-          <nav class="pagination" aria-label="Pagination" style="padding-inline:0;padding-block:0">
-            <div class="pagination__pages">
-              <button class="pagination__page" disabled aria-label="Previous page">
-                <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-                
-              </button>
-              <span class="pagination__current" aria-current="page">1</span>
-              <button class="pagination__page" aria-label="Next page">
-                
-                <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-              </button>
-            </div>
           </nav>
         </div>
       </div>
@@ -297,24 +249,22 @@
           <em>Table with 1,248 results (not rendered — see data-table.html)</em>
         </div>
         <!-- rich-pagination embedded flush inside the frame -->
-        <div class="rich-pagination" style="padding-block:var(--space-3)">
+        <div class="rich-pagination">
           <div class="rich-pagination__left">
             <div class="rich-pagination__rows">
-              <label for="rpp-flush" class="sr-only">Rows per page</label>
-              <select id="rpp-flush" class="select select--sm">
+              Rows
+              <select id="rpp-flush" class="select select--sm" aria-label="Rows per page">
                 <option value="10">10</option>
                 <option value="25" selected>25</option>
                 <option value="50">50</option>
                 <option value="100">100</option>
               </select>
-              <span>rows</span>
             </div>
             <span class="rich-pagination__summary">
               Showing 1&ndash;25 of <strong>1,248</strong>
             </span>
           </div>
-          <nav class="pagination" aria-label="Pagination" style="padding-inline:0;padding-block:0">
-            <div class="pagination__pages">
+          <nav class="pagination" aria-label="Pagination">
               <button class="pagination__page" disabled aria-label="Previous page">
                 <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
                 
@@ -324,7 +274,6 @@
                 
                 <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
               </button>
-            </div>
           </nav>
         </div>
       </div>

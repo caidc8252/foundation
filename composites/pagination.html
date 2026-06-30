@@ -19,8 +19,7 @@
     - Disabled states: prev/next disabled at page boundaries (opacity-50,
       cursor-not-allowed) — they stay visible so nothing reflows.
     - Current page display: non-interactive, weight 500, tabular-nums
-    - Pagination__info: rows-per-page select + range summary (RichPagination
-      left group elements)
+      (the rows-per-page select + range summary live in rich-pagination, the footer)
     - Ellipsis collapse: first/last/current ± neighbors, ellipsis for gaps
     - aria-current="page" marker on the active numbered button
   ──────────────────────────────────────────────────────────────────────
@@ -110,8 +109,6 @@
           <em>Table content would appear here</em>
         </div>
         <nav class="pagination" aria-label="Pagination">
-          <div><!-- empty left slot --></div>
-          <div class="pagination__pages">
             <button class="pagination__page" disabled aria-label="Previous page">
               <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
             </button>
@@ -119,7 +116,6 @@
             <button class="pagination__page" aria-label="Next page">
               <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
             </button>
-          </div>
         </nav>
       </div>
     </div>
@@ -137,8 +133,6 @@
           <em>Table content would appear here</em>
         </div>
         <nav class="pagination" aria-label="Pagination">
-          <div><!-- empty left slot --></div>
-          <div class="pagination__pages">
             <button class="pagination__page" aria-label="Previous page">
               <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
             </button>
@@ -146,7 +140,6 @@
             <button class="pagination__page" aria-label="Next page">
               <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
             </button>
-          </div>
         </nav>
       </div>
     </div>
@@ -165,8 +158,6 @@
           <em>Table content would appear here</em>
         </div>
         <nav class="pagination" aria-label="Pagination">
-          <div><!-- empty left slot --></div>
-          <div class="pagination__pages">
             <button class="pagination__page" aria-label="Previous page">
               <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
             </button>
@@ -174,51 +165,6 @@
             <button class="pagination__page" disabled aria-label="Next page">
               <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
             </button>
-          </div>
-        </nav>
-      </div>
-    </div>
-
-    <!-- ── Section: Simple pagination with rows-per-page + summary ── -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">SIMPLE pagination · with rows-per-page select + range summary</h2>
-      <p class="demo-section__desc">
-        The rich list-footer layout: rows-per-page select + "Showing X–Y of Z"
-        range summary on the left, simple nav on the right. The summary uses
-        tabular-nums so figures don't reflow; matching @cloud/ui, <strong>only the
-        total</strong> is bolded content-primary — "Showing", the from–to range,
-        and "of" stay content-secondary.
-      </p>
-
-      <div class="demo-card">
-        <div class="demo-card__body">
-          <em>Table content would appear here</em>
-        </div>
-        <nav class="pagination" aria-label="Pagination footer">
-          <div class="pagination__info">
-            <div class="pagination__rows">
-              <label for="rows-per-page-1" class="sr-only">Rows per page</label>
-              <select id="rows-per-page-1" class="select select--sm">
-                <option value="10">10</option>
-                <option value="25" selected>25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-              </select>
-              <span>rows</span>
-            </div>
-            <span class="pagination__summary">
-              Showing 1&ndash;25 of <strong>1,248</strong>
-            </span>
-          </div>
-          <div class="pagination__pages">
-            <button class="pagination__page" disabled aria-label="Previous page">
-              <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-            </button>
-            <span class="pagination__current" aria-current="page">1</span>
-            <button class="pagination__page" aria-label="Next page">
-              <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-            </button>
-          </div>
         </nav>
       </div>
     </div>
@@ -239,7 +185,6 @@
           <em>Non-table content (e.g. search results) would appear here</em>
         </div>
         <nav class="pagination" aria-label="Pagination">
-          <div class="pagination__pages">
             <button class="pagination__page" disabled aria-label="Previous page">
               <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
             </button>
@@ -253,7 +198,6 @@
             <button class="pagination__page" aria-label="Next page">
               <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
             </button>
-          </div>
         </nav>
       </div>
     </div>
@@ -272,7 +216,6 @@
           <em>Non-table content would appear here</em>
         </div>
         <nav class="pagination" aria-label="Pagination">
-          <div class="pagination__pages">
             <button class="pagination__page" aria-label="Previous page">
               <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
             </button>
@@ -288,7 +231,6 @@
             <button class="pagination__page" aria-label="Next page">
               <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
             </button>
-          </div>
         </nav>
       </div>
     </div>
@@ -306,7 +248,6 @@
           <em>Non-table content would appear here</em>
         </div>
         <nav class="pagination" aria-label="Pagination with first/last">
-          <div class="pagination__pages">
             <button class="pagination__page" disabled aria-label="First page">
               <svg data-lucide="chevrons-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m11 17-5-5 5-5"/><path d="m18 17-5-5 5-5"/></svg>
             </button>
@@ -324,7 +265,6 @@
             <button class="pagination__page" aria-label="Last page">
               <svg data-lucide="chevrons-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 17 5-5-5-5"/><path d="m13 17 5-5-5-5"/></svg>
             </button>
-          </div>
         </nav>
       </div>
     </div>

@@ -447,23 +447,15 @@
 
 /* ═══════════════════════════ Pagination ═══════════════════════════ */
 /* @component pagination */
-/* Tables/lists use the SIMPLE nav: prev + current-page DISPLAY (.pagination__current,
-   not a jump target) + next. The RICH list-footer (RichPagination) puts an optional
-   rows-per-page select + range summary in .pagination__info on the LEFT and the simple
-   nav on the RIGHT. The numbered variant (page buttons + .pagination__ellipsis) is for
-   NON-table contexts only — never a list footer. */
+/* The NAVIGATION cluster only (a <nav>) — mirrors @cloud/ui <Pagination>. The full
+   table footer (rows-per-page + range summary + this nav) is `rich-pagination`,
+   which COMPOSES this; never build a footer out of .pagination alone.
+   Tables/lists use the SIMPLE nav: prev + current-page DISPLAY (.pagination__current,
+   not a jump target) + next. The numbered variant (page buttons + .pagination__ellipsis)
+   is for NON-table contexts only — never a list footer. */
 
 .pagination {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-  padding-inline: var(--space-4);
-  padding-block: var(--space-3);
-}
-.pagination__pages {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: var(--space-1);
 }
@@ -520,31 +512,8 @@
   font-variant-numeric: tabular-nums;
   user-select: none;
 }
-.pagination__rows {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-size: var(--text-md);
-  color: var(--color-content-secondary);
-}
-
-/* Rich list-footer left group: rows-per-page select + range summary. */
-.pagination__info {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  font-size: var(--text-xs);
-  color: var(--color-content-secondary);
-}
-/* "Showing 1–25 of 1,248" — tabular so figures don't reflow. Mirrors @cloud/ui
-   `ui.pagination.showing` = "Showing {from}–{to} of <b>{total}</b>": ONLY the total
-   is bolded (content-primary); "Showing", the from–to range, and "of" stay
-   content-secondary. Wrap only <strong>{total}</strong> — not from/to. */
-.pagination__summary { font-variant-numeric: tabular-nums; }
-.pagination__summary strong {
-  font-weight: 600;
-  color: var(--color-content-primary);
-}
+/* (rows-per-page select + range summary live in `rich-pagination`, the footer that
+   composes this nav — see the rich-pagination @component below.) */
 
 /* ═══════════════════════════ Empty state ═══════════════════════════ */
 /* @component empty-state */
@@ -2120,10 +2089,12 @@
 
 .rich-pagination {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-4);
-  padding-inline: var(--space-2);
+  gap: var(--space-3);
+  padding-inline: var(--space-4);
+  padding-block: var(--space-3);
 }
 
 /* Left cluster: rows-per-page selector + range summary */

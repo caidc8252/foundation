@@ -63,19 +63,15 @@ whole range instead of just the total) is a cross-screen consistency bug.
   fallback shows `Page {page} of {total}` — a separate narrow-mode control, not this
   display.)
 
-## Rich variant — the list footer (`RichPagination`)
+## The list footer is a separate composite (`rich-pagination`)
 
-The list pattern's footer: range info on the left, simple nav on the right.
-
-- **Left** — an optional rows-per-page `select` + a **range summary**
-  ("Showing 1–25 of 1,248"): tabular figures, with **only the total** `content-primary`
-  (bolded) and `Showing` / the range / `of` `content-secondary` (pinned string — see
-  *Caption strings* above). Omit the select for fixed-page-size lists; the summary
-  stays — it's what carries the total.
-- **Right** — the **simple** `‹ Prev · current page · Next ›` nav.
-
-Sits at the foot of the list card, inside the `--flush` table frame, directly
-below the table.
+This `pagination` is the **nav only**. The full list/table footer — an optional
+rows-per-page `select` + the **range summary** ("Showing 1–25 of 1,248") on the
+left, this simple nav on the right — is the **`rich-pagination`** composite, which
+*composes* this one (mirrors `@cloud/ui` `RichPagination` wrapping `Pagination`).
+See `rich-pagination.md`. It sits at the foot of the list card, inside the
+`--flush` table frame, directly below the table. The range-summary string is
+pinned above (*Caption strings*) and reused verbatim by `rich-pagination`.
 
 ## Implementations
 
@@ -87,9 +83,10 @@ below the table.
   right. Callers pass only `page`/`pageCount`/`total`/`pageSize`. `ui` skill →
   data-display. The summary string is the pinned **`Showing X–Y of Z`** (see
   *Caption strings* above).
-- **Artifact** — simple nav = `.pagination__pages` › prev `.pagination__page`
-  + `.pagination__current` (the page number) + next `.pagination__page`. The
-  rich footer = `.pagination` › `.pagination__info` (rows `.select--sm` +
-  `.pagination__summary`) on the left + that simple nav on the right. The
-  numbered variant (non-table) adds `[aria-current="page"]` page buttons +
-  `.pagination__ellipsis`. In `composites.css`.
+- **Artifact** — the nav is a `<nav class="pagination">` holding the buttons
+  directly: simple nav = prev `.pagination__page` + `.pagination__current` (the
+  page-number display) + next `.pagination__page`. The numbered variant (non-table)
+  holds `[aria-current="page"]` page buttons + `.pagination__ellipsis`. The full
+  list footer (rows-per-page + range summary + this nav) is the separate
+  **`rich-pagination`** composite, which composes this — see `rich-pagination.md`.
+  In `composites.css`.

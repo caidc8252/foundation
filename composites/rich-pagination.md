@@ -26,10 +26,10 @@ No size prop — height follows the inner controls (`spacing-control-md`, 36px).
 └────────────────────────────────────────────────────────────────────────────┘
 ```
 
-- **`.rich-pagination`** — flex row, `justify-content: space-between`, `align-items: center`, `gap: space-4`, `padding-inline: space-2`.
+- **`.rich-pagination`** — flex row (wraps), `justify-content: space-between`, `align-items: center`, `gap: space-3`, `padding-inline: space-4`, `padding-block: space-3`.
 - **`.rich-pagination__left`** — left cluster; flex row, `gap: space-3`.
   - **`.rich-pagination__rows`** — rows-per-page row: label text + `.select` control; flex row, `gap: space-2`, `text-md`, `content-secondary`.
-  - **`.rich-pagination__summary`** — the pinned range string **`Showing X–Y of Z`** (copy verbatim — see *Caption string* below); `text-md`, `content-secondary`, `white-space: nowrap`.
+  - **`.rich-pagination__summary`** — the pinned range string **`Showing X–Y of Z`** (copy verbatim — see *Caption string* below); `text-xs`, `content-secondary`, `white-space: nowrap`.
 - Right slot — `.pagination` (from `composites/composites.css`); composed, not a child class.
 
 ## Caption string (pinned — copy verbatim, do not paraphrase)

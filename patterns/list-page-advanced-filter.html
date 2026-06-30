@@ -378,17 +378,17 @@
             </table>
           </div>
 
-          <div class="pagination">
-            <div class="pagination__info">
-              <div class="pagination__rows">
+          <div class="rich-pagination">
+            <div class="rich-pagination__left">
+              <div class="rich-pagination__rows">
                 Rows
                 <select class="select select--sm" aria-label="Rows per page">
                   <option>10</option><option selected>25</option><option>50</option><option>100</option>
                 </select>
               </div>
-              <span class="pagination__summary">Showing 1–25 of <strong>1,248</strong></span>
+              <span class="rich-pagination__summary">Showing 1–25 of <strong>1,248</strong></span>
             </div>
-            <div class="pagination__pages">
+            <nav class="pagination" aria-label="Pagination">
               <button class="pagination__page" type="button" disabled>
                 <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                 Prev
@@ -398,7 +398,7 @@
                 Next
                 <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
               </button>
-            </div>
+            </nav>
           </div>
           <!-- ┄┄┄ SWAP: NO-RESULTS-FOR-FILTERS — replace .table-scroll + .pagination with this. ┄┄┄
           <div class="empty-state">

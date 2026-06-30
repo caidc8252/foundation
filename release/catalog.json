@@ -635,11 +635,7 @@
     "pagination",
     "pagination__current",
     "pagination__ellipsis",
-    "pagination__info",
     "pagination__page",
-    "pagination__pages",
-    "pagination__rows",
-    "pagination__summary",
     "popover",
     "popover__description",
     "popover__header",
@@ -2109,11 +2105,7 @@
         ".pagination",
         ".pagination__current",
         ".pagination__ellipsis",
-        ".pagination__info",
-        ".pagination__page",
-        ".pagination__pages",
-        ".pagination__rows",
-        ".pagination__summary"
+        ".pagination__page"
       ]
     },
     {
