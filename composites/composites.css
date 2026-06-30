@@ -633,6 +633,13 @@
   background-color: var(--color-surface-1);
 }
 .app-frame--collapsed { --app-frame-sidebar: var(--app-frame-sidebar-collapsed); }
+/* Frameless form: .app-frame collapses into ONE chrome-less column — no sidebar, no
+   header, no .app-frame__col. "frameless" means exactly this (chrome removed). A direct
+   `main.app-frame__main` child is the scroll root: the height:100vh + overflow:hidden on
+   .app-frame still bound it, so --sticky-head / summary-bar--sticky / page-header--sticky
+   behave exactly as in the full shell — __main is unchanged, it just no longer needs the
+   .app-frame__col level. Structure: `.app-frame.app-frame--frameless > main.app-frame__main`. */
+.app-frame--frameless { flex-direction: column; }
 
 .app-frame__sidebar {
   flex: 0 0 var(--app-frame-sidebar);

@@ -109,9 +109,11 @@ artifact 渲染出的一切只能来自这 **4 层闭合集 + 图标**，没有�
   | `--no-check` | 跳过自动 strict 校验（默认会跑） |
 - **`build-artifact.mjs` 实际做了什么**（已读源码核对）：
   1. 读 `patterns/<builderPattern>.html`，**抽出 `<main class="app-frame__main">` 内的页面内容**；
-  2. 把它重新包进 **frameless shell**：复用生产 app-frame 的骨架 `.app-frame > .app-frame__col > main.app-frame__main`，
-     但**去掉 header 与 sidebar 这层 chrome**（"frameless" 即指此 —— 一个无侧栏无顶栏、内容铺满视口的独立功能页）。
-     `main.app-frame__main` 是真正的滚动根（`overflow-y:auto`），所以页面滚动与 sticky 行为和生产一致；
+  2. 把它重新包进 **frameless 形态**：`.app-frame.app-frame--frameless > main.app-frame__main`
+     —— app-frame 收成单列、**去掉 sidebar / header 这层 chrome，连 `.app-frame__col` 一并省去**
+     （"frameless" 即指此 —— 一个无侧栏无顶栏、内容铺满视口的独立功能页）。
+     `app-frame__main` 类与角色**不变**：`.app-frame--frameless` 上的 `height:100vh + overflow:hidden`
+     仍把它兜成真正的滚动根（`overflow-y:auto`），所以页面滚动与 sticky 行为和生产一致；
   3. 按顺序内联 5 段 CSS 进一个 `<style>`：① 内嵌 Geist 字体层 → ② `release/tokens.inline.css` → ③ `primitives/primitives.css` → ④ `composites/composites.css` → ⑤ 页面样板（`html`/`body` 背景 + `[hidden]{display:none!important}` 守卫 + 样例自带的页面局部 `<style>`）。**primitives 必须在 composites 之前**（composites 复用 `.btn`/`.input`）；
   4. 顶部盖 `<!-- foundation: vX -->` 版本戳；
   5. 除非 `--no-check`，**自动跑 `check-artifact.mjs --strict`** 对产物兜底。
@@ -276,8 +278,10 @@ node scripts/check-artifact.mjs --strict artifacts/customers.html
 
 ## 6. frameless shell 的 sticky 滚动根（仅手搭 shell 时相关）
 
-`build-artifact.mjs` 把页面重包进 frameless shell（生产 app-frame 骨架，去掉 header/sidebar chrome）：
-`.app-frame > .app-frame__col > main.app-frame__main`，`main` 即真正的滚动根。
+`build-artifact.mjs` 把页面重包进 frameless 形态（去掉 header/sidebar chrome，并省去 `.app-frame__col`）：
+`.app-frame.app-frame--frameless > main.app-frame__main`，`main` 即真正的滚动根。
+`--frameless` 让 `.app-frame` 自己当那一列（`flex-direction:column`），`app-frame__main` 不变；
+要带门户 chrome（侧栏+顶栏）才用完整 `.app-frame`（见 `composites/app-frame.md` 的 Frameless form）。
 而 `[hidden]{display:none!important}` 已下沉到 `primitives.css` 基线，**任何内联三层 CSS 的产物都自带**
 （不再是 builder 注入的页面局部 reset），所以「`[hidden]` 盖不住 `.card{display:flex}`」这一类问题已从源头消除，无需关心。
 

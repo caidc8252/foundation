@@ -4,8 +4,9 @@
 
    Builds a shipped, self-contained HTML artifact from a copyable pattern
    example. Pattern examples use the production app-frame shell; this builder
-   ports the page inside .app-frame__main, re-wraps it in the same
-   .app-frame > .app-frame__col > main.app-frame__main structure, inlines the
+   ports the page inside .app-frame__main and re-wraps it FRAMELESS — a single
+   .app-frame.app-frame--frameless column (chrome removed: no sidebar, no header,
+   no .app-frame__col) with main.app-frame__main as the scroll root — inlines the
    three foundation CSS layers, then runs the strict artifact checker.
 
    Usage:
@@ -166,12 +167,10 @@ ${artifactCss}
   </style>
 </head>
 <body>
-  <div class="app-frame">
-    <div class="app-frame__col">
-      <main class="app-frame__main">
-${pageHtml.split("\n").map((line) => `        ${line}`).join("\n")}
-      </main>
-    </div>
+  <div class="app-frame app-frame--frameless">
+    <main class="app-frame__main">
+${pageHtml.split("\n").map((line) => `      ${line}`).join("\n")}
+    </main>
   </div>
 </body>
 </html>
