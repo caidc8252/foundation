@@ -1167,8 +1167,12 @@
       { label: 'Version', value: data.version || '-' },
       { label: 'Token', value: String((data.changes && data.changes.tokens || []).length) },
       { label: 'Composite', value: String((data.changes && data.changes.composites || []).length) },
+      { label: 'Source', value: data.sourceDirty ? 'dirty' : (data.sourceCommit ? data.sourceCommit.slice(0, 12) : 'not recorded') },
     ]);
     body.appendChild(saveNode('div', 'se-save-callout', '目录: ' + data.relativeDir));
+    if (data.sourceDirty) {
+      body.appendChild(saveNode('div', 'se-save-callout', '保存时受管 source 有未提交改动；这个 version 不能精确自动恢复 source。'));
+    }
     appendSaveRows(body, '修改明细', '旧值 -> 新值', rowsFromSavedChanges(data.changes), 'saved');
     saveModal.appendChild(body);
     appendSaveFooter([mkbtn('完成', closeSaveModal, 'se-btn--primary')]);
@@ -1245,14 +1249,14 @@
   function renderReleaseConfirm(version) {
     saveBusy = false;
     clearSaveModal();
-    appendSaveHero('发布版本到 release', '发布会把当前选中的版本打包成 release 产物，release 目录只保留一份最新内容。', 'R');
+    appendSaveHero('发布版本到 release', '发布会先恢复该版本记录的受管 source，再打包成 release 产物。', 'R');
     var body = div('se-save-modal__body');
     appendSaveStats(body, [
       { label: 'Version', value: version },
       { label: 'Target', value: 'release' },
       { label: 'Mode', value: '覆盖' },
     ]);
-    body.appendChild(saveNode('div', 'se-save-callout', 'release 目录会被清空并写入当前版本的 catalog、tokens、composites 和 manifest。'));
+    body.appendChild(saveNode('div', 'se-save-callout', '会从版本 manifest 记录的 Git commit 恢复 tokens / primitives / composites / patterns / governance，然后清空并写入 release 目录。'));
     appendSaveRows(body, '发布产物', '目标路径', releaseFileRows(), 'preview');
     saveModal.appendChild(body);
     appendSaveFooter([
@@ -1264,7 +1268,7 @@
   function renderReleaseLoading(version) {
     saveBusy = true;
     clearSaveModal();
-    appendSaveHero('正在发布', '正在用 ' + version + ' 覆盖 release 目录。', 'R');
+    appendSaveHero('正在发布', '正在恢复 ' + version + ' 的受管 source 并覆盖 release 目录。', 'R');
     var body = div('se-save-modal__body');
     var row = div('se-save-empty');
     row.style.display = 'flex';
@@ -1286,6 +1290,7 @@
       { label: 'Version', value: data.version || '-' },
       { label: 'Files', value: String((data.files || []).length) },
       { label: 'Target', value: 'release' },
+      { label: 'Source', value: data.sourceRestore && data.sourceRestore.applied ? (data.sourceRestore.shortCommit || 'restored') : 'not restored' },
     ]);
     body.appendChild(saveNode('div', 'se-save-callout', '目录: ' + data.relativeDir));
     appendSaveRows(body, '产物文件', '已写入', releaseFileRows(data.files), 'preview');

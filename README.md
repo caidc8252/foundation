@@ -146,8 +146,14 @@ One upstream (this repo). `release/` is committed as the current artifact
 snapshot, and `versions/v1/` is committed as the shared base style snapshot for
 prototype versioning. Token/contract changes are PRs **here**, then `pnpm build`
 refreshes `versions/v1` and release catalog/token metadata. Publishing a saved
-prototype version updates `release/` to that selected snapshot. Full process:
-`governance/token-change.md`.
+prototype version updates `release/` to that selected snapshot only after editor
+class overrides have been promoted back into source CSS/contracts. Generate the
+Agent handoff brief with `node scripts/promote-version.mjs vN` (or
+`pnpm promote -- vN`), then update source, run `pnpm build`, and publish the
+rebuilt clean snapshot. Saved version manifests record the governed source Git
+commit; release restores `tokens/`, `primitives/`, `composites/`, `patterns/`,
+and `governance/` from that commit before writing `release/`. Manual restore:
+`pnpm restore:source -- vN --build`. Full process: `governance/token-change.md`.
 
 ## Status — first draft
 

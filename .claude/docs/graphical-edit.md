@@ -23,6 +23,16 @@ catalogued primitive / composite / pattern, renders each in a live preview
 iframe, and lets you inspect an element to see the exact tokens it resolves
 from — then edit those values or references and watch the preview update.
 
+Related but separate: the carbon prototype editor (`pnpm prototype:carbon`) saves
+versioned snapshots under `versions/vN/`. Its promote path is not the `admin/.draft`
+copy-back flow below; use `node scripts/promote-version.mjs vN` to generate an
+Agent handoff brief from that version's manifest, then promote the change into
+source CSS/contracts/examples. Each saved version records the current governed
+source Git commit (`sourceCommit` / `sourceGit`); release and
+`node scripts/restore-version-source.mjs vN --build` use that commit to restore
+`tokens/`, `primitives/`, `composites/`, `patterns/`, and `governance/` if a
+promote attempt dirties the real source.
+
 ## Golden rule: the GUI writes a draft, never the source
 
 **Every graphical edit is sandboxed.** It is written to `admin/.draft/` — a
@@ -78,9 +88,9 @@ It edits *values and references of things that already exist*. Anything
 
 ## The 3→2 handoff: promote a draft into the source
 
-There is **no automated promote path today** — moving a draft into the governed
-source is a manual step. The draft is a staging area; `.changes.json` is the
-to-do list. Procedure:
+There is **no automated promote path today for `admin/.draft`** — moving this
+draft into the governed source is a manual step. The draft is a staging area;
+`.changes.json` is the to-do list. Procedure:
 
 1. **Make the changes** in the GUI; confirm them in the live preview.
 2. **Review the changeset** — `admin/.draft/.changes.json` (or `GET /api/draft/status`)
@@ -128,13 +138,22 @@ pnpm check:all      # = check:release  →  check:examples --strict  →  check:
 ## Known gap & open questions for maintainers
 
 The single manual step is the source-transcription in promote-step 3. Because the
-GUI can only express **build-stable** edits (value/reference rewrites of
+admin GUI can only express **build-stable** edits (value/reference rewrites of
 declarations that already exist), a copy-back of
 `admin/.draft/{tokens,primitives/primitives.css,composites/composites.css}` over
 the real source followed by `pnpm build` is guaranteed to keep
-`release/ == clean rebuild` — so a `scripts/promote-draft.mjs` (and a
-`POST /api/draft/promote`) is the obvious way to close the loop, with `check:release`
-as the automatic gate. Decisions for a human before building it:
+`release/ == clean rebuild` — so a future `scripts/promote-draft.mjs` (and a
+`POST /api/draft/promote`) would close the admin-draft loop, with `check:release`
+as the automatic gate.
+
+Do not confuse that future helper with `scripts/promote-version.mjs`: the latter
+already exists for carbon prototype versions and intentionally writes only an
+Agent brief (`versions/vN/promote.md`), because a version manifest may require
+contract-language judgment before source is changed. Its rollback point is Git,
+not a copied source tree under `versions/`: save versions from a clean governed
+source state so `sourceCommit` can be restored later.
+
+Decisions for a human before building admin-draft promote:
 
 1. Should promote also `git add`/commit, and use `.changes.json` as the message?
 2. Should it refuse when the working tree already has unrelated source edits?

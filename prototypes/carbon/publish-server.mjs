@@ -19,6 +19,11 @@ import {
   RELEASE_STRUCTURE,
   writeBaseVersion,
 } from "../../emit/build.mjs";
+import {
+  assertVersionSourceRestorable,
+  readSourceGitState,
+  restoreGovernedSource,
+} from "../../scripts/source-git.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, "..", "..");
@@ -328,6 +333,9 @@ function listVersions(versionRoot = VERSION_ROOT) {
         version: entry.name,
         publishedAt: manifest.publishedAt || "",
         source: manifest.source || {},
+        sourceCommit: manifest.sourceCommit || manifest.sourceGit?.commit || "",
+        sourceDirty: Boolean(manifest.sourceDirty || manifest.sourceGit?.dirty),
+        sourceGit: manifest.sourceGit || {},
         counts: manifest.counts || {},
       };
     })
@@ -357,6 +365,7 @@ export function publishSnapshot(payload, options = {}) {
   const version = options.version || nextVersionName(versionRoot);
   const publishedAt = payload.publishedAt || new Date().toISOString();
   const outDir = join(versionRoot, version);
+  const sourceGit = readSourceGitState(repoRoot);
 
   mkdirSync(outDir, { recursive: true });
 
@@ -396,6 +405,9 @@ export function publishSnapshot(payload, options = {}) {
       tokens: skippedTokens,
       classOverrides: skippedClassOverrides,
     },
+    sourceCommit: sourceGit.commit || "",
+    sourceDirty: Boolean(sourceGit.dirty),
+    sourceGit,
   };
   writeFileSync(join(outDir, "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
 
@@ -406,12 +418,30 @@ export function publishSnapshot(payload, options = {}) {
     files: ["tokens.inline.css", "composites.css", "manifest.json"],
     counts: manifest.counts,
     changes,
+    sourceCommit: manifest.sourceCommit,
+    sourceDirty: manifest.sourceDirty,
   };
 }
 
 function assertVersionName(version) {
   if (!/^v\d+$/.test(version || "")) throw new Error("invalid version");
   return version;
+}
+
+function classOverrideCount(manifest) {
+  return Object.values(manifest.classOverrides || {}).reduce((sum, declarations) => {
+    return sum + Object.keys(declarations || {}).length;
+  }, 0);
+}
+
+function assertReleaseableManifest(version, manifest) {
+  const count = classOverrideCount(manifest);
+  if (!count) return;
+  throw new Error(
+    `version ${version} contains ${count} unpromoted class override${count === 1 ? "" : "s"}. ` +
+      `Run \`node scripts/promote-version.mjs ${version}\`, promote the changes into source CSS/docs, ` +
+      "then rebuild before publishing release.",
+  );
 }
 
 function copyReleaseFiles(repoRoot, outDir, versionDir, manifest) {
@@ -435,6 +465,16 @@ function resetReleaseDir(releaseRoot) {
   mkdirSync(dir, { recursive: true });
 }
 
+function restoreVersionSourceForRelease(repoRoot, versionName, manifest) {
+  const sourceGit = assertVersionSourceRestorable(versionName, manifest);
+  const restored = restoreGovernedSource(repoRoot, sourceGit.commit);
+  writeBaseVersion(repoRoot, { sourceGit });
+  return {
+    applied: true,
+    ...restored,
+  };
+}
+
 export function releaseSnapshot(version, options = {}) {
   const repoRoot = options.repoRoot || ROOT;
   const versionRoot = options.versionRoot || VERSION_ROOT;
@@ -445,6 +485,10 @@ export function releaseSnapshot(version, options = {}) {
 
   const manifestFile = join(versionDir, "manifest.json");
   const manifest = existsSync(manifestFile) ? JSON.parse(readFileSync(manifestFile, "utf8")) : { version: versionName };
+  assertReleaseableManifest(versionName, manifest);
+  const sourceRestore = options.restoreSource === false
+    ? { applied: false, reason: "disabled" }
+    : restoreVersionSourceForRelease(repoRoot, versionName, manifest);
   const outDir = releaseRoot;
   resetReleaseDir(outDir);
   copyReleaseFiles(repoRoot, outDir, versionDir, manifest);
@@ -456,6 +500,7 @@ export function releaseSnapshot(version, options = {}) {
       version: versionName,
       structure: RELEASE_STRUCTURE,
     },
+    sourceRestore,
   };
   writeFileSync(join(outDir, "manifest.json"), `${JSON.stringify(releaseManifest, null, 2)}\n`, "utf8");
 
@@ -464,6 +509,7 @@ export function releaseSnapshot(version, options = {}) {
     dir: outDir,
     relativeDir: relative(repoRoot, outDir).replace(/\\/g, "/"),
     files: releaseManifest.release.structure,
+    sourceRestore,
   };
 }
 

@@ -94,6 +94,19 @@ pnpm check:all      # = check:release → check:examples --strict → check:patt
 the committed snapshot equals a clean rebuild — so nothing landed by hand-editing
 a generated file or forgetting to rebuild.
 
+Saved prototype versions may contain editor `classOverrides`. Those are candidate
+visual changes, not publishable foundation law. Before publishing such a version
+to `release/`, generate the Agent handoff brief with
+`node scripts/promote-version.mjs vN`, promote the change into source CSS plus the
+matching contract/example, then run `pnpm build`. The release endpoint refuses
+versions that still contain unpromoted class overrides.
+
+Saved versions record the governed source Git commit. If an Agent promote edits
+the real source incorrectly, restore the governed source paths with
+`node scripts/restore-version-source.mjs vN --build` (or release that version
+from the prototype dropdown). Do not copy files back from `versions/v1/`;
+`versions/` is a style snapshot, not a complete source backup.
+
 ---
 
 ## ③ Provide graphical modification

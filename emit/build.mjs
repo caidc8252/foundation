@@ -28,6 +28,7 @@ import {
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { ICON_NAMES, VERSION as ICON_VERSION } from "../scripts/icon/registry.mjs";
+import { readSourceGitState } from "../scripts/source-git.mjs";
 
 export const BASE_VERSION = "v1";
 export const RELEASE_STRUCTURE = [
@@ -330,7 +331,8 @@ ${rows(patterns)}
 `;
 }
 
-function baseManifest() {
+function baseManifest(root, options = {}) {
+  const sourceGit = options.sourceGit || readSourceGitState(root);
   return {
     version: BASE_VERSION,
     baseVersion: "",
@@ -359,17 +361,20 @@ function baseManifest() {
       tokens: [],
       classOverrides: [],
     },
+    sourceCommit: sourceGit.commit || "",
+    sourceDirty: Boolean(sourceGit.dirty),
+    sourceGit,
     base: true,
   };
 }
 
-export function writeBaseVersion(root) {
+export function writeBaseVersion(root, options = {}) {
   const versionDir = join(root, "versions", BASE_VERSION);
   mkdirSync(versionDir, { recursive: true });
   const inlineCss = emitInlineCss(root);
   writeFileSync(join(versionDir, "tokens.inline.css"), inlineCss, "utf8");
   copyFileSync(join(root, "composites", "composites.css"), join(versionDir, "composites.css"));
-  writeFileSync(join(versionDir, "manifest.json"), `${JSON.stringify(baseManifest(), null, 2)}\n`, "utf8");
+  writeFileSync(join(versionDir, "manifest.json"), `${JSON.stringify(baseManifest(root, options), null, 2)}\n`, "utf8");
   return {
     versionDir,
     inlineCss,
@@ -384,7 +389,7 @@ export function refreshReleaseMetadata(root) {
   const manifest = existsSync(manifestPath)
     ? JSON.parse(readFileSync(manifestPath, "utf8"))
     : {
-        ...baseManifest(),
+        ...baseManifest(root),
         releasedAt: "",
         release: {
           version: BASE_VERSION,

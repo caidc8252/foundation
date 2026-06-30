@@ -26,5 +26,21 @@
     "tokens": [],
     "classOverrides": []
   },
+  "sourceCommit": "88d234b3e922a54ce57dc4f7c488b87ec20a5f50",
+  "sourceDirty": false,
+  "sourceGit": {
+    "available": true,
+    "commit": "88d234b3e922a54ce57dc4f7c488b87ec20a5f50",
+    "shortCommit": "88d234b3e922",
+    "dirty": false,
+    "dirtyPaths": [],
+    "restorePaths": [
+      "tokens",
+      "primitives",
+      "composites",
+      "patterns",
+      "governance"
+    ]
+  },
   "base": true
 }

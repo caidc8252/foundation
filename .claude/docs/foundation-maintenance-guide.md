@@ -57,6 +57,7 @@
 | **删 任意一类** | 删源文件 / CSS section+marker / `.html` / 所有 router & 契约引用 → `pnpm build` | `check:release` · `check:examples --strict` · `check:patterns` | **major**（移除是破坏性的） |
 | **改 token 值** | `tokens/<layer>.css`（+ `dark.css`）→ `pnpm build`；同步两个消费者 | `check:release` · `check:examples --strict` | 改值若位移现有 UI → **major** |
 | **改契约 / 改类名** | `.md` + `.css`（+ marker）+ `.html` + 任何 example 一起改 → `pnpm build` | 全部 `check:all` | 破坏性契约改动 → **major** |
+| **promote 原型版本** | `versions/vN/manifest.json` → `node scripts/promote-version.mjs vN` 生成 Agent brief → 改真实 source `.css/.md/.html` → `pnpm build` | 全部 `check:all` | 取决于实际 source 改动 |
 
 > `pnpm build` = `node emit/build.mjs`。校验脚本对应：`check:release` = `node scripts/check-release.mjs`，
 > `check:examples` = `node scripts/check-examples.mjs`，`check:patterns` = `node scripts/check-pattern-router.mjs`。
@@ -118,6 +119,72 @@ in-repo example 过了一遍这道关。
 - **契约优先于实现**（法则 #5）：`.md` 契约赢过任一实现（React `@cloud/ui` 与 artifact 的
   参考 CSS）。当实现与契约不符，是**实现**有 bug。改契约时，两个消费者都要按新契约同步。
 - 合并后**打 tag（`vX.Y.Z`）**；每个消费者按自己的节奏 bump 依赖 ref 来同步。
+
+### 3.4 Prototype editor 版本 promote（Agent handoff）
+
+`pnpm prototype:carbon` 的 editor 保存出来的是 `versions/vN/` 快照，不是 governed source。
+它会把视觉编辑写进 `versions/vN/manifest.json`：
+
+- `tokenOverrides`：token 值候选改动；
+- `classOverrides`：primitive/composite selector 的声明候选改动；
+- `classOverrideMeta` / `changes`：selector、prop、旧值、新值，以及它属于哪个 primitive/composite。
+
+**这些 override 是候选事实，不是 foundation 合约。** 尤其是 composite class override：
+如果 `.stat-card` 的背景从 `success` 改到 `error`，但 `composites/stat-card.md`
+仍写原来的状态/语义，`release/` 就会和契约打架。因此流程是：
+
+1. **保存版本**：在 prototype editor 里保存，得到 `versions/vN/manifest.json`。
+   manifest 同时记录当前受管 source 的 Git commit（`sourceCommit` /
+   `sourceGit`）。如果保存时 `tokens/`、`primitives/`、`composites/`、
+   `patterns/`、`governance/` 有未提交改动，manifest 会标记 `sourceDirty`；
+   这种版本不能精确自动恢复 source，先 commit 或清理 source 再保存。
+2. **生成 Agent brief**：
+
+   ```bash
+   node scripts/promote-version.mjs vN
+   # 等价:
+   pnpm promote -- vN
+   ```
+
+   默认写出 `versions/vN/promote.md`；需要只看内容可用
+   `node scripts/promote-version.mjs vN --stdout`。
+3. **Agent 读 brief 后改真实 source**，不是改 `release/` / `versions/v1/`：
+   - token 值候选 → `tokens/*.css`（必要时同步 `tokens/dark.css`）；
+   - primitive 候选 → `primitives/primitives.css` + `primitives/<name>.md`
+     + 必要的 `primitives/<name>.html`；
+   - composite 候选 → `composites/composites.css` + `composites/<name>.md`
+     + 必要的 `composites/<name>.html`。
+4. **Agent 要判断语义**：纯视觉调参可以同步 CSS 与描述；语义变化（如 success → error）
+   必须同步契约语言和示例；看起来破坏语义的改动应停下说明，而不是硬塞进 source。
+5. **重建与验证**：
+
+   ```bash
+   pnpm build
+   pnpm check:all
+   ```
+
+6. **再发布/提交 release**：发布端会拒绝仍带 `manifest.classOverrides` 的版本，
+   错误信息会提示运行 `node scripts/promote-version.mjs vN`。token-only override 仍由
+   `check:release` 兜底：只要它没有进入 source，clean rebuild 就会改写 `release/` 并让检查失败。
+
+`promote-version.mjs` 只生成 handoff brief，不自动改 `.md`。这是刻意的边界：
+editor 负责记录“发生了什么”，Agent 负责起草 source/contract/example patch，
+人 review 最终 diff。
+
+如果 Agent promote 改坏了根目录 source，不要从 `versions/v1/` 反拷文件：
+`versions/` 是轻量样式快照，不是完整源码备份。改用版本 manifest 记录的 Git
+source commit 恢复受管 source：
+
+```bash
+node scripts/restore-version-source.mjs vN --build
+# 等价:
+pnpm restore:source -- vN --build
+```
+
+这个命令只恢复 `tokens/`、`primitives/`、`composites/`、`patterns/`、
+`governance/` 的文件内容；它不会移动 HEAD，也不会覆盖 scripts/package/docs
+这类 workflow 文件。发布端在下拉框选择版本并 release 时也会执行同一类 Git
+source restore，然后再写 `release/`。
 
 ---
 
