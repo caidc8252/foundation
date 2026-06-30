@@ -641,7 +641,8 @@
     if (!meta) return version ? ('已应用 ' + version) : '未选择版本';
     if (meta.status === 'draft') {
       return '已应用 ' + meta.version + ' · draft，需先 promote（' +
-        (meta.classOverrideDeclarations || 0) + ' 处 class override）';
+        (meta.tokenOverrideCount || 0) + ' token / ' +
+        (meta.classOverrideDeclarations || 0) + ' class）';
     }
     if (meta.releaseable) return '已应用 ' + meta.version + ' · 可发布';
     return '已应用 ' + meta.version + ' · 不可发布：' + (meta.releaseBlockReason || 'blocked');
@@ -649,11 +650,16 @@
   function refreshReleaseButton() {
     if (!versionReleaseBtn) return;
     var meta = selectedVersionMeta();
-    var disabled = !meta || !meta.releaseable;
+    var canPromote = meta && meta.status === 'draft';
+    var canRelease = meta && meta.releaseable;
+    var disabled = !canPromote && !canRelease;
+    versionReleaseBtn.textContent = canPromote ? '申请发布' : '发布';
     versionReleaseBtn.disabled = !!disabled;
     versionReleaseBtn.title = disabled
       ? ('不能发布：' + (meta && meta.releaseBlockReason || '未选择版本'))
-      : '发布选中的 clean snapshot 到 release';
+      : canPromote
+        ? '生成 Agent promote handoff，不写 release'
+        : '发布选中的 clean snapshot 到 release';
   }
   function syncVersionControl() {
     if (versionSelect) versionSelect.value = selectedVersion || '';
@@ -1299,6 +1305,13 @@
     files = files && files.length ? files : ['catalog.json', 'catalog.md', 'tokens.inline.css', 'tokens.json', 'composites.css', 'manifest.json'];
     return files.map(function (file) { return { name: file, next: 'release/' + file }; });
   }
+  function versionFileRows(version, files) {
+    files = files && files.length ? files : ['tokens.inline.css', 'primitives.css', 'composites.css', 'manifest.json'];
+    return files.map(function (file) { return { name: file, next: 'versions/' + version + '/' + file }; });
+  }
+  function promoteFileRows(version, file) {
+    return [{ name: file || 'promote.md', next: 'versions/' + version + '/' + (file || 'promote.md') }];
+  }
   function renderReleaseNoVersion() {
     saveBusy = false;
     clearSaveModal();
@@ -1328,6 +1341,169 @@
     saveModal.appendChild(body);
     appendSaveFooter([mkbtn('关闭', closeSaveModal, 'se-btn--primary')]);
     openSaveModal();
+  }
+  function renderFinalizeConfirm(version) {
+    saveBusy = false;
+    clearSaveModal();
+    appendSaveHero('转为 clean 版本', '检查 ' + version + ' 的改动是否已经进入 source，然后把它转为 clean snapshot。', 'C');
+    var body = div('se-save-modal__body');
+    appendSaveStats(body, [
+      { label: 'Draft', value: version },
+      { label: 'Version', value: version },
+      { label: 'Source', value: 'must be committed' },
+    ]);
+    body.appendChild(saveNode('div', 'se-save-callout', '这个动作会用当前 source 的干净样式覆盖 ' + version + ' 的 draft 样式。如果 source 还没提交，或 source 值和 draft 不一致，会直接失败。'));
+    appendSaveRows(body, '版本文件', '将写入', versionFileRows(version), 'preview');
+    saveModal.appendChild(body);
+    appendSaveFooter([
+      mkbtn('取消', closeSaveModal, 'se-btn--ghost'),
+      mkbtn('转为 clean', function () { submitFinalizePayload(version); }, 'se-btn--primary'),
+    ]);
+    openSaveModal();
+  }
+  function renderFinalizeLoading(version) {
+    saveBusy = true;
+    clearSaveModal();
+    appendSaveHero('正在转为 clean', '正在检查 ' + version + ' 是否已经 promote 到 source。', 'C');
+    var body = div('se-save-modal__body');
+    var row = div('se-save-empty');
+    row.style.display = 'flex';
+    row.style.alignItems = 'center';
+    row.style.justifyContent = 'center';
+    row.style.gap = '10px';
+    row.appendChild(div('se-save-spinner'));
+    row.appendChild(saveNode('span', '', '请稍候...'));
+    body.appendChild(row);
+    saveModal.appendChild(body);
+    openSaveModal();
+  }
+  function renderFinalizeSuccess(data) {
+    saveBusy = false;
+    clearSaveModal();
+    appendSaveHero('已转为 clean', data.version + ' 现在可以发布到 release。', '\u2713');
+    var body = div('se-save-modal__body');
+    appendSaveStats(body, [
+      { label: 'Version', value: data.version || '-' },
+      { label: 'Files', value: String((data.files || []).length) },
+      { label: 'Source', value: data.sourceCommit ? data.sourceCommit.slice(0, 12) : '-' },
+    ]);
+    body.appendChild(saveNode('div', 'se-save-callout', '目录: ' + data.relativeDir));
+    appendSaveRows(body, '版本文件', '已写入', versionFileRows(data.version, data.files), 'preview');
+    saveModal.appendChild(body);
+    appendSaveFooter([mkbtn('完成', closeSaveModal, 'se-btn--primary')]);
+    openSaveModal();
+  }
+  function renderFinalizeError(error, version) {
+    saveBusy = false;
+    clearSaveModal();
+    appendSaveHero('生成失败', error.message || String(error), '!');
+    var body = div('se-save-modal__body');
+    body.appendChild(saveNode('div', 'se-save-callout', '请确认已经按 ' + version + ' 的 promote.md 修改 source、运行 pnpm build，并提交受管 source。'));
+    saveModal.appendChild(body);
+    appendSaveFooter([
+      mkbtn('关闭', closeSaveModal, 'se-btn--ghost'),
+      mkbtn('重试', function () { submitFinalizePayload(version); }, 'se-btn--primary'),
+    ]);
+    openSaveModal();
+  }
+  function submitFinalizePayload(version) {
+    renderFinalizeLoading(version);
+    fetch(apiUrl('/__prototype_finalize'), {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ version: version })
+    }).then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (data) {
+        if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
+        return data;
+      });
+    }).then(function (data) {
+      loadVersions(data.version);
+      renderFinalizeSuccess(data);
+    }).catch(function (err) {
+      renderFinalizeError(err, version);
+    });
+  }
+  function renderPromoteConfirm(version, meta) {
+    saveBusy = false;
+    clearSaveModal();
+    appendSaveHero('申请发布', '生成 ' + version + ' 的 Agent promote handoff，后续由 Agent 自动创建 PR 进入 source。', 'P');
+    var body = div('se-save-modal__body');
+    appendSaveStats(body, [
+      { label: 'Draft', value: version },
+      { label: 'Token overrides', value: String(meta && meta.tokenOverrideCount || 0) },
+      { label: 'Class overrides', value: String(meta && meta.classOverrideDeclarations || 0) },
+    ]);
+    body.appendChild(saveNode('div', 'se-save-callout', '这个动作只生成 handoff 文档；不会修改 governed source、不会写 release、不会提交。把生成的 promote.md 交给 Agent 后，由 Agent 修改代码、自动创建 PR 并返回地址。'));
+    appendSaveRows(body, 'Agent handoff', '将写入', promoteFileRows(version), 'preview');
+    saveModal.appendChild(body);
+    appendSaveFooter([
+      mkbtn('取消', closeSaveModal, 'se-btn--ghost'),
+      mkbtn('生成 handoff', function () { submitPromotePayload(version); }, 'se-btn--primary'),
+    ]);
+    openSaveModal();
+  }
+  function renderPromoteLoading(version) {
+    saveBusy = true;
+    clearSaveModal();
+    appendSaveHero('正在生成 handoff', '正在运行 pnpm promote -- ' + version + '。', 'P');
+    var body = div('se-save-modal__body');
+    var row = div('se-save-empty');
+    row.style.display = 'flex';
+    row.style.alignItems = 'center';
+    row.style.justifyContent = 'center';
+    row.style.gap = '10px';
+    row.appendChild(div('se-save-spinner'));
+    row.appendChild(saveNode('span', '', '请稍候...'));
+    body.appendChild(row);
+    saveModal.appendChild(body);
+    openSaveModal();
+  }
+  function renderPromoteSuccess(data) {
+    saveBusy = false;
+    clearSaveModal();
+    appendSaveHero('已生成 Agent 任务', data.version + ' 的 promote handoff 已就绪。', '\u2713');
+    var body = div('se-save-modal__body');
+    appendSaveStats(body, [
+      { label: 'Version', value: data.version || '-' },
+      { label: 'Command', value: data.command || '-' },
+      { label: 'Brief', value: data.relativeBriefPath || '-' },
+    ]);
+    body.appendChild(saveNode('div', 'se-save-callout', '下一步：把这份 promote.md 交给 Agent。Agent 应自动创建独立 PR 来提升 source；PR 合并后再转为 clean snapshot 并发布 release。'));
+    appendSaveRows(body, 'Agent handoff', '已写入', promoteFileRows(data.version, 'promote.md'), 'preview');
+    saveModal.appendChild(body);
+    appendSaveFooter([mkbtn('完成', closeSaveModal, 'se-btn--primary')]);
+    openSaveModal();
+  }
+  function renderPromoteError(error, version) {
+    saveBusy = false;
+    clearSaveModal();
+    appendSaveHero('生成失败', error.message || String(error), '!');
+    var body = div('se-save-modal__body');
+    body.appendChild(saveNode('div', 'se-save-callout', '请确认版本 ' + version + ' 存在，并且本地 prototype 服务能访问 versions 目录。'));
+    saveModal.appendChild(body);
+    appendSaveFooter([
+      mkbtn('关闭', closeSaveModal, 'se-btn--ghost'),
+      mkbtn('重试', function () { submitPromotePayload(version); }, 'se-btn--primary'),
+    ]);
+    openSaveModal();
+  }
+  function submitPromotePayload(version) {
+    renderPromoteLoading(version);
+    fetch(apiUrl('/__prototype_promote'), {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ version: version })
+    }).then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (data) {
+        if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
+        return data;
+      });
+    }).then(function (data) {
+      renderPromoteSuccess(data);
+    }).catch(function (err) {
+      renderPromoteError(err, version);
+    });
   }
   function renderReleaseConfirm(version) {
     saveBusy = false;
@@ -1418,6 +1594,10 @@
       return;
     }
     var meta = selectedVersionMeta(version);
+    if (meta && meta.status === 'draft') {
+      renderPromoteConfirm(version, meta);
+      return;
+    }
     if (!meta || !meta.releaseable) {
       renderReleaseBlocked(version, meta);
       return;

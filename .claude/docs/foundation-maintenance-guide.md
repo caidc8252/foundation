@@ -163,11 +163,25 @@ in-repo example 过了一遍这道关。
    pnpm check:all
    ```
 
-6. **再发布/提交 release**：发布端会拒绝仍带
-   `manifest.classOverrides` 的保存版本，错误信息会提示运行
+   运行 `pnpm check:all` 前，先把 promote 的 source 文件和重新生成的 `release/` /
+   `build/current/` 快照纳入本次 PR 的 staged set；否则 `check:release` 会正确地报告
+   生成快照尚未进入提交。
+6. **Agent 自动创建 PR 落地 promote 后的 source**：Agent 创建 promotion 分支、只提交本次
+   promote 的 source 与生成快照、push，并用 `gh pr create` 打开 PR 后把 URL 回复给请求者。
+   不把“手动开 PR”留给请求者，也不直接提交到请求者当前分支；promotion PR 合并后，
+   clean 版本才能记录一个可恢复的 Git commit。
+7. **把 `vN` 转为 clean 版本**：PR 合并后运行：
+
+   ```bash
+   pnpm finalize -- vN
+   ```
+
+   这会校验 `vN` 的 token / class overrides 已经进入当前 source，然后用当前
+   source 的干净样式覆盖 `versions/vN/`（无 token/class overrides，可发布）。
+8. **再发布 release**：发布端会拒绝仍带
+   `manifest.tokenOverrides` / `manifest.classOverrides` 的保存版本，错误信息会提示运行
    `node scripts/promote-version.mjs vN`。promotion 后用 `pnpm build`
-   刷新 `build/current/` 和 `release/`，再保存/发布干净版本。token-only override 仍由
-   `check:release` 兜底：只要它没有进入 source，clean rebuild 就会改写 `release/` 并让检查失败。
+   刷新 `build/current/` 和 `release/`，把同一个 `vN` finalize 成干净版本后再发布。
 
 `promote-version.mjs` 只生成 handoff brief，不自动改 `.md`。这是刻意的边界：
 editor 负责记录“发生了什么”，Agent 负责起草 source/contract/example patch，

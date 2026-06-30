@@ -1,4 +1,5 @@
 import { createServer } from "node:http";
+import { spawnSync } from "node:child_process";
 import {
   copyFileSync,
   existsSync,
@@ -287,6 +288,39 @@ function buildChangeDetails(baseManifest, baseSnapshot, incomingTokens, incoming
   };
 }
 
+function comparableCssValue(value) {
+  return String(value ?? "").replace(/\s+/g, " ").trim();
+}
+
+function promotedMismatchRows(manifest, currentSnapshot) {
+  const rows = [];
+  for (const name of Object.keys(manifest.tokenOverrides || {}).sort()) {
+    const expected = comparableCssValue(manifest.tokenOverrides[name]);
+    const actual = comparableCssValue(currentSnapshot.tokenDeclarations[name]);
+    if (actual !== expected) {
+      rows.push({ type: "token", name, expected, actual });
+    }
+  }
+  for (const selector of Object.keys(manifest.classOverrides || {}).sort()) {
+    const declarations = manifest.classOverrides[selector] || {};
+    for (const prop of Object.keys(declarations).sort()) {
+      const expected = comparableCssValue(declarations[prop]);
+      const actual = comparableCssValue(currentSnapshot.classDeclarations[selector]?.[prop]);
+      if (actual !== expected) {
+        rows.push({ type: "class", selector, prop, expected, actual });
+      }
+    }
+  }
+  return rows;
+}
+
+function formatMismatch(row) {
+  if (row.type === "token") {
+    return `${row.name}: expected ${row.expected || "(empty)"}, source has ${row.actual || "(missing)"}`;
+  }
+  return `${row.selector} ${row.prop}: expected ${row.expected || "(empty)"}, source has ${row.actual || "(missing)"}`;
+}
+
 export function applyTokenOverrides(css, changedTokens) {
   let nextCss = css;
   const appended = [];
@@ -356,6 +390,7 @@ function versionSummary(entry, repoRoot = ROOT) {
   }
   const classOverrideDeclarations = classOverrideCount(manifest);
   const tokenOverrideCount = Object.keys(manifest.tokenOverrides || {}).length;
+  const draftOverrideCount = classOverrideDeclarations + tokenOverrideCount;
   const isCurrent = entry.name === CURRENT_VERSION || Boolean(manifest.current);
   const hasPrimitiveCss = existsSync(join(dir, "primitives.css"));
   const liveSourceGit = isCurrent ? readSourceGitState(repoRoot) : null;
@@ -363,10 +398,10 @@ function versionSummary(entry, repoRoot = ROOT) {
   const sourceCommit = sourceGit.commit || manifest.sourceCommit || "";
   const sourceDirty = Boolean(sourceGit.dirty ?? manifest.sourceDirty);
   const hasSourceCommit = Boolean(sourceCommit);
-  const releaseable = classOverrideDeclarations === 0 && hasSourceCommit && !sourceDirty;
+  const releaseable = draftOverrideCount === 0 && hasSourceCommit && !sourceDirty;
   const status = isCurrent
     ? "current"
-    : classOverrideDeclarations > 0
+    : draftOverrideCount > 0
       ? "draft"
       : releaseable
         ? "clean"
@@ -378,7 +413,7 @@ function versionSummary(entry, repoRoot = ROOT) {
     releaseable,
     releaseBlockReason: releaseable
       ? ""
-      : classOverrideDeclarations > 0
+      : draftOverrideCount > 0
         ? "promote required"
         : !hasSourceCommit
           ? "source commit missing"
@@ -494,6 +529,127 @@ export function publishSnapshot(payload, options = {}) {
   };
 }
 
+export function finalizePromotedVersion(version, options = {}) {
+  const repoRoot = options.repoRoot || ROOT;
+  const versionRoot = options.versionRoot || VERSION_ROOT;
+  const sourceVersion = assertVersionName(version);
+  if (sourceVersion === CURRENT_VERSION) throw new Error("cannot finalize current source as a saved version");
+
+  const draftManifest = readVersionManifest(versionRoot, repoRoot, sourceVersion);
+  const tokenOverrideCount = Object.keys(draftManifest.tokenOverrides || {}).length;
+  const classOverrideDeclarations = classOverrideCount(draftManifest);
+  if (!tokenOverrideCount && !classOverrideDeclarations) {
+    throw new Error(`version ${sourceVersion} has no draft overrides to finalize`);
+  }
+
+  const sourceGit = readSourceGitState(repoRoot);
+  if (!sourceGit.commit) throw new Error("current source has no Git commit; commit promoted source before generating a clean version.");
+  if (sourceGit.dirty) {
+    const paths = sourceGit.dirtyPaths.length ? ` (${sourceGit.dirtyPaths.join(", ")})` : "";
+    throw new Error(`promoted source is still dirty${paths}. Commit governed source before generating a clean version.`);
+  }
+
+  writeCurrentVersion(repoRoot);
+  const currentSnapshot = readStyleSnapshot(repoRoot, versionRoot, CURRENT_VERSION);
+  const mismatches = promotedMismatchRows(draftManifest, currentSnapshot);
+  if (mismatches.length) {
+    throw new Error(
+      `version ${sourceVersion} is not fully promoted into source: ` +
+        mismatches.slice(0, 4).map(formatMismatch).join("; ") +
+        (mismatches.length > 4 ? `; +${mismatches.length - 4} more` : ""),
+    );
+  }
+
+  const cleanVersion = sourceVersion;
+  const publishedAt = new Date().toISOString();
+  const outDir = join(versionRoot, cleanVersion);
+  mkdirSync(outDir, { recursive: true });
+  writeFileSync(join(outDir, "tokens.inline.css"), currentSnapshot.tokenCss, "utf8");
+  writeFileSync(join(outDir, "primitives.css"), currentSnapshot.primitiveCss, "utf8");
+  writeFileSync(join(outDir, "composites.css"), currentSnapshot.compositeCss, "utf8");
+
+  const manifest = {
+    version: cleanVersion,
+    baseVersion: draftManifest.baseVersion || "",
+    finalizedFromDraft: sourceVersion,
+    finalizedAt: publishedAt,
+    publishedAt,
+    source: draftManifest.source || {},
+    counts: {
+      tokens: 0,
+      compositeDeclarations: 0,
+      selectors: 0,
+      elementPaths: 0,
+      promotedTokens: tokenOverrideCount,
+      promotedCompositeDeclarations: classOverrideDeclarations,
+    },
+    changedTokens: [],
+    tokenOverrides: {},
+    classOverrides: {},
+    classOverrideMeta: {},
+    changes: {
+      tokens: [],
+      composites: [],
+    },
+    promotedChanges: draftManifest.changes || { tokens: [], composites: [] },
+    elementOverrides: {},
+    conflicts: [],
+    skipped: {
+      tokens: [],
+      classOverrides: [],
+    },
+    sourceCommit: sourceGit.commit || "",
+    sourceDirty: false,
+    sourceGit,
+  };
+  writeFileSync(join(outDir, "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
+
+  return {
+    version: cleanVersion,
+    finalizedFromDraft: sourceVersion,
+    dir: outDir,
+    relativeDir: relative(repoRoot, outDir).replace(/\\/g, "/"),
+    files: ["tokens.inline.css", "primitives.css", "composites.css", "manifest.json"],
+    sourceCommit: manifest.sourceCommit,
+    sourceDirty: manifest.sourceDirty,
+  };
+}
+
+export function createPromotionBrief(version, options = {}) {
+  const repoRoot = options.repoRoot || ROOT;
+  const versionRoot = options.versionRoot || VERSION_ROOT;
+  const sourceVersion = assertVersionName(version);
+  if (sourceVersion === CURRENT_VERSION) throw new Error("current source does not need a promote brief");
+  const manifest = readVersionManifest(versionRoot, repoRoot, sourceVersion);
+  const tokenOverrideCount = Object.keys(manifest.tokenOverrides || {}).length;
+  const classOverrideDeclarations = classOverrideCount(manifest);
+  if (!tokenOverrideCount && !classOverrideDeclarations) {
+    throw new Error(`version ${sourceVersion} has no draft overrides to promote`);
+  }
+
+  const script = join(repoRoot, "scripts", "promote-version.mjs");
+  const run = spawnSync(process.execPath, [script, sourceVersion], {
+    cwd: repoRoot,
+    encoding: "utf8",
+  });
+  if (run.status !== 0) {
+    const detail = (run.stderr || run.stdout || "").trim();
+    throw new Error(detail || `failed to generate promote brief for ${sourceVersion}`);
+  }
+
+  const briefPath = join(repoRoot, "versions", sourceVersion, "promote.md");
+  if (!existsSync(briefPath)) throw new Error(`promote brief was not written for ${sourceVersion}`);
+  return {
+    version: sourceVersion,
+    briefPath,
+    relativeBriefPath: relative(repoRoot, briefPath).replace(/\\/g, "/"),
+    command: `pnpm promote -- ${sourceVersion}`,
+    output: (run.stdout || "").trim(),
+    tokenOverrideCount,
+    classOverrideDeclarations,
+  };
+}
+
 function assertVersionName(version) {
   if (version === CURRENT_VERSION || /^v\d+$/.test(version || "")) return version;
   throw new Error("invalid version");
@@ -506,10 +662,13 @@ function classOverrideCount(manifest) {
 }
 
 function assertReleaseableManifest(version, manifest) {
-  const count = classOverrideCount(manifest);
+  const tokenCount = Object.keys(manifest.tokenOverrides || {}).length;
+  const classCount = classOverrideCount(manifest);
+  const count = tokenCount + classCount;
   if (!count) return;
   throw new Error(
-    `version ${version} contains ${count} unpromoted class override${count === 1 ? "" : "s"}. ` +
+    `version ${version} contains ${count} unpromoted override${count === 1 ? "" : "s"} ` +
+      `(${tokenCount} token, ${classCount} class). ` +
       `Run \`node scripts/promote-version.mjs ${version}\`, promote the changes into source CSS/docs, ` +
       "then rebuild before publishing release.",
   );
@@ -653,6 +812,14 @@ export function createHandler() {
       if ((url.pathname === "/__prototype_save" || url.pathname === "/__prototype_publish") && req.method === "POST") {
         const payload = await readJson(req);
         return json(res, { ok: true, ...publishSnapshot(payload) });
+      }
+      if (url.pathname === "/__prototype_finalize" && req.method === "POST") {
+        const payload = await readJson(req);
+        return json(res, { ok: true, ...finalizePromotedVersion(payload.version) });
+      }
+      if (url.pathname === "/__prototype_promote" && req.method === "POST") {
+        const payload = await readJson(req);
+        return json(res, { ok: true, ...createPromotionBrief(payload.version) });
       }
       if (url.pathname === "/__prototype_release" && req.method === "POST") {
         const payload = await readJson(req);

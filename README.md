@@ -154,11 +154,14 @@ for prototype preview. Numbered `versions/vN/` directories are saved prototype
 snapshots; `pnpm build` does not overwrite them. Token/contract changes are PRs
 **here**, then `pnpm build` refreshes `build/current` and release
 catalog/token metadata. Publishing a saved prototype version updates `release/`
-to that selected snapshot only after editor class overrides have been promoted
-back into source CSS/contracts. Generate the Agent handoff brief with
-`node scripts/promote-version.mjs vN` (or `pnpm promote -- vN`), then update
-source and run `pnpm build`. The prototype selector remains focused on saved
-`vN` snapshots; `build/current` is a generated build/release check artifact.
+to that selected snapshot only after editor token/class overrides have been
+promoted back into source CSS/contracts. For a draft, click `申请发布` or run
+`node scripts/promote-version.mjs vN` (or `pnpm promote -- vN`) to generate the
+Agent handoff brief. Agent promotion updates source, runs `pnpm build` and
+validation, then creates the promotion PR and reports its URL. After that PR
+lands, finalize the same saved version with `pnpm finalize -- vN`; `vN` is rewritten from the promoted source
+and becomes the releaseable version. The prototype selector remains focused on
+saved `vN` snapshots; `build/current` is a generated build/release check artifact.
 Saved version manifests record the governed source Git commit; release
 restores `tokens/`, `primitives/`, `composites/`, `patterns/`, and
 `governance/` from that commit before writing `release/`. Manual restore:

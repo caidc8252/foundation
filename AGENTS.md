@@ -95,12 +95,17 @@ pnpm check:all      # = check:release → check:examples --strict → check:patt
 the committed snapshot equals a clean rebuild — so nothing landed by hand-editing
 a generated file or forgetting to rebuild.
 
-Saved prototype versions may contain editor `classOverrides`. Those are candidate
-visual changes, not publishable foundation law. Before publishing such a version
-to `release/`, generate the Agent handoff brief with
-`node scripts/promote-version.mjs vN`, promote the change into source CSS plus the
-matching contract/example, then run `pnpm build`. The release endpoint refuses
-versions that still contain unpromoted class overrides.
+Saved prototype versions may contain editor `tokenOverrides` / `classOverrides`.
+Those are candidate visual changes, not publishable foundation law. Before
+publishing such a version to `release/`, generate the Agent handoff brief with
+the prototype `申请发布` button or `node scripts/promote-version.mjs vN`, promote
+the change into source CSS plus the matching contract/example, run `pnpm build`
+and validate, then the Agent creates the promotion PR and reports its URL rather
+than leaving PR creation to the requester. After that PR lands,
+finalize that same saved snapshot with `pnpm finalize -- vN`. This rewrites that
+same `vN` from the promoted source, so publish `vN` after it becomes clean. The
+release endpoint refuses versions that still contain unpromoted token or class
+overrides.
 
 Saved versions record the governed source Git commit. If an Agent promote edits
 the real source incorrectly, restore the governed source paths with

@@ -37,9 +37,11 @@ The carbon editor's header selector lists only numbered `vN` entries from
 `versions/`. It is for previewing saved prototype versions, not the current
 source tree. `build/current/` remains the generated preview of the real
 four-layer source for build/release checks, but it is not exposed as a selectable
-version in the prototype UI. Drafts that still contain `classOverrides` may be
-previewed, but the release button is disabled until those overrides are promoted
-into source and saved as a clean version.
+version in the prototype UI. Drafts that still contain token/class overrides may
+be previewed. Their primary action is `申请发布`: it generates
+`versions/vN/promote.md` for an Agent-created PR and does not write source, release, or a
+commit. The Agent creates that PR and reports its URL; after it lands, run `pnpm finalize -- vN` to rewrite the same `vN`
+from source as a releaseable clean snapshot.
 
 ## Golden rule: the GUI writes a draft, never the source
 
@@ -116,9 +118,15 @@ draft into the governed source is a manual step. The draft is a staging area;
 4. **Rebuild** the generated snapshots: `pnpm build` (regenerates `release/*` and
    `build/current/*` from the now-edited source). Never hand-edit generated
    files, and do not expect numbered `versions/vN/` snapshots to change.
-5. **Discard the draft** so it can't drift — the discard button,
+5. **Validate** (next section).
+6. **Let the Agent create the promotion PR** so any saved version can record a
+   restorable Git commit after merge. The Agent must create the branch, commit the
+   promoted source plus regenerated snapshots, push, run `gh pr create`, and
+   return the URL instead of asking the requester to open the PR manually.
+7. **If this came from a carbon `versions/vN` draft**, turn that same saved
+   version into a clean snapshot with `pnpm finalize -- vN` after the PR lands.
+8. **Discard the draft** so it can't drift — the discard button,
    `POST /api/draft/discard`, or `rm -rf admin/.draft`.
-6. **Validate** (next section).
 
 ## How it re-passes validation
 
