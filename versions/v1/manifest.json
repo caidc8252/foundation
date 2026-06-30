@@ -26,12 +26,12 @@
     "tokens": [],
     "classOverrides": []
   },
-  "sourceCommit": "88d234b3e922a54ce57dc4f7c488b87ec20a5f50",
+  "sourceCommit": "f4f89c992114d7b111ab03cc56bd4125a08b4c06",
   "sourceDirty": false,
   "sourceGit": {
     "available": true,
-    "commit": "88d234b3e922a54ce57dc4f7c488b87ec20a5f50",
-    "shortCommit": "88d234b3e922",
+    "commit": "f4f89c992114d7b111ab03cc56bd4125a08b4c06",
+    "shortCommit": "f4f89c992114",
     "dirty": false,
     "dirtyPaths": [],
     "restorePaths": [
@@ -42,5 +42,6 @@
       "governance"
     ]
   },
-  "base": true
+  "base": true,
+  "classOverrideMeta": {}
 }
