@@ -40,7 +40,7 @@ them. See "Required core / optional slots" below for the exact split.
 │ │ summary bar:  N customers …            [ Export? ]   ◄ stick│ │
 │ │ ☐ CUSTOMER ▴   STATUS   REGISTERED   CITY   TAGS      ◄ stick│ │
 │ │   row …  (row click → ○ peek-drawer?)                 › │ │
-│ │ ─ pagination: rows ▾  showing 1–25 of N     ‹ 1 2 3 › ── │ │
+│ │ ─ pagination: rows ▾  Showing 1–25 of N     ‹ 1 2 3 › ── │ │
 │ └───────────────────────────────────────────────────────────┘ │
 └───────────────────────────────────────────────────────────────┘
    ■ required core   ○ optional — included per business need

@@ -183,10 +183,11 @@
     <div class="demo-section">
       <h2 class="demo-section__title">SIMPLE pagination · with rows-per-page select + range summary</h2>
       <p class="demo-section__desc">
-        The rich list-footer layout: rows-per-page select + "showing X–Y of Z"
+        The rich list-footer layout: rows-per-page select + "Showing X–Y of Z"
         range summary on the left, simple nav on the right. The summary uses
-        tabular-nums so figures don't reflow; the number is bolded
-        content-primary, the surrounding words are content-secondary.
+        tabular-nums so figures don't reflow; matching @cloud/ui, <strong>only the
+        total</strong> is bolded content-primary — "Showing", the from–to range,
+        and "of" stay content-secondary.
       </p>
 
       <div class="demo-card">
@@ -206,7 +207,7 @@
               <span>rows</span>
             </div>
             <span class="pagination__summary">
-              Showing <strong>1</strong>&ndash;<strong>25</strong> of <strong>1,248</strong>
+              Showing 1&ndash;25 of <strong>1,248</strong>
             </span>
           </div>
           <div class="pagination__pages">

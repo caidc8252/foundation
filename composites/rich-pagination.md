@@ -29,8 +29,20 @@ No size prop — height follows the inner controls (`spacing-control-md`, 36px).
 - **`.rich-pagination`** — flex row, `justify-content: space-between`, `align-items: center`, `gap: space-4`, `padding-inline: space-2`.
 - **`.rich-pagination__left`** — left cluster; flex row, `gap: space-3`.
   - **`.rich-pagination__rows`** — rows-per-page row: label text + `.select` control; flex row, `gap: space-2`, `text-md`, `content-secondary`.
-  - **`.rich-pagination__summary`** — "Showing X–Y of Z"; `text-md`, `content-secondary`, `white-space: nowrap`.
+  - **`.rich-pagination__summary`** — the pinned range string **`Showing X–Y of Z`** (copy verbatim — see *Caption string* below); `text-md`, `content-secondary`, `white-space: nowrap`.
 - Right slot — `.pagination` (from `composites/composites.css`); composed, not a child class.
+
+## Caption string (pinned — copy verbatim, do not paraphrase)
+
+The range summary is the **fixed template `Showing X–Y of Z`**, mirrored from
+`@cloud/ui`'s message `Showing {from}–{to} of <b>{total}</b>` — the same string the
+`pagination` contract pins (see `pagination.md` → *Caption strings* for the full rule).
+In short: capitalized `Showing`, an en-dash `–` (`&ndash;`) in `X–Y` with no surrounding
+spaces, the lowercase word ` of `, comma-grouped thousands, the whole span `tabular-nums`,
+and — matching the `<b>` in the message — **only the total wrapped in `<strong>`**
+(`content-primary`, weight 600); `Showing`, the `X–Y` range, and `of` stay
+`content-secondary`. Do **not** bold `X` or `Y`. The navigation's current page is shown
+as the bare page number — never paired with the total as `X / Y`.
 
 ## Accessibility
 

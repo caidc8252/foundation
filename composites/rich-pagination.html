@@ -16,8 +16,9 @@
       on the left, SIMPLE pagination nav on the right
     - Bar without rows-per-page (fixed page size) — only summary + nav
     - Rows-per-page is a native <select class="select select--sm">
-    - Range summary uses tabular-nums; numbers are bolded content-primary,
-      surrounding words are content-secondary
+    - Range summary uses tabular-nums; matching @cloud/ui, ONLY the total is
+      bolded content-primary — "Showing", the from–to range, and "of" stay
+      content-secondary
     - / disabled at page boundaries
     - The simple nav (prev · current page display · next) — NOT numbered
     - Accessibility: <label> for the rows-per-page select (.sr-only),
@@ -127,7 +128,7 @@
             </div>
             <!-- Range summary -->
             <span class="rich-pagination__summary">
-              Showing <strong>1</strong>&ndash;<strong>25</strong> of <strong>1,248</strong>
+              Showing 1&ndash;25 of <strong>1,248</strong>
             </span>
           </div>
 
@@ -175,7 +176,7 @@
               <span>rows</span>
             </div>
             <span class="rich-pagination__summary">
-              Showing <strong>21</strong>&ndash;<strong>30</strong> of <strong>1,248</strong>
+              Showing 21&ndash;30 of <strong>1,248</strong>
             </span>
           </div>
 
@@ -222,7 +223,7 @@
               <span>rows</span>
             </div>
             <span class="rich-pagination__summary">
-              Showing <strong>1,226</strong>&ndash;<strong>1,248</strong> of <strong>1,248</strong>
+              Showing 1,226&ndash;1,248 of <strong>1,248</strong>
             </span>
           </div>
 
@@ -260,7 +261,7 @@
         <div class="rich-pagination">
           <div class="rich-pagination__left">
             <span class="rich-pagination__summary">
-              Showing <strong>1</strong>&ndash;<strong>20</strong> of <strong>640</strong>
+              Showing 1&ndash;20 of <strong>640</strong>
             </span>
           </div>
 
@@ -309,7 +310,7 @@
               <span>rows</span>
             </div>
             <span class="rich-pagination__summary">
-              Showing <strong>1</strong>&ndash;<strong>25</strong> of <strong>1,248</strong>
+              Showing 1&ndash;25 of <strong>1,248</strong>
             </span>
           </div>
           <nav class="pagination" aria-label="Pagination" style="padding-inline:0;padding-block:0">

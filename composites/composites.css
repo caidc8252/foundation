@@ -536,8 +536,10 @@
   font-size: var(--text-xs);
   color: var(--color-content-secondary);
 }
-/* "showing 1–25 of 1,248" — tabular so figures don't reflow; the numbers read
-   as content-primary (bolded), the surrounding words stay content-secondary. */
+/* "Showing 1–25 of 1,248" — tabular so figures don't reflow. Mirrors @cloud/ui
+   `ui.pagination.showing` = "Showing {from}–{to} of <b>{total}</b>": ONLY the total
+   is bolded (content-primary); "Showing", the from–to range, and "of" stay
+   content-secondary. Wrap only <strong>{total}</strong> — not from/to. */
 .pagination__summary { font-variant-numeric: tabular-nums; }
 .pagination__summary strong {
   font-weight: 600;
@@ -2141,11 +2143,19 @@
   white-space: nowrap;
 }
 
-/* "Showing X–Y of Z" range summary */
+/* "Showing X–Y of Z" range summary — mirrors @cloud/ui `ui.pagination.showing`
+   = "Showing {from}–{to} of <b>{total}</b>": tabular figures, and ONLY the total
+   wrapped in <strong> (content-primary); "Showing", the from–to range, and "of"
+   stay content-secondary. */
 .rich-pagination__summary {
-  font-size: var(--text-md);
+  font-size: var(--text-xs);
   color: var(--color-content-secondary);
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.rich-pagination__summary strong {
+  font-weight: 600;
+  color: var(--color-content-primary);
 }
 
 /* ═══════════════════════════════ Toggles ═══════════════════════════════ */
