@@ -11,6 +11,96 @@
   // Foundation primitive/composite class names (baked from primitives.css + composites.css).
   var FOUNDATION = new Set(["accordion","accordion__arrow","accordion__content","accordion__item","accordion__item--open","accordion__label","accordion__trigger","alert","alert--default","alert--error","alert--info","alert--success","alert--warning","alert--with-icon","alert-dialog","alert-dialog-overlay","alert-dialog__description","alert-dialog__footer","alert-dialog__header","alert-dialog__title","alert__action","alert__description","alert__icon","alert__title","amount-row","amount-row--total","amount-row__label","amount-row__value","amount-summary","app-frame","app-frame--collapsed","app-frame__avatar","app-frame__brand","app-frame__col","app-frame__header","app-frame__main","app-frame__nav","app-frame__nav-item","app-frame__nav-item--active","app-frame__nav-label","app-frame__sidebar","app-frame__spacer","applied-filters","applied-filters__label","aspect-ratio","avatar","avatar--lg","avatar--md","avatar--sm","avatar--xl","avatar-group","avatar__fallback","avatar__image","badge","badge--default","badge--destructive","badge--error","badge--ghost","badge--info","badge--link","badge--neutral","badge--outline","badge--secondary","badge--success","badge--tag","badge--warning","badge__dot","breadcrumb__ellipsis","breadcrumb__item","breadcrumb__link","breadcrumb__list","breadcrumb__page","breadcrumb__separator","btn","btn--danger","btn--ghost","btn--ghost-danger","btn--icon","btn--icon-lg","btn--icon-sm","btn--icon-xs","btn--lg","btn--link","btn--md","btn--outline","btn--primary","btn--secondary","btn--sm","btn--soft","btn--tertiary","btn--xs","calendar","calendar__caption","calendar__day","calendar__day--disabled","calendar__day--focused","calendar__day--hidden","calendar__day--outside","calendar__day--range-end","calendar__day--range-middle","calendar__day--range-start","calendar__day--selected","calendar__day--today","calendar__footer","calendar__grid","calendar__header","calendar__link","calendar__nav-btn","calendar__weekday","card","card--elevation-0","card--elevation-1","card--elevation-2","card--interactive","card--lg","card--md","card--sm","card__action","card__content","card__content--flush","card__description","card__footer","card__footer--flush","card__header","card__header--flush","card__title","carousel","carousel--vertical","carousel__dot","carousel__dot--active","carousel__dots","carousel__item","carousel__nav","carousel__next","carousel__prev","carousel__track","carousel__viewport","cell-2line","cell-2line__main","cell-2line__sub","cell-center","cell-chevron","cell-empty","cell-num","cell-right","cell-tags","chart","chart-empty","chart-empty__description","chart-empty__icon","chart-empty__title","chart-legend","chart-legend__item","chart-legend__item--off","chart-legend__item--toggle","chart-legend__swatch","chart-legend__swatch--line","chart-skeleton","chart-sparkline","chart-tooltip","chart-tooltip__header","chart-tooltip__indicator","chart-tooltip__indicator--dashed","chart-tooltip__indicator--line","chart-tooltip__name","chart-tooltip__row","chart-tooltip__total","chart-tooltip__value","chart__axis","chart__bar","chart__curve","chart__grid","chart__label","chart__series--dimmed","chart__series--filtered","chart__series--selected","chart__tick","checkbox","col-select","collapsible","collapsible__chevron","collapsible__content","collapsible__content--open","collapsible__trigger","color-tile","color-tile--cat-1","color-tile--cat-2","color-tile--cat-3","color-tile--cat-4","color-tile--cat-5","color-tile--cat-6","color-tile--lg","color-tile--md","color-tile--sm","color-tile__label","combobox__chevron","combobox__content","combobox__empty","combobox__input","combobox__item","combobox__item--highlighted","combobox__item--selected","combobox__item-indicator","combobox__list","combobox__search","combobox__trigger","combobox__trigger--sm","combobox__value","combobox__value--placeholder","command","command-dialog","command-dialog__backdrop","command__empty","command__group","command__group-heading","command__input","command__input-wrapper","command__item","command__item--active","command__list","command__separator","command__shortcut","condition-band","condition-band__spacer","condition-band__toolbar","context-menu__content","context-menu__indicator","context-menu__item","context-menu__item--checkbox","context-menu__item--destructive","context-menu__item--inset","context-menu__item--radio","context-menu__label","context-menu__label--inset","context-menu__separator","context-menu__shortcut","context-menu__sub-trigger","context-menu__sub-trigger--inset","css","data-table","data-table--compact","data-table--spacious","data-table--sticky-col","data-table--sticky-head","data-table--striped","date-picker","date-presets","date-presets__item","date-time-row","date-time-row--stacked","date-time-row__label","date-time-row__line","date-time-row__line--actions","date-trigger","date-trigger--clearable","date-trigger--invalid","date-trigger--lg","date-trigger--md","date-trigger--sm","date-trigger__clear","date-trigger__icon","date-trigger__value","date-trigger__value--placeholder","detail-header","detail-header--sticky","detail-header__actions","detail-header__back","detail-header__bar","detail-header__chips","detail-header__logo","detail-header__main","detail-header__meta","detail-header__name","detail-header__tabs","detail-header__title","diff","diff--inline","diff__arrow","diff__col--new","diff__col--old","diff__label","diff__value","drawer","drawer--bottom","drawer--left","drawer--right","drawer--top","drawer-overlay","drawer__description","drawer__footer","drawer__handle","drawer__header","drawer__title","dropdown-menu","dropdown-menu__checkbox-item","dropdown-menu__checkbox-item--active","dropdown-menu__item","dropdown-menu__item--active","dropdown-menu__item--destructive","dropdown-menu__item--inset","dropdown-menu__item-indicator","dropdown-menu__label","dropdown-menu__label--inset","dropdown-menu__radio-item","dropdown-menu__radio-item--active","dropdown-menu__separator","dropdown-menu__shortcut","dropdown-menu__sub-content","dropdown-menu__sub-trigger","dropdown-menu__sub-trigger--inset","dropdown-menu__sub-trigger--open","dropdown-menu__sub-trigger__chevron","dropzone","dropzone--disabled","dropzone--drag","empty-state","empty-state__action","empty-state__description","empty-state__icon","empty-state__title","feed-item","feed-item--read","feed-item__actions","feed-item__body","feed-item__head","feed-item__icon","feed-item__icon--info","feed-item__icon--neutral","feed-item__icon--success","feed-item__icon--warning","feed-item__main","feed-item__time","feed-item__title","feed-list","field","field__error","field__hint","field__required","file-list","file-row","file-row__body","file-row__error","file-row__icon","file-row__name","file-row__name-row","file-row__size","file-row__status","file-row__status--done","file-row__status--error","filter-chip","filter-chip__remove","g","grid-auto-fit-kv","hover-card","initials-tile","initials-tile--lg","initials-tile--md","initials-tile--sm","initials-tile--xs","inline","input","input--filled","input--lg","input--md","input--ok","input--sm","input--warn","input-group","input-group--block","input-group--disabled","input-group--invalid","input-group__addon","input-group__addon--block-end","input-group__addon--block-start","input-group__addon--inline-end","input-group__addon--inline-start","input-group__control","input-group__text","input-otp","input-otp__caret","input-otp__group","input-otp__separator","input-otp__slot","input-otp__slot--active","is-clickable","kv-grid","kv-grid__row","kv-grid__row--full","label","label--disabled","load-more","load-more__end","load-more__progress","load-more__summary","md","menu-item","menu-item--destructive","menubar","menubar__trigger","menubar__trigger--open","modal","modal--fullscreen","modal--lg","modal--md","modal--sm","modal--xl","modal-overlay","modal__body","modal__close","modal__description","modal__footer","modal__header","modal__heading","modal__title","nav-menu","nav-menu__content","nav-menu__indicator","nav-menu__item","nav-menu__link","nav-menu__link--active","nav-menu__list","nav-menu__trigger","nav-menu__trigger--open","nav-menu__trigger__chevron","object-tile","object-tile--cat-1","object-tile--cat-2","object-tile--cat-3","object-tile--cat-4","object-tile--cat-5","object-tile--cat-6","object-tile--lg","object-tile--md","object-tile--neutral","object-tile--sm","object-tile__icon","option-card","option-card--radio","option-card--selected","option-card__body","option-card__check","option-card__desc","option-card__icon","option-card__input","option-card__title","page-body","page-header","page-header--sticky","page-header__actions","page-header__bar","page-header__count","page-header__description","page-header__heading","page-header__title","page-header__titles","pagination","pagination__current","pagination__ellipsis","pagination__info","pagination__page","pagination__pages","pagination__rows","pagination__summary","popover","popover__","popover__description","popover__header","popover__title","product-card","product-card--out-of-stock","product-card__add","product-card__body","product-card__cta","product-card__description","product-card__glyph","product-card__image","product-card__name","product-card__options","product-card__placeholder","product-card__price","product-card__price-row","product-card__ribbon","product-card__ribbon--info","product-card__ribbon--success","product-card__ribbon--warning","product-card__sku","product-grid","progress","progress__indicator","progress__indicator--error","progress__indicator--info","progress__indicator--success","progress__indicator--warning","progress__label","progress__track","progress__value","radio","recharts-cartesian-grid","resizable-group","resizable-group--vertical","resizable-handle","resizable-handle--horizontal","resizable-handle__grip","resizable-panel","rich-pagination","rich-pagination__left","rich-pagination__rows","rich-pagination__summary","row-actions","scroll-area","scroll-area__scrollbar","scroll-area__thumb","scroll-area__viewport","search-input","search-input__icon","section-card","section-card--collapsible","section-card__chevron","section-card__toggle","select","select--sm","separator","separator--vertical","separator-labeled","separator-labeled__label","sheet","sheet--bottom","sheet--left","sheet--right","sheet--top","sheet-overlay","sheet__close","sheet__description","sheet__footer","sheet__header","sheet__title","skeleton","skeleton--block","skeleton--circle","skeleton--line","skeleton--text","skeleton--title","skeleton-row","slider","slider--vertical","slider__indicator","slider__thumb","slider__track","spinner","spinner--lg","spinner--md","spinner--sm","spinner--xl","stack","stack--3","stack--4","stack--5","stack--6","stat-card","stat-card--interactive","stat-card--selected","stat-card__delta","stat-card__delta--down","stat-card__delta--flat","stat-card__delta--up","stat-card__description","stat-card__head","stat-card__icon","stat-card__label","stat-card__value","stat-card__value--error","stat-card__value--info","stat-card__value--success","stat-card__value--warning","stat-grid","stat-grid--cols-2","stat-grid--cols-3","stat-grid--cols-4","step","step--","step--active","step--completed","step--upcoming","step-indicator","step__body","step__body--clickable","step__caption","step__connector","step__dot","step__text","step__title","stepper","stepper__button","stepper__input","summary-bar","summary-bar--sticky","summary-bar__actions","summary-bar__count","switch","switch--sm","switch__thumb","table-frame","table-frame--flush","table-scroll","tabs","tabs--line","tabs__content","tabs__list","tabs__list--default","tabs__list--line","tabs__trigger","tabs__trigger--active","textarea","th-sort","th-sort__icon--active","th-sort__icon--idle","theme-toggle","timeline","timeline--compact","timeline--stacked","timeline__actor","timeline__content","timeline__description","timeline__header","timeline__item","timeline__item--last","timeline__marker","timeline__marker--","timeline__marker--dot","timeline__marker--error","timeline__marker--icon","timeline__marker--info","timeline__marker--neutral","timeline__marker--primary","timeline__marker--success","timeline__marker--warning","timeline__marker-dot","timeline__marker-node","timeline__rail","timeline__time","timeline__time-row","timeline__title","toast","toast--countdown","toast--with-icon","toast__close","toast__content","toast__description","toast__icon","toast__icon--error","toast__icon--info","toast__icon--loading","toast__icon--success","toast__icon--warning","toast__title","toggle","toggle--auto","toggle--default","toggle--in-","toggle--in-cloud","toggle--in-outline","toggle--in-segmented","toggle--md","toggle--outline","toggle--sm","toggle-checkbox","toggle-group","toggle-group--","toggle-group--cloud","toggle-group--outline","toggle-group--plain","toggle-group--segmented","toggle-group__item","toggle-group__item--auto","toggle-group__item--md","toggle-group__item--sm","toggle-radio","toggle-switch","tooltip","tooltip__arrow","tsx"]);
 
+  // Catalog ownership (generated from release/catalog.json): class -> primitive/composite.
+  // The editor is runtime-injected, so this metadata stays out of the closed-set HTML.
+  var CATALOG_ITEMS = [{"l":"composite","n":"app-frame","t":"App frame · composite — prototype shell","c":["app-frame","app-frame--collapsed","app-frame__avatar","app-frame__brand","app-frame__col","app-frame__header","app-frame__main","app-frame__nav","app-frame__nav-item","app-frame__nav-item--active","app-frame__nav-label","app-frame__sidebar","app-frame__spacer"]},{"l":"composite","n":"chart","t":"Chart · composite","c":["chart","chart-empty","chart-empty__description","chart-empty__icon","chart-empty__title","chart-legend","chart-legend__item","chart-legend__item--off","chart-legend__item--toggle","chart-legend__swatch","chart-legend__swatch--line","chart-skeleton","chart-sparkline","chart-tooltip","chart-tooltip__header","chart-tooltip__indicator","chart-tooltip__indicator--dashed","chart-tooltip__indicator--line","chart-tooltip__name","chart-tooltip__row","chart-tooltip__total","chart-tooltip__value","chart__axis","chart__bar","chart__curve","chart__grid","chart__label","chart__series--dimmed","chart__series--filtered","chart__series--selected","chart__tick"]},{"l":"composite","n":"data-table","t":"Data table · composite","c":["card__content--flush","cell-2line","cell-2line__main","cell-2line__sub","cell-center","cell-chevron","cell-empty","cell-num","cell-right","cell-tags","col-select","data-table","data-table--compact","data-table--spacious","data-table--sticky-col","data-table--sticky-head","data-table--striped","is-clickable","row-actions","row-actions__inner","table-frame","table-frame--flush","table-scroll","th-sort","th-sort__icon--active","th-sort__icon--idle"]},{"l":"composite","n":"detail-header","t":"Detail header · composite","c":["detail-header","detail-header--sticky","detail-header__actions","detail-header__back","detail-header__bar","detail-header__chips","detail-header__logo","detail-header__main","detail-header__meta","detail-header__name","detail-header__tabs","detail-header__title","tabs__list--line"]},{"l":"composite","n":"diff","t":"Diff · composite","c":["diff","diff--inline","diff__arrow","diff__col","diff__col--new","diff__col--old","diff__label","diff__value"]},{"l":"composite","n":"empty-state","t":"Empty state · composite","c":["empty-state","empty-state__action","empty-state__description","empty-state__icon","empty-state__title"]},{"l":"composite","n":"feed-list","t":"Feed list · composite","c":["feed-item","feed-item--read","feed-item__actions","feed-item__body","feed-item__head","feed-item__icon","feed-item__icon--info","feed-item__icon--neutral","feed-item__icon--success","feed-item__icon--warning","feed-item__main","feed-item__time","feed-item__title","feed-item__trailing","feed-list"]},{"l":"composite","n":"kv-grid","t":"Key-value grid · composite","c":["kv-grid","kv-grid__row","kv-grid__row--full"]},{"l":"composite","n":"list-filter","t":"List filter family · composite","c":["applied-filters","applied-filters__label","condition-band","condition-band__spacer","condition-band__toolbar","filter-chip","filter-chip__remove","input","search-input","search-input__icon"]},{"l":"composite","n":"list-row","t":"List row · composite","c":["list-row","list-row--disabled","list-row--interactive","list-row--selected","list-row__actions","list-row__chevron","list-row__icon","list-row__main","list-row__sub","list-row__title","list-row__trailing","list-row__value","list-rows"]},{"l":"composite","n":"load-more","t":"Load more · composite","c":["load-more","load-more__end","load-more__progress","load-more__summary"]},{"l":"composite","n":"option-card","t":"Option card · composite","c":["option-card","option-card--radio","option-card--selected","option-card__body","option-card__check","option-card__desc","option-card__icon","option-card__input","option-card__title"]},{"l":"composite","n":"page-body","t":"Page body · composite","c":["page-body"]},{"l":"composite","n":"page-header","t":"Page header · composite","c":["page-header","page-header--sticky","page-header__actions","page-header__bar","page-header__count","page-header__description","page-header__heading","page-header__title","page-header__titles"]},{"l":"composite","n":"pagination","t":"Pagination · composite","c":["pagination","pagination__current","pagination__ellipsis","pagination__info","pagination__page","pagination__pages","pagination__rows","pagination__summary"]},{"l":"composite","n":"product-card","t":"Product card · composite","c":["btn","product-card","product-card--out-of-stock","product-card__add","product-card__body","product-card__cta","product-card__description","product-card__glyph","product-card__image","product-card__name","product-card__options","product-card__placeholder","product-card__price","product-card__price-row","product-card__ribbon","product-card__ribbon--info","product-card__ribbon--success","product-card__ribbon--warning","product-card__sku","product-grid"]},{"l":"composite","n":"rich-pagination","t":"Rich Pagination · composite","c":["rich-pagination","rich-pagination__left","rich-pagination__rows","rich-pagination__summary"]},{"l":"composite","n":"skeleton","t":"Skeleton · composite","c":["skeleton","skeleton--block","skeleton--circle","skeleton--line","skeleton--text","skeleton--title","skeleton-row"]},{"l":"composite","n":"stat-card","t":"Stat card · composite","c":["stat-card","stat-card--interactive","stat-card--selected","stat-card__delta","stat-card__delta--down","stat-card__delta--flat","stat-card__delta--up","stat-card__description","stat-card__head","stat-card__icon","stat-card__label","stat-card__value","stat-card__value--error","stat-card__value--info","stat-card__value--success","stat-card__value--warning","stat-grid","stat-grid--cols-2","stat-grid--cols-3","stat-grid--cols-4"]},{"l":"composite","n":"step-indicator","t":"Step Indicator · composite","c":["step","step--active","step--completed","step--upcoming","step-indicator","step__body","step__body--clickable","step__caption","step__connector","step__dot","step__text","step__title"]},{"l":"composite","n":"stepper","t":"Stepper · composite","c":["stepper","stepper__button","stepper__input"]},{"l":"composite","n":"summary-bar","t":"List summary bar · composite","c":["summary-bar","summary-bar--sticky","summary-bar__actions","summary-bar__count"]},{"l":"composite","n":"theme-toggle","t":"Theme Toggle · composite","c":["theme-toggle"]},{"l":"composite","n":"timeline","t":"Timeline · composite","c":["timeline","timeline--compact","timeline--stacked","timeline__actor","timeline__content","timeline__description","timeline__header","timeline__item","timeline__item--last","timeline__marker","timeline__marker--dot","timeline__marker--error","timeline__marker--icon","timeline__marker--info","timeline__marker--neutral","timeline__marker--primary","timeline__marker--success","timeline__marker--warning","timeline__marker-dot","timeline__marker-node","timeline__rail","timeline__time","timeline__time-row","timeline__title"]},{"l":"composite","n":"toggles","t":"Toggles · composite","c":["toggle-checkbox","toggle-radio","toggle-switch"]},{"l":"primitive","n":"accordion","t":"Accordion","c":["accordion","accordion__arrow","accordion__content","accordion__item","accordion__item--open","accordion__label","accordion__trigger"]},{"l":"primitive","n":"alert","t":"Alert","c":["alert","alert--default","alert--error","alert--info","alert--success","alert--warning","alert--with-icon","alert__action","alert__description","alert__icon","alert__title"]},{"l":"primitive","n":"alert-dialog","t":"Alert Dialog","c":["alert-dialog","alert-dialog-overlay","alert-dialog__description","alert-dialog__footer","alert-dialog__header","alert-dialog__title"]},{"l":"primitive","n":"aspect-ratio","t":"Aspect Ratio","c":["aspect-ratio"]},{"l":"primitive","n":"avatar","t":"Avatar","c":["avatar","avatar--lg","avatar--md","avatar--sm","avatar--xl","avatar-group","avatar__fallback","avatar__image"]},{"l":"primitive","n":"badge","t":"Badge","c":["badge","badge--default","badge--destructive","badge--error","badge--ghost","badge--info","badge--link","badge--neutral","badge--outline","badge--secondary","badge--success","badge--tag","badge--warning","badge__dot"]},{"l":"primitive","n":"breadcrumb","t":"Breadcrumb","c":["breadcrumb__ellipsis","breadcrumb__item","breadcrumb__link","breadcrumb__list","breadcrumb__page","breadcrumb__separator"]},{"l":"primitive","n":"button","t":"Button","c":["btn","btn--auto","btn--danger","btn--ghost","btn--ghost-danger","btn--icon","btn--icon-lg","btn--icon-sm","btn--icon-xs","btn--lg","btn--link","btn--md","btn--outline","btn--primary","btn--secondary","btn--sm","btn--soft","btn--tertiary","btn--xs"]},{"l":"primitive","n":"calendar","t":"Calendar","c":["calendar","calendar__caption","calendar__day","calendar__day--disabled","calendar__day--focused","calendar__day--hidden","calendar__day--outside","calendar__day--range-end","calendar__day--range-middle","calendar__day--range-start","calendar__day--selected","calendar__day--today","calendar__footer","calendar__grid","calendar__header","calendar__link","calendar__nav-btn","calendar__weekday"]},{"l":"primitive","n":"card","t":"Card","c":["card","card--collapsible","card--elevation-0","card--elevation-1","card--elevation-2","card--interactive","card--lg","card--md","card--sm","card__action","card__chevron","card__content","card__content--flush","card__description","card__footer","card__footer--flush","card__header","card__header--flush","card__title","card__toggle"]},{"l":"primitive","n":"carousel","t":"Carousel","c":["carousel","carousel--vertical","carousel__dot","carousel__dot--active","carousel__dots","carousel__item","carousel__nav","carousel__next","carousel__prev","carousel__track","carousel__viewport"]},{"l":"primitive","n":"checkbox","t":"Checkbox","c":["checkbox"]},{"l":"primitive","n":"collapsible","t":"Collapsible","c":["collapsible","collapsible__chevron","collapsible__content","collapsible__content--open","collapsible__trigger"]},{"l":"primitive","n":"combobox","t":"Combobox","c":["combobox__chevron","combobox__content","combobox__empty","combobox__input","combobox__item","combobox__item--highlighted","combobox__item--selected","combobox__item-indicator","combobox__list","combobox__search","combobox__trigger","combobox__trigger--sm","combobox__value","combobox__value--placeholder"]},{"l":"primitive","n":"command","t":"Command","c":["command","command-dialog","command-dialog__backdrop","command__empty","command__group","command__group-heading","command__input","command__input-wrapper","command__item","command__item--active","command__list","command__separator","command__shortcut","input-group"]},{"l":"primitive","n":"context-menu","t":"Context Menu","c":["context-menu__content","context-menu__indicator","context-menu__item","context-menu__item--checkbox","context-menu__item--destructive","context-menu__item--inset","context-menu__item--radio","context-menu__label","context-menu__label--inset","context-menu__separator","context-menu__shortcut","context-menu__sub-trigger","context-menu__sub-trigger--inset"]},{"l":"primitive","n":"date-picker","t":"Date Picker","c":["date-picker","date-presets","date-presets__item","date-time-row","date-time-row--stacked","date-time-row__label","date-time-row__line","date-time-row__line--actions","date-trigger","date-trigger--clearable","date-trigger--invalid","date-trigger--lg","date-trigger--md","date-trigger--sm","date-trigger__clear","date-trigger__icon","date-trigger__value","date-trigger__value--placeholder"]},{"l":"primitive","n":"date-range-picker","t":"Date Range Picker","c":["date-picker","date-presets","date-presets__item","date-time-row","date-time-row--stacked","date-time-row__label","date-time-row__line","date-time-row__line--actions","date-trigger","date-trigger--clearable","date-trigger--invalid","date-trigger--lg","date-trigger--md","date-trigger--sm","date-trigger__clear","date-trigger__icon","date-trigger__value","date-trigger__value--placeholder"]},{"l":"primitive","n":"date-time-picker","t":"Date Time Picker","c":["date-picker","date-presets","date-presets__item","date-time-row","date-time-row--stacked","date-time-row__label","date-time-row__line","date-time-row__line--actions","date-trigger","date-trigger--clearable","date-trigger--invalid","date-trigger--lg","date-trigger--md","date-trigger--sm","date-trigger__clear","date-trigger__icon","date-trigger__value","date-trigger__value--placeholder"]},{"l":"primitive","n":"date-time-range-picker","t":"Date Time Range Picker","c":["date-picker","date-presets","date-presets__item","date-time-row","date-time-row--stacked","date-time-row__label","date-time-row__line","date-time-row__line--actions","date-trigger","date-trigger--clearable","date-trigger--invalid","date-trigger--lg","date-trigger--md","date-trigger--sm","date-trigger__clear","date-trigger__icon","date-trigger__value","date-trigger__value--placeholder"]},{"l":"primitive","n":"drawer","t":"Drawer","c":["drawer","drawer--bottom","drawer--left","drawer--right","drawer--top","drawer-overlay","drawer__description","drawer__footer","drawer__handle","drawer__header","drawer__title"]},{"l":"primitive","n":"dropdown-menu","t":"Dropdown Menu","c":["dropdown-menu","dropdown-menu__checkbox-item","dropdown-menu__checkbox-item--active","dropdown-menu__item","dropdown-menu__item--active","dropdown-menu__item--destructive","dropdown-menu__item--inset","dropdown-menu__item-indicator","dropdown-menu__label","dropdown-menu__label--inset","dropdown-menu__radio-item","dropdown-menu__radio-item--active","dropdown-menu__separator","dropdown-menu__shortcut","dropdown-menu__sub-content","dropdown-menu__sub-trigger","dropdown-menu__sub-trigger--inset","dropdown-menu__sub-trigger--open","dropdown-menu__sub-trigger__chevron"]},{"l":"primitive","n":"dropzone","t":"Dropzone","c":["dropzone","dropzone--disabled","dropzone--drag","file-list","file-row","file-row__body","file-row__error","file-row__icon","file-row__name","file-row__name-row","file-row__size","file-row__status","file-row__status--done","file-row__status--error"]},{"l":"primitive","n":"field","t":"Field","c":["field","field__error","field__hint","field__required"]},{"l":"primitive","n":"hover-card","t":"Hover Card","c":["hover-card"]},{"l":"primitive","n":"input","t":"Input","c":["input","input--filled","input--lg","input--md","input--ok","input--sm","input--warn"]},{"l":"primitive","n":"input-group","t":"Input Group","c":["input-group","input-group--block","input-group--disabled","input-group--invalid","input-group__addon","input-group__addon--block-end","input-group__addon--block-start","input-group__addon--inline-end","input-group__addon--inline-start","input-group__control","input-group__text"]},{"l":"primitive","n":"input-otp","t":"InputOTP","c":["input-otp","input-otp__caret","input-otp__group","input-otp__separator","input-otp__slot","input-otp__slot--active","label","label--disabled"]},{"l":"primitive","n":"label","t":"Label","c":["label","label--disabled"]},{"l":"primitive","n":"modal","t":"Modal","c":["modal","modal--fullscreen","modal--lg","modal--md","modal--sm","modal--xl","modal-overlay","modal__body","modal__close","modal__description","modal__footer","modal__header","modal__heading","modal__title"]},{"l":"primitive","n":"object-tile","t":"Object Tile","c":["object-tile","object-tile--cat-1","object-tile--cat-2","object-tile--cat-3","object-tile--cat-4","object-tile--cat-5","object-tile--cat-6","object-tile--lg","object-tile--md","object-tile--neutral","object-tile--sm","object-tile__icon"]},{"l":"primitive","n":"popover","t":"Popover","c":["menu-item","menu-item--destructive","popover","popover__description","popover__header","popover__title"]},{"l":"primitive","n":"progress","t":"Progress","c":["progress","progress__indicator","progress__indicator--error","progress__indicator--info","progress__indicator--success","progress__indicator--warning","progress__label","progress__track","progress__value"]},{"l":"primitive","n":"radio-group","t":"Radio Group","c":["radio"]},{"l":"primitive","n":"resizable","t":"Resizable","c":["resizable-group","resizable-group--vertical","resizable-handle","resizable-handle--horizontal","resizable-handle__grip","resizable-panel"]},{"l":"primitive","n":"scroll-area","t":"Scroll Area","c":["scroll-area","scroll-area__scrollbar","scroll-area__thumb","scroll-area__viewport"]},{"l":"primitive","n":"select","t":"Select","c":["select","select--sm"]},{"l":"primitive","n":"separator","t":"Separator","c":["separator","separator--vertical","separator-labeled","separator-labeled__label"]},{"l":"primitive","n":"sheet","t":"Sheet","c":["sheet","sheet--bottom","sheet--left","sheet--right","sheet--top","sheet-overlay","sheet__close","sheet__description","sheet__footer","sheet__header","sheet__title"]},{"l":"primitive","n":"slider","t":"Slider","c":["slider","slider--vertical","slider__indicator","slider__thumb","slider__track"]},{"l":"primitive","n":"spinner","t":"Spinner","c":["spinner","spinner--lg","spinner--md","spinner--sm","spinner--xl"]},{"l":"primitive","n":"switch","t":"Switch","c":["switch","switch--sm","switch__thumb"]},{"l":"primitive","n":"tabs","t":"Tabs","c":["tabs","tabs__content","tabs__list","tabs__list--default","tabs__list--line","tabs__trigger","tabs__trigger--active"]},{"l":"primitive","n":"textarea","t":"Textarea","c":["textarea"]},{"l":"primitive","n":"toast","t":"Toast","c":["toast","toast--countdown","toast--with-icon","toast__close","toast__content","toast__description","toast__icon","toast__icon--error","toast__icon--info","toast__icon--loading","toast__icon--success","toast__icon--warning","toast__title"]},{"l":"primitive","n":"toggle","t":"Toggle","c":["toggle","toggle--auto","toggle--default","toggle--in-cloud","toggle--in-outline","toggle--in-segmented","toggle--md","toggle--outline","toggle--sm","toggle-group--cloud","toggle-group--outline","toggle-group--plain","toggle-group--segmented"]},{"l":"primitive","n":"toggle-group","t":"Toggle Group","c":["toggle-group","toggle-group--cloud","toggle-group--outline","toggle-group--plain","toggle-group--segmented","toggle-group__item","toggle-group__item--auto","toggle-group__item--md","toggle-group__item--sm","tooltip","tooltip__arrow"]},{"l":"primitive","n":"tooltip","t":"Tooltip","c":["tooltip","tooltip__arrow"]}];
+  var CLASS_OWNERS = {};
+  CATALOG_ITEMS.forEach(function (item) {
+    item.c.forEach(function (cls) {
+      FOUNDATION.add(cls);
+      var owners = CLASS_OWNERS[cls] || (CLASS_OWNERS[cls] = []);
+      owners.push({ layer: item.l, name: item.n, title: item.t });
+    });
+  });
+
+  function ownerKey(owner) { return owner ? owner.layer + ':' + owner.name : ''; }
+  function ownerLabel(owner) {
+    if (!owner) return '';
+    return (owner.layer === 'composite' ? 'Composite ' : 'Primitive ') + owner.name;
+  }
+  function classOwnerScore(cls, owner) {
+    if (!owner) return 0;
+    var name = owner.name;
+    if (cls === name) return 100;
+    if (cls.indexOf(name + '__') === 0 || cls.indexOf(name + '--') === 0 || cls.indexOf(name + '-') === 0) return 90;
+    if (name === 'button' && (cls === 'btn' || cls.indexOf('btn--') === 0)) return 95;
+    return 0;
+  }
+  function ownersForClass(cls, layer) {
+    var owners = (CLASS_OWNERS[cls] || []).filter(function (owner) { return !layer || owner.layer === layer; });
+    owners.sort(function (a, b) {
+      var score = classOwnerScore(cls, b) - classOwnerScore(cls, a);
+      if (score) return score;
+      if (a.layer !== b.layer) return a.layer === 'composite' ? -1 : 1;
+      return a.name < b.name ? -1 : 1;
+    });
+    return owners;
+  }
+  function primaryOwnerForClass(cls, layer) {
+    return ownersForClass(cls, layer)[0] || null;
+  }
+  function isWeakCompositeOwner(cls, owner) {
+    if (!owner || owner.layer !== 'composite' || classOwnerScore(cls, owner) > 0) return false;
+    var primitive = primaryOwnerForClass(cls, 'primitive');
+    return !!(primitive && classOwnerScore(cls, primitive) >= 90);
+  }
+  function ownersForElement(el, layer) {
+    var byKey = {};
+    foundationClasses(el).forEach(function (cls) {
+      ownersForClass(cls, layer).forEach(function (owner) {
+        if (isWeakCompositeOwner(cls, owner)) return;
+        var key = ownerKey(owner);
+        if (!byKey[key]) byKey[key] = { layer: owner.layer, name: owner.name, title: owner.title, classes: [] };
+        byKey[key].classes.push(cls);
+      });
+    });
+    return Object.keys(byKey).map(function (key) { return byKey[key]; }).sort(function (a, b) {
+      if (a.layer !== b.layer) return a.layer === 'composite' ? -1 : 1;
+      return a.name < b.name ? -1 : 1;
+    });
+  }
+  function nearestCompositeForElement(el) {
+    var cur = el;
+    while (cur && cur.nodeType === 1 && selectable(cur)) {
+      var owners = ownersForElement(cur, 'composite');
+      if (owners.length) return owners[0];
+      cur = cur.parentElement;
+    }
+    return null;
+  }
+  function ownerMetaForChange(el, cls) {
+    var classOwner = primaryOwnerForClass(cls, null);
+    var composite = classOwner && classOwner.layer === 'composite' ? classOwner : nearestCompositeForElement(el);
+    return {
+      ownerLayer: classOwner ? classOwner.layer : '',
+      ownerName: classOwner ? classOwner.name : '',
+      ownerTitle: classOwner ? classOwner.title : '',
+      ownerClass: cls || '',
+      compositeName: composite ? composite.name : '',
+      compositeTitle: composite ? composite.title : '',
+    };
+  }
+  function changeName(selector, prop, meta) {
+    meta = meta || {};
+    var parts = [];
+    if (meta.compositeName) parts.push('Composite ' + meta.compositeName);
+    if (meta.ownerName && meta.ownerName !== meta.compositeName) {
+      parts.push((meta.ownerLayer === 'primitive' ? 'Primitive ' : 'Composite ') + meta.ownerName);
+    }
+    if (!parts.length) parts.push('Class');
+    return parts.join(' · ') + ' · ' + selector + ' ' + prop;
+  }
+
   // Properties we let users theme (intersected with what each class actually declares).
   var THEME_PROPS = [
     'background-color', 'background', 'color', 'border-color', 'border', 'border-width',
@@ -434,6 +524,12 @@
       '.se-version select{min-width:96px;font:inherit;font-size:12px;padding:5px 28px 5px 8px;border-radius:8px;border:1px solid var(--color-line-default,#d4d4d8);background:var(--color-surface-1,#fff);color:var(--color-content-primary,#18181b);}',
       '.se-version .se-btn{box-shadow:none;}',
       '.se-version__status{font-size:11px;color:var(--color-content-tertiary,#a1a1aa);max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}',
+      '.se-version-loading{position:fixed;inset:0;z-index:2147483647;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(15,23,42,.36);backdrop-filter:blur(5px);font-family:var(--font-sans,system-ui,sans-serif);color:var(--color-content-primary,#18181b);}',
+      '.se-version-loading[data-open="true"]{display:flex;}',
+      '.se-version-loading__box{display:flex;flex-direction:column;align-items:center;gap:10px;min-width:220px;padding:18px 22px;border:1px solid var(--color-line-default,#d4d4d8);border-radius:14px;background:var(--color-surface-1,#fff);box-shadow:0 24px 70px rgba(15,23,42,.22);}',
+      '.se-version-loading__box .se-save-spinner{width:28px;height:28px;border-width:3px;}',
+      '.se-version-loading__title{font-size:14px;font-weight:700;}',
+      '.se-version-loading__desc{font-size:12px;color:var(--color-content-secondary,#71717a);}',
       '.se-save-overlay{position:fixed;inset:0;z-index:2147483647;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(15,23,42,.42);backdrop-filter:blur(6px);font-family:var(--font-sans,system-ui,sans-serif);}',
       '.se-save-overlay[data-open="true"]{display:flex;}',
       '.se-save-modal{width:min(640px,calc(100vw - 32px));max-height:min(760px,calc(100vh - 48px));display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--color-line-default,#d4d4d8);border-radius:16px;background:var(--color-surface-1,#fff);box-shadow:0 24px 70px rgba(15,23,42,.24);color:var(--color-content-primary,#18181b);}',
@@ -466,6 +562,13 @@
       '.se-hd{position:sticky;top:0;background:var(--color-surface-2,#fafafa);border-bottom:1px solid var(--color-line-subtle,#e4e4e7);padding:10px 12px;display:flex;align-items:center;gap:8px;justify-content:space-between;}',
       '.se-title{font-weight:600;font-size:12px;word-break:break-all;font-family:var(--font-mono,monospace);}',
       '.se-x{border:0;background:transparent;font-size:18px;line-height:1;cursor:pointer;color:var(--color-content-secondary,#71717a);padding:0 2px;}',
+      '.se-meta{padding:8px 12px;border-bottom:1px solid var(--color-line-subtle,#e4e4e7);display:flex;flex-direction:column;gap:6px;}',
+      '.se-meta__row{display:flex;align-items:flex-start;gap:6px;min-width:0;}',
+      '.se-meta__lbl{flex:0 0 auto;font-size:11px;color:var(--color-content-tertiary,#a1a1aa);}',
+      '.se-meta__chips{display:flex;flex-wrap:wrap;gap:4px;min-width:0;}',
+      '.se-owner{font:inherit;font-size:11px;padding:2px 6px;border-radius:6px;border:1px solid var(--color-line-default,#d4d4d8);background:var(--color-surface-2,#fafafa);color:var(--color-content-primary,#18181b);max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}',
+      '.se-owner--composite{border-color:var(--color-primary-200,#bfdbfe);background:var(--color-primary-50,#eff6ff);color:var(--color-primary-700,#1d4ed8);}',
+      '.se-owner--primitive{color:var(--color-content-secondary,#71717a);}',
       '.se-anc{display:flex;flex-wrap:wrap;gap:4px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--color-line-subtle,#e4e4e7);}',
       '.se-anc__lbl{font-size:11px;color:var(--color-content-tertiary,#a1a1aa);}',
       '.se-chip{font:inherit;font-size:11px;padding:2px 6px;border-radius:6px;border:1px solid var(--color-line-default,#d4d4d8);background:var(--color-surface-2,#fafafa);color:inherit;cursor:pointer;}',
@@ -522,12 +625,51 @@
   var selectedVersion = DEFAULT_VERSION;
   var versionSelect = null, versionStatus = null;
   var versionTokenLink = null, versionCompositeLink = null;
+  var versionLoading = null, versionLoadingDesc = null, versionLoadId = 0;
   function apiUrl(path) { return location.protocol === 'file:' ? 'http://localhost:4177' + path : path; }
   function setVersionStatus(text) { if (versionStatus) versionStatus.textContent = text || ''; }
   function assetUrl(version, file) {
     return apiUrl('/versions/' + encodeURIComponent(version) + '/' + file) + '?t=' + Date.now();
   }
-  function applyVersion(version) {
+  function ensureVersionLoading() {
+    if (versionLoading) return versionLoading;
+    versionLoading = div('se-version-loading');
+    versionLoading.setAttribute('role', 'status');
+    versionLoading.setAttribute('aria-live', 'polite');
+    var box = div('se-version-loading__box');
+    box.appendChild(div('se-save-spinner'));
+    box.appendChild(saveNode('div', 'se-version-loading__title', '正在切换版本'));
+    versionLoadingDesc = saveNode('div', 'se-version-loading__desc', '');
+    box.appendChild(versionLoadingDesc);
+    versionLoading.appendChild(box);
+    document.body.appendChild(versionLoading);
+    return versionLoading;
+  }
+  function setVersionLoading(open, text) {
+    ensureVersionLoading();
+    if (versionLoadingDesc) versionLoadingDesc.textContent = text || '';
+    if (open) versionLoading.setAttribute('data-open', 'true');
+    else versionLoading.removeAttribute('data-open');
+    if (versionSelect) versionSelect.disabled = !!open;
+  }
+  function waitForStylesheet(link, href, done) {
+    var settled = false;
+    var timer = null;
+    function finish() {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      link.onload = null;
+      link.onerror = null;
+      done();
+    }
+    link.onload = finish;
+    link.onerror = finish;
+    timer = setTimeout(finish, 3000);
+    link.href = href;
+  }
+  function applyVersion(version, showLoading) {
+    var loadId = ++versionLoadId;
     selectedVersion = version || DEFAULT_VERSION;
     clearDraftOverrides();
     if (!version) {
@@ -535,7 +677,12 @@
       if (versionCompositeLink) versionCompositeLink.remove();
       versionTokenLink = null; versionCompositeLink = null;
       setVersionStatus('未选择版本');
+      setVersionLoading(false);
       return;
+    }
+    if (showLoading) {
+      setVersionStatus('正在应用 ' + version + '...');
+      setVersionLoading(true, '加载 ' + version + ' 的 tokens 和 composites');
     }
     if (!versionTokenLink) {
       versionTokenLink = document.createElement('link');
@@ -549,9 +696,15 @@
       versionCompositeLink.setAttribute('data-editor', '');
       document.head.appendChild(versionCompositeLink);
     }
-    versionTokenLink.href = assetUrl(version, 'tokens.inline.css');
-    versionCompositeLink.href = assetUrl(version, 'composites.css');
-    setVersionStatus('已应用 ' + version);
+    var pending = 2;
+    function done() {
+      pending -= 1;
+      if (pending > 0 || loadId !== versionLoadId) return;
+      setVersionLoading(false);
+      setVersionStatus('已应用 ' + version);
+    }
+    waitForStylesheet(versionTokenLink, assetUrl(version, 'tokens.inline.css'), done);
+    waitForStylesheet(versionCompositeLink, assetUrl(version, 'composites.css'), done);
   }
   function loadVersions(preferred) {
     if (!versionSelect) return;
@@ -585,7 +738,7 @@
     var wrap = div('se-version');
     var label = document.createElement('span'); label.className = 'se-version__label'; label.setAttribute('data-editor', ''); label.textContent = 'Version';
     versionSelect = document.createElement('select'); versionSelect.setAttribute('data-editor', ''); versionSelect.setAttribute('aria-label', 'Select style version');
-    versionSelect.onchange = function () { applyVersion(versionSelect.value); };
+    versionSelect.onchange = function () { applyVersion(versionSelect.value, true); };
     var releaseBtn = mkbtn('发布', releaseCurrentVersion, 'se-btn--primary');
     versionStatus = document.createElement('span'); versionStatus.className = 'se-version__status'; versionStatus.setAttribute('data-editor', '');
     wrap.appendChild(label);
@@ -637,6 +790,59 @@
   }
   function optHas(opts, v) { for (var i = 0; i < opts.length; i++) if (opts[i].value === v) return true; return false; }
 
+  function ownerNode(owner, cls) {
+    var chip = document.createElement('span');
+    chip.className = 'se-owner se-owner--' + owner.layer;
+    chip.setAttribute('data-editor', '');
+    chip.title = owner.title || owner.name;
+    chip.textContent = ownerLabel(owner) + (cls ? ' · .' + cls : '');
+    return chip;
+  }
+  function appendOwnerRow(parent, label, owners) {
+    if (!owners.length) return;
+    var row = div('se-meta__row');
+    var l = document.createElement('span');
+    l.className = 'se-meta__lbl';
+    l.setAttribute('data-editor', '');
+    l.textContent = label;
+    row.appendChild(l);
+    var chips = div('se-meta__chips');
+    owners.forEach(function (owner) {
+      chips.appendChild(ownerNode(owner, owner.classes && owner.classes[0]));
+    });
+    row.appendChild(chips);
+    parent.appendChild(row);
+  }
+  function compositeTrail(el) {
+    var out = [], seen = {};
+    var cur = el;
+    while (cur && cur.nodeType === 1 && selectable(cur)) {
+      ownersForElement(cur, 'composite').forEach(function (owner) {
+        var key = ownerKey(owner);
+        if (seen[key]) return;
+        seen[key] = true;
+        out.push(owner);
+      });
+      cur = cur.parentElement;
+    }
+    return out.slice(0, 6);
+  }
+  function appendCatalogMeta(el) {
+    var owners = ownersForElement(el, null);
+    var trail = compositeTrail(el);
+    if (!owners.length && !trail.length) return;
+    var meta = div('se-meta');
+    appendOwnerRow(meta, '归属:', owners);
+    appendOwnerRow(meta, '所在:', trail);
+    panel.appendChild(meta);
+  }
+  function ancestorChipText(el) {
+    var classes = foundationClasses(el);
+    var owner = ownersForElement(el, 'composite')[0] || ownersForElement(el, null)[0];
+    var cls = classes[0] ? '.' + classes[0] : '';
+    return owner ? cls + ' · ' + ownerLabel(owner) : cls;
+  }
+
   function rowFor(el, prop) {
     var row = div('se-row');
     var lbl = div('se-row__lbl'); lbl.textContent = prop; row.appendChild(lbl);
@@ -679,6 +885,7 @@
     var x = document.createElement('button'); x.className = 'se-x'; x.setAttribute('data-editor', ''); x.textContent = '×'; x.onclick = deselect;
     hd.appendChild(x);
     panel.appendChild(hd);
+    appendCatalogMeta(el);
 
     var ancs = ancestorsFoundation(el);
     if (ancs.length) {
@@ -687,7 +894,7 @@
       ab.appendChild(l);
       ancs.slice(0, 6).forEach(function (a) {
         var chip = document.createElement('button'); chip.className = 'se-chip'; chip.setAttribute('data-editor', '');
-        chip.textContent = '.' + foundationClasses(a)[0];
+        chip.textContent = ancestorChipText(a);
         chip.onclick = function () { select(a); };
         ab.appendChild(chip);
       });
@@ -746,7 +953,7 @@
     return owner || classes[classes.length - 1] || null;
   }
   function collectClassOverrides() {
-    var overrides = {}, conflicts = [];
+    var overrides = {}, conflicts = [], meta = {};
     for (var path in store) {
       var el = elByPath(path);
       if (!el) continue;
@@ -756,13 +963,15 @@
         var selector = '.' + cls;
         var value = store[path][prop];
         if (!overrides[selector]) overrides[selector] = {};
+        if (!meta[selector]) meta[selector] = {};
         if (overrides[selector][prop] != null && overrides[selector][prop] !== value) {
           conflicts.push({ selector: selector, prop: prop, previous: overrides[selector][prop], next: value, path: path });
         }
         overrides[selector][prop] = value;
+        meta[selector][prop] = ownerMetaForChange(el, cls);
       }
     }
-    return { overrides: overrides, conflicts: conflicts };
+    return { overrides: overrides, conflicts: conflicts, meta: meta };
   }
   function countKeys(obj) {
     var n = 0;
@@ -786,7 +995,7 @@
       rows.push('Token ' + item.name + ': ' + displayChangeValue(item.previous) + ' -> ' + displayChangeValue(item.next));
     });
     (changes.composites || []).forEach(function (item) {
-      rows.push('Composite ' + item.selector + ' ' + item.prop + ': ' + displayChangeValue(item.previous) + ' -> ' + displayChangeValue(item.next));
+      rows.push(changeName(item.selector, item.prop, item.owner) + ': ' + displayChangeValue(item.previous) + ' -> ' + displayChangeValue(item.next));
     });
     if (!rows.length) return '';
     var limit = 24;
@@ -856,9 +1065,10 @@
       rows.push({ name: 'Token ' + name, next: tokenStore[name] });
     });
     var overrides = collected.overrides || {};
+    var meta = collected.meta || {};
     Object.keys(overrides).sort().forEach(function (selector) {
       Object.keys(overrides[selector]).sort().forEach(function (prop) {
-        rows.push({ name: 'Composite ' + selector + ' ' + prop, next: overrides[selector][prop] });
+        rows.push({ name: changeName(selector, prop, meta[selector] && meta[selector][prop]), next: overrides[selector][prop] });
       });
     });
     return rows;
@@ -870,7 +1080,7 @@
       rows.push({ name: 'Token ' + item.name, previous: item.previous, next: item.next });
     });
     (changes.composites || []).forEach(function (item) {
-      rows.push({ name: 'Composite ' + item.selector + ' ' + item.prop, previous: item.previous, next: item.next });
+      rows.push({ name: changeName(item.selector, item.prop, item.owner), previous: item.previous, next: item.next });
     });
     return rows;
   }
@@ -1012,6 +1222,7 @@
       baseVersion: versionSelect && versionSelect.value ? versionSelect.value : DEFAULT_VERSION,
       tokens: tokenStore,
       classOverrides: collected.overrides,
+      classOverrideMeta: collected.meta,
       elementOverrides: store,
       conflicts: collected.conflicts
     };

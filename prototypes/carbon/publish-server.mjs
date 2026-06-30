@@ -110,7 +110,48 @@ function normalizeClassOverrides(input = {}) {
   return { classOverrides, skipped };
 }
 
+function metaText(value) {
+  return String(value || "")
+    .replace(/[\u0000-\u001f\u007f]/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 160);
+}
+
+function normalizeClassOverrideMeta(input = {}) {
+  const meta = {};
+  for (const [selector, declarations] of Object.entries(input || {})) {
+    if (!SELECTOR_RE.test(selector)) continue;
+    for (const [prop, rawMeta] of Object.entries(declarations || {})) {
+      if (!PROP_RE.test(prop)) continue;
+      const clean = {
+        ownerLayer: metaText(rawMeta?.ownerLayer),
+        ownerName: metaText(rawMeta?.ownerName),
+        ownerTitle: metaText(rawMeta?.ownerTitle),
+        ownerClass: metaText(rawMeta?.ownerClass),
+        compositeName: metaText(rawMeta?.compositeName),
+        compositeTitle: metaText(rawMeta?.compositeTitle),
+      };
+      if (!Object.values(clean).some(Boolean)) continue;
+      meta[selector] = meta[selector] || {};
+      meta[selector][prop] = clean;
+    }
+  }
+  return meta;
+}
+
 function mergeClassOverrides(base = {}, next = {}) {
+  const merged = {};
+  for (const [selector, declarations] of Object.entries(base || {})) {
+    merged[selector] = { ...(declarations || {}) };
+  }
+  for (const [selector, declarations] of Object.entries(next || {})) {
+    merged[selector] = { ...(merged[selector] || {}), ...(declarations || {}) };
+  }
+  return merged;
+}
+
+function mergeClassOverrideMeta(base = {}, next = {}) {
   const merged = {};
   for (const [selector, declarations] of Object.entries(base || {})) {
     merged[selector] = { ...(declarations || {}) };
@@ -185,7 +226,7 @@ function readBaseStyleSnapshot(repoRoot) {
   };
 }
 
-function buildChangeDetails(baseManifest, baseSnapshot, incomingTokens, incomingClassOverrides) {
+function buildChangeDetails(baseManifest, baseSnapshot, incomingTokens, incomingClassOverrides, incomingClassOverrideMeta = {}) {
   const tokenChanges = [];
   for (const name of Object.keys(incomingTokens).sort()) {
     const previous = (baseManifest.tokenOverrides || {})[name] ?? baseSnapshot.tokenDeclarations[name] ?? "";
@@ -203,7 +244,8 @@ function buildChangeDetails(baseManifest, baseSnapshot, incomingTokens, incoming
         ?? "";
       const next = declarations[prop];
       if (String(previous).trim() === String(next).trim()) continue;
-      compositeChanges.push({ selector, prop, previous, next });
+      const owner = incomingClassOverrideMeta[selector]?.[prop] || {};
+      compositeChanges.push({ selector, prop, previous, next, owner });
     }
   }
 
@@ -305,11 +347,13 @@ export function publishSnapshot(payload, options = {}) {
   const baseSnapshot = readBaseStyleSnapshot(repoRoot);
   const { tokens: incomingTokens, skipped: skippedTokens } = normalizeTokens(payload.tokens || {});
   const { classOverrides: incomingClassOverrides, skipped: skippedClassOverrides } = normalizeClassOverrides(payload.classOverrides || {});
+  const incomingClassOverrideMeta = normalizeClassOverrideMeta(payload.classOverrideMeta || {});
   const { tokens } = normalizeTokens({ ...(baseManifest.tokenOverrides || {}), ...incomingTokens });
   const { classOverrides } = normalizeClassOverrides(
     mergeClassOverrides(baseManifest.classOverrides || {}, incomingClassOverrides),
   );
-  const changes = buildChangeDetails(baseManifest, baseSnapshot, incomingTokens, incomingClassOverrides);
+  const classOverrideMeta = mergeClassOverrideMeta(baseManifest.classOverrideMeta || {}, incomingClassOverrideMeta);
+  const changes = buildChangeDetails(baseManifest, baseSnapshot, incomingTokens, incomingClassOverrides, incomingClassOverrideMeta);
   const version = options.version || nextVersionName(versionRoot);
   const publishedAt = payload.publishedAt || new Date().toISOString();
   const outDir = join(versionRoot, version);
@@ -344,6 +388,7 @@ export function publishSnapshot(payload, options = {}) {
     changedTokens: Object.keys(tokens).sort(),
     tokenOverrides: tokens,
     classOverrides,
+    classOverrideMeta,
     changes,
     elementOverrides: payload.elementOverrides || {},
     conflicts: payload.conflicts || [],
