@@ -40,8 +40,11 @@ four-layer source for build/release checks, but it is not exposed as a selectabl
 version in the prototype UI. Drafts that still contain token/class overrides may
 be previewed. Their primary action is `申请发布`: it generates
 `versions/vN/promote.md` for an Agent-created PR and does not write source, release, or a
-commit. The Agent creates that PR and reports its URL; after it lands, run `pnpm finalize -- vN` to rewrite the same `vN`
-from source as a releaseable clean snapshot.
+commit. The Agent creates the foundation promotion PR plus the companion
+`cloud-next-scaffold/packages/ui` PR when React `@cloud/ui` parity is affected,
+cross-links them, and reports both URLs; after the foundation PR lands, run
+`pnpm finalize -- vN` to rewrite the same `vN` from source as a releaseable clean
+snapshot.
 
 ## Golden rule: the GUI writes a draft, never the source
 
@@ -166,9 +169,10 @@ as the automatic gate.
 Do not confuse that future helper with `scripts/promote-version.mjs`: the latter
 already exists for carbon prototype versions and intentionally writes only an
 Agent brief (`versions/vN/promote.md`), because a version manifest may require
-contract-language judgment before source is changed. Its rollback point is Git,
-not a copied source tree under `versions/`: save versions from a clean governed
-source state so `sourceCommit` can be restored later.
+contract-language judgment before foundation source or `cloud-next-scaffold`
+`packages/ui` is changed. Its rollback point is Git, not a copied source tree
+under `versions/`: save versions from a clean governed source state so
+`sourceCommit` can be restored later.
 
 Decisions for a human before building admin-draft promote:
 

@@ -55,7 +55,11 @@ const LAYERS = [
   "dark",
 ];
 
-const stripComments = (css) => css.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\n{3,}/g, "\n\n");
+const stripComments = (css) =>
+  css
+    .replace(/\r\n?/g, "\n")
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/\n{3,}/g, "\n\n");
 const themeToRoot = (css) => css.replace(/@theme\s+static\s*\{/g, ":root {").replace(/@theme\s*\{/g, ":root {");
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 

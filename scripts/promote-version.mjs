@@ -170,6 +170,82 @@ function sourceFilesFor(group) {
   ];
 }
 
+const CLOUD_REPO = "Newland-Payment-Technology-US-Co-Ltd/cloud-next-scaffold";
+const CLOUD_DEFAULT_BRANCH = "feature/new-arch-claude";
+const CLOUD_STYLE_TOKEN_FILE = "packages/ui/src/components/styles/index.css";
+
+const CLOUD_OWNER_FILES = {
+  primitive: {
+    "date-picker": ["packages/ui/src/components/ui/recipes/date-picker.tsx"],
+    "date-range-picker": ["packages/ui/src/components/ui/recipes/date-range-picker.tsx"],
+    "date-time-picker": ["packages/ui/src/components/ui/recipes/date-time-picker.tsx"],
+    "date-time-range-picker": ["packages/ui/src/components/ui/recipes/date-time-range-picker.tsx"],
+    "input-group": ["packages/ui/src/components/ui/recipes/input-group.tsx"],
+    "time-picker": ["packages/ui/src/components/ui/recipes/time-picker.tsx"],
+  },
+  composite: {
+    "app-frame": [
+      "packages/ui/src/components/layout/layout.tsx",
+      "packages/ui/src/components/layout/sidebar.tsx",
+      "packages/ui/src/components/layout/app-header.tsx",
+    ],
+    chart: [
+      "packages/ui/src/components/chart/chart.tsx",
+      "packages/ui/src/components/chart/chart-legend.tsx",
+      "packages/ui/src/components/chart/chart-tooltip.tsx",
+      "packages/ui/src/components/styles/component-defaults.css",
+    ],
+    "data-table": ["packages/ui/src/components/ui/recipes/table.tsx"],
+    "detail-header": [
+      "packages/ui/src/components/layout/content-header.tsx",
+      "packages/ui/src/components/layout/page-header-band.tsx",
+    ],
+    "kv-grid": ["packages/ui/src/components/ui/recipes/key-value.tsx"],
+    "list-filter": [
+      "packages/ui/src/components/list-filter/list-condition-band.tsx",
+      "packages/ui/src/components/list-filter/list-summary-bar.tsx",
+      "packages/ui/src/components/list-filter/applied-filters.tsx",
+      "packages/ui/src/components/list-filter/filter-chip.tsx",
+      "packages/ui/src/components/list-filter/search-input.tsx",
+    ],
+    "list-row": [
+      "packages/ui/src/components/ui/recipes/list-row.tsx",
+      "packages/ui/src/components/ui/index.ts",
+      "packages/ui/src/index.ts",
+    ],
+    "load-more": ["packages/ui/src/components/ui/recipes/load-more.tsx"],
+    "page-body": ["packages/ui/src/components/layout/page-body.tsx"],
+    "page-header": ["packages/ui/src/components/layout/page-header.tsx"],
+    pagination: ["packages/ui/src/components/ui/recipes/pagination.tsx"],
+    "rich-pagination": ["packages/ui/src/components/ui/recipes/rich-pagination.tsx"],
+    "stat-card": ["packages/ui/src/components/ui/recipes/stat-card.tsx"],
+    "step-indicator": ["packages/ui/src/components/ui/recipes/step-indicator.tsx"],
+    stepper: ["packages/ui/src/components/ui/recipes/stepper.tsx"],
+    timeline: ["packages/ui/src/components/ui/recipes/timeline.tsx"],
+    toggles: ["packages/ui/src/components/ui/recipes/toggles.tsx"],
+  },
+};
+
+const CLOUD_MISSING_IMPLEMENTATIONS = new Set(["list-row"]);
+
+function cloudFilesFor(group) {
+  if (group.kind === "primitive") {
+    return CLOUD_OWNER_FILES.primitive[group.name] || [
+      `packages/ui/src/components/ui/primitives/${group.name}.tsx`,
+    ];
+  }
+  if (group.kind === "composite") {
+    return CLOUD_OWNER_FILES.composite[group.name] || [
+      `packages/ui/src/components/ui/recipes/${group.name}.tsx`,
+    ];
+  }
+  return [
+    "packages/ui/src/components/ui",
+    "packages/ui/src/components/layout",
+    "packages/ui/src/components/styles/index.css",
+  ];
+}
+
 function formatValue(value) {
   return value === "" ? "_unknown_" : `\`${String(value).replace(/`/g, "\\`")}\``;
 }
@@ -182,6 +258,82 @@ function formatOwner(owner = {}) {
     parts.push(`context composite \`${owner.compositeName}\``);
   }
   return parts.length ? parts.join(" · ") : "unknown owner; inspect `release/catalog.json`";
+}
+
+function formatCloudRow(row) {
+  return `\`${row.selector}\` · \`${row.prop}\` -> ${formatValue(row.next)}`;
+}
+
+function renderCloudSyncSection(version, groups, tokens) {
+  const lines = [
+    "## cloud-next-scaffold UI sync",
+    "",
+    "This promote is not complete until the React `@cloud/ui` implementation is checked",
+    "in the companion app repository. The foundation contract remains the source of",
+    "truth; do not copy artifact CSS mechanically into TSX. Translate the contract",
+    "into the existing Tailwind/token/component patterns in `packages/ui`.",
+    "",
+    `- repo: \`${CLOUD_REPO}\``,
+    `- target branch: \`${CLOUD_DEFAULT_BRANCH}\` unless the maintainer says otherwise`,
+    `- suggested branch: \`sync/foundation-${version}-ui\``,
+    "",
+    "Create two PRs before reporting this promote as done:",
+    "- Foundation PR: promoted foundation source plus regenerated `release/` and `build/current/`.",
+    "- cloud-next-scaffold UI PR: matching `packages/ui` React/Tailwind changes, or a written no-op justification.",
+    "",
+  ];
+
+  if (tokens.length) {
+    lines.push("### Token sync", "");
+    lines.push("Token value changes affect `@cloud/ui` through Tailwind's `@theme` source.");
+    lines.push("Inspect/update:");
+    lines.push(`- \`${CLOUD_STYLE_TOKEN_FILE}\``);
+    lines.push("");
+    for (const row of tokens) {
+      lines.push(`- \`${row.name}\`: ${formatValue(row.previous)} -> ${formatValue(row.next)}`);
+    }
+    lines.push("");
+  }
+
+  if (groups.length) {
+    lines.push("### Component sync", "");
+    for (const group of groups) {
+      const label = group.kind === "unknown" ? "Unknown owner" : `${group.kind} ${group.name}`;
+      lines.push(`#### ${label}`, "");
+      if (CLOUD_MISSING_IMPLEMENTATIONS.has(group.name)) {
+        lines.push(
+          "Status: currently has no known @cloud/ui implementation; add a new implementation if this foundation contract is now required by the app.",
+        );
+      } else {
+        lines.push("Status: inspect the existing @cloud/ui implementation and update it for contract parity.");
+      }
+      lines.push("");
+      lines.push("Cloud files to inspect/update/create:");
+      for (const file of cloudFilesFor(group)) lines.push(`- \`${file}\``);
+      lines.push("");
+      lines.push("Foundation changes that triggered this sync:");
+      for (const row of group.rows) lines.push(`- ${formatCloudRow(row)}`);
+      lines.push("");
+    }
+  }
+
+  lines.push(
+    "### Cloud verification",
+    "",
+    "Run these in `cloud-next-scaffold` after the UI sync patch:",
+    "",
+    "```bash",
+    "pnpm --filter @cloud/ui typecheck",
+    "pnpm lint",
+    "pnpm test",
+    "```",
+    "",
+    "If a foundation owner has no React counterpart and needs no app change, say so in the cloud PR body",
+    "and link back to the Foundation PR.",
+    "",
+  );
+
+  return lines;
 }
 
 function renderBrief(version, manifestPath, manifest) {
@@ -219,8 +371,9 @@ function renderBrief(version, manifestPath, manifest) {
     "5. If a change looks wrong, stop and explain the concern instead of forcing it into source.",
     "6. Run `pnpm build` after source edits so `release/` and `build/current/` are regenerated.",
     "7. Stage the promoted source files plus regenerated `release/` / `build/current/` snapshots, then run `pnpm check:all`.",
-    "8. Create the promotion PR yourself: make a promotion branch, commit only the promoted source and regenerated snapshots, push it, run `gh pr create`, and report the PR URL. Do not ask the requester to open the PR manually, and do not commit directly to the requester's current branch unless they explicitly ask.",
-    `9. After the PR lands, turn this draft into a clean saved snapshot with \`pnpm finalize -- ${version}\`; publish ${version} after it becomes clean.`,
+    "8. Update `cloud-next-scaffold/packages/ui` for React/Tailwind parity using the cloud sync section below; do not mechanically copy artifact CSS.",
+    "9. Create two PRs yourself: a Foundation PR and a cloud-next-scaffold UI PR. Cross-link them in both PR bodies, and report both URLs. Do not ask the requester to open either PR manually, and do not commit directly to the requester's current branch unless they explicitly ask.",
+    `10. After the Foundation PR lands, turn this draft into a clean saved snapshot with \`pnpm finalize -- ${version}\`; publish ${version} after it becomes clean and the cloud UI PR is merged or explicitly marked no-op.`,
     "",
     "Do not hand-edit `release/`, `build/current/`, or generated catalog files as the source of the change.",
     "",
@@ -263,15 +416,19 @@ function renderBrief(version, manifestPath, manifest) {
     lines.push("");
   }
 
+  lines.push(...renderCloudSyncSection(version, groups, tokens));
+
   lines.push("## Release gate", "");
   if (classRows.length || tokens.length) {
     lines.push(
       "`release` is blocked while this version still contains `manifest.tokenOverrides` or `manifest.classOverrides`.",
-      "After the source files are updated, rebuilt, validated, and merged through the Agent-created PR,",
+      "After the foundation source files are updated, rebuilt, validated, and merged through the Agent-created PR,",
       `run \`pnpm finalize -- ${version}\` and publish ${version} after it becomes clean.`,
+      "The companion cloud-next-scaffold UI PR must also be merged, or explicitly documented as no-op, before release is considered complete.",
     );
   } else {
     lines.push("This version has no token or class overrides, so the release gate will not block it.");
+    lines.push("Still confirm whether a cloud-next-scaffold UI no-op note is needed for traceability.");
   }
   lines.push("");
 
