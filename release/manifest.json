@@ -1,61 +1,35 @@
 {
-  "version": "v3",
+  "version": "v1",
   "baseVersion": "",
-  "publishedAt": "2026-06-28T14:14:05.205Z",
+  "publishedAt": "",
   "source": {
-    "page": "customer-list.html",
-    "title": "Customers",
-    "href": "http://localhost:4177/customer-list.html"
+    "page": "foundation-base",
+    "title": "Foundation base",
+    "href": ""
   },
   "counts": {
     "tokens": 0,
-    "compositeDeclarations": 2,
-    "selectors": 2,
-    "elementPaths": 2
+    "compositeDeclarations": 0,
+    "selectors": 0,
+    "elementPaths": 0
   },
   "changedTokens": [],
   "tokenOverrides": {},
-  "classOverrides": {
-    ".page-header__heading": {
-      "gap": "var(--spacing-control-lg)"
-    },
-    ".page-header__title": {
-      "font-size": "var(--text-4xl)"
-    }
-  },
+  "classOverrides": {},
   "changes": {
     "tokens": [],
-    "composites": [
-      {
-        "selector": ".page-header__heading",
-        "prop": "gap",
-        "previous": "var(--spacing-cx-sm)",
-        "next": "var(--spacing-control-lg)"
-      },
-      {
-        "selector": ".page-header__title",
-        "prop": "font-size",
-        "previous": "var(--text-2xl)",
-        "next": "var(--text-4xl)"
-      }
-    ]
+    "composites": []
   },
-  "elementOverrides": {
-    "1.0.1.1.0.0.0.0": {
-      "gap": "var(--spacing-control-lg)"
-    },
-    "1.0.1.1.0.0.0.0.0": {
-      "font-size": "var(--text-4xl)"
-    }
-  },
+  "elementOverrides": {},
   "conflicts": [],
   "skipped": {
     "tokens": [],
     "classOverrides": []
   },
-  "releasedAt": "2026-06-28T14:14:24.209Z",
+  "base": true,
+  "releasedAt": "2026-06-30T00:51:34.649Z",
   "release": {
-    "version": "v3",
+    "version": "v1",
     "structure": [
       "catalog.json",
       "catalog.md",

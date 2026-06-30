@@ -536,8 +536,10 @@
   font-size: var(--text-xs);
   color: var(--color-content-secondary);
 }
-/* "showing 1–25 of 1,248" — tabular so figures don't reflow; the numbers read
-   as content-primary (bolded), the surrounding words stay content-secondary. */
+/* "Showing 1–25 of 1,248" — tabular so figures don't reflow. Mirrors @cloud/ui
+   `ui.pagination.showing` = "Showing {from}–{to} of <b>{total}</b>": ONLY the total
+   is bolded (content-primary); "Showing", the from–to range, and "of" stay
+   content-secondary. Wrap only <strong>{total}</strong> — not from/to. */
 .pagination__summary { font-variant-numeric: tabular-nums; }
 .pagination__summary strong {
   font-weight: 600;
@@ -633,6 +635,13 @@
   background-color: var(--color-surface-1);
 }
 .app-frame--collapsed { --app-frame-sidebar: var(--app-frame-sidebar-collapsed); }
+/* Frameless form: .app-frame collapses into ONE chrome-less column — no sidebar, no
+   header, no .app-frame__col. "frameless" means exactly this (chrome removed). A direct
+   `main.app-frame__main` child is the scroll root: the height:100vh + overflow:hidden on
+   .app-frame still bound it, so --sticky-head / summary-bar--sticky / page-header--sticky
+   behave exactly as in the full shell — __main is unchanged, it just no longer needs the
+   .app-frame__col level. Structure: `.app-frame.app-frame--frameless > main.app-frame__main`. */
+.app-frame--frameless { flex-direction: column; }
 
 .app-frame__sidebar {
   flex: 0 0 var(--app-frame-sidebar);
@@ -1532,16 +1541,16 @@
 .detail-header__bar {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-start;
+  align-items: center;   /* back · logo · identity · actions share one vertical center */
   gap: var(--space-3) var(--space-4);
   padding-inline: var(--space-6);
   padding-block: var(--space-4); /* 16px top & bottom — symmetric */
 }
-/* icon-only ghost back button — reuses .btn--ghost; this only nudges it to align
-   with the title baseline and keeps it from shrinking. */
+/* icon-only ghost back button — reuses .btn--ghost; just keeps it from shrinking.
+   Its vertical position comes from the bar's align-items:center (no nudge), so it
+   centers against the logo / identity block — not pinned to the title's top line. */
 .detail-header__back {
   flex-shrink: 0;
-  margin-top: var(--space-1);
 }
 .detail-header__logo {
   display: grid;
@@ -2134,11 +2143,19 @@
   white-space: nowrap;
 }
 
-/* "Showing X–Y of Z" range summary */
+/* "Showing X–Y of Z" range summary — mirrors @cloud/ui `ui.pagination.showing`
+   = "Showing {from}–{to} of <b>{total}</b>": tabular figures, and ONLY the total
+   wrapped in <strong> (content-primary); "Showing", the from–to range, and "of"
+   stay content-secondary. */
 .rich-pagination__summary {
-  font-size: var(--text-md);
+  font-size: var(--text-xs);
   color: var(--color-content-secondary);
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.rich-pagination__summary strong {
+  font-weight: 600;
+  color: var(--color-content-primary);
 }
 
 /* ═══════════════════════════════ Toggles ═══════════════════════════════ */
@@ -2250,22 +2267,36 @@
 }
 .list-row__icon svg { width: var(--space-4); height: var(--space-4); }
 
-.list-row__main { min-width: 0; }   /* lets the title wrap/ellipsize, not overflow */
+.list-row__main { min-width: 0; }   /* lets the title/sub truncate, not overflow */
 .list-row__title {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;          /* one line — the name truncates, inline badges survive */
   align-items: center;
   gap: var(--space-2);
+  min-width: 0;
   font-size: var(--text-sm);
   font-weight: 600;
   line-height: 1.4;
   color: var(--color-content-primary);
 }
+/* The title's name text — truncates so a long name keeps the row ONE line tall and
+   lets trailing inline badges stay on the line (cf. detail-header__name). Wrapping
+   the name in this span is what makes a list of rows share a uniform height. */
+.list-row__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .list-row__sub {
+  display: block;             /* so it truncates even when authored as a <span> */
   margin-top: var(--space-1);
   font-size: var(--text-xs);
   line-height: 1.5;
   color: var(--color-content-secondary);
+  overflow: hidden;           /* one line too — uniform row height down the list */
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Trailing — the right cluster: a control (.switch / .btn), a value, a chevron,
@@ -2308,20 +2339,20 @@
   box-shadow: var(--shadow-focus);
   border-radius: var(--radius-md);
 }
-/* Selected — a persisted active row (the open item in a master/detail list). */
-.list-row--selected { background-color: var(--color-state-selected); }
+/* Selected — a persisted active row (the open item in a single-select master/detail
+   list). Tint + a 2px primary left bar (same recipe as a selected data-table row),
+   and it must SURVIVE hover, so it also beats --interactive:hover. */
+.list-row--selected,
+.list-row--interactive.list-row--selected:hover {
+  background-color: var(--color-state-selected);
+  box-shadow: var(--shadow-row-selected);   /* inset 2px primary-700 left bar */
+}
 /* Disabled — a row whose control is unavailable. */
 .list-row--disabled { opacity: 0.5; pointer-events: none; }
 
 /* Prototype published overrides
-   Version: v3
-   Source page: customer-list.html
-   Published: 2026-06-28T14:14:05.205Z
+   Version: v1
+   Source page: foundation-base
+   Published: 
 */
-.page-header__heading {
-  gap: var(--spacing-control-lg);
-}
-
-.page-header__title {
-  font-size: var(--text-4xl);
-}
+/* No composite class overrides in this snapshot. */
