@@ -57,11 +57,13 @@
 | **删 任意一类** | 删源文件 / CSS section+marker / `.html` / 所有 router & 契约引用 → `pnpm build` | `check:release` · `check:examples --strict` · `check:patterns` | **major**（移除是破坏性的） |
 | **改 token 值** | `tokens/<layer>.css`（+ `dark.css`）→ `pnpm build`；同步两个消费者 | `check:release` · `check:examples --strict` | 改值若位移现有 UI → **major** |
 | **改契约 / 改类名** | `.md` + `.css`（+ marker）+ `.html` + 任何 example 一起改 → `pnpm build` | 全部 `check:all` | 破坏性契约改动 → **major** |
-| **promote 原型版本** | `versions/vN/manifest.json` → `node scripts/promote-version.mjs vN` 生成 Agent brief → 改真实 source `.css/.md/.html` → `pnpm build` | 全部 `check:all` | 取决于实际 source 改动 |
+| **promote 原型版本** | `versions/vN/manifest.json` → `node scripts/promote-version.mjs vN` 生成 Agent brief → 改真实 source `.css/.md/.html` + 同步 `cloud-next-scaffold/packages/ui` → `pnpm build` | 全部 `check:all` + cloud 仓 `pnpm lint` / `pnpm test` | 取决于实际 source 改动 |
 
-> `pnpm build` = `node emit/build.mjs`。校验脚本对应：`check:release` = `node scripts/check-release.mjs`，
+> `pnpm build` = `node emit/build.mjs`。校验脚本对应：`check:build` = `node --test emit/build.test.mjs`，
+> `check:promote` = `node --test scripts/promote-version.test.mjs`，
+> `check:release` = `node scripts/check-release.mjs`，
 > `check:examples` = `node scripts/check-examples.mjs`，`check:patterns` = `node scripts/check-pattern-router.mjs`。
-> 一次跑全部：`pnpm check:all`（= `check-release && check-examples --strict && check-pattern-router`）。
+> 一次跑全部：`pnpm check:all`（= `check:build && check:promote && check-release && check-examples --strict && check-pattern-router`）。
 
 ---
 
@@ -148,7 +150,7 @@ in-repo example 过了一遍这道关。
 
    默认写出 `versions/vN/promote.md`；需要只看内容可用
    `node scripts/promote-version.mjs vN --stdout`。
-3. **Agent 读 brief 后改真实 source**，不是改 `release/` / `versions/v1/`：
+3. **Agent 读 brief 后改真实 source**，不是改 `release/` / `build/current/` / `versions/vN/`：
    - token 值候选 → `tokens/*.css`（必要时同步 `tokens/dark.css`）；
    - primitive 候选 → `primitives/primitives.css` + `primitives/<name>.md`
      + 必要的 `primitives/<name>.html`；
@@ -163,15 +165,37 @@ in-repo example 过了一遍这道关。
    pnpm check:all
    ```
 
-6. **再发布/提交 release**：发布端会拒绝仍带 `manifest.classOverrides` 的版本，
-   错误信息会提示运行 `node scripts/promote-version.mjs vN`。token-only override 仍由
-   `check:release` 兜底：只要它没有进入 source，clean rebuild 就会改写 `release/` 并让检查失败。
+   运行 `pnpm check:all` 前，先把 promote 的 source 文件和重新生成的 `release/` /
+   `build/current/` 快照纳入本次 PR 的 staged set；否则 `check:release` 会正确地报告
+   生成快照尚未进入提交。
+6. **Agent 自动创建两个 PR 落地 promote 后的 source 与 React 实现**：Agent 创建 foundation
+   promotion 分支、只提交本次 promote 的 source 与生成快照、push，并用 `gh pr create`
+   打开 foundation PR；同时在 `cloud-next-scaffold` 创建 companion 分支，按 brief 的
+   `cloud-next-scaffold UI sync` 段同步 `packages/ui` 的 React/Tailwind 实现，验证后打开
+   cloud UI PR。两个 PR 互相写入链接，并把两个 URL 回复给请求者。不要把“手动开 PR”
+   留给请求者，也不要直接提交到请求者当前分支；foundation promotion PR 合并后，
+   clean 版本才能记录一个可恢复的 Git commit。
+7. **把 `vN` 转为 clean 版本**：PR 合并后运行：
 
-`promote-version.mjs` 只生成 handoff brief，不自动改 `.md`。这是刻意的边界：
-editor 负责记录“发生了什么”，Agent 负责起草 source/contract/example patch，
-人 review 最终 diff。
+   ```bash
+   pnpm finalize -- vN
+   ```
 
-如果 Agent promote 改坏了根目录 source，不要从 `versions/v1/` 反拷文件：
+   这会校验 `vN` 的 token / class overrides 已经进入当前 source，然后用当前
+   source 的干净样式覆盖 `versions/vN/`（无 token/class overrides，可发布）。
+8. **再发布 release**：发布端会拒绝仍带
+   `manifest.tokenOverrides` / `manifest.classOverrides` 的保存版本，错误信息会提示运行
+   `node scripts/promote-version.mjs vN`。promotion 后用 `pnpm build`
+   刷新 `build/current/` 和 `release/`，把同一个 `vN` finalize 成干净版本后再发布。
+   发布完成的定义还包括 companion cloud UI PR 已合并，或 PR/brief 明确记录本次无
+   `packages/ui` 改动。
+
+`promote-version.mjs` 只生成 handoff brief，不自动改 `.md`，也不自动改
+`cloud-next-scaffold/packages/ui`。这是刻意的边界：editor 负责记录“发生了什么”，
+Agent 负责起草 foundation source/contract/example patch，并把同一设计事实翻译成
+`@cloud/ui` 的 TSX/Tailwind/cva 实现；人 review 最终 diff。
+
+如果 Agent promote 改坏了根目录 source，不要从 `versions/` 反拷文件：
 `versions/` 是轻量样式快照，不是完整源码备份。改用版本 manifest 记录的 Git
 source commit 恢复受管 source：
 

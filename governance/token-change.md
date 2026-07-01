@@ -34,7 +34,7 @@ decision, not a tweak.
 1. Edit `foundation/tokens/*.css` (the one source). Add to the right layer file
    and, if it has a light value that changes in dark, add the override to
    `dark.css`. Keep semantic shortcuts pointing at ramp steps via `var()`.
-2. Run `pnpm build` to regenerate `versions/v1/` and refresh `release/`
+2. Run `pnpm build` to regenerate `build/current/` and refresh `release/`
    metadata. Never hand-edit generated snapshot files.
 3. Open a PR to the foundation repo. Review covers: name follows the group's
    convention, value is OKLCH, dark override present if needed, no duplicate of

@@ -621,13 +621,52 @@
     document.body.appendChild(bar);
   }
 
-  var DEFAULT_VERSION = 'v1';
-  var selectedVersion = DEFAULT_VERSION;
-  var versionSelect = null, versionStatus = null;
-  var versionTokenLink = null, versionCompositeLink = null;
+  var selectedVersion = '';
+  var versionSelect = null, versionStatus = null, versionReleaseBtn = null;
+  var versionMeta = {};
+  var versionTokenLink = null, versionPrimitiveLink = null, versionCompositeLink = null;
   var versionLoading = null, versionLoadingDesc = null, versionLoadId = 0;
   function apiUrl(path) { return location.protocol === 'file:' ? 'http://localhost:4177' + path : path; }
   function setVersionStatus(text) { if (versionStatus) versionStatus.textContent = text || ''; }
+  function selectedVersionMeta(version) { return versionMeta[version || selectedVersion] || null; }
+  function versionReleasedSuffix(item) { return item && item.released ? ' · 已发布' : ''; }
+  function versionOptionLabel(item) {
+    var label = item.version;
+    var released = versionReleasedSuffix(item);
+    if (item.version === 'v1' && item.status === 'clean') return label + ' · initial snapshot' + released;
+    if (item.status === 'draft') return label + ' · draft · promote required' + released;
+    if (item.status === 'clean') return label + ' · clean snapshot' + released;
+    return label + ' · blocked' + released;
+  }
+  function versionStatusText(version) {
+    var meta = selectedVersionMeta(version);
+    if (!meta) return version ? ('已应用 ' + version) : '未选择版本';
+    var released = versionReleasedSuffix(meta);
+    if (meta.status === 'draft') {
+      return '已应用 ' + meta.version + released + ' · draft，需先 promote（' +
+        (meta.tokenOverrideCount || 0) + ' token / ' +
+        (meta.classOverrideDeclarations || 0) + ' class）';
+    }
+    if (meta.releaseable) return '已应用 ' + meta.version + released + ' · 可发布';
+    return '已应用 ' + meta.version + released + ' · 不可发布：' + (meta.releaseBlockReason || 'blocked');
+  }
+  function refreshReleaseButton() {
+    if (!versionReleaseBtn) return;
+    var meta = selectedVersionMeta();
+    var canPromote = meta && meta.status === 'draft';
+    var canRelease = meta && meta.releaseable;
+    var disabled = !canPromote && !canRelease;
+    versionReleaseBtn.textContent = canPromote ? '申请发布' : '发布';
+    versionReleaseBtn.disabled = !!disabled;
+    versionReleaseBtn.title = disabled
+      ? ('不能发布：' + (meta && meta.releaseBlockReason || '未选择版本'))
+      : canPromote
+        ? '生成 Agent promote handoff，不写 release'
+        : '发布选中的 clean snapshot 到 release';
+  }
+  function syncVersionControl() {
+    if (versionSelect) versionSelect.value = selectedVersion || '';
+  }
   function assetUrl(version, file) {
     return apiUrl('/versions/' + encodeURIComponent(version) + '/' + file) + '?t=' + Date.now();
   }
@@ -670,19 +709,23 @@
   }
   function applyVersion(version, showLoading) {
     var loadId = ++versionLoadId;
-    selectedVersion = version || DEFAULT_VERSION;
+    selectedVersion = version || '';
+    version = selectedVersion;
+    syncVersionControl();
+    refreshReleaseButton();
     clearDraftOverrides();
     if (!version) {
       if (versionTokenLink) versionTokenLink.remove();
+      if (versionPrimitiveLink) versionPrimitiveLink.remove();
       if (versionCompositeLink) versionCompositeLink.remove();
-      versionTokenLink = null; versionCompositeLink = null;
+      versionTokenLink = null; versionPrimitiveLink = null; versionCompositeLink = null;
       setVersionStatus('未选择版本');
       setVersionLoading(false);
       return;
     }
     if (showLoading) {
       setVersionStatus('正在应用 ' + version + '...');
-      setVersionLoading(true, '加载 ' + version + ' 的 tokens 和 composites');
+      setVersionLoading(true, '加载 ' + version + ' 的 tokens、primitives 和 composites');
     }
     if (!versionTokenLink) {
       versionTokenLink = document.createElement('link');
@@ -690,20 +733,34 @@
       versionTokenLink.setAttribute('data-editor', '');
       document.head.appendChild(versionTokenLink);
     }
+    if (!versionPrimitiveLink) {
+      versionPrimitiveLink = document.createElement('link');
+      versionPrimitiveLink.rel = 'stylesheet';
+      versionPrimitiveLink.setAttribute('data-editor', '');
+      document.head.insertBefore(versionPrimitiveLink, versionCompositeLink || null);
+    }
     if (!versionCompositeLink) {
       versionCompositeLink = document.createElement('link');
       versionCompositeLink.rel = 'stylesheet';
       versionCompositeLink.setAttribute('data-editor', '');
       document.head.appendChild(versionCompositeLink);
     }
-    var pending = 2;
+    var meta = selectedVersionMeta(version);
+    var loadPrimitive = !meta || !!meta.hasPrimitiveCss;
+    if (!loadPrimitive && versionPrimitiveLink) {
+      versionPrimitiveLink.remove();
+      versionPrimitiveLink = null;
+    }
+    var pending = loadPrimitive ? 3 : 2;
     function done() {
       pending -= 1;
       if (pending > 0 || loadId !== versionLoadId) return;
       setVersionLoading(false);
-      setVersionStatus('已应用 ' + version);
+      setVersionStatus(versionStatusText(version));
+      refreshReleaseButton();
     }
     waitForStylesheet(versionTokenLink, assetUrl(version, 'tokens.inline.css'), done);
+    if (loadPrimitive) waitForStylesheet(versionPrimitiveLink, assetUrl(version, 'primitives.css'), done);
     waitForStylesheet(versionCompositeLink, assetUrl(version, 'composites.css'), done);
   }
   function loadVersions(preferred) {
@@ -715,19 +772,30 @@
       });
     }).then(function (data) {
       var versions = data.versions || [];
-      var chosen = preferred || selectedVersion || DEFAULT_VERSION;
+      var latest = data.latest || (versions.length ? versions[versions.length - 1].version : '');
+      var chosen = preferred || selectedVersion || latest;
+      versionMeta = {};
       versionSelect.innerHTML = '';
       versions.forEach(function (item) {
+        versionMeta[item.version] = item;
         var opt = document.createElement('option');
         opt.value = item.version;
-        opt.textContent = item.version;
-        if (item.publishedAt) opt.title = item.publishedAt;
+        opt.textContent = versionOptionLabel(item);
+        opt.title = (item.released ? '当前已发布 · ' : '') + (item.releaseable
+          ? 'Can release'
+          : ('Cannot release: ' + (item.releaseBlockReason || 'blocked')));
         versionSelect.appendChild(opt);
       });
-      if (chosen && versions.some(function (item) { return item.version === chosen; })) versionSelect.value = chosen;
-      else if (versions.some(function (item) { return item.version === DEFAULT_VERSION; })) versionSelect.value = DEFAULT_VERSION;
-      else versionSelect.value = versions[0] ? versions[0].version : '';
-      applyVersion(versionSelect.value);
+      if (!versions.length) {
+        var empty = document.createElement('option');
+        empty.value = '';
+        empty.textContent = '无保存版本';
+        versionSelect.appendChild(empty);
+        chosen = '';
+      } else if (!versions.some(function (item) { return item.version === chosen; })) {
+        chosen = latest;
+      }
+      applyVersion(chosen);
     }).catch(function () {
       setVersionStatus('版本服务未连接');
     });
@@ -739,12 +807,10 @@
     var label = document.createElement('span'); label.className = 'se-version__label'; label.setAttribute('data-editor', ''); label.textContent = 'Version';
     versionSelect = document.createElement('select'); versionSelect.setAttribute('data-editor', ''); versionSelect.setAttribute('aria-label', 'Select style version');
     versionSelect.onchange = function () { applyVersion(versionSelect.value, true); };
-    var releaseBtn = mkbtn('发布', releaseCurrentVersion, 'se-btn--primary');
-    versionStatus = document.createElement('span'); versionStatus.className = 'se-version__status'; versionStatus.setAttribute('data-editor', '');
+    versionReleaseBtn = mkbtn('发布', releaseSelectedVersion, 'se-btn--primary');
     wrap.appendChild(label);
     wrap.appendChild(versionSelect);
-    wrap.appendChild(releaseBtn);
-    wrap.appendChild(versionStatus);
+    wrap.appendChild(versionReleaseBtn);
     var spacer = header.querySelector('.app-frame__spacer');
     if (spacer && spacer.nextSibling) header.insertBefore(wrap, spacer.nextSibling);
     else header.appendChild(wrap);
@@ -849,29 +915,25 @@
     var ctl = div('se-ctl');
     var cur = currentValue(el, prop);
     var opts = optionsFor(prop, cur);
+    if (!opts.length) return null;
     var sw = (isColorProp(prop) || tokenFamilyOf(cur) === '--color-') ? div('se-sw') : null;
     var sel = document.createElement('select'); sel.setAttribute('data-editor', '');
     opts.forEach(function (o) { var op = document.createElement('option'); op.value = o.value; op.textContent = o.label; sel.appendChild(op); });
-    var c = document.createElement('option'); c.value = '__custom__'; c.textContent = '自定义…'; sel.appendChild(c);
-    var txt = document.createElement('input'); txt.type = 'text'; txt.setAttribute('data-editor', ''); txt.placeholder = 'CSS 值'; txt.style.display = 'none';
 
     var tm = /^var\(\s*(--[-A-Za-z0-9_]+)\s*\)$/.exec(cur);
     if (tm && optHas(opts, 'var(' + tm[1] + ')')) sel.value = 'var(' + tm[1] + ')';
     else if (cur && optHas(opts, cur)) sel.value = cur;
-    else { sel.value = '__custom__'; txt.style.display = 'block'; txt.value = cur; }
 
     function swatch() { if (sw) sw.style.background = getComputedStyle(el).getPropertyValue(prop) || cur; }
     swatch();
     sel.onchange = function () {
-      if (sel.value === '__custom__') { txt.style.display = 'block'; txt.focus(); }
-      else { txt.style.display = 'none'; apply(el, prop, sel.value); swatch(); }
+      apply(el, prop, sel.value);
+      swatch();
     };
-    txt.oninput = function () { var v = txt.value.trim(); if (v) { apply(el, prop, v); swatch(); } };
 
     if (sw) ctl.appendChild(sw);
     ctl.appendChild(sel);
     row.appendChild(ctl);
-    row.appendChild(txt);
     return row;
   }
 
@@ -903,11 +965,12 @@
 
     var body = div('se-body');
     var props = editableProps(el);
-    if (!props.length) {
+    var rows = props.map(function (p) { return rowFor(el, p); }).filter(Boolean);
+    if (!rows.length) {
       var e = div('se-empty'); e.textContent = '此元素没有可主题化的已声明样式 — 试试上层组件。';
       body.appendChild(e);
     } else {
-      props.forEach(function (p) { body.appendChild(rowFor(el, p)); });
+      rows.forEach(function (row) { body.appendChild(row); });
     }
     panel.appendChild(body);
 
@@ -1129,7 +1192,7 @@
     appendSaveStats(body, [
       { label: 'Token', value: String(meta.tokenCount) },
       { label: 'Composite', value: String(meta.styleCount) },
-      { label: '来源版本', value: payload.baseVersion || DEFAULT_VERSION },
+      { label: '来源版本', value: payload.baseVersion || '-' },
     ]);
     if (collected.conflicts.length) {
       body.appendChild(saveNode('div', 'se-save-callout', '有 ' + collected.conflicts.length + ' 个同 class 同属性存在不同取值，保存时会使用最后一次编辑的值。'));
@@ -1145,7 +1208,7 @@
   function renderSaveLoading() {
     saveBusy = true;
     clearSaveModal();
-    appendSaveHero('正在保存', '正在写入 versions，并生成 tokens.inline.css / composites.css。', 'S');
+    appendSaveHero('正在保存', '正在写入 versions，并生成 tokens.inline.css / primitives.css / composites.css。', 'S');
     var body = div('se-save-modal__body');
     var row = div('se-save-empty');
     row.style.display = 'flex';
@@ -1217,13 +1280,17 @@
       renderSaveNoChanges();
       return;
     }
+    if (!selectedVersion) {
+      renderSaveError(new Error('请先选择一个保存版本作为编辑基准。'), saveChanges);
+      return;
+    }
 
     var payload = {
       page: location.pathname.split('/').pop() || 'index.html',
       href: location.href,
       title: document.title || '',
       publishedAt: new Date().toISOString(),
-      baseVersion: versionSelect && versionSelect.value ? versionSelect.value : DEFAULT_VERSION,
+      baseVersion: selectedVersion,
       tokens: tokenStore,
       classOverrides: collected.overrides,
       classOverrideMeta: collected.meta,
@@ -1236,15 +1303,205 @@
     files = files && files.length ? files : ['catalog.json', 'catalog.md', 'tokens.inline.css', 'tokens.json', 'composites.css', 'manifest.json'];
     return files.map(function (file) { return { name: file, next: 'release/' + file }; });
   }
+  function versionFileRows(version, files) {
+    files = files && files.length ? files : ['tokens.inline.css', 'primitives.css', 'composites.css', 'manifest.json'];
+    return files.map(function (file) { return { name: file, next: 'versions/' + version + '/' + file }; });
+  }
+  function promoteFileRows(version, file) {
+    return [{ name: file || 'promote.md', next: 'versions/' + version + '/' + (file || 'promote.md') }];
+  }
   function renderReleaseNoVersion() {
     saveBusy = false;
     clearSaveModal();
-    appendSaveHero('没有可发布的版本', '请先确认 versions/v1 存在，或保存一个新版本后再发布到 release。', 'R');
+    appendSaveHero('没有可发布的版本', '请先保存一个版本后再发布到 release。', 'R');
     var body = div('se-save-modal__body');
     body.appendChild(saveNode('div', 'se-save-empty', 'Version 下拉框里没有可用版本。'));
     saveModal.appendChild(body);
     appendSaveFooter([mkbtn('关闭', closeSaveModal, 'se-btn--primary')]);
     openSaveModal();
+  }
+  function renderReleaseBlocked(version, meta) {
+    saveBusy = false;
+    clearSaveModal();
+    appendSaveHero('不能发布这个版本', version + ' 还不是 clean release snapshot。', '!');
+    var body = div('se-save-modal__body');
+    appendSaveStats(body, [
+      { label: 'Snapshot', value: version || '-' },
+      { label: 'Status', value: meta && meta.status || 'unknown' },
+      { label: 'Class overrides', value: String(meta && meta.classOverrideDeclarations || 0) },
+    ]);
+    var reason = meta && meta.releaseBlockReason || '未选择版本';
+    body.appendChild(saveNode('div', 'se-save-callout',
+      reason === 'promote required'
+        ? '这个版本仍包含 classOverrides。请先运行 pnpm promote -- ' + version + '，把变化提升到 source 并 pnpm build 后，再发布干净版本。'
+        : '阻止原因：' + reason
+    ));
+    saveModal.appendChild(body);
+    appendSaveFooter([mkbtn('关闭', closeSaveModal, 'se-btn--primary')]);
+    openSaveModal();
+  }
+  function renderFinalizeConfirm(version) {
+    saveBusy = false;
+    clearSaveModal();
+    appendSaveHero('转为 clean 版本', '检查 ' + version + ' 的改动是否已经进入 source，然后把它转为 clean snapshot。', 'C');
+    var body = div('se-save-modal__body');
+    appendSaveStats(body, [
+      { label: 'Draft', value: version },
+      { label: 'Version', value: version },
+      { label: 'Source', value: 'must be committed' },
+    ]);
+    body.appendChild(saveNode('div', 'se-save-callout', '这个动作会用当前 source 的干净样式覆盖 ' + version + ' 的 draft 样式。如果 source 还没提交，或 source 值和 draft 不一致，会直接失败。'));
+    appendSaveRows(body, '版本文件', '将写入', versionFileRows(version), 'preview');
+    saveModal.appendChild(body);
+    appendSaveFooter([
+      mkbtn('取消', closeSaveModal, 'se-btn--ghost'),
+      mkbtn('转为 clean', function () { submitFinalizePayload(version); }, 'se-btn--primary'),
+    ]);
+    openSaveModal();
+  }
+  function renderFinalizeLoading(version) {
+    saveBusy = true;
+    clearSaveModal();
+    appendSaveHero('正在转为 clean', '正在检查 ' + version + ' 是否已经 promote 到 source。', 'C');
+    var body = div('se-save-modal__body');
+    var row = div('se-save-empty');
+    row.style.display = 'flex';
+    row.style.alignItems = 'center';
+    row.style.justifyContent = 'center';
+    row.style.gap = '10px';
+    row.appendChild(div('se-save-spinner'));
+    row.appendChild(saveNode('span', '', '请稍候...'));
+    body.appendChild(row);
+    saveModal.appendChild(body);
+    openSaveModal();
+  }
+  function renderFinalizeSuccess(data) {
+    saveBusy = false;
+    clearSaveModal();
+    appendSaveHero('已转为 clean', data.version + ' 现在可以发布到 release。', '\u2713');
+    var body = div('se-save-modal__body');
+    appendSaveStats(body, [
+      { label: 'Version', value: data.version || '-' },
+      { label: 'Files', value: String((data.files || []).length) },
+      { label: 'Source', value: data.sourceCommit ? data.sourceCommit.slice(0, 12) : '-' },
+    ]);
+    body.appendChild(saveNode('div', 'se-save-callout', '目录: ' + data.relativeDir));
+    appendSaveRows(body, '版本文件', '已写入', versionFileRows(data.version, data.files), 'preview');
+    saveModal.appendChild(body);
+    appendSaveFooter([mkbtn('完成', closeSaveModal, 'se-btn--primary')]);
+    openSaveModal();
+  }
+  function renderFinalizeError(error, version) {
+    saveBusy = false;
+    clearSaveModal();
+    appendSaveHero('生成失败', error.message || String(error), '!');
+    var body = div('se-save-modal__body');
+    body.appendChild(saveNode('div', 'se-save-callout', '请确认已经按 ' + version + ' 的 promote.md 修改 source、运行 pnpm build，并提交受管 source。'));
+    saveModal.appendChild(body);
+    appendSaveFooter([
+      mkbtn('关闭', closeSaveModal, 'se-btn--ghost'),
+      mkbtn('重试', function () { submitFinalizePayload(version); }, 'se-btn--primary'),
+    ]);
+    openSaveModal();
+  }
+  function submitFinalizePayload(version) {
+    renderFinalizeLoading(version);
+    fetch(apiUrl('/__prototype_finalize'), {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ version: version })
+    }).then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (data) {
+        if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
+        return data;
+      });
+    }).then(function (data) {
+      loadVersions(data.version);
+      renderFinalizeSuccess(data);
+    }).catch(function (err) {
+      renderFinalizeError(err, version);
+    });
+  }
+  function renderPromoteConfirm(version, meta) {
+    saveBusy = false;
+    clearSaveModal();
+    appendSaveHero('申请发布', '生成 ' + version + ' 的 Agent promote handoff，后续由 Agent 自动创建 PR 进入 source。', 'P');
+    var body = div('se-save-modal__body');
+    appendSaveStats(body, [
+      { label: 'Draft', value: version },
+      { label: 'Token overrides', value: String(meta && meta.tokenOverrideCount || 0) },
+      { label: 'Class overrides', value: String(meta && meta.classOverrideDeclarations || 0) },
+    ]);
+    body.appendChild(saveNode('div', 'se-save-callout', '这个动作只生成 handoff 文档；不会修改 governed source、不会写 release、不会提交。把生成的 promote.md 交给 Agent 后，由 Agent 修改代码、自动创建 PR 并返回地址。'));
+    appendSaveRows(body, 'Agent handoff', '将写入', promoteFileRows(version), 'preview');
+    saveModal.appendChild(body);
+    appendSaveFooter([
+      mkbtn('取消', closeSaveModal, 'se-btn--ghost'),
+      mkbtn('生成 handoff', function () { submitPromotePayload(version); }, 'se-btn--primary'),
+    ]);
+    openSaveModal();
+  }
+  function renderPromoteLoading(version) {
+    saveBusy = true;
+    clearSaveModal();
+    appendSaveHero('正在生成 handoff', '正在运行 pnpm promote -- ' + version + '。', 'P');
+    var body = div('se-save-modal__body');
+    var row = div('se-save-empty');
+    row.style.display = 'flex';
+    row.style.alignItems = 'center';
+    row.style.justifyContent = 'center';
+    row.style.gap = '10px';
+    row.appendChild(div('se-save-spinner'));
+    row.appendChild(saveNode('span', '', '请稍候...'));
+    body.appendChild(row);
+    saveModal.appendChild(body);
+    openSaveModal();
+  }
+  function renderPromoteSuccess(data) {
+    saveBusy = false;
+    clearSaveModal();
+    appendSaveHero('已生成 Agent 任务', data.version + ' 的 promote handoff 已就绪。', '\u2713');
+    var body = div('se-save-modal__body');
+    appendSaveStats(body, [
+      { label: 'Version', value: data.version || '-' },
+      { label: 'Command', value: data.command || '-' },
+      { label: 'Brief', value: data.relativeBriefPath || '-' },
+    ]);
+    body.appendChild(saveNode('div', 'se-save-callout', '下一步：把这份 promote.md 交给 Agent。Agent 应自动创建独立 PR 来提升 source；PR 合并后再转为 clean snapshot 并发布 release。'));
+    appendSaveRows(body, 'Agent handoff', '已写入', promoteFileRows(data.version, 'promote.md'), 'preview');
+    saveModal.appendChild(body);
+    appendSaveFooter([mkbtn('完成', closeSaveModal, 'se-btn--primary')]);
+    openSaveModal();
+  }
+  function renderPromoteError(error, version) {
+    saveBusy = false;
+    clearSaveModal();
+    appendSaveHero('生成失败', error.message || String(error), '!');
+    var body = div('se-save-modal__body');
+    body.appendChild(saveNode('div', 'se-save-callout', '请确认版本 ' + version + ' 存在，并且本地 prototype 服务能访问 versions 目录。'));
+    saveModal.appendChild(body);
+    appendSaveFooter([
+      mkbtn('关闭', closeSaveModal, 'se-btn--ghost'),
+      mkbtn('重试', function () { submitPromotePayload(version); }, 'se-btn--primary'),
+    ]);
+    openSaveModal();
+  }
+  function submitPromotePayload(version) {
+    renderPromoteLoading(version);
+    fetch(apiUrl('/__prototype_promote'), {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ version: version })
+    }).then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (data) {
+        if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
+        return data;
+      });
+    }).then(function (data) {
+      renderPromoteSuccess(data);
+    }).catch(function (err) {
+      renderPromoteError(err, version);
+    });
   }
   function renderReleaseConfirm(version) {
     saveBusy = false;
@@ -1323,15 +1580,25 @@
         return data;
       });
     }).then(function (data) {
+      loadVersions(data.version);
       renderReleaseSuccess(data);
     }).catch(function (err) {
       renderReleaseError(err, version);
     });
   }
-  function releaseCurrentVersion() {
-    var version = versionSelect && versionSelect.value;
+  function releaseSelectedVersion() {
+    var version = selectedVersion || '';
     if (!version) {
       renderReleaseNoVersion();
+      return;
+    }
+    var meta = selectedVersionMeta(version);
+    if (meta && meta.status === 'draft') {
+      renderPromoteConfirm(version, meta);
+      return;
+    }
+    if (!meta || !meta.releaseable) {
+      renderReleaseBlocked(version, meta);
       return;
     }
     renderReleaseConfirm(version);

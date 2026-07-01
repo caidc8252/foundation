@@ -1,10 +1,10 @@
 {
-  "version": "v1",
+  "version": "current",
   "baseVersion": "",
   "publishedAt": "",
   "source": {
-    "page": "foundation-base",
-    "title": "Foundation base",
+    "page": "foundation-current",
+    "title": "Foundation current source",
     "href": ""
   },
   "counts": {
@@ -26,12 +26,12 @@
     "tokens": [],
     "classOverrides": []
   },
-  "sourceCommit": "f4f89c992114d7b111ab03cc56bd4125a08b4c06",
+  "sourceCommit": "",
   "sourceDirty": false,
   "sourceGit": {
-    "available": true,
-    "commit": "f4f89c992114d7b111ab03cc56bd4125a08b4c06",
-    "shortCommit": "f4f89c992114",
+    "available": false,
+    "commit": "",
+    "shortCommit": "",
     "dirty": false,
     "dirtyPaths": [],
     "restorePaths": [
@@ -42,6 +42,5 @@
       "governance"
     ]
   },
-  "base": true,
-  "classOverrideMeta": {}
+  "current": true
 }

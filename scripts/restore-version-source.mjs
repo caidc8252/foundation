@@ -9,7 +9,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { refreshReleaseMetadata, writeBaseVersion } from "../emit/build.mjs";
+import { CURRENT_BUILD_ROOT, CURRENT_VERSION, refreshReleaseMetadata, writeCurrentVersion } from "../emit/build.mjs";
 import {
   assertVersionSourceRestorable,
   restoreGovernedSource,
@@ -49,10 +49,11 @@ function readManifest(version) {
 }
 
 function runBuild(sourceGit) {
-  const { inlineCss } = writeBaseVersion(root, { sourceGit });
+  const { inlineCss } = writeCurrentVersion(root, { sourceGit });
   const { catalog, tokenJson } = refreshReleaseMetadata(root);
-  console.log(`foundation: emitted versions/v1/tokens.inline.css (${inlineCss.length} bytes)`);
-  console.log("foundation: emitted versions/v1/composites.css");
+  console.log(`foundation: emitted ${CURRENT_BUILD_ROOT}/${CURRENT_VERSION}/tokens.inline.css (${inlineCss.length} bytes)`);
+  console.log(`foundation: emitted ${CURRENT_BUILD_ROOT}/${CURRENT_VERSION}/primitives.css`);
+  console.log(`foundation: emitted ${CURRENT_BUILD_ROOT}/${CURRENT_VERSION}/composites.css`);
   console.log(
     `foundation: refreshed release/catalog.json + catalog.md ` +
       `(${catalog.primitives.length} primitives, ${catalog.composites.length} composites, ` +

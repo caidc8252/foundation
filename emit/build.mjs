@@ -5,17 +5,19 @@
    Turns the Tailwind-flavoured token source (tokens/*.css, authored as
    `@theme` blocks) into Tailwind-free snapshot files:
 
-     versions/v1/tokens.inline.css  — committed base token CSS for prototype
-                                      versioning.
-     versions/v1/composites.css     — committed base composite CSS for
-                                      prototype versioning.
-     release/*                      — committed current artifact snapshot.
+     build/current/tokens.inline.css  — generated current-source token CSS
+                                        for prototype preview.
+     build/current/primitives.css     — generated current-source primitive CSS.
+     build/current/composites.css     — generated current-source composite CSS.
+     release/*                       — committed current artifact snapshot.
 
    The ONLY transform for the CSS path is `@theme {`/`@theme static {`
    -> `:root {`. Everything else (var(), color-mix, the dark block, the
    reduced-motion media query) is already plain CSS and passes through.
 
    Generated snapshot files are never hand-edited. Re-run `pnpm build`.
+   Numbered versions/vN directories are saved prototype snapshots and are not
+   rewritten by the emitter.
    --------------------------------------------------------------------------- */
 import {
   copyFileSync,
@@ -28,9 +30,10 @@ import {
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { ICON_NAMES, VERSION as ICON_VERSION } from "../scripts/icon/registry.mjs";
-import { readSourceGitState } from "../scripts/source-git.mjs";
+import { GOVERNED_SOURCE_PATHS } from "../scripts/source-git.mjs";
 
-export const BASE_VERSION = "v1";
+export const CURRENT_VERSION = "current";
+export const CURRENT_BUILD_ROOT = "build";
 export const RELEASE_STRUCTURE = [
   "catalog.json",
   "catalog.md",
@@ -52,7 +55,11 @@ const LAYERS = [
   "dark",
 ];
 
-const stripComments = (css) => css.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\n{3,}/g, "\n\n");
+const stripComments = (css) =>
+  css
+    .replace(/\r\n?/g, "\n")
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/\n{3,}/g, "\n\n");
 const themeToRoot = (css) => css.replace(/@theme\s+static\s*\{/g, ":root {").replace(/@theme\s*\{/g, ":root {");
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -331,15 +338,22 @@ ${rows(patterns)}
 `;
 }
 
-function baseManifest(root, options = {}) {
-  const sourceGit = options.sourceGit || readSourceGitState(root);
+function currentManifest() {
+  const sourceGit = {
+    available: false,
+    commit: "",
+    shortCommit: "",
+    dirty: false,
+    dirtyPaths: [],
+    restorePaths: [...GOVERNED_SOURCE_PATHS],
+  };
   return {
-    version: BASE_VERSION,
+    version: CURRENT_VERSION,
     baseVersion: "",
     publishedAt: "",
     source: {
-      page: "foundation-base",
-      title: "Foundation base",
+      page: "foundation-current",
+      title: "Foundation current source",
       href: "",
     },
     counts: {
@@ -364,17 +378,18 @@ function baseManifest(root, options = {}) {
     sourceCommit: sourceGit.commit || "",
     sourceDirty: Boolean(sourceGit.dirty),
     sourceGit,
-    base: true,
+    current: true,
   };
 }
 
-export function writeBaseVersion(root, options = {}) {
-  const versionDir = join(root, "versions", BASE_VERSION);
+export function writeCurrentVersion(root, options = {}) {
+  const versionDir = join(root, CURRENT_BUILD_ROOT, CURRENT_VERSION);
   mkdirSync(versionDir, { recursive: true });
   const inlineCss = emitInlineCss(root);
   writeFileSync(join(versionDir, "tokens.inline.css"), inlineCss, "utf8");
+  copyFileSync(join(root, "primitives", "primitives.css"), join(versionDir, "primitives.css"));
   copyFileSync(join(root, "composites", "composites.css"), join(versionDir, "composites.css"));
-  writeFileSync(join(versionDir, "manifest.json"), `${JSON.stringify(baseManifest(root, options), null, 2)}\n`, "utf8");
+  writeFileSync(join(versionDir, "manifest.json"), `${JSON.stringify(currentManifest(root, options), null, 2)}\n`, "utf8");
   return {
     versionDir,
     inlineCss,
@@ -389,10 +404,10 @@ export function refreshReleaseMetadata(root) {
   const manifest = existsSync(manifestPath)
     ? JSON.parse(readFileSync(manifestPath, "utf8"))
     : {
-        ...baseManifest(root),
+        ...currentManifest(root),
         releasedAt: "",
         release: {
-          version: BASE_VERSION,
+          version: CURRENT_VERSION,
           structure: RELEASE_STRUCTURE,
         },
       };
@@ -401,7 +416,7 @@ export function refreshReleaseMetadata(root) {
   }
 
   const catalog = emitCatalog(root);
-  const releaseVersion = manifest.release?.version || manifest.version || BASE_VERSION;
+  const releaseVersion = manifest.release?.version || manifest.version || CURRENT_VERSION;
   const tokenCss = applyTokenCssOverrides(emitInlineCss(root), manifest.tokenOverrides || {});
   const compositeCss = appendCompositeOverrides(
     readFileSync(join(root, "composites", "composites.css"), "utf8"),
@@ -424,11 +439,12 @@ export function refreshReleaseMetadata(root) {
 
 if (fileURLToPath(import.meta.url) === process.argv[1]) {
   const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-  const { inlineCss } = writeBaseVersion(root);
+  const { inlineCss } = writeCurrentVersion(root);
   const { catalog, tokenJson } = refreshReleaseMetadata(root);
 
-  console.log(`foundation: emitted versions/${BASE_VERSION}/tokens.inline.css (${inlineCss.length} bytes)`);
-  console.log(`foundation: emitted versions/${BASE_VERSION}/composites.css`);
+  console.log(`foundation: emitted ${CURRENT_BUILD_ROOT}/${CURRENT_VERSION}/tokens.inline.css (${inlineCss.length} bytes)`);
+  console.log(`foundation: emitted ${CURRENT_BUILD_ROOT}/${CURRENT_VERSION}/primitives.css`);
+  console.log(`foundation: emitted ${CURRENT_BUILD_ROOT}/${CURRENT_VERSION}/composites.css`);
   console.log(
     `foundation: refreshed release/catalog.json + catalog.md ` +
       `(${catalog.primitives.length} primitives, ${catalog.composites.length} composites, ` +
