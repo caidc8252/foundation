@@ -2404,6 +2404,15 @@
       "contract": "patterns/list-page.md",
       "example": "patterns/list-page.html",
       "classes": []
+    },
+    {
+      "layer": "pattern",
+      "name": "settings",
+      "title": "Pattern · Settings",
+      "summary": "\"Configure this workspace.\" A read-write preferences surface: related controls grouped into setting cards, reached through a left section nav, each group committing its own changes.",
+      "contract": "patterns/settings.md",
+      "example": "patterns/settings.html",
+      "classes": []
     }
   ]
 }

@@ -25,6 +25,29 @@
         "The request says home or overview but really describes a single collection to browse (that is list-page)."
       ]
     },
+    "settings": {
+      "pattern": "settings",
+      "builderPattern": "settings",
+      "contract": "patterns/settings.md",
+      "example": "patterns/settings.html",
+      "intent": "Read-write preferences surface: related controls grouped into setting cards, reached through a left section nav, each group saving its own changes; optionally a trailing Danger zone for destructive actions.",
+      "chooseWhen": [
+        "The request says settings, preferences, configuration, options, workspace/account settings, or admin config.",
+        "The page is grouped toggles/selects/values the user scans and flips (setting rows), not a single record-entry form."
+      ],
+      "avoidWhen": [
+        "The request is a single-step record create/edit form (use create-form).",
+        "The request is one record's read-mostly profile/detail (use detail-page)."
+      ],
+      "keywords": ["settings", "preferences", "configuration", "config", "options", "workspace settings", "account settings", "admin settings", "设置", "偏好", "配置", "选项", "首选项", "系统设置"],
+      "exampleRequests": ["做一个设置页", "Create a workspace settings page", "Build an account preferences screen", "做一个系统配置页面"],
+      "defaultTitle": "Settings",
+      "outputNameHints": ["settings", "preferences", "config"],
+      "composites": ["page-header", "page-body", "toggles"],
+      "clarifyIf": [
+        "The request says settings but really describes a single create/edit form (that is create-form)."
+      ]
+    },
     "actions": {
       "pattern": "actions",
       "builderPattern": "actions",
@@ -169,7 +192,8 @@
     "If the user asks for many records, a management table, browsing, filtering, or search over a collection, choose list-page.",
     "If the user asks for one record's profile, detail, overview, or activity, choose detail-page.",
     "If the user asks for multi-step onboarding, setup, branching, or review-before-commit, choose create-wizard.",
-    "If the user asks for registration, signup, create, edit, settings, or a simple form, choose create-form.",
+    "If the user asks for a settings/preferences/configuration screen — grouped toggles and selects the user scans and flips, not a single record form — choose settings.",
+    "If the user asks for registration, signup, create, edit, or a simple record-entry form, choose create-form.",
     "If the user asks to demonstrate page actions themselves, choose actions."
   ],
   "aiFlow": [
