@@ -129,7 +129,7 @@ Classes in `composites.css` (load after primitives - they reuse `.btn`/`.input`/
 | `timeline` | Vertical event log — device history, audit trails, ticket activity. | `.timeline` `.timeline--compact` `.timeline--stacked` `.timeline__actor` `.timeline__content` `.timeline__description` `.timeline__header` `.timeline__item` `.timeline__item--last` `.timeline__marker` `.timeline__marker--dot` `.timeline__marker--error` `.timeline__marker--icon` `.timeline__marker--info` `.timeline__marker--neutral` `.timeline__marker--primary` `.timeline__marker--success` `.timeline__marker--warning` `.timeline__marker-dot` `.timeline__marker-node` `.timeline__rail` `.timeline__time` `.timeline__time-row` `.timeline__title` | [contract](../composites/timeline.md) · [example](../composites/timeline.html) |
 | `toggles` | Inline control-with-label wrappers — pairs a .checkbox, .radio, or .switch primitive with an optional text .label. | `.toggle-checkbox` `.toggle-radio` `.toggle-switch` | [contract](../composites/toggles.md) · [example](../composites/toggles.html) |
 
-## L3 · Patterns (6) - assembled archetypes
+## L3 · Patterns (7) - assembled archetypes
 
 A pattern is a named structure built from composites; copy its `example` and edit.
 
@@ -141,3 +141,4 @@ A pattern is a named structure built from composites; copy its `example` and edi
 | `dashboard` | "The overview home." A read-mostly landing that answers is the fleet healthy, and what needs attention at a glance — a KPI metric strip over optional charts and an activity / alert feed. | - | [contract](../patterns/dashboard.md) · [example](../patterns/dashboard.html) |
 | `detail-page` | "One record, read-mostly, with actions." The archetype you reach a list page's row into. | - | [contract](../patterns/detail-page.md) · [example](../patterns/detail-page.html) |
 | `list-page` | The default archetype for "a collection you browse, filter, and act on" (the most common portal screen). | - | [contract](../patterns/list-page.md) · [example](../patterns/list-page.html) |
+| `settings` | "Configure this workspace." A read-write preferences surface: related controls grouped into setting cards, reached through a left section nav, each group committing its own changes. | - | [contract](../patterns/settings.md) · [example](../patterns/settings.html) |
