@@ -389,7 +389,6 @@
         // Header
         var html = '<div class="calendar__header">';
         html += '<div class="calendar__caption">' + MONTHS[month] + ' ' + year + '</div>';
-        html += '<div class="calendar__nav">';
         if (monthOffset === 0) {
           html += '<button class="calendar__nav-btn" type="button" data-action="prev" aria-label="Previous month">';
           html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="m15 18-6-6 6-6"/></svg>';
@@ -400,7 +399,7 @@
           html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="m9 18 6-6-6-6"/></svg>';
           html += '</button>';
         }
-        html += '</div></div>';
+        html += '</div>';
 
         // Grid
         html += '<div class="calendar__grid">';

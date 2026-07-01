@@ -123,8 +123,14 @@ const authoredSurfaces = (html) => {
   const styleCss = extractStyleCss(html);
   const { css: pageCss, removed } = removeKnownFoundationCss(styleCss);
   const markup = stripHtmlComments(stripStyleBlocks(stripScriptBlocks(html)));
+  // Same as `markup` but KEEPS <script> — a mock-data prototype builds most of its
+  // DOM (rows, badges, cells) from JS string templates, so class usage there is
+  // invisible to a script-stripped scan. Styles are still dropped (a CSS body is
+  // not DOM). Used only by the class scan, which guards against interpolated values.
+  const markupWithScripts = stripHtmlComments(stripStyleBlocks(html));
   return {
     markup,
+    markupWithScripts,
     pageCss,
     authored: `${markup}\n${pageCss}`,
     removedLayers: removed,
@@ -146,12 +152,21 @@ const localClassesFromCss = (css) => {
   return local;
 };
 
+// Collects the classes an artifact USES. Accepts markup that may include <script>
+// (see authoredSurfaces.markupWithScripts) so JS-templated DOM counts too. A class
+// value is only harvested when it is a CLEAN, fully-literal class list — plain
+// idents + spaces. A value carrying interpolation (`class="badge ' + tone + '"`)
+// or any non-class char is skipped whole: its real leading class is a false
+// negative we accept to avoid emitting junk tokens (`'`, `+`, a JS var name) that
+// would false-positive as off-set classes — a hard violation under --strict.
+const CLEAN_CLASS_LIST = /^[\sA-Za-z0-9_-]+$/;
 const usedClassesFromMarkup = (markup) => {
   const used = new Set();
   for (const tag of markup.matchAll(/<([A-Za-z][A-Za-z0-9:-]*)(?:\s[^<>]*)?>/g)) {
     const attrs = tag[0];
     for (const m of attrs.matchAll(/\sclass\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+))/gi)) {
       const raw = m[1] ?? m[2] ?? m[3] ?? "";
+      if (!CLEAN_CLASS_LIST.test(raw)) continue;   // interpolated / dynamic — skip whole
       for (const c of raw.split(/\s+/)) if (c) used.add(c);
     }
   }
@@ -166,9 +181,18 @@ const classAttrValuesFromTag = (tag) => {
   return values;
 };
 
-const structuralFindingsFromMarkup = (markup) => {
+// Scans the RAW html (scripts included), NOT the script-stripped markup: a
+// mock-data prototype builds its table rows from JS string templates in a
+// `<script>` (`'<td class="cell-tags">' + …`), so a stripped-markup scan is blind
+// to exactly where this defect lives. `.cell-tags` is a flex wrapper — on a `<td>`
+// it makes the cell `display:flex`, dropping it out of table-cell layout so its
+// content stops aligning with the row's other cells (the vertical misalignment).
+// It belongs INSIDE the cell: `<td><div class="cell-tags">…</div></td>`. Matching a
+// literal `<td class="cell-tags">` catches both static and JS-template forms; a
+// class assembled from fragments (`'<td class="' + cls + '"'`) can still slip past.
+const structuralFindingsFromHtml = (html) => {
   const cellTagsOnTableCells = [];
-  for (const m of markup.matchAll(/<(td|th)\b(?:\s[^<>]*)?>/gi)) {
+  for (const m of html.matchAll(/<(td|th)\b(?:\s[^<>]*)?>/gi)) {
     const tag = m[0];
     const classValues = classAttrValuesFromTag(tag);
     if (classValues.some((raw) => raw.split(/\s+/).includes("cell-tags"))) {
@@ -331,13 +355,13 @@ for (const file of files) {
     continue;
   }
   const html = readFileSync(file, "utf8");
-  const { markup, pageCss, authored, removedLayers } = authoredSurfaces(html);
+  const { markup, markupWithScripts, pageCss, authored, removedLayers } = authoredSurfaces(html);
 
   // Classes the file defines in its OWN <style> are allowed (page-local composition).
   const local = localClassesFromCss(pageCss);
 
-  // 1. Classes used in markup.
-  const used = usedClassesFromMarkup(markup);
+  // 1. Classes used in markup — including JS-templated DOM (markupWithScripts).
+  const used = usedClassesFromMarkup(markupWithScripts);
   const offSetClasses = [...used].filter((c) => !CLASSES.has(c) && !local.has(c)).sort();
 
   // 2. var(--x) refs must name a real token — unless the artifact defines that
@@ -357,7 +381,8 @@ for (const file of files) {
 
   // 5. Structural table contracts. `.cell-tags` is a flex wrapper inside a cell;
   // placing it on <td>/<th> changes the browser's table layout and breaks row rules.
-  const structure = structuralFindingsFromMarkup(markup);
+  // Scans raw `html` (not stripped markup) so JS-templated rows in <script> count too.
+  const structure = structuralFindingsFromHtml(html);
 
   // Advisory: inline padding/margin layout hacks (never affects exit code).
   const layoutHacks = inlineLayoutHacksFromMarkup(markup);
