@@ -71,6 +71,27 @@
   grid-template-columns: repeat(auto-fit, minmax(min(22rem, 100%), 1fr));
 }
 
+/* ═══════════════════════════ Form grid ═══════════════════════════ */
+/* Multi-column field layout for forms. A pure layout utility (like Stack and the
+   auto-fit grids above) — NO @component marker, NO contract: it carries only
+   column geometry, no anatomy or semantics. Promotes the page-local .form-row
+   that artifacts kept re-inventing (create-form.html) into the closed set so the
+   name stops drifting (.form-row / form-grid--2 / …). Each cell is a .field; the
+   gap matches the in-form field rhythm (space-4).
+     .form-grid         auto-fit: as many ≥15rem columns as fit, else 1-up.
+     .form-grid--2/--3  fixed 2-/3-up at ≥sm (640px); 1-up below. */
+.form-grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+}
+.form-grid--2,
+.form-grid--3 { grid-template-columns: 1fr; }
+@media (min-width: 640px) {
+  .form-grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .form-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
 /* ═══════════════════════════ Page header ═══════════════════════════ */
 /* @component page-header */
 /* Mirrors @cloud/ui layout/page-header. Full-bleed band flush under the
@@ -2320,3 +2341,111 @@
 }
 /* Disabled — a row whose control is unavailable. */
 .list-row--disabled { opacity: 0.5; pointer-events: none; }
+
+/* ═══════════════════════════ Log console ═══════════════════════════ */
+/* @component log-console */
+/* A structured logcat viewer: a toolbar (level filter · text filter · download)
+   over a dense, monospace, level-coloured row list with expandable rows. Each row
+   parses to columns — time · pid/tid · level · tag · message — on a fixed grid so
+   columns align down the list. V/D/I read muted; W/E/F get a coloured left rail
+   (E/F also a faint wash) so failures pop when scanning. Filter / expand / download
+   BEHAVIOUR is the consumer's; this is the presentation. */
+.log-console {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-line-default);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-1);
+  overflow: hidden;
+}
+/* ── Toolbar ── */
+.log-console__toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--color-line-subtle);
+  background-color: var(--color-surface-2);
+}
+.log-console__levels { display: inline-flex; gap: var(--space-1); }
+.log-console__level-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--space-6);
+  height: var(--space-6);
+  padding-inline: var(--space-1);
+  border: 1px solid var(--color-line-default);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-1);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-content-tertiary);
+  cursor: pointer;
+}
+.log-console__level-toggle--active {
+  background-color: var(--color-surface-active);
+  border-color: var(--color-line-strong);
+  color: var(--color-content-primary);
+}
+.log-console__download { margin-inline-start: auto; }
+/* ── Viewport (scrolls the rows) ── */
+.log-console__viewport {
+  overflow: auto;
+  max-block-size: 24rem;   /* layout measure — the consumer can override */
+  background-color: var(--color-surface-1);
+}
+/* ── Row: fixed grid so columns align down the list ── */
+.log-console__row {
+  display: grid;
+  grid-template-columns: 6rem 5rem 1.25rem 9rem 1fr;   /* time pid level tag msg */
+  gap: var(--space-3);
+  align-items: baseline;
+  padding: var(--space-1) var(--space-3);
+  border-inline-start: 2px solid transparent;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: 1.5;
+  color: var(--color-content-secondary);
+}
+.log-console__row + .log-console__row { border-block-start: 1px solid var(--color-line-subtle); }
+.log-console__time { color: var(--color-content-tertiary); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.log-console__pid  { color: var(--color-content-tertiary); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.log-console__level { font-weight: 700; text-align: center; }
+.log-console__tag  { color: var(--color-content-primary); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.log-console__msg  { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* Level colours (V D I W E F) — muted for V/D/I, status-coloured for W/E/F. */
+.log-console__row--v .log-console__level { color: var(--color-content-tertiary); }
+.log-console__row--d .log-console__level { color: var(--color-info); }
+.log-console__row--i .log-console__level { color: var(--color-content-secondary); }
+.log-console__row--w .log-console__level { color: var(--color-warning); }
+.log-console__row--e .log-console__level { color: var(--color-error); }
+.log-console__row--f .log-console__level { color: var(--color-error-strong); }
+.log-console__row--w { border-inline-start-color: var(--color-warning); }
+.log-console__row--e { border-inline-start-color: var(--color-error); background-color: var(--color-error-bg); }
+.log-console__row--f { border-inline-start-color: var(--color-error-strong); background-color: var(--color-error-bg); }
+/* ── Expandable row: reveal the full message / stack ── */
+.log-console__row--expandable { cursor: pointer; }
+.log-console__row--expandable:hover { background-color: var(--color-surface-hover); }
+.log-console__row--expanded .log-console__msg { white-space: normal; overflow: visible; }
+.log-console__detail {
+  grid-column: 1 / -1;
+  display: none;
+  margin: var(--space-1) 0 0;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-2);
+  color: var(--color-content-secondary);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.log-console__row--expanded .log-console__detail { display: block; }
+/* ── Empty (no rows match the filter) ── */
+.log-console__empty {
+  padding: var(--space-6);
+  text-align: center;
+  color: var(--color-content-tertiary);
+  font-size: var(--text-sm);
+}
