@@ -25,6 +25,10 @@
                                      button / Enter (principle 14). HEURISTIC scan of
                                      the raw script; advisory only — never affects the
                                      exit code (see the function note).
+     ⚠ spec-internal id in copy   — rule/state/process/task ids (R-N · SM-N · P-N ·
+                                     TASK-*) in rendered UI text; traceability markers,
+                                     not product copy. HTML-comment refs are exempt.
+                                     Advisory only — never affects the exit code.
 
    The two ✗ categories are hard violations (non-zero exit). Classes are
    advisory by default; pass --strict to make off-set classes fail too.
@@ -200,6 +204,22 @@ const structuralFindingsFromHtml = (html) => {
     }
   }
   return { cellTagsOnTableCells };
+};
+
+// Spec-internal IDs leaking into rendered UI copy. A prototype projects the spec's
+// business meaning, not its bookkeeping: rule ids (R-N), state-machine ids (SM-N),
+// process ids (P-N), task ids (TASK-*) are traceability markers — a real product UI
+// never shows "(R-1)". Scan markupWithScripts so JS-templated copy counts, but with
+// HTML comments already stripped (authoredSurfaces): `<!-- enforces party.md#R-1 -->`
+// is the SANCTIONED traceability channel and must not be flagged. Advisory only.
+// Match the reference SYNTAX only — a parenthesized tag `(R-1)` or an anchor `#R-1`
+// (how a leaked spec ref reads in copy), plus a bare `TASK-*`. This skips quoted
+// mock-data ids like `{ id: 'R-301' }` in the JS, which are data, not copy.
+const INTERNAL_ID = /\((?:R|SM|P)-\d+\)|#(?:R|SM|P)-\d+\b|\bTASK-[A-Z][\w-]*/g;
+const internalIdsFromMarkup = (markupWithScripts) => {
+  const hits = new Set();
+  for (const m of markupWithScripts.matchAll(INTERNAL_ID)) hits.add(m[0]);
+  return [...hits].sort();
 };
 
 // A `.table-frame--flush` nested inside a `.card` is a self-defeating double-frame.
@@ -395,6 +415,11 @@ for (const file of files) {
   // Scans the RAW html (scripts included), unlike the closed-set checks above.
   const searchOnChange = searchOnChangeFromHtml(html);
 
+  // Advisory: spec-internal IDs (R-N / SM-N / P-N / TASK-*) in rendered UI copy.
+  // markupWithScripts keeps JS-templated copy; HTML comments are already stripped
+  // (the sanctioned `<!-- enforces …#R-1 -->` traceability channel is not flagged).
+  const internalIds = internalIdsFromMarkup(markupWithScripts);
+
   const hard =
     unknownTokens.length +
     hardColors.length +
@@ -434,6 +459,8 @@ for (const file of files) {
     console.log(`  ⚠ review: ${flushNesting.length} .table-frame--flush inside a .card — the card owns the frame and its overflow:hidden traps the sticky header; make the list results card a standalone .table-frame--flush (patterns/list-page.md), or drop --flush for a plain table in a section card: ${flushNesting.join(" · ")}`);
   if (searchOnChange.length)
     console.log(`  ⚠ review: ${searchOnChange.length} search/filter wired on change — filtering must commit on the Search button / Enter, never on change (principle 14). Verify these edit a draft only, not run the query: ${searchOnChange.join(" · ")}`);
+  if (internalIds.length)
+    console.log(`  ⚠ review: ${internalIds.length} spec-internal id(s) in rendered copy — R-N/SM-N/P-N/TASK-* are traceability markers, not user-facing text; strip them (put traceability in an HTML comment): ${internalIds.join(", ")}`);
   const passText = strict
     ? "PASS (strict: no out-of-set tokens, hardcoded colors, or off-set classes)"
     : "PASS (no out-of-set tokens, no hardcoded colors)";

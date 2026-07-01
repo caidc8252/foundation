@@ -210,3 +210,39 @@ test("check-artifact flags search/filter wired on change (principle 14, advisory
     rmSync(dir, { recursive: true, force: true });
   }
 });
+
+test("check-artifact flags spec-internal ids in copy, but not comments or mock-data ids", () => {
+  const dir = mkdtempSync(join(tmpdir(), "foundation-artifact-"));
+  try {
+    const file = join(dir, "internal-ids.html");
+    writeFileSync(
+      file,
+      `<!doctype html>
+<p>At most one active contract at a time (R-1).</p>
+<!-- enforces party.md#R-1 — sanctioned traceability channel, must not flag -->
+<div id="x"></div>
+<script>
+  var roles = [{ id: 'R-301', name: 'Fleet' }];   // mock-data id, not copy
+  document.getElementById('x').innerHTML = '<span>writes an audit-log entry (R-5)</span>';
+</script>
+`,
+      "utf8",
+    );
+
+    const run = spawnSync(
+      process.execPath,
+      [join(root, "scripts", "check-artifact.mjs"), file],
+      { cwd: root, encoding: "utf8" },
+    );
+
+    // Advisory: parenthesized R-1 (static) + R-5 (JS-templated) are flagged…
+    assert.equal(run.status, 0, run.stdout);
+    assert.match(run.stdout, /spec-internal id/i);
+    assert.match(run.stdout, /\(R-1\)/);
+    assert.match(run.stdout, /\(R-5\)/);
+    // …but the HTML-comment #R-1 and the quoted mock-data id R-301 are not.
+    assert.doesNotMatch(run.stdout, /R-301/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
