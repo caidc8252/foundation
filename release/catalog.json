@@ -265,12 +265,9 @@
     "btn--lg",
     "btn--link",
     "btn--md",
-    "btn--outline",
     "btn--primary",
     "btn--secondary",
     "btn--sm",
-    "btn--soft",
-    "btn--tertiary",
     "btn--xs",
     "calendar",
     "calendar__caption",
@@ -499,6 +496,7 @@
     "feed-item__body",
     "feed-item__head",
     "feed-item__icon",
+    "feed-item__icon--error",
     "feed-item__icon--info",
     "feed-item__icon--neutral",
     "feed-item__icon--success",
@@ -824,9 +822,6 @@
     "toggle",
     "toggle--auto",
     "toggle--default",
-    "toggle--in-cloud",
-    "toggle--in-outline",
-    "toggle--in-segmented",
     "toggle--md",
     "toggle--outline",
     "toggle--sm",
@@ -989,12 +984,9 @@
         ".btn--lg",
         ".btn--link",
         ".btn--md",
-        ".btn--outline",
         ".btn--primary",
         ".btn--secondary",
         ".btn--sm",
-        ".btn--soft",
-        ".btn--tertiary",
         ".btn--xs"
       ]
     },
@@ -1750,9 +1742,7 @@
         ".toggle-group__item",
         ".toggle-group__item--auto",
         ".toggle-group__item--md",
-        ".toggle-group__item--sm",
-        ".tooltip",
-        ".tooltip__arrow"
+        ".toggle-group__item--sm"
       ]
     },
     {
@@ -1766,16 +1756,9 @@
         ".toggle",
         ".toggle--auto",
         ".toggle--default",
-        ".toggle--in-cloud",
-        ".toggle--in-outline",
-        ".toggle--in-segmented",
         ".toggle--md",
         ".toggle--outline",
-        ".toggle--sm",
-        ".toggle-group--cloud",
-        ".toggle-group--outline",
-        ".toggle-group--plain",
-        ".toggle-group--segmented"
+        ".toggle--sm"
       ]
     },
     {
@@ -1963,6 +1946,7 @@
         ".feed-item__body",
         ".feed-item__head",
         ".feed-item__icon",
+        ".feed-item__icon--error",
         ".feed-item__icon--info",
         ".feed-item__icon--neutral",
         ".feed-item__icon--success",
