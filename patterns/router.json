@@ -2,6 +2,29 @@
   "version": 1,
   "purpose": "Machine-readable intent router for AI artifact generation. Routes natural-language page requests to a catalog pattern and a build-artifact example.",
   "routes": {
+    "dashboard": {
+      "pattern": "dashboard",
+      "builderPattern": "dashboard",
+      "contract": "patterns/dashboard.md",
+      "example": "patterns/dashboard.html",
+      "intent": "Read-mostly overview home: a KPI metric strip over optional charts and an activity/alert feed, answering 'is the system healthy and what needs attention' at a glance.",
+      "chooseWhen": [
+        "The request says dashboard, overview, home, landing, console home, or KPI summary.",
+        "The page summarizes the health/activity of a whole system or fleet, not one collection or one record."
+      ],
+      "avoidWhen": [
+        "The request is a browsable/filterable collection (use list-page).",
+        "The request is one record's detail/profile (use detail-page)."
+      ],
+      "keywords": ["dashboard", "overview", "home", "landing", "kpi", "metrics", "summary", "fleet health", "概览", "首页", "仪表盘", "总览", "看板", "驾驶舱"],
+      "exampleRequests": ["做一个概览首页", "Create a fleet overview dashboard", "Build a metrics home page", "做一个设备总览看板"],
+      "defaultTitle": "Overview",
+      "outputNameHints": ["dashboard", "overview", "home"],
+      "composites": ["page-header", "page-body", "stat-card", "chart", "feed-list"],
+      "clarifyIf": [
+        "The request says home or overview but really describes a single collection to browse (that is list-page)."
+      ]
+    },
     "actions": {
       "pattern": "actions",
       "builderPattern": "actions",
@@ -142,6 +165,7 @@
   },
   "decisionOrder": [
     "If the user explicitly asks for advanced filtering on a collection, choose list-page-advanced-filter.",
+    "If the user asks for a dashboard, overview home, landing, or KPI summary of a whole system or fleet (not a single collection), choose dashboard.",
     "If the user asks for many records, a management table, browsing, filtering, or search over a collection, choose list-page.",
     "If the user asks for one record's profile, detail, overview, or activity, choose detail-page.",
     "If the user asks for multi-step onboarding, setup, branching, or review-before-commit, choose create-wizard.",

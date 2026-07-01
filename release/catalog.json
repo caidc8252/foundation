@@ -2380,6 +2380,15 @@
     },
     {
       "layer": "pattern",
+      "name": "dashboard",
+      "title": "Pattern · Dashboard",
+      "summary": "\"The overview home.\" A read-mostly landing that answers is the fleet healthy, and what needs attention at a glance — a KPI metric strip over optional charts and an activity / alert feed.",
+      "contract": "patterns/dashboard.md",
+      "example": "patterns/dashboard.html",
+      "classes": []
+    },
+    {
+      "layer": "pattern",
       "name": "detail-page",
       "title": "Pattern · Detail page",
       "summary": "\"One record, read-mostly, with actions.\" The archetype you reach a list page's row into.",

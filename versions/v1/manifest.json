@@ -26,14 +26,19 @@
     "tokens": [],
     "classOverrides": []
   },
-  "sourceCommit": "ed148cb34e8be9db8d0fb007bec93d4df804ae01",
-  "sourceDirty": false,
+  "sourceCommit": "f0c6d54efe07cf7e6e20699900b0fcabb5aa8e0b",
+  "sourceDirty": true,
   "sourceGit": {
     "available": true,
-    "commit": "ed148cb34e8be9db8d0fb007bec93d4df804ae01",
-    "shortCommit": "ed148cb34e8b",
-    "dirty": false,
-    "dirtyPaths": [],
+    "commit": "f0c6d54efe07cf7e6e20699900b0fcabb5aa8e0b",
+    "shortCommit": "f0c6d54efe07",
+    "dirty": true,
+    "dirtyPaths": [
+      "M  composites/log-console.html",
+      "A  patterns/dashboard.html",
+      "A  patterns/dashboard.md",
+      "M  patterns/router.json"
+    ],
     "restorePaths": [
       "tokens",
       "primitives",
