@@ -840,6 +840,21 @@
   var versionLoading = null, versionLoadingDesc = null, versionLoadId = 0;
   var versionServiceOnline = true;
   function apiUrl(path) { return location.protocol === 'file:' ? 'http://localhost:4177' + path : path; }
+  function agentBaseLabel() {
+    return location.protocol === 'file:' ? DEFAULT_AGENT_BASE : (location.origin || DEFAULT_AGENT_BASE);
+  }
+  function probePrototypeAgent() {
+    if (shouldUseOfflineReview()) return Promise.resolve(null);
+    return fetch(apiUrl('/__prototype_versions')).then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (data) {
+        if (!res.ok || !data.ok) throw new Error(data.error || ('HTTP ' + res.status));
+        return data;
+      });
+    }).catch(function () {
+      setVersionStatus('本地 Agent 未连接：' + agentBaseLabel());
+      return null;
+    });
+  }
   function setVersionStatus(text) { if (versionStatus) versionStatus.textContent = text || ''; }
   function selectedVersionMeta(version) { return versionMeta[version || selectedVersion] || null; }
   function versionReleasedSuffix(item) { return item && item.released ? ' · 已发布' : ''; }

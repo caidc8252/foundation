@@ -52,6 +52,15 @@ test("visual review can export a review package without a local agent", () => {
   assert.match(editorSource, /导出审查包/);
 });
 
+test("prototype agent helpers are defined before version control probes them", () => {
+  assert.match(editorSource, /function agentBaseLabel\(/);
+  assert.match(editorSource, /function probePrototypeAgent\(/);
+  assert.match(editorSource, /probePrototypeAgent\(\);/);
+  assert.ok(editorSource.indexOf("function probePrototypeAgent(") < editorSource.indexOf("probePrototypeAgent();"));
+  assert.match(editorSource, /function probePrototypeAgent\(\)[\s\S]*fetch\(apiUrl\('\/__prototype_versions'\)\)/);
+  assert.doesNotMatch(editorSource, /fetch\(apiUrl\('\/api\/prototype\/health'\)\)/);
+});
+
 test("visual review drafts survive initial version application", () => {
   assert.match(editorSource, /if \(!preserveDraft\) clearDraftOverrides\(\)/);
   assert.match(editorSource, /applyVersion\(chosen, false, \{ preserveDraft: !preferred \}\)/);
