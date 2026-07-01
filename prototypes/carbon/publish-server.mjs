@@ -452,6 +452,34 @@ function listVersions(versionRoot = VERSION_ROOT, repoRoot = ROOT) {
     .sort((a, b) => Number(a.version.slice(1)) - Number(b.version.slice(1)));
 }
 
+export function readReleaseInfo(releaseRoot = RELEASE_ROOT) {
+  const manifestFile = join(releaseRoot, "manifest.json");
+  if (!existsSync(manifestFile)) return { version: "", releasedAt: "" };
+  try {
+    const manifest = JSON.parse(readFileSync(manifestFile, "utf8"));
+    const version = manifest.release?.version || manifest.version || "";
+    if (!/^v\d+$/.test(version)) return { version: "", releasedAt: "" };
+    return {
+      version,
+      releasedAt: manifest.releasedAt || "",
+    };
+  } catch {
+    return { version: "", releasedAt: "" };
+  }
+}
+
+export function markReleasedVersions(versions, releaseInfo = readReleaseInfo()) {
+  const releasedVersion = releaseInfo.version || "";
+  return (versions || []).map(version => {
+    const released = Boolean(releasedVersion && version.version === releasedVersion);
+    return {
+      ...version,
+      released,
+      releasedAt: released ? (releaseInfo.releasedAt || "") : "",
+    };
+  });
+}
+
 export function publishSnapshot(payload, options = {}) {
   const repoRoot = options.repoRoot || ROOT;
   const versionRoot = options.versionRoot || VERSION_ROOT;
@@ -800,13 +828,16 @@ export function createHandler() {
     try {
       if (url.pathname === "/__prototype_versions" && req.method === "GET") {
         ensureCurrentVersion(ROOT);
-        const current = currentVersionSummary(ROOT);
-        const versions = listVersions();
+        const releaseInfo = readReleaseInfo(RELEASE_ROOT);
+        const current = markReleasedVersions([currentVersionSummary(ROOT)], releaseInfo)[0];
+        const versions = markReleasedVersions(listVersions(), releaseInfo);
         return json(res, {
           ok: true,
           current,
           versions,
           latest: versions.at(-1)?.version || "",
+          releasedVersion: releaseInfo.version,
+          releasedAt: releaseInfo.releasedAt,
         });
       }
       if ((url.pathname === "/__prototype_save" || url.pathname === "/__prototype_publish") && req.method === "POST") {

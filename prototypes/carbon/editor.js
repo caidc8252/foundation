@@ -629,23 +629,26 @@
   function apiUrl(path) { return location.protocol === 'file:' ? 'http://localhost:4177' + path : path; }
   function setVersionStatus(text) { if (versionStatus) versionStatus.textContent = text || ''; }
   function selectedVersionMeta(version) { return versionMeta[version || selectedVersion] || null; }
+  function versionReleasedSuffix(item) { return item && item.released ? ' · 已发布' : ''; }
   function versionOptionLabel(item) {
     var label = item.version;
-    if (item.version === 'v1' && item.status === 'clean') return label + ' · initial snapshot';
-    if (item.status === 'draft') return label + ' · draft · promote required';
-    if (item.status === 'clean') return label + ' · clean snapshot';
-    return label + ' · blocked';
+    var released = versionReleasedSuffix(item);
+    if (item.version === 'v1' && item.status === 'clean') return label + ' · initial snapshot' + released;
+    if (item.status === 'draft') return label + ' · draft · promote required' + released;
+    if (item.status === 'clean') return label + ' · clean snapshot' + released;
+    return label + ' · blocked' + released;
   }
   function versionStatusText(version) {
     var meta = selectedVersionMeta(version);
     if (!meta) return version ? ('已应用 ' + version) : '未选择版本';
+    var released = versionReleasedSuffix(meta);
     if (meta.status === 'draft') {
-      return '已应用 ' + meta.version + ' · draft，需先 promote（' +
+      return '已应用 ' + meta.version + released + ' · draft，需先 promote（' +
         (meta.tokenOverrideCount || 0) + ' token / ' +
         (meta.classOverrideDeclarations || 0) + ' class）';
     }
-    if (meta.releaseable) return '已应用 ' + meta.version + ' · 可发布';
-    return '已应用 ' + meta.version + ' · 不可发布：' + (meta.releaseBlockReason || 'blocked');
+    if (meta.releaseable) return '已应用 ' + meta.version + released + ' · 可发布';
+    return '已应用 ' + meta.version + released + ' · 不可发布：' + (meta.releaseBlockReason || 'blocked');
   }
   function refreshReleaseButton() {
     if (!versionReleaseBtn) return;
@@ -778,9 +781,9 @@
         var opt = document.createElement('option');
         opt.value = item.version;
         opt.textContent = versionOptionLabel(item);
-        opt.title = item.releaseable
+        opt.title = (item.released ? '当前已发布 · ' : '') + (item.releaseable
           ? 'Can release'
-          : ('Cannot release: ' + (item.releaseBlockReason || 'blocked'));
+          : ('Cannot release: ' + (item.releaseBlockReason || 'blocked')));
         versionSelect.appendChild(opt);
       });
       if (!versions.length) {
@@ -805,11 +808,9 @@
     versionSelect = document.createElement('select'); versionSelect.setAttribute('data-editor', ''); versionSelect.setAttribute('aria-label', 'Select style version');
     versionSelect.onchange = function () { applyVersion(versionSelect.value, true); };
     versionReleaseBtn = mkbtn('发布', releaseSelectedVersion, 'se-btn--primary');
-    versionStatus = document.createElement('span'); versionStatus.className = 'se-version__status'; versionStatus.setAttribute('data-editor', '');
     wrap.appendChild(label);
     wrap.appendChild(versionSelect);
     wrap.appendChild(versionReleaseBtn);
-    wrap.appendChild(versionStatus);
     var spacer = header.querySelector('.app-frame__spacer');
     if (spacer && spacer.nextSibling) header.insertBefore(wrap, spacer.nextSibling);
     else header.appendChild(wrap);
@@ -914,29 +915,25 @@
     var ctl = div('se-ctl');
     var cur = currentValue(el, prop);
     var opts = optionsFor(prop, cur);
+    if (!opts.length) return null;
     var sw = (isColorProp(prop) || tokenFamilyOf(cur) === '--color-') ? div('se-sw') : null;
     var sel = document.createElement('select'); sel.setAttribute('data-editor', '');
     opts.forEach(function (o) { var op = document.createElement('option'); op.value = o.value; op.textContent = o.label; sel.appendChild(op); });
-    var c = document.createElement('option'); c.value = '__custom__'; c.textContent = '自定义…'; sel.appendChild(c);
-    var txt = document.createElement('input'); txt.type = 'text'; txt.setAttribute('data-editor', ''); txt.placeholder = 'CSS 值'; txt.style.display = 'none';
 
     var tm = /^var\(\s*(--[-A-Za-z0-9_]+)\s*\)$/.exec(cur);
     if (tm && optHas(opts, 'var(' + tm[1] + ')')) sel.value = 'var(' + tm[1] + ')';
     else if (cur && optHas(opts, cur)) sel.value = cur;
-    else { sel.value = '__custom__'; txt.style.display = 'block'; txt.value = cur; }
 
     function swatch() { if (sw) sw.style.background = getComputedStyle(el).getPropertyValue(prop) || cur; }
     swatch();
     sel.onchange = function () {
-      if (sel.value === '__custom__') { txt.style.display = 'block'; txt.focus(); }
-      else { txt.style.display = 'none'; apply(el, prop, sel.value); swatch(); }
+      apply(el, prop, sel.value);
+      swatch();
     };
-    txt.oninput = function () { var v = txt.value.trim(); if (v) { apply(el, prop, v); swatch(); } };
 
     if (sw) ctl.appendChild(sw);
     ctl.appendChild(sel);
     row.appendChild(ctl);
-    row.appendChild(txt);
     return row;
   }
 
@@ -968,11 +965,12 @@
 
     var body = div('se-body');
     var props = editableProps(el);
-    if (!props.length) {
+    var rows = props.map(function (p) { return rowFor(el, p); }).filter(Boolean);
+    if (!rows.length) {
       var e = div('se-empty'); e.textContent = '此元素没有可主题化的已声明样式 — 试试上层组件。';
       body.appendChild(e);
     } else {
-      props.forEach(function (p) { body.appendChild(rowFor(el, p)); });
+      rows.forEach(function (row) { body.appendChild(row); });
     }
     panel.appendChild(body);
 
@@ -1582,6 +1580,7 @@
         return data;
       });
     }).then(function (data) {
+      loadVersions(data.version);
       renderReleaseSuccess(data);
     }).catch(function (err) {
       renderReleaseError(err, version);

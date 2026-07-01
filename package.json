@@ -42,7 +42,7 @@
     "check:patterns": "node scripts/check-pattern-router.mjs",
     "check:examples": "node scripts/check-examples.mjs",
     "check:release": "node scripts/check-release.mjs",
-    "check:all": "node --test emit/build.test.mjs scripts/promote-version.test.mjs && node scripts/check-release.mjs && node scripts/check-examples.mjs --strict && node scripts/check-pattern-router.mjs",
+    "check:all": "node --test emit/build.test.mjs scripts/check-artifact.test.mjs scripts/promote-version.test.mjs prototypes/carbon/publish-server.test.mjs prototypes/carbon/editor.test.mjs prototypes/carbon/composite-coverage.test.mjs prototypes/carbon/menu-links.test.mjs prototypes/carbon/composite-placement.test.mjs && node scripts/check-release.mjs && node scripts/check-examples.mjs --strict && node scripts/check-pattern-router.mjs",
     "visual:render": "node scripts/visual/render.mjs",
     "visual:setup": "playwright install chromium",
     "docs": "node emit/docs.mjs",

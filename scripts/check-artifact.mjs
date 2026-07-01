@@ -148,6 +148,26 @@ const usedClassesFromMarkup = (markup) => {
   return used;
 };
 
+const classAttrValuesFromTag = (tag) => {
+  const values = [];
+  for (const m of tag.matchAll(/\sclass\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+))/gi)) {
+    values.push(m[1] ?? m[2] ?? m[3] ?? "");
+  }
+  return values;
+};
+
+const structuralFindingsFromMarkup = (markup) => {
+  const cellTagsOnTableCells = [];
+  for (const m of markup.matchAll(/<(td|th)\b(?:\s[^<>]*)?>/gi)) {
+    const tag = m[0];
+    const classValues = classAttrValuesFromTag(tag);
+    if (classValues.some((raw) => raw.split(/\s+/).includes("cell-tags"))) {
+      cellTagsOnTableCells.push(tag.length > 90 ? `${tag.slice(0, 87)}…` : tag);
+    }
+  }
+  return { cellTagsOnTableCells };
+};
+
 const tokenRefsFromAuthored = (text) => {
   const refs = new Set();
   for (const m of stripCssComments(text).matchAll(/var\(\s*(--[A-Za-z_][\w-]*)/g)) {
@@ -250,6 +270,10 @@ for (const file of files) {
   //    strict (warn otherwise); untagged icon-shaped svgs always warn.
   const icons = iconFindingsFromMarkup(markup);
 
+  // 5. Structural table contracts. `.cell-tags` is a flex wrapper inside a cell;
+  // placing it on <td>/<th> changes the browser's table layout and breaks row rules.
+  const structure = structuralFindingsFromMarkup(markup);
+
   // Advisory: inline padding/margin layout hacks (never affects exit code).
   const layoutHacks = inlineLayoutHacksFromMarkup(markup);
 
@@ -257,6 +281,7 @@ for (const file of files) {
     unknownTokens.length +
     hardColors.length +
     icons.unknown.length +
+    structure.cellTagsOnTableCells.length +
     (strict ? offSetClasses.length + icons.mismatch.length : 0);
   hardTotal += hard;
 
@@ -281,6 +306,10 @@ for (const file of files) {
   }
   if (icons.untagged)
     console.log(`    ⚠ review: ${icons.untagged} icon-shaped <svg> with no data-lucide (un-mappable to lucide-react)`);
+  const structureBad = structure.cellTagsOnTableCells.length;
+  console.log(`  structure: ${structureBad === 0 ? "ok" : `${structureBad} issue(s)`}`);
+  if (structureBad)
+    console.log(`    ✗ .cell-tags is a flex wrapper inside the table cell; do not put it on ${structure.cellTagsOnTableCells.join(", ")}`);
   if (layoutHacks.length)
     console.log(`  ⚠ review: ${layoutHacks.length} inline padding/margin style(s) — prefer a class (.stack--N / .card__content--flush / page-local): ${layoutHacks.join(" · ")}`);
   const passText = strict
