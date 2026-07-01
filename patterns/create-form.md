@@ -41,8 +41,8 @@ frameworks*). The required core below is the few slots without which this stops
 being a create/edit form; everything else is included per business need. The
 [`create-form.html`](./create-form.html) example shows the **required core live**;
 the optional slots appear only as labelled, removable stubs/comments — the
-status `banner` and the extra section card are commented stubs, the file-upload
-block is a known gap (no `Dropzone` primitive — see *Known gaps*), and the
+status `banner`, the extra section card, and the file-upload block (a `dropzone`
+primitive stub) are commented stubs, and the
 preview/summary rail is **full-page-only** and not shown in this example. Copying
 the example does **not** mean filling every slot.
 
@@ -53,7 +53,7 @@ the example does **not** mean filling every slot.
 | ≥1 `form-section` card (header + `Field`s) | **yes** | always — at least one card of fields is the form |
 | header `description` | no | the title alone doesn't make the page's purpose obvious |
 | status `banner` (alert under the header) | no | a record-level status/notice must be surfaced before the fields |
-| file-upload block (dropzone, in the body) | no | the form captures a file/attachment — *see Known gaps* |
+| file-upload block (`dropzone`, in the body) | no | the form captures a file/attachment — use the [`dropzone`](../primitives/dropzone.md) primitive (`.dropzone` + `.file-list`/`.file-row`) |
 | additional `form-section` cards | no | the form is long enough to split into per-concern cards (Identity, Billing, …) |
 | per-section `description` | no | a section's purpose isn't obvious from its header |
 | secondary header action (beyond Cancel) | no | a genuine page-level secondary verb exists — Cancel is not "secondary" in this sense |
@@ -97,12 +97,14 @@ The variant drives the primary verb in the (required) header actions slot:
   `dl`; mechanism borrowed from the wizard's summary rail). All-or-nothing across the
   form; a modal form never has one (it's short by definition).
 
-## Known gaps
+## File-upload block
 
-- **File upload** is a recognized form block (an upstream blueprint
-  `file-upload-block`), but foundation has **no `Dropzone` primitive yet** — do not
-  hand-roll dropzone classes. When it lands it becomes a composite and this pattern
-  gains an "upload region" block. Until then, record it here as the gap it is.
+When the form captures a file/attachment, drop the [`dropzone`](../primitives/dropzone.md)
+primitive into the body (typically inside its own `form-section` card): the
+`.dropzone` zone (rest / `--drag` / `--disabled`) plus a `.file-list` of
+`.file-row`s for picked files. It is **presentation-only** — the host wires the
+actual upload and feeds per-file status/progress back; the form never uploads on
+its own. Include it only when the page's job needs it (optional slot above).
 
 ## Building blocks
 
@@ -111,7 +113,8 @@ Composites: [`page-header`](../composites/page-header.md) (the title band) +
 card sits in).
 
 Primitives: `Field`, `Label`, `Input`/`Textarea`/`Select`/`Checkbox`/`RadioGroup`,
-`Button`, `Modal`/`Sheet`, `Card` (the form card and per-concern section cards).
+`Button`, `Modal`/`Sheet`, `Card` (the form card and per-concern section cards),
+`Dropzone` (the optional file-upload block).
 `@cloud/ui` realizes these; an artifact composes from `primitives.css`.
 
 > First-draft stub — expand with field-spacing and section specs as real forms land.

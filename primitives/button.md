@@ -11,7 +11,7 @@ A clickable action. The primary way to trigger a mutation, submit, or navigate-a
 
 ## Variants
 
-DS 2.0 canonical set — six variants only. All other class names are compat stubs (see below).
+DS 2.0 canonical set — six variants only.
 
 | variant | use | token recipe |
 |---|---|---|
@@ -22,15 +22,8 @@ DS 2.0 canonical set — six variants only. All other class names are compat stu
 | `ghost-danger` | destructive icon/low-emphasis action | text `error` · hover bg `error-bg` + text `error-strong` |
 | `link` | inline text link styled as a button | text `primary-500` · hover underline · no height/padding |
 
-> Aliases kept for compat: `default` = `primary`, `destructive` = `danger`.
-
-### Compat stubs (deprecated — do not use in new work)
-
-| class | maps to | note |
-|---|---|---|
-| `.btn--tertiary` | `secondary` behavior | DS 2.0: filled low-emphasis merged into secondary |
-| `.btn--outline` | `secondary` behavior | DS 2.0: bordered transparent merged into secondary |
-| `.btn--soft` | `secondary` behavior | DS 2.0: tonal primary removed; no direct replacement |
+> Removed in DS 2.0 (v1) — no longer part of the closed set: `.btn--tertiary`,
+> `.btn--outline`, `.btn--soft` (use `.btn--secondary`).
 
 ## Sizes
 

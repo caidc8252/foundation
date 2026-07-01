@@ -82,6 +82,25 @@ Below tokens, consumers share *contracts*, never *code*. That is by design:
 React+Tailwind and self-contained HTML cannot share components — but they can,
 and must, share the same design truth.
 
+**Low-level interaction & accessibility are realized downstream, not in the
+artifact skin.** The artifact-side reference CSS is a **static skin** whose job is
+to make a prototype communicate *business interaction and flow*; the runtime
+behaviour and the fine-grained interaction/a11y layer are added when the prototype
+is translated into `@cloud/ui`. The following are therefore **deliberately the
+`@cloud/ui` consumer's responsibility**, and their absence from the reference CSS
+or an artifact is **not a defect** (do not "fix" them in the skin, and audits
+should not flag them):
+
+- keyboard focus rings (`:focus-visible`) and their exact ring geometry;
+- ARIA wiring (`aria-describedby` / `aria-required` / `role` associations, live regions);
+- disabled-state interaction guards (e.g. suppressing `:hover` on a disabled control);
+- `prefers-reduced-motion` handling of transitions/animations.
+
+What the skin *is* responsible for: token-only values, the documented
+variants/sizes and the **visible business states** (empty / loading / error /
+selected / disabled), and cross-screen consistency. A missing *visible business
+state* is a real gap; a missing *interaction-polish behaviour* is not.
+
 ## 8. Same-brand scope
 
 This foundation encodes ONE brand (the product design system). Sharing tokens

@@ -86,8 +86,21 @@
         -->
 
         <!-- OPTIONAL: file-upload block (dropzone) inside the body — render only when the
-             form captures a file/attachment. No Dropzone primitive exists yet (see
-             create-form.md "Known gaps"); do not hand-roll dropzone classes. Removable. -->
+             form captures a file/attachment. Uses the `dropzone` primitive (see
+             create-form.md "File-upload block" + primitives/dropzone.md). Presentation
+             only: the host wires the actual upload and feeds status back. Removable.
+        <div class="card form-page">
+          <div class="card__header"><span class="form-title">Attachments</span></div>
+          <div class="card__content form-stack">
+            <label class="dropzone">
+              <svg data-lucide="upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:var(--space-6);height:var(--space-6);"><path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>
+              <span>Drop files here or click to browse</span>
+              <input type="file" hidden multiple>
+            </label>
+          </div>
+        </div>
+        -->
+
 
         <!-- ───────────── SINGLE-STEP FORM (≤ ~8 fields, no branching) ─────────────
              REQUIRED CORE: at least one form-section card (this one). Long forms group

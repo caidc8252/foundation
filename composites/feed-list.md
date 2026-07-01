@@ -26,8 +26,8 @@ where order is recency, not a connected sequence, and rows can carry actions.
 ```
 
 - **Row** — a 3-column grid: **icon** | **main** | **trailing**.
-- **Icon** — a tonal tile (`--info` / `--success` / `--warning` / `--neutral`),
-  signalling the event class.
+- **Icon** — a tonal tile (`--info` / `--success` / `--warning` / `--error` /
+  `--neutral`), signalling the event class.
 - **Main** — an optional **overline** head (kind / source, uppercase
   `content-tertiary`, may hold a mono code), a **title** (`text-sm`, weight 600),
   an optional **body** line (`text-xs`, `content-secondary`), and an optional
@@ -67,7 +67,7 @@ where order is recency, not a connected sequence, and rows can carry actions.
   `Button` actions inside a `Card` (`flush` content); this contract names the row
   shape shared with the notifications + approvals screens. See the `ui` skill.
 - **Artifact** — `.feed-list` → `.feed-item` (3-column grid: icon | main | trailing)
-  with `.feed-item__icon` (`--info` / `--success` / `--warning` / `--neutral`),
+  with `.feed-item__icon` (`--info` / `--success` / `--warning` / `--error` / `--neutral`),
   `.feed-item__main` (`__head` / `__title` / `__body`), and `.feed-item__trailing`
   (`__time` on top; optional `__actions` below — `justify-content: flex-end`). Empty
   reuses `.empty-state`; row buttons reuse `.btn--*`. In `composites.css`.

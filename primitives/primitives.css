@@ -151,31 +151,12 @@ body { margin: 0; }
   border-color: var(--color-line-strong);
 }
 
-/* DS 2.0: tertiary / outline / soft variants removed — fold into ghost / secondary.
-   Kept as no-op stubs so old artifact HTML doesn't hard-break; use ghost / secondary for new code. */
-.btn--tertiary,
-.btn--outline {
-  background-color: var(--color-surface-2);
-  color: var(--color-content-primary);
-  border-color: var(--color-line-default);
-}
-.btn--tertiary:hover:not(:disabled),
-.btn--outline:hover:not(:disabled) { background-color: var(--color-surface-hover); }
-
 .btn--ghost {
   background-color: transparent;
   color: var(--color-content-primary);
 }
 .btn--ghost:hover:not(:disabled) { background-color: var(--color-surface-hover); }
 .btn--ghost:active:not(:disabled) { background-color: var(--color-surface-active); }
-
-/* DS 2.0: soft removed — no direct replacement; use secondary or primary. */
-.btn--soft {
-  background-color: var(--color-surface-2);
-  color: var(--color-content-primary);
-  border-color: var(--color-line-default);
-}
-.btn--soft:hover:not(:disabled) { background-color: var(--color-surface-hover); }
 
 .btn--danger {
   background-color: var(--color-error);
@@ -559,7 +540,11 @@ body { margin: 0; }
   border-color: color-mix(in oklch, var(--color-info) 25%, transparent);
 }
 
-/* Badge · low-level variants */
+/* Badge · low-level variants — DEPRECATED compat stubs, NOT part of the current API.
+   The API is `tone` only: use the tonal set above (neutral/success/warning/error/info).
+   These (default/secondary/destructive/outline/ghost/link) remain so old HTML doesn't
+   break; do not reach for them in new code (see badge.md "Notes"). Overlaps to avoid:
+   destructive→prefer error, secondary→prefer neutral. */
 .badge--default {
   background-color: var(--color-primary-700);
   color: var(--color-content-on-primary);
@@ -1015,7 +1000,7 @@ body { margin: 0; }
 
 /* Footer — action shelf, no border/fill (sits flush in the panel padding).
    Stacks reversed on mobile (Confirm on top so the safe Cancel sits nearest the
-   thumb); right-aligned row on sm+. Holds two .btn (.btn--outline Cancel +
+   thumb); right-aligned row on sm+. Holds two .btn (.btn--secondary Cancel +
    .btn--primary/.btn--danger Confirm). */
 .alert-dialog__footer {
   display: flex;
@@ -1444,7 +1429,7 @@ body { margin: 0; }
   padding-top: var(--space-4);    /* source pt-4 (16px) */
 }
 
-/* Nav buttons — reuse .btn .btn--outline .btn--icon .btn--sm (icon-sm = 28px);
+/* Nav buttons — reuse .btn .btn--secondary .btn--icon .btn--sm (icon-sm = 28px);
    .carousel__nav adds the round shape + absolute placement just outside the
    viewport. Horizontal pins are the defaults; .carousel__prev / __next set the
    side, and .carousel--vertical re-pins + rotates the chevron 90°. */
@@ -3943,9 +3928,9 @@ body { margin: 0; }
 /* @component toggle */
 /* A press-toggle BUTTON (not a switch): shares button interaction tokens, the
    on state is aria-pressed="true" (static stand-in for base-ui data-pressed).
-   Group-driven looks (outline/segmented/cloud) live in .toggle-group below —
-   the artifact can't read an ancestor data-variant the way the React side does,
-   so each group skin is expressed as an explicit .toggle--in-<variant> class. */
+   This is the STANDALONE single toggle. Grouped / segmented looks live entirely
+   in the .toggle-group component below (.toggle-group + .toggle-group__item) —
+   one owner, no duplicate group skins here. */
 
 .toggle {
   display: inline-flex;
@@ -3996,86 +3981,6 @@ body { margin: 0; }
   padding-inline: var(--spacing-cx-md);
   padding-block: var(--space-2);
   font-size: var(--text-sm);
-}
-
-/* ── ToggleGroup containers ── */
-.toggle-group--outline {
-  display: inline-flex;
-  align-items: center;
-  overflow: hidden;
-  border: 1px solid var(--color-line-strong);
-  border-radius: var(--radius-md);
-  background-color: var(--color-surface-2);
-}
-.toggle-group--segmented {
-  display: inline-flex;
-  align-items: center;
-  gap: 1px;
-  padding: var(--space-1);
-  border: 1px solid var(--color-line-subtle);
-  border-radius: var(--radius-md);
-  background-color: var(--color-surface-3);
-}
-.toggle-group--cloud {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-1);
-}
-.toggle-group--plain {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-/* ── Group-driven item skins (stand-in for in-data-[variant=…]) ── */
-/* outline group: flatten edges; items share the track's outer border/radius */
-.toggle--in-outline {
-  border-radius: 0;
-  border: 0;
-  border-right: 1px solid var(--color-line-strong);
-}
-.toggle--in-outline:last-child { border-right: 0; }
-
-/* segmented group: borderless transparent item; pressed lifts into a pill */
-.toggle--in-segmented {
-  border-radius: var(--radius-sm);
-  border: 0;
-  background-color: transparent;
-  color: var(--color-content-secondary);
-}
-.toggle--in-segmented:hover:not(:disabled) {
-  background-color: transparent;
-  color: var(--color-content-primary);
-}
-.toggle--in-segmented[aria-pressed="true"]:not(:disabled) {
-  background-color: var(--color-surface-2);
-  color: var(--color-content-primary);
-  box-shadow: var(--shadow-1);
-}
-
-/* cloud group: standalone rounded-full chip, compact, tints primary when on */
-.toggle--in-cloud {
-  height: auto;
-  border-radius: var(--radius-full);
-  border: 1px solid var(--color-line-default);
-  background-color: var(--color-surface-2);
-  padding-inline: var(--spacing-cx-sm);
-  padding-block: var(--space-1);
-  font-size: var(--text-xs);
-  font-weight: 400;
-  color: var(--color-content-secondary);
-}
-.toggle--in-cloud:hover:not(:disabled) {
-  background-color: var(--color-surface-2);
-  border-color: var(--color-line-strong);
-}
-.toggle--in-cloud[aria-pressed="true"]:not(:disabled) {
-  border-color: var(--color-primary-500);
-  background-color: var(--color-primary-50);
-  font-weight: 500;
-  color: var(--color-primary-700);
 }
 
 /* ═══════════════════════════════ Toggle Group ═══════════════════════════════ */
@@ -4221,7 +4126,8 @@ body { margin: 0; }
   font-weight: 500;
 }
 
-/* Tooltip */
+/* ═══════════════════════════════ Tooltip ═══════════════════════════════ */
+/* @component tooltip */
 /* Inverted hint bubble with a directional arrow. Open/close, portalling, and
    side/arrow positioning are React/base-ui behaviors; this static skin renders
    a single OPEN bubble (default top placement) — no enter/exit keyframes. The

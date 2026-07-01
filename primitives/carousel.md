@@ -43,7 +43,7 @@ The negative track margin + per-slide padding produce a consistent `--space-4` (
 ## States
 
 - **prev / next disabled** — at a scroll boundary the corresponding button is `disabled` (`canScrollPrev` / `canScrollNext` false): `cursor-not-allowed` + `opacity-50`, inherited from `.btn`.
-- **prev / next hover / focus-visible** — inherited from the `.btn--outline` recipe (`surface-hover` fill, `shadow-focus` ring).
+- **prev / next hover / focus-visible** — inherited from the `.btn--secondary` recipe (`surface-hover` fill, `shadow-focus` ring).
 - **dot selected** — the dot at the current scroll snap fills `content-primary`; the rest are hollow (transparent fill, `line-default` ring). Selection is the only state a dot expresses.
 - **dot focus-visible** — `shadow-focus` ring (keyboard reachable).
 
@@ -58,4 +58,4 @@ The negative track margin + per-slide padding produce a consistent `--space-4` (
 ## Implementations
 
 - **Next / @cloud/ui** — `import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext, CarouselDots } from "@cloud/ui"`. **Behavior is owned by the React implementation** (embla-carousel-react): the scroll engine, snap points, `canScroll*` flags, dot count/selection sync, ArrowKey handling, and `orientation` axis swap all live there. `CarouselPrevious`/`CarouselNext` are `Button`s (`variant="outline"`, `size="icon-sm"`); a `useCarousel()` context wires them and the dots to the engine. The reference CSS below expresses the **static visual skin only** — surface, clipping, gutter, nav placement, dot fill. API details: the `ui` skill.
-- **Artifact (self-contained HTML)** — use `.carousel` › `.carousel__viewport` › `.carousel__track` › `.carousel__item`, with `.carousel__prev` / `.carousel__next` (reuse `.btn .btn--outline .btn--icon .btn--sm` + `.carousel__nav` for the round + absolute placement) and `.carousel__dots` › `.carousel__dot` (+ `.carousel__dot--active`). Add `.carousel--vertical` on the root to flip the axis. A pure-CSS artifact has no scroll engine — render slides as a horizontally scrollable/overflowing track for the static prototype; mark the current dot with `--active` (the skin can't observe a live snap).
+- **Artifact (self-contained HTML)** — use `.carousel` › `.carousel__viewport` › `.carousel__track` › `.carousel__item`, with `.carousel__prev` / `.carousel__next` (reuse `.btn .btn--secondary .btn--icon .btn--sm` + `.carousel__nav` for the round + absolute placement) and `.carousel__dots` › `.carousel__dot` (+ `.carousel__dot--active`). Add `.carousel--vertical` on the root to flip the axis. A pure-CSS artifact has no scroll engine — render slides as a horizontally scrollable/overflowing track for the static prototype; mark the current dot with `--active` (the skin can't observe a live snap).

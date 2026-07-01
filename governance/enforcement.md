@@ -28,7 +28,7 @@ The closed set an artifact may use — and where to find each piece — is the
 `AGENTS.md` at the repo root; the legal token/class/pattern names are enumerated
 in the committed `release/catalog.md` (+ `release/catalog.json`). Start there.
 
-No AST l int can run on a self-contained HTML file, so enforcement is part
+No AST lint can run on a self-contained HTML file, so enforcement is part
 **runnable check**, part authoring checklist:
 
 ```bash
