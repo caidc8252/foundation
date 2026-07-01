@@ -58,6 +58,15 @@ The remaining items are an eye/design pass:
 - [ ] `node scripts/check-artifact.mjs --strict <file>` is clean (no out-of-set
       tokens/colors/classes; page-local composition classes must be defined in
       the artifact's own `<style>`).
+- [ ] **Filtering commits on the Search button, never on change** (principle 14):
+      the search field / quick filters edit a *draft*; only **Search** (or Enter)
+      runs the query; chip-remove / Clear-all re-running immediately is allowed.
+      **The static checker cannot see this reliably** — whether an `input`/`change`
+      handler merely updates the draft (allowed) or runs the query (a defect) is a
+      behavior, not a closed-set fact. `check-artifact` emits a **best-effort advisory**
+      (⚠) when a search/filter target is wired to an `input`/`change` listener, but it
+      misses generically-named wiring and can't confirm intent — so read the filter
+      wiring by hand. This is the failure mode missed most under **detail-page tabs**.
 - [ ] Inlined the current `release/tokens.inline.css`; no stale snapshot.
 - [ ] Every color/size/radius/shadow is `var(--token-…)` — zero hex/px literals
       for anything a token covers.

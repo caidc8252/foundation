@@ -110,9 +110,10 @@ whether or not a condition band sits above them):
   - *Secondary action* (`page-header__actions` secondary `Button`): a page-level
     secondary verb (e.g. "Import"). Omit when no such verb exists for this
     collection; the primary CTA stands alone.
-- **Search and filters submit on the Search button — not on change** — *when the
-  condition band is present* (it is an optional slot — omit it for a list with no
-  filtering). Typing in the search field or picking a quick filter only edits a
+- **Search and filters submit on the Search button — not on change** (design law ·
+  **principle 14** — global, and it also governs filtered tables embedded under
+  detail-page tabs) — *when the condition band is present* (it is an optional slot —
+  omit it for a list with no filtering). Typing in the search field or picking a quick filter only edits a
   **draft**; nothing runs until the user clicks **Search** (Enter in the search
   field also submits). The filter apparatus runs a **draft → applied** state
   machine (`useListFilters`): edits live in `draft`; `apply()` — the **Search

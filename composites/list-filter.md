@@ -46,12 +46,16 @@ Artifact markup:
 
 ## Rules
 
-- **Search + filters submit on the Search button — not on change.** Typing in the
+- **Search + filters submit on the Search button — not on change.** This is the
+  global design law (**principle 14**), and it holds **wherever this family is
+  embedded** — a table under a **detail-page tab**, a picker, any filtered collection —
+  not only on a list page. Typing in the
   search field or picking a quick filter only edits a **draft**; nothing runs until
   the user clicks **Search** (Enter in the field also submits), which commits the
   whole draft and resets to page 1. Removing a chip (✕) or **clear all** acts on the
   already-applied query and **re-runs immediately** (no Search click). Every applied
   criterion still shows as a removable chip, so the active query is always **visible**.
+  **Search-on-change / search-as-you-type / filter-on-select is a defect.**
 - **Applied-filters reserves no space when empty** — it renders null, not an empty
   bar. The label is `text-xs` / `content-tertiary`; "clear all" is a `ghost` `xs`
   button.

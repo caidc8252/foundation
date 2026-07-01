@@ -198,3 +198,29 @@ modifier, e.g. `.card__content--flush`).
 
 (This is the canonical home for the portal spacing system; the standalone
 `docs/protal-page-style-spec.md` §3 is being folded in here.)
+
+## 14. Filtering commits on an explicit action — never on change
+
+Wherever the **list-filter family** (search input · quick filters · advanced) appears
+— a list page, a table **inside a detail-page tab**, a picker, any filtered collection
+— editing a filter only builds a **draft**. Typing in the search field or changing a
+quick filter runs **nothing**; the query commits only when the user acts — the **Search
+button**, or **Enter** in the search field — which applies the whole draft and resets
+to page 1. **Search-on-change / search-as-you-type / filter-on-select is a defect.**
+
+- The sole exception is editing the *already-applied* query: removing a chip (✕) or
+  **Clear all** re-runs immediately with no Search click — the user is trimming a
+  committed query, not typing a new draft.
+- This is a **business-flow** rule, not interaction polish (contrast principle 7): the
+  draft→applied model changes how filtering reads and behaves, so the prototype must
+  honor it — it is not a downstream `@cloud/ui` concern to defer.
+- **Global scope, not the list pattern's.** The family carries this rule everywhere it
+  is embedded; lists tucked under **detail-page tabs** are where it is missed most —
+  which is exactly why the law lives here, not only in `patterns/list-page.md`.
+
+Mechanics live in the composite: `composites/list-filter.md` (Rules). Enforcement: the
+static artifact checker cannot *reliably* see this — behavior isn't in the closed set,
+and a draft update (allowed) reads the same as a query run (a defect). `check-artifact`
+emits a **best-effort advisory** flagging the obvious on-change wiring, but the
+authoritative catch is the review-gate item in `enforcement.md`; on the `@cloud/ui`
+side it is an ESLint target.

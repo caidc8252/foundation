@@ -20,6 +20,11 @@
                                      sticky header --flush exists to free (see the
                                      function note). Advisory only — never affects
                                      the exit code.
+     ⚠ search/filter wired on change — a search/filter control that runs the query
+                                     on `input`/`change` instead of on the Search
+                                     button / Enter (principle 14). HEURISTIC scan of
+                                     the raw script; advisory only — never affects the
+                                     exit code (see the function note).
 
    The two ✗ categories are hard violations (non-zero exit). Classes are
    advisory by default; pass --strict to make off-set classes fail too.
@@ -216,6 +221,38 @@ const flushFrameNestingFromMarkup = (markup) => {
   return hits;
 };
 
+// Principle 14: filtering commits on the Search button / Enter, NEVER on change.
+// Unlike every other check, this one scans the RAW html (scripts included) for a
+// search/filter control wired to an on-change handler: an `input` (search-as-you-type)
+// or `change` (filter-on-select) listener whose TARGET names a search/filter element
+// (id/var contains search·filter·query·keyword·q-input·q-search), or an inline
+// on{input,change} on a `type="search"` field. `keydown`/`keyup` are deliberately
+// NOT matched — that is the legitimate Enter-to-commit path.
+// HEURISTIC + advisory only (never affects the exit code): it cannot tell a draft
+// update (allowed) from a query run (the defect), and a listener on a generically
+// named variable or a quick-filter <select> with a neutral id slips through. It
+// surfaces the obvious wiring so a human applies principle 14 — a review-gate rule
+// the static closed-set check can't own. Most missed under detail-page tabs.
+const SEARCH_TARGET = /(search|filter|query|keyword|q[-_]?input|q[-_]?search)/i;
+const searchOnChangeFromHtml = (html) => {
+  const hits = new Set();
+  // A target expression immediately before .addEventListener / .on* — e.g.
+  // byId('q-input'), searchInput, document.querySelector('.search-input .input').
+  const target = "([A-Za-z_$][\\w$]*(?:\\([^()]*\\)|\\[[^\\]]*\\]|\\.[A-Za-z_$][\\w$]*)*)";
+  for (const m of html.matchAll(new RegExp(`${target}\\s*\\.addEventListener\\(\\s*['"](input|change)['"]`, "g"))) {
+    if (SEARCH_TARGET.test(m[1])) hits.add(`${m[1].trim()}.addEventListener('${m[2]}', …)`);
+  }
+  for (const m of html.matchAll(new RegExp(`${target}\\s*\\.on(input|change)\\s*=`, "g"))) {
+    if (SEARCH_TARGET.test(m[1])) hits.add(`${m[1].trim()}.on${m[2]} = …`);
+  }
+  for (const m of html.matchAll(/<input\b[^>]*\bon(input|change)\s*=[^>]*>/gi)) {
+    if (/type\s*=\s*["']search["']/i.test(m[0]) || /class\s*=\s*["'][^"']*search-input/i.test(m[0])) {
+      hits.add(`inline on${m[1]} on <input type="search">`);
+    }
+  }
+  return [...hits];
+};
+
 const tokenRefsFromAuthored = (text) => {
   const refs = new Set();
   for (const m of stripCssComments(text).matchAll(/var\(\s*(--[A-Za-z_][\w-]*)/g)) {
@@ -329,6 +366,10 @@ for (const file of files) {
   // fight and the card's overflow:hidden defeats the flush frame's sticky propagation.
   const flushNesting = flushFrameNestingFromMarkup(markup);
 
+  // Advisory: a search/filter control wired to run on change (principle 14 forbids it).
+  // Scans the RAW html (scripts included), unlike the closed-set checks above.
+  const searchOnChange = searchOnChangeFromHtml(html);
+
   const hard =
     unknownTokens.length +
     hardColors.length +
@@ -366,6 +407,8 @@ for (const file of files) {
     console.log(`  ⚠ review: ${layoutHacks.length} inline padding/margin style(s) — prefer a class (.stack--N / .card__content--flush / page-local): ${layoutHacks.join(" · ")}`);
   if (flushNesting.length)
     console.log(`  ⚠ review: ${flushNesting.length} .table-frame--flush inside a .card — the card owns the frame and its overflow:hidden traps the sticky header; make the list results card a standalone .table-frame--flush (patterns/list-page.md), or drop --flush for a plain table in a section card: ${flushNesting.join(" · ")}`);
+  if (searchOnChange.length)
+    console.log(`  ⚠ review: ${searchOnChange.length} search/filter wired on change — filtering must commit on the Search button / Enter, never on change (principle 14). Verify these edit a draft only, not run the query: ${searchOnChange.join(" · ")}`);
   const passText = strict
     ? "PASS (strict: no out-of-set tokens, hardcoded colors, or off-set classes)"
     : "PASS (no out-of-set tokens, no hardcoded colors)";
