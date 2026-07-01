@@ -61,8 +61,6 @@ product-grid  (auto-fill columns, ~300px min — count follows CONTAINER width)
 ## States
 
 - **hover** — the card lifts: border `line-strong`, `shadow-2`, a 1px rise.
-- **out of stock** — the card dims and the add-to-cart CTA is disabled; an
-  out-of-stock ribbon/tag may replace the price's options.
 - **loading** — a `skeleton` card (image block + two lines + a price bar) stands
   in while the catalog loads.
 - **empty (no results)** — the grid is replaced by an `empty-state`, never left

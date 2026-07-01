@@ -23,6 +23,7 @@ trailing each step.
 | `completed` | border `success`/25 · bg `success-bg` · text `success-strong` · glyph = check (or the step's own `icon`) | `text-sm`/500 · `content-secondary` | `success`/50 hairline |
 | `active` *(current)* | border `primary-700` · bg `primary-700` · text `content-on-primary` · 600 · `shadow-cta` | `text-sm`/600 · `content-primary` | `line-default` hairline |
 | `upcoming` | border `line-default` · bg `surface-3` · text `content-tertiary` · 500 | `text-sm`/500 · `content-secondary` | `line-default` hairline |
+| `error` | border `error`/25 · bg `error-bg` · text `error-strong` · glyph = alert (or the step's own `icon`) | `text-sm`/600 · `error-strong` | `error`/50 hairline |
 
 The connector belongs to the step it trails and is omitted after the last step.
 A connector reads "done" (`success`/50) only when its **own** step index is `<
@@ -116,7 +117,8 @@ Use captions to show stage dates or IDs where available.
   steps are buttons are owned by the React implementation. Also exports
   `stepDotVariants` for the dot recipe. API details: the `ui` skill.
 - **Artifact (self-contained HTML)** — `.step-indicator` (an `<ol>`) › `.step` per
-  item, modified by `.step--completed` / `.step--active` / `.step--upcoming`. Each
+  item, modified by `.step--completed` / `.step--active` / `.step--upcoming` /
+  `.step--error` (a step that failed validation). Each
   `<li>` holds a `.step__body` (a `<div>`, or `<button>` with `step__body--clickable`
   when navigable), which contains `.step__dot` (number / icon / check) and
   `.step__text` (`.step__caption` + `.step__title`); plus a sibling

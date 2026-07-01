@@ -15,7 +15,6 @@
     - Image with product asset (object-fit: contain)
     - Placeholder fallback (no asset) with glyph
     - Ribbon over image: --success ("New"), --warning ("Sale")
-    - Out-of-stock state (.product-card--out-of-stock) with dimmed opacity
     - Loading skeleton state
     - Icon add button (quick-add square beside primary CTA)
     - Hover lift (border line-strong, shadow-2, translateY(-1px))
@@ -269,85 +268,9 @@
   </div>
 
   <!-- ================================================================
-       Example 2: Out of stock card
+       Example 2: Loading skeleton state
        ================================================================ -->
-  <div class="demo-section">2. Out of stock — dimmed with disabled CTA</div>
-  <p style="font-size: var(--text-sm); color: var(--color-content-secondary); margin-block-end: var(--space-3);">
-    <code>.product-card--out-of-stock</code> reduces opacity (0.6) and disables the quick-add button.
-  </p>
-
-  <div class="product-grid" style="grid-template-columns: repeat(auto-fill, minmax(min(18.75rem,100%), 1fr));">
-    <div class="product-card product-card--out-of-stock" tabindex="0">
-      <div class="product-card__image">
-        <span class="product-card__placeholder">⌚</span>
-      </div>
-      <div class="product-card__body">
-        <div class="product-card__name">Smart Watch S3</div>
-        <div class="product-card__sku">SKU-WATCH-S3</div>
-        <div class="product-card__description">AMOLED display, GPS, heart-rate monitor.</div>
-        <div class="product-card__price-row">
-          <span class="product-card__price">2,499</span>
-          <span class="product-card__options">Out of stock</span>
-        </div>
-        <div class="product-card__cta">
-          <button class="btn btn--primary" disabled onclick="event.stopPropagation()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="9" cy="21" r="1"></circle>
-              <circle cx="20" cy="21" r="1"></circle>
-              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-            </svg>
-            Out of Stock
-          </button>
-          <button class="product-card__add" disabled aria-label="Out of stock" onclick="event.stopPropagation()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="product-card product-card--out-of-stock" tabindex="0">
-      <div class="product-card__image">
-        <svg class="product-card__glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-          <line x1="8" y1="21" x2="16" y2="21"></line>
-          <line x1="12" y1="17" x2="12" y2="21"></line>
-        </svg>
-      </div>
-      <div class="product-card__body">
-        <div class="product-card__name">Tablet Pro 12</div>
-        <div class="product-card__sku">SKU-TAB-PRO12</div>
-        <div class="product-card__description">12.9-inch Liquid Retina XDR, M3 chip.</div>
-        <div class="product-card__price-row">
-          <span class="product-card__price">6,499</span>
-          <span class="product-card__options">Backordered</span>
-        </div>
-        <div class="product-card__cta">
-          <button class="btn btn--primary" disabled onclick="event.stopPropagation()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="9" cy="21" r="1"></circle>
-              <circle cx="20" cy="21" r="1"></circle>
-              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-            </svg>
-            Notify Me
-          </button>
-          <button class="product-card__add" disabled aria-label="Unavailable" onclick="event.stopPropagation()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================================================================
-       Example 3: Loading skeleton state
-       ================================================================ -->
-  <div class="demo-section">3. Loading — skeleton placeholder cards</div>
+  <div class="demo-section">2. Loading — skeleton placeholder cards</div>
   <p style="font-size: var(--text-sm); color: var(--color-content-secondary); margin-block-end: var(--space-3);">
     Skeleton image block + text lines + price bar, animated while catalog data loads.
   </p>
@@ -385,9 +308,9 @@
   </div>
 
   <!-- ================================================================
-       Example 4: No description, no options (minimal card)
+       Example 3: No description, no options (minimal card)
        ================================================================ -->
-  <div class="demo-section">4. Minimal — no description, no options, no quick-add</div>
+  <div class="demo-section">3. Minimal — no description, no options, no quick-add</div>
   <p style="font-size: var(--text-sm); color: var(--color-content-secondary); margin-block-end: var(--space-3);">
     A simpler card layout when the catalog needs less information density.
   </p>
