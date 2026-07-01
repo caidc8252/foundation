@@ -7,14 +7,14 @@ implementation disagree, the **contract wins**. It is **not** a development log,
 changelog, roadmap, or scratchpad — write only what **exists and is in force**,
 never `deferred` / `future` / speculative entries.
 
-This file is the **map**. The foundation has three responsibilities; each has a
+This file is the **map**. The foundation has two responsibilities; each has a
 detail doc you go to for the how. Read the responsibility you're here for, then
 its doc.
 
-## The closed set — the law under all three
+## The closed set — the law under both
 
-There is **no fifth source**. Everything an artifact renders, everything the GUI
-edits, everything the four layers maintain, comes from here:
+There is **no fifth source**. Everything an artifact renders and everything the
+four layers maintain comes from here:
 
 | # | Layer | Lives in | What it is |
 |---|---|---|---|
@@ -116,22 +116,3 @@ the real source incorrectly, restore the governed source paths with
 `node scripts/restore-version-source.mjs vN --build` (or release that version
 from the prototype dropdown). Do not copy files back from `versions/`;
 the snapshots are not complete source backups.
-
----
-
-## ③ Provide graphical modification
-
-A browser GUI (`pnpm admin` → http://localhost:4100) to inspect every catalogued
-component, see the tokens it resolves from, and edit values / references visually
-with live preview.
-
-**② and ③ are one loop.** The GUI never writes the real source — it stages every
-edit in a gitignored `admin/.draft/` and the four-layer source is the only thing
-that *counts as changed*. So a graphical change only lands once it is promoted
-into the source (Responsibility ②) and re-passes `pnpm check:all`. What the GUI
-can vs. cannot express, where its edits land, the promote procedure, and how
-`check:release` is the backstop that ties a GUI change back into the governed law
-are all in:
-
-- [`.claude/docs/graphical-edit.md`](.claude/docs/graphical-edit.md) — graphical
-  modification **and** the 3→2 handoff.

@@ -47,13 +47,11 @@
     "visual:setup": "playwright install chromium",
     "docs": "node emit/docs.mjs",
     "docs:serve": "node emit/docs.mjs && python3 emit/serve.py 4000",
-    "admin": "node admin/server.mjs",
     "prototype:carbon": "node prototypes/carbon/publish-server.mjs",
     "promote": "node scripts/promote-version.mjs",
     "finalize": "node scripts/finalize-promoted-version.mjs",
     "restore:source": "node scripts/restore-version-source.mjs",
-    "versions:clear": "node prototypes/carbon/clear-versions.mjs",
-    "admin:test": "node --test --test-concurrency=1 admin/server.test.mjs admin/lib/catalog.test.mjs admin/lib/recipe.test.mjs admin/lib/render.test.mjs admin/lib/draft.test.mjs admin/lib/edit.test.mjs admin/lib/draft-api.test.mjs admin/lib/element.test.mjs"
+    "versions:clear": "node prototypes/carbon/clear-versions.mjs"
   },
   "devDependencies": {
     "playwright": "^1.45.0",
