@@ -2380,6 +2380,15 @@
     },
     {
       "layer": "pattern",
+      "name": "dashboard",
+      "title": "Pattern · Dashboard",
+      "summary": "\"The overview home.\" A read-mostly landing that answers is the fleet healthy, and what needs attention at a glance — a KPI metric strip over optional charts and an activity / alert feed.",
+      "contract": "patterns/dashboard.md",
+      "example": "patterns/dashboard.html",
+      "classes": []
+    },
+    {
+      "layer": "pattern",
       "name": "detail-page",
       "title": "Pattern · Detail page",
       "summary": "\"One record, read-mostly, with actions.\" The archetype you reach a list page's row into.",
@@ -2394,6 +2403,15 @@
       "summary": "The default archetype for \"a collection you browse, filter, and act on\" (the most common portal screen).",
       "contract": "patterns/list-page.md",
       "example": "patterns/list-page.html",
+      "classes": []
+    },
+    {
+      "layer": "pattern",
+      "name": "settings",
+      "title": "Pattern · Settings",
+      "summary": "\"Configure this workspace.\" A read-write preferences surface: related controls grouped into setting cards, reached through a left section nav, each group committing its own changes.",
+      "contract": "patterns/settings.md",
+      "example": "patterns/settings.html",
       "classes": []
     }
   ]

@@ -1,0 +1,200 @@
+<!--
+  Pattern · Dashboard — copyable example
+  ─────────────────────────────────────────────────────────────────────────────
+  Companion to ./dashboard.md (the contract — when the two disagree, the .md wins).
+  The overview home: a sticky page-header, a REQUIRED 4-up metric strip (stat-grid
+  of stat-cards), and an OPTIONAL insight row — a trend chart card beside a recent-
+  alerts feed. Copy and edit; drop the optional bands the page doesn't need.
+
+  HOW THE STYLES LOAD — this file LINKS the reference CSS (tokens → primitives →
+  composites); run `pnpm build` after source edits. To ship as a self-contained
+  artifact, inline those three blocks into a <style> instead.
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pattern · Dashboard — foundation example</title>
+
+<link rel="stylesheet" href="../release/tokens.inline.css">
+<link rel="stylesheet" href="../primitives/primitives.css">
+<link rel="stylesheet" href="../release/composites.css">
+
+<style>
+  /* Page-local composition — NOT new design vocabulary. All values are tokens. */
+  /* Insight row: a wide chart beside a narrower feed; collapses to 1-up when tight. */
+  .dash-split { display: grid; grid-template-columns: 1.6fr 1fr; gap: var(--space-5); align-items: start; }
+  @media (max-width: 900px) { .dash-split { grid-template-columns: 1fr; } }
+  /* The chart fills its card; the .chart composite carries the 16/9 ratio + skin. */
+  .dash-chart { width: 100%; height: 100%; }
+</style>
+<body>
+
+<div class="app-frame">
+  <div class="app-frame__col">
+    <main class="app-frame__main">
+      <!--
+        REQUIRED CORE (do not drop): the page-header (title) AND one metric strip
+        (stat-grid of stat-cards). Everything marked OPTIONAL is removable per the
+        page's job. See dashboard.md "Required core / optional slots".
+      -->
+      <header class="page-header page-header--sticky">
+        <div class="page-header__bar">
+          <div class="page-header__titles">
+            <div class="page-header__heading"><h1 class="page-header__title">Fleet overview</h1></div>
+            <!-- OPTIONAL: header description. -->
+            <p class="page-header__description">Health and activity across your POS terminals.</p>
+          </div>
+          <div class="page-header__actions">
+            <!-- OPTIONAL: a range control + Export. A dashboard has NO required primary action. -->
+            <select class="select select--sm" aria-label="Time range">
+              <option>Last 24 hours</option>
+              <option selected>Last 7 days</option>
+              <option>Last 30 days</option>
+            </select>
+            <button class="btn btn--secondary" type="button">
+              <svg data-lucide="download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>
+              Export
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div class="page-body">
+
+        <!-- OPTIONAL: system-wide status banner (Alert) — render only for an incident/degraded state. Removable.
+        <div class="alert alert--warning" role="status">
+          <p class="alert__title">Degraded region</p>
+          <p class="alert__description">APAC heartbeat latency elevated since 12:10.</p>
+        </div>
+        -->
+
+        <!-- ■ REQUIRED CORE: the metric strip — a stat-grid of KPI stat-cards. -->
+        <div class="stat-grid stat-grid--cols-4">
+          <div class="stat-card">
+            <div class="stat-card__head">
+              <span class="stat-card__label">Online rate</span>
+              <span class="stat-card__icon"><svg data-lucide="wifi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M12 20h.01"/><path d="M2 8.82a15 15 0 0 1 20 0"/><path d="M5 12.859a10 10 0 0 1 14 0"/><path d="M8.5 16.429a5 5 0 0 1 7 0"/></svg></span>
+            </div>
+            <div class="stat-card__value stat-card__value--success">98.6%<span class="stat-card__delta stat-card__delta--up">▲ 0.4%</span></div>
+            <div class="stat-card__description">1,231 of 1,248 reachable</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card__head">
+              <span class="stat-card__label">Active terminals</span>
+              <span class="stat-card__icon"><svg data-lucide="smartphone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg></span>
+            </div>
+            <div class="stat-card__value">1,248<span class="stat-card__delta stat-card__delta--up">▲ 12</span></div>
+            <div class="stat-card__description">across 84 merchants</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card__head">
+              <span class="stat-card__label">Transactions today</span>
+              <span class="stat-card__icon"><svg data-lucide="credit-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg></span>
+            </div>
+            <div class="stat-card__value">84,290<span class="stat-card__delta stat-card__delta--up">▲ 6.1%</span></div>
+            <div class="stat-card__description">vs 79,410 yesterday</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card__head">
+              <span class="stat-card__label">Error rate</span>
+              <span class="stat-card__icon"><svg data-lucide="triangle-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span>
+            </div>
+            <div class="stat-card__value stat-card__value--warning">0.4%<span class="stat-card__delta stat-card__delta--down">▼ 0.1%</span></div>
+            <div class="stat-card__description">342 of 84,290 txns</div>
+          </div>
+        </div>
+
+        <!-- ○ OPTIONAL: insight row — a trend chart beside a recent-alerts feed. Full-width columns; collapses to 1-up when tight. Removable. -->
+        <div class="dash-split">
+
+          <!-- Chart card: transactions per day (hand-authored SVG wearing the .chart skin). -->
+          <section class="card">
+            <div class="card__header"><h2 class="card__title">Transactions · last 7 days</h2></div>
+            <div class="card__content">
+              <div class="chart" role="img" aria-labelledby="dash-chart-title">
+                <span id="dash-chart-title" class="sr-only">Daily transaction volume for the last 7 days, in thousands.</span>
+                <svg class="dash-chart" viewBox="0 0 400 225" preserveAspectRatio="xMidYMid meet">
+                  <line class="chart__grid" x1="0" y1="40"  x2="400" y2="40"/>
+                  <line class="chart__grid" x1="0" y1="90"  x2="400" y2="90"/>
+                  <line class="chart__grid" x1="0" y1="140" x2="400" y2="140"/>
+                  <rect class="chart__bar" x="11"  y="87" width="34" height="103" rx="4" style="--chart-series: var(--color-chart-1)"/>
+                  <rect class="chart__bar" x="68"  y="72" width="34" height="118" rx="4" style="--chart-series: var(--color-chart-1)"/>
+                  <rect class="chart__bar" x="125" y="77" width="34" height="113" rx="4" style="--chart-series: var(--color-chart-1)"/>
+                  <rect class="chart__bar" x="182" y="57" width="34" height="133" rx="4" style="--chart-series: var(--color-chart-1)"/>
+                  <rect class="chart__bar" x="239" y="67" width="34" height="123" rx="4" style="--chart-series: var(--color-chart-1)"/>
+                  <rect class="chart__bar" x="296" y="40" width="34" height="150" rx="4" style="--chart-series: var(--color-chart-1)"/>
+                  <rect class="chart__bar" x="353" y="50" width="34" height="140" rx="4" style="--chart-series: var(--color-chart-1)"/>
+                  <line class="chart__axis" x1="0" y1="190" x2="400" y2="190"/>
+                  <text class="chart__tick" x="28"  y="208" text-anchor="middle">Mon</text>
+                  <text class="chart__tick" x="85"  y="208" text-anchor="middle">Tue</text>
+                  <text class="chart__tick" x="142" y="208" text-anchor="middle">Wed</text>
+                  <text class="chart__tick" x="199" y="208" text-anchor="middle">Thu</text>
+                  <text class="chart__tick" x="256" y="208" text-anchor="middle">Fri</text>
+                  <text class="chart__tick" x="313" y="208" text-anchor="middle">Sat</text>
+                  <text class="chart__tick" x="370" y="208" text-anchor="middle">Sun</text>
+                </svg>
+              </div>
+            </div>
+          </section>
+
+          <!-- Activity feed card: recent fleet alerts. -->
+          <section class="card">
+            <div class="card__header">
+              <h2 class="card__title">Recent alerts</h2>
+              <div class="card__action"><button class="btn btn--ghost btn--xs" type="button">View all</button></div>
+            </div>
+            <div class="card__content card__content--flush">
+              <div class="feed-list">
+                <div class="feed-item">
+                  <div class="feed-item__icon feed-item__icon--warning" aria-hidden="true">
+                    <svg data-lucide="triangle-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                  </div>
+                  <div class="feed-item__main">
+                    <div class="feed-item__title">POS-00418 went offline</div>
+                    <div class="feed-item__body">Store #142 · last seen 4m ago</div>
+                  </div>
+                  <div class="feed-item__trailing"><div class="feed-item__time">4m ago</div></div>
+                </div>
+                <div class="feed-item">
+                  <div class="feed-item__icon feed-item__icon--warning" aria-hidden="true">
+                    <svg data-lucide="triangle-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                  </div>
+                  <div class="feed-item__main">
+                    <div class="feed-item__title">Tamper switch tripped — POS-00420</div>
+                    <div class="feed-item__body">Store #77 · device locked pending review</div>
+                  </div>
+                  <div class="feed-item__trailing"><div class="feed-item__time">22m ago</div></div>
+                </div>
+                <div class="feed-item">
+                  <div class="feed-item__icon feed-item__icon--neutral" aria-hidden="true">
+                    <svg data-lucide="printer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"/><rect x="6" y="14" width="12" height="8" rx="1"/></svg>
+                  </div>
+                  <div class="feed-item__main">
+                    <div class="feed-item__title">Low receipt paper — POS-00403</div>
+                    <div class="feed-item__body">Store #12 · 8% remaining</div>
+                  </div>
+                  <div class="feed-item__trailing"><div class="feed-item__time">1h ago</div></div>
+                </div>
+                <div class="feed-item feed-item--read">
+                  <div class="feed-item__icon feed-item__icon--info" aria-hidden="true">
+                    <svg data-lucide="info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                  </div>
+                  <div class="feed-item__main">
+                    <div class="feed-item__title">Firmware v4.2.0 rolled out</div>
+                    <div class="feed-item__body">312 terminals updated · 0 failures</div>
+                  </div>
+                  <div class="feed-item__trailing"><div class="feed-item__time">3h ago</div></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+</body>
