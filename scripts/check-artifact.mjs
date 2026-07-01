@@ -15,6 +15,11 @@
      ⚠ inline padding/margin hack — style="padding:0"-style layout resets;
                                      prefer a class (.stack--N / --flush). Advisory
                                      only — never affects the exit code.
+     ⚠ .table-frame--flush in .card — two frame mechanisms fight; the card owns
+                                     the frame and its overflow:hidden traps the
+                                     sticky header --flush exists to free (see the
+                                     function note). Advisory only — never affects
+                                     the exit code.
 
    The two ✗ categories are hard violations (non-zero exit). Classes are
    advisory by default; pass --strict to make off-set classes fail too.
@@ -168,6 +173,49 @@ const structuralFindingsFromMarkup = (markup) => {
   return { cellTagsOnTableCells };
 };
 
+// A `.table-frame--flush` nested inside a `.card` is a self-defeating double-frame.
+// The card already owns the border / radius / shadow (`.card__content--flush >
+// .table-frame` in composites.css strips the inner one), AND the card's own
+// `overflow: hidden` re-creates the scroll-container trap that `--flush`
+// (`overflow: clip`) exists to avoid — so a sticky summary-bar / thead gets pinned
+// to the card instead of propagating to the app-frame scroll root. The list
+// "results card" should BE a standalone `.table-frame--flush` (patterns/list-page.md),
+// not wrapped in a card; a plain table inside a section card uses `.table-frame`
+// (no `--flush`). Advisory ONLY — never affects the exit code: rule 312 hides the
+// visual double-border, so this bites only once sticky headers are enabled.
+const VOID_ELEMENTS = new Set(["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"]);
+const flushFrameNestingFromMarkup = (markup) => {
+  const hits = [];
+  const stack = [];
+  let openCards = 0;
+  for (const m of markup.matchAll(/<(\/)?([A-Za-z][A-Za-z0-9:-]*)((?:\s[^<>]*)?)>/g)) {
+    const [full, closing, rawName, attrs] = m;
+    const tag = rawName.toLowerCase();
+    if (closing) {
+      for (let i = stack.length - 1; i >= 0; i--) {
+        if (stack[i].tag === tag) {
+          for (let j = stack.length - 1; j >= i; j--) if (stack[j].card) openCards--;
+          stack.length = i;
+          break;
+        }
+      }
+      continue;
+    }
+    const classes = classAttrValuesFromTag(full).join(" ").split(/\s+/);
+    // Check ancestry BEFORE self-push: an element is never its own ancestor.
+    if (classes.includes("table-frame--flush") && openCards > 0) {
+      hits.push(full.length > 90 ? `${full.slice(0, 87)}…` : full);
+    }
+    const selfClose = attrs.trimEnd().endsWith("/") || VOID_ELEMENTS.has(tag);
+    if (!selfClose) {
+      const card = classes.includes("card");
+      stack.push({ tag, card });
+      if (card) openCards++;
+    }
+  }
+  return hits;
+};
+
 const tokenRefsFromAuthored = (text) => {
   const refs = new Set();
   for (const m of stripCssComments(text).matchAll(/var\(\s*(--[A-Za-z_][\w-]*)/g)) {
@@ -277,6 +325,10 @@ for (const file of files) {
   // Advisory: inline padding/margin layout hacks (never affects exit code).
   const layoutHacks = inlineLayoutHacksFromMarkup(markup);
 
+  // Advisory: a `.table-frame--flush` wrapped in a `.card` — two frame mechanisms
+  // fight and the card's overflow:hidden defeats the flush frame's sticky propagation.
+  const flushNesting = flushFrameNestingFromMarkup(markup);
+
   const hard =
     unknownTokens.length +
     hardColors.length +
@@ -312,6 +364,8 @@ for (const file of files) {
     console.log(`    ✗ .cell-tags is a flex wrapper inside the table cell; do not put it on ${structure.cellTagsOnTableCells.join(", ")}`);
   if (layoutHacks.length)
     console.log(`  ⚠ review: ${layoutHacks.length} inline padding/margin style(s) — prefer a class (.stack--N / .card__content--flush / page-local): ${layoutHacks.join(" · ")}`);
+  if (flushNesting.length)
+    console.log(`  ⚠ review: ${flushNesting.length} .table-frame--flush inside a .card — the card owns the frame and its overflow:hidden traps the sticky header; make the list results card a standalone .table-frame--flush (patterns/list-page.md), or drop --flush for a plain table in a section card: ${flushNesting.join(" · ")}`);
   const passText = strict
     ? "PASS (strict: no out-of-set tokens, hardcoded colors, or off-set classes)"
     : "PASS (no out-of-set tokens, no hardcoded colors)";
