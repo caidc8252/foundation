@@ -9,7 +9,7 @@ Presentation-only file-select zone with drag-and-drop affordance. Emits picked f
 | rest | border dashed `line-default` · bg `surface-2` · text `content-tertiary` |
 | hover | bg `surface-hover` |
 | drag-active (`.dropzone--drag`) | border `primary-500` · bg `primary-50` |
-| disabled (`.dropzone--disabled`) | cursor not-allowed · opacity 60% (hover suppressed) |
+| disabled (`.dropzone--disabled`) | cursor not-allowed · opacity 50% (hover suppressed) |
 
 ## Sizes
 
