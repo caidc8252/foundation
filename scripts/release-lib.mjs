@@ -1,4 +1,3 @@
-import { createServer } from "node:http";
 import { spawnSync } from "node:child_process";
 import {
   copyFileSync,
@@ -21,62 +20,22 @@ import {
   RELEASE_STRUCTURE,
   CURRENT_VERSION,
   writeCurrentVersion,
-} from "../../emit/build.mjs";
+} from "../emit/build.mjs";
 import {
   assertVersionSourceRestorable,
   readSourceGitState,
   restoreGovernedSource,
-} from "../../scripts/source-git.mjs";
+} from "./source-git.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const ROOT = resolve(HERE, "..", "..");
-const VERSION_ROOT = join(ROOT, "versions");
-const BUILD_ROOT = join(ROOT, CURRENT_BUILD_ROOT);
-const RELEASE_ROOT = join(ROOT, "release");
-const DEFAULT_PORT = 4177;
-const MIME = {
-  ".html": "text/html; charset=utf-8",
-  ".js": "text/javascript; charset=utf-8",
-  ".css": "text/css; charset=utf-8",
-  ".json": "application/json; charset=utf-8",
-  ".svg": "image/svg+xml",
-};
+export const ROOT = resolve(HERE, "..");
+export const VERSION_ROOT = join(ROOT, "versions");
+export const BUILD_ROOT = join(ROOT, CURRENT_BUILD_ROOT);
+export const RELEASE_ROOT = join(ROOT, "release");
 
 const TOKEN_RE = /^--[-A-Za-z0-9_]+$/;
 const SELECTOR_RE = /^\.[-A-Za-z0-9_]+$/;
 const PROP_RE = /^-?[A-Za-z][-_A-Za-z0-9]*$/;
-
-const json = (res, obj, status = 200) => {
-  res.writeHead(status, {
-    "content-type": "application/json; charset=utf-8",
-    "access-control-allow-origin": "*",
-    "access-control-allow-headers": "content-type",
-  });
-  res.end(JSON.stringify(obj));
-};
-
-function readJson(req) {
-  return new Promise((resolveJson, reject) => {
-    const chunks = [];
-    let size = 0;
-    req.on("data", chunk => {
-      size += chunk.length;
-      if (size > 1024 * 1024) {
-        req.destroy(new Error("request body too large"));
-        return;
-      }
-      chunks.push(chunk);
-    });
-    req.on("end", () => {
-      try {
-        resolveJson(JSON.parse(Buffer.concat(chunks).toString("utf8") || "{}"));
-      } catch (error) {
-        reject(error);
-      }
-    });
-    req.on("error", reject);
-  });
-}
 
 function cssValue(value) {
   if (typeof value !== "string") throw new Error("CSS value must be a string");
@@ -216,7 +175,7 @@ function snapshotDir(repoRoot, versionRoot, version) {
   return version === CURRENT_VERSION ? currentDir(repoRoot) : join(versionRoot, version);
 }
 
-function ensureCurrentVersion(repoRoot) {
+export function ensureCurrentVersion(repoRoot) {
   const dir = currentDir(repoRoot);
   if (
     !existsSync(join(dir, "tokens.inline.css")) ||
@@ -432,12 +391,12 @@ function versionSummary(entry, repoRoot = ROOT) {
   };
 }
 
-function currentVersionSummary(repoRoot = ROOT) {
+export function currentVersionSummary(repoRoot = ROOT) {
   ensureCurrentVersion(repoRoot);
   return versionSummary({ name: CURRENT_VERSION, dir: currentDir(repoRoot) }, repoRoot);
 }
 
-function listVersions(versionRoot = VERSION_ROOT, repoRoot = ROOT) {
+export function listVersions(versionRoot = VERSION_ROOT, repoRoot = ROOT) {
   const entries = [];
   if (existsSync(versionRoot)) {
     for (const entry of readdirSync(versionRoot, { withFileTypes: true })) {
@@ -786,97 +745,4 @@ export function releaseSnapshot(version, options = {}) {
     files: releaseManifest.release.structure,
     sourceRestore,
   };
-}
-
-function serveStatic(url, res) {
-  const pathname = decodeURIComponent(url.pathname);
-  if (pathname.startsWith("/versions/")) return serveRootAsset(pathname, "/versions/", VERSION_ROOT, res);
-  if (pathname.startsWith("/build/")) return serveRootAsset(pathname, "/build/", BUILD_ROOT, res);
-  if (pathname.startsWith("/release/")) return serveRootAsset(pathname, "/release/", RELEASE_ROOT, res);
-  const rel = pathname === "/" ? "app-publish-list.html" : pathname.replace(/^\/+/, "");
-  const file = resolve(HERE, rel);
-  if (!(file === HERE || file.startsWith(HERE + sep)) || !existsSync(file) || !statSync(file).isFile()) {
-    res.writeHead(404, { "content-type": "text/plain; charset=utf-8" });
-    res.end("404");
-    return;
-  }
-  res.writeHead(200, {
-    "content-type": MIME[extname(file)] || "application/octet-stream",
-    "cache-control": "no-store",
-  });
-  res.end(readFileSync(file));
-}
-
-function serveRootAsset(pathname, prefix, root, res) {
-  const rel = pathname.slice(prefix.length);
-  const file = resolve(root, rel);
-  if (!(file === root || file.startsWith(root + sep)) || !existsSync(file) || !statSync(file).isFile()) {
-    res.writeHead(404, { "content-type": "text/plain; charset=utf-8" });
-    res.end("404");
-    return;
-  }
-  res.writeHead(200, {
-    "content-type": MIME[extname(file)] || "application/octet-stream",
-    "cache-control": "no-store",
-  });
-  res.end(readFileSync(file));
-}
-
-export function createHandler() {
-  return async (req, res) => {
-    const url = new URL(req.url, "http://localhost");
-    try {
-      if (url.pathname === "/__prototype_versions" && req.method === "GET") {
-        ensureCurrentVersion(ROOT);
-        const releaseInfo = readReleaseInfo(RELEASE_ROOT);
-        const current = markReleasedVersions([currentVersionSummary(ROOT)], releaseInfo)[0];
-        const versions = markReleasedVersions(listVersions(), releaseInfo);
-        return json(res, {
-          ok: true,
-          current,
-          versions,
-          latest: versions.at(-1)?.version || "",
-          releasedVersion: releaseInfo.version,
-          releasedAt: releaseInfo.releasedAt,
-        });
-      }
-      if ((url.pathname === "/__prototype_save" || url.pathname === "/__prototype_publish") && req.method === "POST") {
-        const payload = await readJson(req);
-        return json(res, { ok: true, ...publishSnapshot(payload) });
-      }
-      if (url.pathname === "/__prototype_finalize" && req.method === "POST") {
-        const payload = await readJson(req);
-        return json(res, { ok: true, ...finalizePromotedVersion(payload.version) });
-      }
-      if (url.pathname === "/__prototype_promote" && req.method === "POST") {
-        const payload = await readJson(req);
-        return json(res, { ok: true, ...createPromotionBrief(payload.version) });
-      }
-      if (url.pathname === "/__prototype_release" && req.method === "POST") {
-        const payload = await readJson(req);
-        return json(res, { ok: true, ...releaseSnapshot(payload.version) });
-      }
-      if (url.pathname.startsWith("/__prototype_") && req.method === "OPTIONS") {
-        res.writeHead(204, {
-          "access-control-allow-origin": "*",
-          "access-control-allow-headers": "content-type",
-          "access-control-allow-methods": "GET, POST, OPTIONS",
-        });
-        return res.end();
-      }
-      return serveStatic(url, res);
-    } catch (error) {
-      return json(res, { ok: false, error: error.message }, 400);
-    }
-  };
-}
-
-export function start(port = DEFAULT_PORT) {
-  return createServer(createHandler()).listen(port, () => {
-    console.log(`carbon prototype -> http://localhost:${port}`);
-  });
-}
-
-if (process.argv[1] && process.argv[1].endsWith("publish-server.mjs")) {
-  start(Number(process.env.PORT) || DEFAULT_PORT);
 }

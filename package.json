@@ -42,16 +42,16 @@
     "check:patterns": "node scripts/check-pattern-router.mjs",
     "check:examples": "node scripts/check-examples.mjs",
     "check:release": "node scripts/check-release.mjs",
-    "check:all": "node --test emit/build.test.mjs scripts/check-artifact.test.mjs scripts/promote-version.test.mjs prototypes/carbon/publish-server.test.mjs prototypes/carbon/editor.test.mjs prototypes/carbon/composite-coverage.test.mjs prototypes/carbon/menu-links.test.mjs prototypes/carbon/composite-placement.test.mjs && node scripts/check-release.mjs && node scripts/check-examples.mjs --strict && node scripts/check-pattern-router.mjs",
+    "check:all": "node --test emit/build.test.mjs scripts/check-artifact.test.mjs scripts/promote-version.test.mjs scripts/release-lib.test.mjs && node scripts/check-release.mjs && node scripts/check-examples.mjs --strict && node scripts/check-pattern-router.mjs",
     "visual:render": "node scripts/visual/render.mjs",
     "visual:setup": "playwright install chromium",
     "docs": "node emit/docs.mjs",
     "docs:serve": "node emit/docs.mjs && python3 emit/serve.py 4000",
-    "prototype:carbon": "node prototypes/carbon/publish-server.mjs",
     "promote": "node scripts/promote-version.mjs",
     "finalize": "node scripts/finalize-promoted-version.mjs",
-    "restore:source": "node scripts/restore-version-source.mjs",
-    "versions:clear": "node prototypes/carbon/clear-versions.mjs"
+    "apply-draft": "node scripts/apply-draft.mjs",
+    "release": "node scripts/release.mjs",
+    "restore:source": "node scripts/restore-version-source.mjs"
   },
   "devDependencies": {
     "playwright": "^1.45.0",

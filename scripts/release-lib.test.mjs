@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 
-import { markReleasedVersions, readReleaseInfo } from "./publish-server.mjs";
+import { markReleasedVersions, readReleaseInfo } from "./release-lib.mjs";
 
 test("readReleaseInfo reads the currently published version from release manifest", () => {
   const dir = mkdtempSync(join(tmpdir(), "foundation-release-"));
