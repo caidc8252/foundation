@@ -385,7 +385,7 @@
 /* Two-line text column: primary line over a muted sub-line; min-w-0 so it truncates. */
 .data-table .cell-2line { display: flex; flex-direction: column; min-width: 0; }
 .data-table .cell-2line__main {
-  font-size: var(--text-sm); font-weight: 500; color: var(--color-content-primary);
+  font-size: var(--text-md); font-weight: 500; color: var(--color-content-primary);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .data-table .cell-2line__sub {
@@ -568,7 +568,7 @@
 }
 .empty-state__description {
   max-width: 28rem; /* layout measure, no token */
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   color: var(--color-content-tertiary);
 }
 .empty-state__action { margin-top: var(--space-2); }
@@ -668,7 +668,7 @@
   gap: var(--space-2);
   padding: var(--space-2);
   border-radius: var(--radius-md);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   color: var(--color-content-secondary);
   cursor: pointer;
 }
@@ -925,7 +925,7 @@
 .chart-empty__icon { color: var(--color-content-tertiary); }
 .chart-empty__icon svg { width: var(--space-8); height: var(--space-8); }
 .chart-empty__title {
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   font-weight: 500;
   color: var(--color-content-primary);
 }
@@ -976,14 +976,14 @@
 
 /* Optional line above the control ("Showing 50 of 1,248"). */
 .load-more__summary {
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   color: var(--color-content-secondary);
 }
 
 /* End marker — replaces the button once done ("You've reached the end").
    Plain text, not a disabled button: there is no action left to offer. */
 .load-more__end {
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   color: var(--color-content-tertiary);
 }
 
@@ -1162,7 +1162,7 @@
   height: var(--space-8);
   border: 1px solid transparent;
   border-radius: var(--radius-full);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   line-height: 1;
   transition: background-color var(--duration-fast) var(--ease-standard),
               border-color var(--duration-fast) var(--ease-standard),
@@ -1189,7 +1189,7 @@
   color: var(--color-content-tertiary);
 }
 .step__title {
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
 }
 
 /* Connector — 1px flex-grow track to the next step; default (upcoming/active)
@@ -1239,6 +1239,21 @@
 .step--upcoming .step__title {
   font-weight: 500;
   color: var(--color-content-secondary);
+}
+
+/* Error — a step that failed validation: soft error dot (+ alert glyph) and error
+   title. Set on .step in place of --active/--completed when that step is invalid. */
+.step--error .step__dot {
+  border-color: color-mix(in oklch, var(--color-error) 25%, transparent);
+  background-color: var(--color-error-bg);
+  color: var(--color-error-strong);
+}
+.step--error .step__title {
+  font-weight: 600;
+  color: var(--color-error-strong);
+}
+.step--error .step__connector {
+  background-color: color-mix(in oklch, var(--color-error) 50%, transparent);
 }
 
 /* ═══════════════════════════ Stepper ═══════════════════════════ */
@@ -1459,7 +1474,7 @@
   font-weight: 500;
   color: var(--color-content-primary);
 }
-.timeline--compact .timeline__title { font-size: var(--text-sm); }
+.timeline--compact .timeline__title { font-size: var(--text-md); }
 
 .timeline__time {
   font-family: var(--font-mono);
@@ -1485,7 +1500,7 @@
 
 .timeline__description {
   margin-top: var(--space-1);   /* ~2px (source mt-0.5); nearest token step */
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   line-height: 1.5;             /* leading-normal */
   color: var(--color-content-secondary);
 }
@@ -1651,7 +1666,7 @@
 .kv-grid__row dd {
   margin: 0;
   min-width: 0;
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   color: var(--color-content-primary);
   overflow-wrap: break-word;
 }
@@ -1719,7 +1734,7 @@
   min-width: 0;
 }
 .option-card__title {
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   font-weight: 600;
   color: var(--color-content-primary);
 }
@@ -1834,7 +1849,7 @@
 }
 .feed-item__title {
   margin-top: var(--space-1);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   font-weight: 600;
   line-height: 1.4;
   color: var(--color-content-primary);
@@ -1896,7 +1911,7 @@
 }
 .diff__value {
   font-family: var(--font-mono);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   font-weight: 500;
   color: var(--color-content-primary);
   word-break: break-all;
@@ -2095,9 +2110,6 @@
 }
 .product-card__add svg { width: var(--space-4); height: var(--space-4); }
 
-/* out of stock — the tile dims and its add CTA is disabled */
-.product-card--out-of-stock { opacity: 0.6; }
-.product-card--out-of-stock .product-card__add { cursor: not-allowed; opacity: 0.5; }
 @media (prefers-reduced-motion: reduce) {
   .product-card { transition: none; }
   .product-card:hover { transform: none; }
@@ -2192,13 +2204,13 @@
 }
 
 .amount-row__label {
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   color: var(--color-content-secondary);
 }
 
 .amount-row__value {
   font-family: var(--font-mono);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   font-variant-numeric: tabular-nums;
   color: var(--color-content-primary);
   text-align: right;
@@ -2267,7 +2279,7 @@
   align-items: center;
   gap: var(--space-2);
   min-width: 0;
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   font-weight: 600;
   line-height: 1.4;
   color: var(--color-content-primary);
@@ -2301,7 +2313,7 @@
   flex-shrink: 0;
 }
 .list-row__value {
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   color: var(--color-content-secondary);
   white-space: nowrap;
 }
@@ -2448,7 +2460,7 @@
   padding: var(--space-6);
   text-align: center;
   color: var(--color-content-tertiary);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
 }
 
 /* Prototype published overrides
