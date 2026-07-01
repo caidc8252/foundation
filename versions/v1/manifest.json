@@ -26,27 +26,19 @@
     "tokens": [],
     "classOverrides": []
   },
-  "sourceCommit": "e9923cd1873b6bafb8a7e7078ea2593c2ba180f7",
+  "sourceCommit": "7fe077c4f2972d6c73af3e7a4bcf94ebb042a031",
   "sourceDirty": true,
   "sourceGit": {
     "available": true,
-    "commit": "e9923cd1873b6bafb8a7e7078ea2593c2ba180f7",
-    "shortCommit": "e9923cd1873b",
+    "commit": "7fe077c4f2972d6c73af3e7a4bcf94ebb042a031",
+    "shortCommit": "7fe077c4f297",
     "dirty": true,
     "dirtyPaths": [
-      " M composites/composites.css",
-      " M composites/feed-list.md",
-      " M governance/enforcement.md",
-      " M governance/principles.md",
-      " M patterns/actions.html",
-      " M patterns/create-form.html",
-      " M patterns/create-form.md",
-      " M primitives/alert-dialog.html",
-      " M primitives/button.md",
-      " M primitives/carousel.html",
-      " M primitives/carousel.md",
-      " M primitives/primitives.css",
-      " M primitives/toggle.md"
+      "M  composites/composites.css",
+      "A  composites/log-console.html",
+      "A  composites/log-console.md",
+      "M  patterns/create-form.html",
+      "M  patterns/create-form.md"
     ],
     "restorePaths": [
       "tokens",

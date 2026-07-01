@@ -79,6 +79,10 @@ The variant drives the primary verb in the (required) header actions slot:
 - **One `Field` unit** = label + control + help/error, vertically stacked. Errors
   attach to the field, in the interface's voice ("Enter a valid email"), not a
   global banner — and explain how to fix.
+- **Multi-column field rows use the `.form-grid` utility** — `.form-grid--2` /
+  `.form-grid--3` for a fixed 2-/3-up row (collapsing to 1-up below `sm`), or bare
+  `.form-grid` for auto-fit. It is a closed-set layout utility (like `.stack`); do
+  **not** hand-roll a page-local `.form-row`/grid in the artifact's `<style>`.
 - **Submit says what it does** — "Create customer", "Save changes" — not "Submit";
   the button keeps its verb through the resulting toast ("Customer created").
 - **Group long forms into labelled section cards by concern** — one `Card` per

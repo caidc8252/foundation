@@ -35,8 +35,7 @@
   .form-stack { display: flex; flex-direction: column; gap: var(--space-4); }
   /* Selects in a form span the row (the toolbar default is fit-content). */
   .form-stack .select { width: 100%; }
-  /* Two fields side by side on wider widths. */
-  .form-row { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
+  /* Two-up field rows now use the shared .form-grid utility (composites.css). */
 
   .form-title { font-size: var(--text-md); font-weight: 600; color: var(--color-content-primary); }
 
@@ -119,7 +118,7 @@
               <input id="f-name" class="input" type="text" placeholder="Acme Robotics" value="Acme Robotics">
             </div>
 
-            <div class="form-row">
+            <div class="form-grid form-grid--2">
               <div class="field">
                 <label class="label" for="f-plan">Plan</label>
                 <select id="f-plan" class="select">

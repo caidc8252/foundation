@@ -1,0 +1,159 @@
+<!--
+  log-console.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Log console composite in the foundation design system.
+  Covers:
+    - Structured logcat rows: time · pid/tid · level · tag · message (fixed grid)
+    - Level colours: muted V/D/I, coloured rail W, rail+wash E/F
+    - Toolbar: level toggles + reused .search-input + download
+    - Expandable rows revealing a full stack trace
+    - Filter / expand / download wired by a small inline script
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log console · foundation composite</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="../primitives/primitives.css">
+  <link rel="stylesheet" href="../release/composites.css">
+  <style>
+    body { margin: 0; background-color: var(--color-surface-2); font-family: var(--font-sans); }
+    .demo-page { max-width: 960px; margin: 0 auto; padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-4); }
+    .demo-title { font-size: var(--text-lg); font-weight: 600; color: var(--color-content-primary); margin: 0; }
+    .demo-desc { font-size: var(--text-sm); color: var(--color-content-tertiary); margin: 0; }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+    <h1 class="demo-title">Log console — POS-00417 · logcat</h1>
+    <p class="demo-desc">Toggle levels, filter by tag/text, click an <strong>E/F</strong> row to expand its stack, or download.</p>
+
+    <div class="log-console">
+      <div class="log-console__toolbar">
+        <div class="log-console__levels">
+          <button type="button" class="log-console__level-toggle log-console__level-toggle--active" data-level="V">V</button>
+          <button type="button" class="log-console__level-toggle log-console__level-toggle--active" data-level="D">D</button>
+          <button type="button" class="log-console__level-toggle log-console__level-toggle--active" data-level="I">I</button>
+          <button type="button" class="log-console__level-toggle log-console__level-toggle--active" data-level="W">W</button>
+          <button type="button" class="log-console__level-toggle log-console__level-toggle--active" data-level="E">E</button>
+          <button type="button" class="log-console__level-toggle log-console__level-toggle--active" data-level="F">F</button>
+        </div>
+        <div class="search-input">
+          <span class="search-input__icon"><svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg></span>
+          <input class="input" type="text" placeholder="Filter tag or text…" aria-label="Filter logs">
+        </div>
+        <button type="button" class="btn btn--outline btn--sm log-console__download">
+          <svg data-lucide="download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>
+          Download
+        </button>
+      </div>
+
+      <div class="log-console__viewport">
+        <div class="log-console__row log-console__row--i" data-level="I">
+          <span class="log-console__time">12:34:56.712</span><span class="log-console__pid">1180-1180</span><span class="log-console__level">I</span><span class="log-console__tag">PosApp</span><span class="log-console__msg">Boot sequence started (build 4.2.0)</span>
+        </div>
+        <div class="log-console__row log-console__row--d" data-level="D">
+          <span class="log-console__time">12:34:56.740</span><span class="log-console__pid">1180-1201</span><span class="log-console__level">D</span><span class="log-console__tag">NetworkClient</span><span class="log-console__msg">GET /v1/fleet/heartbeat → 200 (48ms)</span>
+        </div>
+        <div class="log-console__row log-console__row--v" data-level="V">
+          <span class="log-console__time">12:34:57.001</span><span class="log-console__pid">1180-1180</span><span class="log-console__level">V</span><span class="log-console__tag">TouchInput</span><span class="log-console__msg">MotionEvent ACTION_DOWN 412,880</span>
+        </div>
+        <div class="log-console__row log-console__row--i" data-level="I">
+          <span class="log-console__time">12:34:57.118</span><span class="log-console__pid">1180-1180</span><span class="log-console__level">I</span><span class="log-console__tag">CardReader</span><span class="log-console__msg">Contactless field enabled</span>
+        </div>
+        <div class="log-console__row log-console__row--w" data-level="W">
+          <span class="log-console__time">12:34:57.220</span><span class="log-console__pid">1180-1233</span><span class="log-console__level">W</span><span class="log-console__tag">BatteryMgr</span><span class="log-console__msg">Battery temp 41.2°C — throttling charge</span>
+        </div>
+        <div class="log-console__row log-console__row--d" data-level="D">
+          <span class="log-console__time">12:34:57.610</span><span class="log-console__pid">1180-1201</span><span class="log-console__level">D</span><span class="log-console__tag">EmvKernel</span><span class="log-console__msg">SELECT AID A0000000031010</span>
+        </div>
+        <div class="log-console__row log-console__row--e log-console__row--expandable" data-level="E">
+          <span class="log-console__time">12:34:58.004</span><span class="log-console__pid">1180-1201</span><span class="log-console__level">E</span><span class="log-console__tag">PaymentSvc</span><span class="log-console__msg">EMV kernel timeout on contactless read (retry 1/3)</span>
+          <div class="log-console__detail">PaymentSvc: kernel did not respond within 3000ms
+  txnId=9f8c2a1b  reader=CL  amount=1299
+  action=RETRY  next=fallback-insert</div>
+        </div>
+        <div class="log-console__row log-console__row--i" data-level="I">
+          <span class="log-console__time">12:34:58.090</span><span class="log-console__pid">1180-1180</span><span class="log-console__level">I</span><span class="log-console__tag">PaymentSvc</span><span class="log-console__msg">Falling back to contact (insert) flow</span>
+        </div>
+        <div class="log-console__row log-console__row--f log-console__row--expandable" data-level="F">
+          <span class="log-console__time">12:34:58.115</span><span class="log-console__pid">1180-1201</span><span class="log-console__level">F</span><span class="log-console__tag">AndroidRuntime</span><span class="log-console__msg">FATAL EXCEPTION: main — java.lang.NullPointerException</span>
+          <div class="log-console__detail">java.lang.NullPointerException: Attempt to read field 'pan' on a null object reference
+  at com.acme.pos.payment.EmvKernel.read(EmvKernel.java:212)
+  at com.acme.pos.payment.PaymentSvc.onTap(PaymentSvc.java:88)
+  at com.acme.pos.ui.CheckoutActivity$3.run(CheckoutActivity.java:401)
+  at android.os.Handler.handleCallback(Handler.java:942)</div>
+        </div>
+        <div class="log-console__row log-console__row--w" data-level="W">
+          <span class="log-console__time">12:34:59.204</span><span class="log-console__pid">1180-1233</span><span class="log-console__level">W</span><span class="log-console__tag">Watchdog</span><span class="log-console__msg">Main thread stalled 1204ms</span>
+        </div>
+        <div class="log-console__row log-console__row--i" data-level="I">
+          <span class="log-console__time">12:34:59.330</span><span class="log-console__pid">1180-1180</span><span class="log-console__level">I</span><span class="log-console__tag">ReceiptPrint</span><span class="log-console__msg">Cut command sent</span>
+        </div>
+        <div class="log-console__row log-console__row--d" data-level="D">
+          <span class="log-console__time">12:35:00.012</span><span class="log-console__pid">1180-1201</span><span class="log-console__level">D</span><span class="log-console__tag">NetworkClient</span><span class="log-console__msg">POST /v1/txn → 201 (132ms)</span>
+        </div>
+        <div class="log-console__row log-console__row--v" data-level="V">
+          <span class="log-console__time">12:35:00.140</span><span class="log-console__pid">1180-1180</span><span class="log-console__level">V</span><span class="log-console__tag">TouchInput</span><span class="log-console__msg">MotionEvent ACTION_UP 412,884</span>
+        </div>
+        <div class="log-console__row log-console__row--e log-console__row--expandable" data-level="E">
+          <span class="log-console__time">12:35:01.777</span><span class="log-console__pid">1180-1250</span><span class="log-console__level">E</span><span class="log-console__tag">SyncWorker</span><span class="log-console__msg">Upload failed: SSL handshake reset by peer</span>
+          <div class="log-console__detail">javax.net.ssl.SSLHandshakeException: Connection reset by peer
+  at com.acme.pos.sync.SyncWorker.push(SyncWorker.java:143)
+  endpoint=https://api.example.com/v1/fleet/logs  attempt=2</div>
+        </div>
+        <div class="log-console__empty" hidden>No log lines match the current filter.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var root = document.querySelector('.log-console');
+      var rows = Array.prototype.slice.call(root.querySelectorAll('.log-console__row'));
+      var empty = root.querySelector('.log-console__empty');
+      var search = root.querySelector('.search-input .input');
+      var active = { V: true, D: true, I: true, W: true, E: true, F: true };
+
+      function apply() {
+        var q = (search.value || '').toLowerCase();
+        var shown = 0;
+        rows.forEach(function (row) {
+          var lvl = row.getAttribute('data-level');
+          var ok = active[lvl] && (q === '' || row.textContent.toLowerCase().indexOf(q) !== -1);
+          row.style.display = ok ? '' : 'none';
+          if (ok) shown++;
+        });
+        if (empty) empty.hidden = shown !== 0;
+      }
+
+      root.querySelectorAll('.log-console__level-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var lvl = btn.getAttribute('data-level');
+          active[lvl] = !active[lvl];
+          btn.classList.toggle('log-console__level-toggle--active', active[lvl]);
+          apply();
+        });
+      });
+      search.addEventListener('input', apply);
+      rows.forEach(function (row) {
+        if (row.classList.contains('log-console__row--expandable')) {
+          row.addEventListener('click', function () { row.classList.toggle('log-console__row--expanded'); });
+        }
+      });
+      var dl = root.querySelector('.log-console__download');
+      if (dl) dl.addEventListener('click', function () {
+        var text = rows.filter(function (r) { return r.style.display !== 'none'; })
+          .map(function (r) { return r.textContent.trim().replace(/\s+/g, ' '); }).join('\n');
+        var blob = new Blob([text], { type: 'text/plain' });
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob); a.download = 'POS-00417-logcat.txt'; a.click();
+        URL.revokeObjectURL(a.href);
+      });
+    })();
+  </script>
+</body>
+</html>
