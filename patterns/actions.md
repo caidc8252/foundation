@@ -32,6 +32,17 @@ where it lands, and whether it confirms — those are not per-screen choices.
 
 ## Rules
 
+- **Primary is rightmost — the order is fixed, not a per-screen choice.** In any
+  actions group — a `page-header` actions slot, a dialog footer, a `create-wizard`
+  nav, an inline row — the **commit verb is the last (rightmost) button**;
+  subordinate controls (`secondary`, `ghost`, a `ghost` **Back**) sit to its left and
+  **Cancel is leftmost**: `secondary`/`ghost` Cancel → … → `primary`/`danger` Confirm.
+  **At most one primary per group.** Source order *is* visual order in the row — author
+  the markup in this order; never reorder with CSS. This is why `create-form` reads
+  `[ Cancel ] [ Create ]`, a `create-wizard` nav is `ghost Back + primary Continue`,
+  and an `AlertDialog` is `secondary Cancel + danger Confirm`. (A trailing destructive
+  icon — a `ghost-danger` Delete/Terminate after the primary — is the one exception, and
+  even then prefer routing it through the `⋯` overflow per **One carrier per row**.)
 - **Danger tone marks destructive verbs.** `danger` / `ghost-danger` skins are for
   **destructive** actions — delete / remove / revoke / suspend / terminate.
   Everything reversible / routine stays neutral (`secondary` / `ghost`).
