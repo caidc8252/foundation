@@ -165,7 +165,6 @@
           <div class="page-header__titles">
             <div class="page-header__heading">
               <h1 class="page-header__title">Customers</h1>
-              <span class="page-header__count">1,248</span>
             </div>
             <p class="page-header__description">Browse, filter, and manage customer accounts.</p>
           </div>
@@ -557,8 +556,7 @@
   var appliedRow   = document.getElementById('applied-filters');
   var clearAllBtn  = document.getElementById('clear-all-btn');
   var suffix       = document.getElementById('filter-suffix');
-  // LP9: page-header count mirrors summary bar count
-  var headerCount  = document.querySelector('.page-header__count');
+  // LP9: summary bar count reflects the active filter set
   var summaryCount = document.getElementById('result-count');
   // LP2: bulk bar elements
   var summaryIdle  = document.getElementById('summary-idle');
@@ -656,7 +654,6 @@
       appliedRow.style.display = 'none';
       suffix.textContent = '';
       // LP9: no filters → show full count
-      if (headerCount) headerCount.textContent = '1,248';
       if (summaryCount) summaryCount.textContent = '1,248';
       return;
     }
@@ -690,9 +687,8 @@
 
     appliedRow.style.display = '';
     suffix.textContent = '· matching filters';
-    // LP9: filtered → update both counts together (demo placeholder)
+    // LP9: filtered → update the summary count (demo placeholder)
     var filteredCount = '5';
-    if (headerCount) headerCount.textContent = filteredCount;
     if (summaryCount) summaryCount.textContent = filteredCount;
   }
 

@@ -5,18 +5,18 @@
 
   When to use (AI decision guide)
   ──────────────────────────────────────────────────────────────────────
-  Use page-header on EVERY page. It names the page, carries the record
-  count, and exposes page-level actions. Only the title is required.
+  Use page-header on EVERY page. It names the page and exposes
+  page-level actions. Only the title is required.
   · list / create / wizard pages → page-header
   · detail / profile pages       → detail-header (carries identity)
   · At most ONE primary action, rightmost; everything else secondary/ghost
 
   Covers:
-    - Default with full anatomy: title + count + status adornment + description + actions
+    - Default with full anatomy: title + status adornment + description + actions
     - Minimal (title only, info page)
     - Title + description + single primary action
     - Sticky variant (pins to top of scroll container)
-    - Read-only page (count + status, no actions)
+    - Read-only page (status, no actions)
   ──────────────────────────────────────────────────────────────────────
 -->
 <!DOCTYPE html>
@@ -89,7 +89,7 @@
     <div class="demo-section">
       <h2 class="demo-section__title">Page header · default (full anatomy)</h2>
       <p class="demo-section__desc">
-        Title, mono count, status badge adornment on the heading line, description below,
+        Title, status badge adornment on the heading line, description below,
         and action cluster (primary rightmost, secondary on its left).
       </p>
 
@@ -98,7 +98,6 @@
           <div class="page-header__titles">
             <div class="page-header__heading">
               <h1 class="page-header__title">Customers</h1>
-              <span class="page-header__count">1,248</span>
               <span class="badge badge--success"><span class="badge__dot"></span>Active</span>
             </div>
             <p class="page-header__description">Manage customer accounts, view orders, and adjust settings.</p>
@@ -123,7 +122,7 @@
     <div class="demo-section">
       <h2 class="demo-section__title">Page header · minimal (title only)</h2>
       <p class="demo-section__desc">
-        A read-only info page with nothing but the title. No count, no adornment, no actions.
+        A read-only info page with nothing but the title. No adornment, no actions.
       </p>
 
       <div class="page-header">
@@ -177,7 +176,6 @@
             <div class="page-header__titles">
               <div class="page-header__heading">
                 <h1 class="page-header__title">Create order</h1>
-                <span class="page-header__count">step 2 of 5</span>
               </div>
               <p class="page-header__description">Fill in the order details below — actions are always reachable.</p>
             </div>
@@ -197,9 +195,9 @@
          Section 5: Read-only — count + status, no actions
          ════════════════════════════════════════════════════════════════ -->
     <div class="demo-section">
-      <h2 class="demo-section__title">Page header · read-only (count + status, no actions)</h2>
+      <h2 class="demo-section__title">Page header · read-only (status, no actions)</h2>
       <p class="demo-section__desc">
-        An informational page with a count and status adornment but no action buttons.
+        An informational page with a status adornment but no action buttons.
       </p>
 
       <div class="page-header">
@@ -207,7 +205,6 @@
           <div class="page-header__titles">
             <div class="page-header__heading">
               <h1 class="page-header__title">Incident history</h1>
-              <span class="page-header__count">23</span>
               <span class="badge badge--info">Resolved</span>
             </div>
             <p class="page-header__description">A chronological record of system incidents and their resolution status.</p>

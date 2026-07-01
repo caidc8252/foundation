@@ -159,7 +159,7 @@ html, body { margin: 0; }
       <div class="page-header">
         <div class="page-header__bar">
           <div class="page-header__titles">
-            <div class="page-header__heading"><span class="page-header__title">Customers</span><span class="page-header__count">1,248</span></div>
+            <div class="page-header__heading"><span class="page-header__title">Customers</span></div>
             <div class="page-header__description">Maintain customer companies, their contracts and operators.</div>
           </div>
           <div class="page-header__actions">
@@ -1258,7 +1258,7 @@ h6.md-h { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 
           <div class="page-header">
             <div class="page-header__bar">
               <div class="page-header__titles">
-                <div class="page-header__heading"><span class="page-header__title">订单</span><span class="page-header__count">1,248</span></div>
+                <div class="page-header__heading"><span class="page-header__title">订单</span></div>
                 <div class="page-header__description">管理与跟踪所有客户订单。</div>
               </div>
               <div class="page-header__actions">

@@ -132,14 +132,6 @@
   letter-spacing: -0.01em; /* tracking-tight, matches @cloud/ui h1 */
   color: var(--color-content-primary);
 }
-/* Mono count beside the title ("1,248"). */
-.page-header__count {
-  font-family: var(--font-mono);
-  font-size: var(--text-lg);
-  font-weight: 500;
-  color: var(--color-content-tertiary);
-  font-variant-numeric: tabular-nums;
-}
 .page-header__description {
   margin-top: var(--space-1);
   max-width: 48rem; /* layout measure (~prose width), no token */

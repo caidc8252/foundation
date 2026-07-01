@@ -222,7 +222,7 @@ required core = `page-header` + results card；本例需要筛选与分页，保
 
 | composite | 怎么配（契约 Artifact 段 + 样例标记） |
 |-----------|--------------------------------------|
-| `page-header` | 标题 "Customers" + 可选 `page-header__count`（如 "1,248"，与 summary 条计数同步）+ 至多一个 primary 动作（"New customer"） |
+| `page-header` | 标题 "Customers" + 至多一个 primary 动作（"New customer"） |
 | `page-body` | gutters + stack 容器，子元素默认全宽，不加 `max-width` 包裹 |
 | `list-filter` | `.condition-band` › `.condition-band__toolbar`：`.search-input`（图标用 `.search-input__icon` 包，别裸塞 `<svg>`）+ 快捷筛选 `<select>` + Search 按钮；已应用项用 `.applied-filters` + `.filter-chip`。提交在 Search 按钮，不在 change |
 | `summary-bar` | `.summary-bar--sticky`：`.summary-bar__count`（"N customers"，有筛选时追加 "matching filters"）+ 可选 `.summary-bar__actions`（Export，secondary） |

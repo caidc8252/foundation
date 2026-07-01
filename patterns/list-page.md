@@ -103,10 +103,6 @@ whether or not a condition band sits above them):
 - **Page-header slots are business-driven** — only the title is required; every
   other slot is included per this list's job (see the
   [`page-header`](../composites/page-header.md) slot table). Most relevant here:
-  - *Count* (`page-header__count`): a live total beside the title (e.g. "1,248").
-    Omit when the collection size is not meaningful at a glance or is expensive to
-    compute. When present it mirrors the summary bar's count and should update
-    together.
   - *Secondary action* (`page-header__actions` secondary `Button`): a page-level
     secondary verb (e.g. "Import"). Omit when no such verb exists for this
     collection; the primary CTA stands alone.
