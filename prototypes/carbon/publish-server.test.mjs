@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 
-import { markReleasedVersions, readReleaseInfo } from "./publish-server.mjs";
+import { markReleasedVersions, normalizeReviewSubject, readReleaseInfo } from "./publish-server.mjs";
 
 test("readReleaseInfo reads the currently published version from release manifest", () => {
   const dir = mkdtempSync(join(tmpdir(), "foundation-release-"));
@@ -50,4 +50,37 @@ test("markReleasedVersions marks only the version currently in release", () => {
   assert.equal(versions[0].releasedAt, "");
   assert.equal(versions[1].released, true);
   assert.equal(versions[1].releasedAt, "2026-06-30T00:51:34.649Z");
+});
+
+test("normalizeReviewSubject keeps only safe visible review target fields", () => {
+  assert.deepEqual(
+    normalizeReviewSubject({
+      label: "客户列表里的表格",
+      visualName: "表格",
+      selector: ".data-table",
+      className: "data-table",
+      sourceFile: "composites/composites.css",
+      owner: {
+        layer: "composite",
+        name: "data-table",
+        title: "Data table",
+        injected: "drop me",
+      },
+      injected: "drop me",
+    }),
+    {
+      label: "客户列表里的表格",
+      visualName: "表格",
+      selector: ".data-table",
+      className: "data-table",
+      sourceFile: "composites/composites.css",
+      owner: {
+        layer: "composite",
+        name: "data-table",
+        title: "Data table",
+      },
+    },
+  );
+
+  assert.equal(normalizeReviewSubject({ selector: "body", sourceFile: "release/composites.css" }), null);
 });

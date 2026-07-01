@@ -78,27 +78,170 @@
     }
     return null;
   }
+  var VISIBLE_LABELS = {
+    'app-frame': '应用框架',
+    'chart': '图表',
+    'data-table': '表格',
+    'detail-header': '详情页头',
+    'diff': '差异对比',
+    'empty-state': '空状态',
+    'feed-list': '信息流',
+    'kv-grid': '键值信息',
+    'list-filter': '筛选区',
+    'list-row': '列表行',
+    'load-more': '加载更多',
+    'option-card': '选项卡片',
+    'page-body': '页面内容',
+    'page-header': '页头',
+    'pagination': '分页',
+    'product-card': '商品卡片',
+    'rich-pagination': '分页',
+    'skeleton': '加载占位',
+    'stat-card': '指标卡片',
+    'step-indicator': '步骤条',
+    'stepper': '步进器',
+    'summary-bar': '汇总栏',
+    'theme-toggle': '主题切换',
+    'timeline': '时间线',
+    'toggles': '切换控件',
+    'accordion': '折叠面板',
+    'alert': '提示',
+    'alert-dialog': '确认弹窗',
+    'avatar': '头像',
+    'badge': '标签',
+    'breadcrumb': '面包屑',
+    'button': '按钮',
+    'calendar': '日历',
+    'card': '卡片',
+    'carousel': '轮播',
+    'checkbox': '复选框',
+    'collapsible': '折叠区',
+    'combobox': '组合选择',
+    'command': '命令菜单',
+    'context-menu': '右键菜单',
+    'date-picker': '日期选择',
+    'date-range-picker': '日期范围选择',
+    'date-time-picker': '日期时间选择',
+    'date-time-range-picker': '日期时间范围选择',
+    'drawer': '抽屉',
+    'dropdown-menu': '下拉菜单',
+    'dropzone': '上传区',
+    'field': '表单项',
+    'hover-card': '悬浮卡片',
+    'input': '输入框',
+    'input-group': '输入组合',
+    'input-otp': '验证码输入',
+    'label': '标签文字',
+    'modal': '弹窗',
+    'object-tile': '对象图标',
+    'popover': '气泡层',
+    'progress': '进度条',
+    'radio-group': '单选框',
+    'resizable': '可调整区域',
+    'scroll-area': '滚动区',
+    'select': '选择框',
+    'separator': '分隔线',
+    'sheet': '侧滑面板',
+    'slider': '滑杆',
+    'spinner': '加载图标',
+    'switch': '开关',
+    'tabs': '标签页',
+    'textarea': '多行输入',
+    'toast': '消息提示',
+    'toggle': '切换按钮',
+    'toggle-group': '切换按钮组',
+    'tooltip': '提示气泡',
+  };
+  function titleFallback(owner) {
+    var text = String(owner && owner.title || owner && owner.name || '').replace(/\s+·\s+(composite|primitive).*$/i, '').replace(/\s+—.*$/, '').trim();
+    return text || '组件';
+  }
+  function visualLabelForOwner(owner) {
+    if (!owner) return '组件';
+    return VISIBLE_LABELS[owner.name] || titleFallback(owner);
+  }
+  function targetSourceForOwner(owner) {
+    return owner && owner.layer === 'primitive' ? 'primitives/primitives.css' : 'composites/composites.css';
+  }
+  function ownerForVisualSubject(el, cls) {
+    var owner = cls ? primaryOwnerForClass(cls, null) : null;
+    return owner || ownersForElement(el, 'composite')[0] || ownersForElement(el, null)[0] || null;
+  }
+  function reviewClassForElement(el, cls) {
+    if (cls) return cls;
+    var owner = ownersForElement(el, 'composite')[0] || ownersForElement(el, null)[0];
+    if (owner && owner.classes && owner.classes.length) {
+      for (var i = 0; i < owner.classes.length; i++) if (classDecl[owner.classes[i]]) return owner.classes[i];
+      return owner.classes[0];
+    }
+    return foundationClasses(el)[0] || '';
+  }
+  function visibleText(el) {
+    var text = String(el && (el.innerText || el.textContent) || '').replace(/\s+/g, ' ').trim();
+    if (!text || text.length > 32) return '';
+    return text;
+  }
+  function visualSubjectForElement(el, cls) {
+    cls = reviewClassForElement(el, cls);
+    var owner = ownerForVisualSubject(el, cls);
+    var visualName = visualLabelForOwner(owner);
+    var text = visibleText(el);
+    var label = text && (visualName === '按钮' || visualName === '标签' || visualName === '切换按钮')
+      ? '“' + text + '”' + visualName
+      : visualName;
+    return {
+      label: label,
+      visualName: visualName,
+      selector: cls ? '.' + cls : '',
+      className: cls || '',
+      sourceFile: targetSourceForOwner(owner),
+      owner: owner ? { layer: owner.layer, name: owner.name, title: titleFallback(owner) } : null,
+    };
+  }
+  function saveReviewSubject(subject) {
+    currentReviewSubject = subject || null;
+    saveJsonStore(REVIEW_KEY, currentReviewSubject ? { value: currentReviewSubject } : {});
+  }
+  function loadReviewSubject() {
+    var stored = loadJsonStore(REVIEW_KEY);
+    currentReviewSubject = stored.value || null;
+  }
+  function clearPeerHighlights() {
+    peerEls.forEach(function (el) { el.classList.remove('se-peer'); });
+    peerEls = [];
+  }
+  function highlightPeers(subject, selectedEl) {
+    clearPeerHighlights();
+    if (!subject || !selectorSafe(subject.selector)) return;
+    try {
+      document.querySelectorAll(subject.selector).forEach(function (el) {
+        if (el === selectedEl || isEditorNode(el)) return;
+        el.classList.add('se-peer');
+        peerEls.push(el);
+      });
+    } catch (e) {}
+  }
   function ownerMetaForChange(el, cls) {
-    var classOwner = primaryOwnerForClass(cls, null);
+    var classOwner = ownerForVisualSubject(el, cls);
     var composite = classOwner && classOwner.layer === 'composite' ? classOwner : nearestCompositeForElement(el);
+    var subject = visualSubjectForElement(el, cls);
+    var visualName = subject.visualName || visualLabelForOwner(classOwner || composite);
     return {
       ownerLayer: classOwner ? classOwner.layer : '',
       ownerName: classOwner ? classOwner.name : '',
-      ownerTitle: classOwner ? classOwner.title : '',
+      ownerTitle: classOwner ? titleFallback(classOwner) : '',
       ownerClass: cls || '',
       compositeName: composite ? composite.name : '',
-      compositeTitle: composite ? composite.title : '',
+      compositeTitle: composite ? titleFallback(composite) : '',
+      visualName: visualName,
+      reviewLabel: subject.label || visualName,
+      sourceFile: subject.sourceFile || targetSourceForOwner(classOwner || composite),
     };
   }
   function changeName(selector, prop, meta) {
     meta = meta || {};
-    var parts = [];
-    if (meta.compositeName) parts.push('Composite ' + meta.compositeName);
-    if (meta.ownerName && meta.ownerName !== meta.compositeName) {
-      parts.push((meta.ownerLayer === 'primitive' ? 'Primitive ' : 'Composite ') + meta.ownerName);
-    }
-    if (!parts.length) parts.push('Class');
-    return parts.join(' · ') + ' · ' + selector + ' ' + prop;
+    var label = meta.visualName || meta.reviewLabel || (meta.ownerName ? visualLabelForOwner({ name: meta.ownerName, layer: meta.ownerLayer, title: meta.ownerTitle }) : '组件');
+    return label + ' · ' + prop;
   }
 
   // Properties we let users theme (intersected with what each class actually declares).
@@ -118,6 +261,10 @@
   ];
 
   var PAGE_KEY = 'tomsedit:' + (location.pathname.split('/').pop() || 'index');
+  var LEGACY_TOKEN_KEY = 'tomsedit:tokens';
+  var TOKEN_KEY = 'tomsreview:tokens';
+  var CLASS_KEY = 'tomsreview:classes';
+  var REVIEW_KEY = 'tomsreview:subject';
 
   // ───────────────── read tokens + per-class declared props from CSSOM ─────────────────
   var tokens = {};       // --name -> value
@@ -218,6 +365,26 @@
 
   // ───────────────── store ─────────────────
   var store = {};
+  var classStore = {};
+  var currentReviewSubject = null;
+  var classDraftStyle = null;
+  var peerEls = [];
+  function loadJsonStore(key) {
+    try {
+      var raw = localStorage.getItem(key);
+      if (!raw) return {};
+      var parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+    } catch (e) {
+      return {};
+    }
+  }
+  function saveJsonStore(key, value) {
+    try {
+      if (!value || !Object.keys(value).length) localStorage.removeItem(key);
+      else localStorage.setItem(key, JSON.stringify(value));
+    } catch (e) {}
+  }
   function loadStore() { return {}; }
   function saveStore() {}
   function applyElementStore() {
@@ -230,11 +397,45 @@
     store = loadStore();
     applyElementStore();
   }
+  function selectorSafe(selector) {
+    return /^\.[-A-Za-z0-9_]+$/.test(selector || '');
+  }
+  function renderClassDraftStyle() {
+    if (!classDraftStyle) {
+      classDraftStyle = document.querySelector('style[data-editor-kind="class-draft"]');
+      if (!classDraftStyle) {
+        classDraftStyle = document.createElement('style');
+        classDraftStyle.setAttribute('data-editor', '');
+        classDraftStyle.setAttribute('data-editor-kind', 'class-draft');
+      }
+    }
+    document.head.appendChild(classDraftStyle);
+    var lines = [];
+    Object.keys(classStore).sort().forEach(function (selector) {
+      if (!selectorSafe(selector)) return;
+      var decls = classStore[selector] || {};
+      var props = Object.keys(decls).filter(function (prop) {
+        return THEME_SET.has(prop) && decls[prop] != null && String(decls[prop]).trim() !== '';
+      }).sort();
+      if (!props.length) return;
+      lines.push(selector + ' {');
+      props.forEach(function (prop) { lines.push('  ' + prop + ': ' + decls[prop] + ' !important;'); });
+      lines.push('}');
+    });
+    classDraftStyle.textContent = lines.join('\n');
+  }
+  function applyClassStore() {
+    classStore = loadJsonStore(CLASS_KEY);
+    renderClassDraftStyle();
+  }
+  function saveClassStore() {
+    saveJsonStore(CLASS_KEY, classStore);
+    renderClassDraftStyle();
+  }
 
   // ───────────────── global tokens (edit :root → every var(--…) updates) ─────────────────
   // Shared across all pages (design tokens are global), kept as an in-memory draft,
   // then baked into saved versions / exported JSON.
-  var TOKEN_KEY = 'tomsedit:tokens';
   var tokenStore = {};
   var TOKEN_GROUPS = [
     { key: '--color-', label: '颜色 Color' },
@@ -249,8 +450,8 @@
     { key: '--container-', label: '容器 Container' },
     { key: '--breakpoint-', label: '断点 Breakpoint' },
   ];
-  function loadTokenStore() { return {}; }
-  function saveTokenStore() {}
+  function loadTokenStore() { return loadJsonStore(TOKEN_KEY); }
+  function saveTokenStore() { saveJsonStore(TOKEN_KEY, tokenStore); }
   function applyTokenStore() {
     for (var n in tokenStore) document.documentElement.style.setProperty(n, tokenStore[n]);
   }
@@ -268,13 +469,18 @@
       for (var p in store[path]) el.style.removeProperty(p);
     }
     store = {};
+    classStore = {};
+    currentReviewSubject = null;
+    clearPeerHighlights();
+    renderClassDraftStyle();
     try { localStorage.removeItem(PAGE_KEY); } catch (e) {}
+    try { localStorage.removeItem(CLASS_KEY); localStorage.removeItem(REVIEW_KEY); } catch (e) {}
     if (panel) panel.style.display = 'none';
     if (tpanel && tpanel.style.display !== 'none') renderTokenPanel();
   }
   function clearLegacyDraftStorage() {
     try {
-      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(LEGACY_TOKEN_KEY);
       localStorage.removeItem(PAGE_KEY);
       var keys = [];
       for (var i = 0; i < localStorage.length; i++) {
@@ -508,6 +714,7 @@
     var css = [
       '.se-hover{outline:2px dashed var(--color-info,#2563eb)!important;outline-offset:1px;cursor:pointer!important;}',
       '.se-selected{outline:2px solid var(--color-primary-500,#2563eb)!important;outline-offset:1px;}',
+      '.se-peer{outline:2px solid color-mix(in srgb,var(--color-primary-500,#2563eb) 35%,transparent)!important;outline-offset:1px;}',
       '.se-bar{position:fixed;right:16px;bottom:16px;z-index:2147483646;display:flex;flex-direction:column;gap:8px;align-items:flex-end;font-family:var(--font-sans,system-ui,sans-serif);}',
       '.se-bar__row{display:flex;gap:6px;}',
       '.se-btn{font:inherit;font-size:13px;padding:6px 10px;border-radius:8px;border:1px solid var(--color-line-default,#d4d4d8);background:var(--color-surface-1,#fff);color:var(--color-content-primary,#18181b);cursor:pointer;box-shadow:var(--shadow-2,0 1px 3px rgba(0,0,0,.15));}',
@@ -563,6 +770,9 @@
       '.se-title{font-weight:600;font-size:12px;word-break:break-all;font-family:var(--font-mono,monospace);}',
       '.se-x{border:0;background:transparent;font-size:18px;line-height:1;cursor:pointer;color:var(--color-content-secondary,#71717a);padding:0 2px;}',
       '.se-meta{padding:8px 12px;border-bottom:1px solid var(--color-line-subtle,#e4e4e7);display:flex;flex-direction:column;gap:6px;}',
+      '.se-meta--review{background:var(--color-surface-2,#fafafa);}',
+      '.se-review-line{font-size:12px;color:var(--color-content-secondary,#71717a);line-height:1.35;}',
+      '.se-review-line:first-child{font-weight:600;color:var(--color-content-primary,#18181b);}',
       '.se-meta__row{display:flex;align-items:flex-start;gap:6px;min-width:0;}',
       '.se-meta__lbl{flex:0 0 auto;font-size:11px;color:var(--color-content-tertiary,#a1a1aa);}',
       '.se-meta__chips{display:flex;flex-wrap:wrap;gap:4px;min-width:0;}',
@@ -607,10 +817,10 @@
 
   function buildBar() {
     bar = div('se-bar');
-    var toggle = mkbtn('✎ 编辑样式', function () {
+    var toggle = mkbtn('视觉审查', function () {
       editing = !editing;
       toggle.classList.toggle('se-btn--on', editing);
-      toggle.textContent = editing ? '✓ 编辑中 · 点元素改样式' : '✎ 编辑样式';
+      toggle.textContent = editing ? '正在审查 · 点可见对象' : '视觉审查';
       if (!editing) { clearHover(); deselect(); }
     });
     var row = div('se-bar__row');
@@ -707,13 +917,14 @@
     timer = setTimeout(finish, 3000);
     link.href = href;
   }
-  function applyVersion(version, showLoading) {
+  function applyVersion(version, showLoading, options) {
     var loadId = ++versionLoadId;
+    var preserveDraft = options && options.preserveDraft;
     selectedVersion = version || '';
     version = selectedVersion;
     syncVersionControl();
     refreshReleaseButton();
-    clearDraftOverrides();
+    if (!preserveDraft) clearDraftOverrides();
     if (!version) {
       if (versionTokenLink) versionTokenLink.remove();
       if (versionPrimitiveLink) versionPrimitiveLink.remove();
@@ -758,6 +969,7 @@
       setVersionLoading(false);
       setVersionStatus(versionStatusText(version));
       refreshReleaseButton();
+      if (preserveDraft) renderClassDraftStyle();
     }
     waitForStylesheet(versionTokenLink, assetUrl(version, 'tokens.inline.css'), done);
     if (loadPrimitive) waitForStylesheet(versionPrimitiveLink, assetUrl(version, 'primitives.css'), done);
@@ -795,7 +1007,7 @@
       } else if (!versions.some(function (item) { return item.version === chosen; })) {
         chosen = latest;
       }
-      applyVersion(chosen);
+      applyVersion(chosen, false, { preserveDraft: !preferred });
     }).catch(function () {
       setVersionStatus('版本服务未连接');
     });
@@ -824,11 +1036,15 @@
   function deselect() {
     if (selected) selected.classList.remove('se-selected');
     selected = null;
+    clearPeerHighlights();
     if (panel) panel.style.display = 'none';
   }
   function select(el) {
     if (selected) selected.classList.remove('se-selected');
     selected = el;
+    var subject = visualSubjectForElement(el);
+    saveReviewSubject(subject);
+    highlightPeers(subject, el);
     el.classList.add('se-selected');
     renderPanel();
     positionPanel(el);
@@ -844,8 +1060,10 @@
     });
   }
   function currentValue(el, prop) {
-    // saved override first (reading an inline shorthand-with-var returns '' in some browsers),
-    // then any inline value, then the class-declared value.
+    // saved selector draft first, then any legacy inline value, then the class-declared value.
+    var cls = ownerClassForProp(el, prop);
+    var selector = cls ? '.' + cls : '';
+    if (selector && classStore[selector] && classStore[selector][prop] != null) return classStore[selector][prop];
     var path = pathOf(el);
     if (store[path] && store[path][prop] != null) return store[path][prop];
     var inl = el.style.getPropertyValue(prop);
@@ -856,50 +1074,19 @@
   }
   function optHas(opts, v) { for (var i = 0; i < opts.length; i++) if (opts[i].value === v) return true; return false; }
 
-  function ownerNode(owner, cls) {
-    var chip = document.createElement('span');
-    chip.className = 'se-owner se-owner--' + owner.layer;
-    chip.setAttribute('data-editor', '');
-    chip.title = owner.title || owner.name;
-    chip.textContent = ownerLabel(owner) + (cls ? ' · .' + cls : '');
-    return chip;
-  }
-  function appendOwnerRow(parent, label, owners) {
-    if (!owners.length) return;
-    var row = div('se-meta__row');
-    var l = document.createElement('span');
-    l.className = 'se-meta__lbl';
-    l.setAttribute('data-editor', '');
-    l.textContent = label;
-    row.appendChild(l);
-    var chips = div('se-meta__chips');
-    owners.forEach(function (owner) {
-      chips.appendChild(ownerNode(owner, owner.classes && owner.classes[0]));
-    });
-    row.appendChild(chips);
-    parent.appendChild(row);
-  }
-  function compositeTrail(el) {
-    var out = [], seen = {};
-    var cur = el;
-    while (cur && cur.nodeType === 1 && selectable(cur)) {
-      ownersForElement(cur, 'composite').forEach(function (owner) {
-        var key = ownerKey(owner);
-        if (seen[key]) return;
-        seen[key] = true;
-        out.push(owner);
-      });
-      cur = cur.parentElement;
-    }
-    return out.slice(0, 6);
-  }
-  function appendCatalogMeta(el) {
-    var owners = ownersForElement(el, null);
-    var trail = compositeTrail(el);
-    if (!owners.length && !trail.length) return;
-    var meta = div('se-meta');
-    appendOwnerRow(meta, '归属:', owners);
-    appendOwnerRow(meta, '所在:', trail);
+  function appendVisualReviewMeta(el) {
+    var subject = currentReviewSubject || visualSubjectForElement(el);
+    if (!subject) return;
+    var meta = div('se-meta se-meta--review');
+    var line1 = div('se-review-line');
+    line1.textContent = '这是一个全局组件样式修改';
+    var line2 = div('se-review-line');
+    line2.textContent = '会写入：' + (subject.sourceFile || 'composites/composites.css');
+    var line3 = div('se-review-line');
+    line3.textContent = '会影响所有使用“' + (subject.visualName || subject.label || '组件') + '”的地方';
+    meta.appendChild(line1);
+    meta.appendChild(line2);
+    meta.appendChild(line3);
     panel.appendChild(meta);
   }
   function ancestorChipText(el) {
@@ -942,12 +1129,13 @@
     ensurePanel();
     panel.innerHTML = '';
     var hd = div('se-hd');
-    var title = div('se-title'); title.textContent = foundationClasses(el).map(function (c) { return '.' + c; }).join('');
+    var subject = currentReviewSubject || visualSubjectForElement(el);
+    var title = div('se-title'); title.textContent = subject && subject.label || '组件';
     hd.appendChild(title);
     var x = document.createElement('button'); x.className = 'se-x'; x.setAttribute('data-editor', ''); x.textContent = '×'; x.onclick = deselect;
     hd.appendChild(x);
     panel.appendChild(hd);
-    appendCatalogMeta(el);
+    appendVisualReviewMeta(el);
 
     var ancs = ancestorsFoundation(el);
     if (ancs.length) {
@@ -974,7 +1162,7 @@
     }
     panel.appendChild(body);
 
-    var ft = div('se-ft'); ft.appendChild(mkbtn('重置本元素', function () { resetEl(el); }));
+    var ft = div('se-ft'); ft.appendChild(mkbtn('重置这个全局修改', function () { resetEl(el); }));
     panel.appendChild(ft);
     panel.style.display = 'block';
   }
@@ -995,15 +1183,30 @@
 
   // ───────────────── apply / reset ─────────────────
   function apply(el, prop, value) {
-    el.style.setProperty(prop, value);
-    var path = pathOf(el);
-    if (!store[path]) store[path] = {};
-    store[path][prop] = value;
-    saveStore();
+    var cls = ownerClassForProp(el, prop);
+    if (!cls) return;
+    var selector = '.' + cls;
+    if (!classStore[selector]) classStore[selector] = {};
+    classStore[selector][prop] = value;
+    saveReviewSubject(visualSubjectForElement(el, cls));
+    highlightPeers(currentReviewSubject, el);
+    saveClassStore();
   }
   function resetEl(el) {
-    var path = pathOf(el), props = store[path];
-    if (props) { for (var p in props) el.style.removeProperty(p); delete store[path]; saveStore(); }
+    var subject = currentReviewSubject || visualSubjectForElement(el);
+    var removed = false;
+    if (subject && selectorSafe(subject.selector) && classStore[subject.selector]) {
+      delete classStore[subject.selector];
+      removed = true;
+    }
+    foundationClasses(el).forEach(function (cls) {
+      var selector = '.' + cls;
+      if (classStore[selector]) {
+        delete classStore[selector];
+        removed = true;
+      }
+    });
+    if (removed) saveClassStore();
     renderPanel();
   }
   // ───────────────── save / release ─────────────────
@@ -1017,23 +1220,21 @@
   }
   function collectClassOverrides() {
     var overrides = {}, conflicts = [], meta = {};
-    for (var path in store) {
-      var el = elByPath(path);
-      if (!el) continue;
-      for (var prop in store[path]) {
-        var cls = ownerClassForProp(el, prop);
-        if (!cls) continue;
-        var selector = '.' + cls;
-        var value = store[path][prop];
+    Object.keys(classStore).sort().forEach(function (selector) {
+      if (!selectorSafe(selector)) return;
+      var cls = selector.slice(1);
+      var el = null;
+      try { el = document.querySelector(selector); } catch (e) {}
+      var decls = classStore[selector] || {};
+      Object.keys(decls).sort().forEach(function (prop) {
+        var value = decls[prop];
+        if (!THEME_SET.has(prop) || value == null || String(value).trim() === '') return;
         if (!overrides[selector]) overrides[selector] = {};
         if (!meta[selector]) meta[selector] = {};
-        if (overrides[selector][prop] != null && overrides[selector][prop] !== value) {
-          conflicts.push({ selector: selector, prop: prop, previous: overrides[selector][prop], next: value, path: path });
-        }
         overrides[selector][prop] = value;
         meta[selector][prop] = ownerMetaForChange(el, cls);
-      }
-    }
+      });
+    });
     return { overrides: overrides, conflicts: conflicts, meta: meta };
   }
   function countKeys(obj) {
@@ -1122,6 +1323,25 @@
     buttons.forEach(function (button) { ft.appendChild(button); });
     saveModal.appendChild(ft);
   }
+  function pushUnique(list, seen, value) {
+    value = String(value || '').trim();
+    if (!value || seen[value]) return;
+    seen[value] = true;
+    list.push(value);
+  }
+  function reviewSummaryFromCollected(collected) {
+    var labels = [], sources = [], seenLabels = {}, seenSources = {};
+    var overrides = collected.overrides || {};
+    var meta = collected.meta || {};
+    Object.keys(overrides).sort().forEach(function (selector) {
+      Object.keys(overrides[selector] || {}).sort().forEach(function (prop) {
+        var item = meta[selector] && meta[selector][prop] || {};
+        pushUnique(labels, seenLabels, item.visualName || item.reviewLabel);
+        pushUnique(sources, seenSources, item.sourceFile);
+      });
+    });
+    return { labels: labels, sources: sources };
+  }
   function previewRowsFromDraft(collected) {
     var rows = [];
     Object.keys(tokenStore).sort().forEach(function (name) {
@@ -1191,9 +1411,17 @@
     var body = div('se-save-modal__body');
     appendSaveStats(body, [
       { label: 'Token', value: String(meta.tokenCount) },
-      { label: 'Composite', value: String(meta.styleCount) },
+      { label: '组件声明', value: String(meta.styleCount) },
       { label: '来源版本', value: payload.baseVersion || '-' },
     ]);
+    var reviewSummary = reviewSummaryFromCollected(collected);
+    if (reviewSummary.labels.length || reviewSummary.sources.length) {
+      body.appendChild(saveNode('div', 'se-save-callout',
+        '本次包含：' + (reviewSummary.labels.length ? reviewSummary.labels.join('、') : '组件样式') +
+        '；会写入：' + (reviewSummary.sources.length ? reviewSummary.sources.join('、') : '组件源文件') +
+        '；这些都是全局组件样式修改'
+      ));
+    }
     if (collected.conflicts.length) {
       body.appendChild(saveNode('div', 'se-save-callout', '有 ' + collected.conflicts.length + ' 个同 class 同属性存在不同取值，保存时会使用最后一次编辑的值。'));
     }
@@ -1229,7 +1457,7 @@
     appendSaveStats(body, [
       { label: 'Version', value: data.version || '-' },
       { label: 'Token', value: String((data.changes && data.changes.tokens || []).length) },
-      { label: 'Composite', value: String((data.changes && data.changes.composites || []).length) },
+      { label: '组件声明', value: String((data.changes && data.changes.composites || []).length) },
       { label: 'Source', value: data.sourceDirty ? 'dirty' : (data.sourceCommit ? data.sourceCommit.slice(0, 12) : 'not recorded') },
     ]);
     body.appendChild(saveNode('div', 'se-save-callout', '目录: ' + data.relativeDir));
@@ -1291,6 +1519,7 @@
       title: document.title || '',
       publishedAt: new Date().toISOString(),
       baseVersion: selectedVersion,
+      reviewSubject: currentReviewSubject,
       tokens: tokenStore,
       classOverrides: collected.overrides,
       classOverrideMeta: collected.meta,
@@ -1627,8 +1856,10 @@
     mainEl = document.querySelector('.app-frame__main');
     clearLegacyDraftStorage();
     readCSS();
+    loadReviewSubject();
     applyStored();
     applyTokens();
+    applyClassStore();
     injectStyle();
     buildBar();
     buildVersionControl();

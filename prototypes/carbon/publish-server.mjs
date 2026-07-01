@@ -140,6 +140,9 @@ function normalizeClassOverrideMeta(input = {}) {
         ownerClass: metaText(rawMeta?.ownerClass),
         compositeName: metaText(rawMeta?.compositeName),
         compositeTitle: metaText(rawMeta?.compositeTitle),
+        visualName: metaText(rawMeta?.visualName),
+        reviewLabel: metaText(rawMeta?.reviewLabel),
+        sourceFile: metaText(rawMeta?.sourceFile),
       };
       if (!Object.values(clean).some(Boolean)) continue;
       meta[selector] = meta[selector] || {};
@@ -147,6 +150,41 @@ function normalizeClassOverrideMeta(input = {}) {
     }
   }
   return meta;
+}
+
+const REVIEW_SOURCE_FILES = new Set(["composites/composites.css", "primitives/primitives.css"]);
+
+export function normalizeReviewSubject(input = null) {
+  if (!input || typeof input !== "object" || Array.isArray(input)) return null;
+  const selector = metaText(input.selector);
+  const sourceFile = metaText(input.sourceFile);
+  if (!SELECTOR_RE.test(selector) || !REVIEW_SOURCE_FILES.has(sourceFile)) return null;
+
+  const className = metaText(input.className);
+  const cleanClassName = /^[-A-Za-z0-9_]+$/.test(className) ? className : selector.slice(1);
+  const label = metaText(input.label);
+  const visualName = metaText(input.visualName);
+  const rawOwner = input.owner && typeof input.owner === "object" && !Array.isArray(input.owner) ? input.owner : null;
+  let owner = null;
+  if (rawOwner) {
+    const layer = metaText(rawOwner.layer);
+    if (layer === "composite" || layer === "primitive") {
+      owner = {
+        layer,
+        name: metaText(rawOwner.name),
+        title: metaText(rawOwner.title),
+      };
+    }
+  }
+
+  return {
+    label: label || visualName || cleanClassName,
+    visualName: visualName || label || cleanClassName,
+    selector,
+    className: cleanClassName,
+    sourceFile,
+    owner,
+  };
 }
 
 function mergeClassOverrides(base = {}, next = {}) {
@@ -495,6 +533,7 @@ export function publishSnapshot(payload, options = {}) {
   );
   const classOverrideMeta = mergeClassOverrideMeta(baseManifest.classOverrideMeta || {}, incomingClassOverrideMeta);
   const changes = buildChangeDetails(baseManifest, baseSnapshot, incomingTokens, incomingClassOverrides, incomingClassOverrideMeta);
+  const reviewSubject = normalizeReviewSubject(payload.reviewSubject) || normalizeReviewSubject(baseManifest.reviewSubject);
   const version = options.version || nextVersionName(versionRoot);
   const publishedAt = payload.publishedAt || new Date().toISOString();
   const outDir = join(versionRoot, version);
@@ -529,6 +568,7 @@ export function publishSnapshot(payload, options = {}) {
       elementPaths: Object.keys(payload.elementOverrides || {}).length,
     },
     changedTokens: Object.keys(tokens).sort(),
+    reviewSubject,
     tokenOverrides: tokens,
     classOverrides,
     classOverrideMeta,
@@ -552,6 +592,7 @@ export function publishSnapshot(payload, options = {}) {
     files: ["tokens.inline.css", "primitives.css", "composites.css", "manifest.json"],
     counts: manifest.counts,
     changes,
+    reviewSubject,
     sourceCommit: manifest.sourceCommit,
     sourceDirty: manifest.sourceDirty,
   };
