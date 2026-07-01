@@ -540,42 +540,6 @@ body { margin: 0; }
   border-color: color-mix(in oklch, var(--color-info) 25%, transparent);
 }
 
-/* Badge · low-level variants — DEPRECATED compat stubs, NOT part of the current API.
-   The API is `tone` only: use the tonal set above (neutral/success/warning/error/info).
-   These (default/secondary/destructive/outline/ghost/link) remain so old HTML doesn't
-   break; do not reach for them in new code (see badge.md "Notes"). Overlaps to avoid:
-   destructive→prefer error, secondary→prefer neutral. */
-.badge--default {
-  background-color: var(--color-primary-700);
-  color: var(--color-content-on-primary);
-}
-.badge--secondary {
-  background-color: var(--color-surface-3);
-  color: var(--color-content-secondary);
-}
-.badge--destructive {
-  background-color: color-mix(in oklch, var(--color-error) 10%, transparent);
-  color: var(--color-error);
-}
-.badge--outline {
-  background-color: transparent;
-  color: var(--color-content-primary);
-  border-color: var(--color-line-default);
-}
-.badge--ghost {
-  background-color: transparent;
-  color: var(--color-content-secondary);
-}
-.badge--ghost:hover {
-  background-color: var(--color-surface-hover);
-  color: var(--color-content-primary);
-}
-.badge--link {
-  background-color: transparent;
-  color: var(--color-primary-700);
-}
-.badge--link:hover { text-decoration: underline; }
-
 /* Badge · tag shape (monospace, square corners) */
 .badge--tag {
   border-radius: var(--radius-sm);
