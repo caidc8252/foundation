@@ -22,7 +22,7 @@ where it lands, and whether it confirms — those are not per-screen choices.
 
 | action | intent | carrier (variant + surface) | lands in (pattern slots) | confirm / tone |
 |---|---|---|---|---|
-| **confirm-danger** | destructive confirm — delete / remove / revoke | a `ghost-danger` **icon** button *or* a `danger` **text** button → opens an `AlertDialog` (secondary **Cancel** + danger **Confirm**) | list row · detail head · section rows | always confirms; the trigger carries `danger` tone (icon or text), and the dialog's Confirm is `danger` too |
+| **confirm-danger** | destructive confirm — delete / remove / revoke | a `ghost-danger` **icon** button *or* a `danger` **text** button → opens an `AlertDialog` (ghost **Cancel** + danger **Confirm**) | list row · detail head · section rows | always confirms; the trigger carries `danger` tone (icon or text), and the dialog's Confirm is `danger` too |
 | **secondary-action** | a secondary tool action (e.g. Export, Import) | a `secondary` button + a leading icon | list **summary bar** *or* page **header** — exactly **one** place | none; neutral tone |
 | **batch-action** | act on a multi-select | a selection-count label + a bulk **button group** in the `summary-bar` (e.g. secondary Assign, ghost-danger Delete) | list summary (replaces the idle actions on select) | destructive verbs route through **confirm-danger**; otherwise neutral |
 | **transition** | status flip / approve–reject | a status **button** or a `dropdown-menu` of statuses; destructive directions use `danger` + a confirm (or a reject-reason dialog) | detail head · section rows | confirm on destructive / service-interrupting directions; neutral on safe ones |
@@ -37,10 +37,12 @@ where it lands, and whether it confirms — those are not per-screen choices.
   nav, an inline row — the **commit verb is the last (rightmost) button**;
   subordinate controls (`secondary`, `ghost`, a `ghost` **Back**) sit to its left and
   **Cancel is leftmost**: `secondary`/`ghost` Cancel → … → `primary`/`danger` Confirm.
-  **At most one primary per group.** Source order *is* visual order in the row — author
-  the markup in this order; never reorder with CSS. This is why `create-form` reads
-  `[ Cancel ] [ Create ]`, a `create-wizard` nav is `ghost Back + primary Continue`,
-  and an `AlertDialog` is `secondary Cancel + danger Confirm`. (A trailing destructive
+  **Cancel tone follows the surface:** a `page-header` actions slot uses a `secondary`
+  Cancel; a dialog / confirm surface or a card footer (`Modal` · `AlertDialog` · `Sheet` ·
+  `card__footer`) uses a `ghost` Cancel. **At most one primary per group.** Source order
+  *is* visual order in the row — author the markup in this order; never reorder with CSS.
+  This is why `create-form` reads `[ Cancel ] [ Create ]`, a `create-wizard` nav is
+  `ghost Back + primary Continue`, and an `AlertDialog` is `ghost Cancel + danger Confirm`. (A trailing destructive
   icon — a `ghost-danger` Delete/Terminate after the primary — is the one exception, and
   even then prefer routing it through the `⋯` overflow per **One carrier per row**.)
 - **Danger tone marks destructive verbs.** `danger` / `ghost-danger` skins are for
@@ -86,7 +88,7 @@ A confirm's friction tracks the action's **risk**, not its kind:
   feedback. Don't gate reversible actions behind a dialog (it trains click-through), and
   there is **no Undo** affordance.
 - **Simple confirm** — irreversible but contained (delete a record, remove a member): an
-  `AlertDialog` — a consequence line + `secondary` Cancel + `danger` Confirm, no input, no
+  `AlertDialog` — a consequence line + `ghost` Cancel + `danger` Confirm, no input, no
   escape.
 - **Confirm with input** — the action must capture context (a reject reason, a suspend
   note): an `AlertDialog` can't hold a field, so use a **hardened `Modal`**

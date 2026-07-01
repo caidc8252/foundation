@@ -19,7 +19,7 @@ One shell, no shell variant. The only choice is the **confirm action's** button 
 |---|---|---|
 | confirm (`AlertDialogAction`) | `primary` | a benign-but-consequential confirm (Publish, Submit) |
 | confirm, destructive | `danger` | a destructive confirm (Delete, Terminate) — the reason to reach for AlertDialog over Modal |
-| cancel (`AlertDialogCancel`) | `secondary` | the safe escape; always present, always the secondary emphasis |
+| cancel (`AlertDialogCancel`) | `ghost` | the safe escape; always present, always the secondary emphasis |
 
 > Compat alias: the confirm slot's default variant is named `default` in the source (= Button's `primary`); pass `destructive` (= `danger`) for the dangerous path.
 
@@ -58,7 +58,7 @@ No size vocabulary — a single content-driven width. It floors to `calc(100% - 
 - **header** — a `space-1.5` (6px) gap stack of title + optional description. Center-aligned on mobile, left-aligned on `sm`+ (no border or background of its own — the AlertDialog header is leaner than `Modal`'s).
 - **title** — `text-md` / 600 / `content-primary`, tight leading. Required (it is the dialog's accessible name).
 - **description** — `text-xs` / `content-secondary`, normal leading. Optional.
-- **footer** — the action shelf; a `space-2` (8px) gap row, right-aligned on `sm`+. On mobile it stacks reversed (confirm on top) so the safe Cancel sits nearest the thumb. No border or fill — it sits flush in the panel padding (unlike `Modal`'s `surface-3` footer). Holds exactly two `.btn`s: a `secondary` Cancel and a `primary`/`danger` Confirm.
+- **footer** — the action shelf; a `space-2` (8px) gap row, right-aligned on `sm`+. On mobile it stacks reversed (confirm on top) so the safe Cancel sits nearest the thumb. No border or fill — it sits flush in the panel padding (unlike `Modal`'s `surface-3` footer). Holds exactly two `.btn`s: a `ghost` Cancel and a `primary`/`danger` Confirm.
 
 ## Accessibility
 
@@ -77,5 +77,5 @@ No size vocabulary — a single content-driven width. It floors to `calc(100% - 
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, AlertDialogTitle, AlertDialogDescription, AlertDialogAction, AlertDialogCancel } from "@cloud/ui"`. base-ui `AlertDialog` under the hood; `AlertDialogAction` takes a `variant` (Button variant, default `default`/primary — pass `destructive` for the dangerous path), `AlertDialogCancel` is fixed to `secondary`. Prop/API details and the open/close lifecycle: the `ui` skill. For a dismissible task or a form, use `Modal` instead.
-- **Artifact (self-contained HTML)** — `.alert-dialog-overlay` wrapping `.alert-dialog`, with `.alert-dialog__header` › `.alert-dialog__title` + `.alert-dialog__description`, then `.alert-dialog__footer` holding two `.btn`s (`.btn .btn--secondary` Cancel + `.btn .btn--primary` or `.btn .btn--danger` Confirm). In `../primitives/primitives.css`, on top of the inlined `release/tokens.inline.css`. Same token recipe, same names. The skin renders the resting OPEN dialog; the consumer drives visibility. The no-dismiss rule is behavioral and lives with the React side.
+- **Next / @cloud/ui** — `import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, AlertDialogTitle, AlertDialogDescription, AlertDialogAction, AlertDialogCancel } from "@cloud/ui"`. base-ui `AlertDialog` under the hood; `AlertDialogAction` takes a `variant` (Button variant, default `default`/primary — pass `destructive` for the dangerous path), `AlertDialogCancel` is fixed to `ghost`. Prop/API details and the open/close lifecycle: the `ui` skill. For a dismissible task or a form, use `Modal` instead.
+- **Artifact (self-contained HTML)** — `.alert-dialog-overlay` wrapping `.alert-dialog`, with `.alert-dialog__header` › `.alert-dialog__title` + `.alert-dialog__description`, then `.alert-dialog__footer` holding two `.btn`s (`.btn .btn--ghost` Cancel + `.btn .btn--primary` or `.btn .btn--danger` Confirm). In `../primitives/primitives.css`, on top of the inlined `release/tokens.inline.css`. Same token recipe, same names. The skin renders the resting OPEN dialog; the consumer drives visibility. The no-dismiss rule is behavioral and lives with the React side.
