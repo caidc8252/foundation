@@ -50,6 +50,8 @@
     "prototype:carbon": "node prototypes/carbon/publish-server.mjs",
     "promote": "node scripts/promote-version.mjs",
     "finalize": "node scripts/finalize-promoted-version.mjs",
+    "apply-draft": "node scripts/apply-draft.mjs",
+    "release": "node scripts/release.mjs",
     "restore:source": "node scripts/restore-version-source.mjs",
     "versions:clear": "node prototypes/carbon/clear-versions.mjs"
   },

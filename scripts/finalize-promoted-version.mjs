@@ -9,7 +9,7 @@
    Usage:
      node scripts/finalize-promoted-version.mjs v3
    --------------------------------------------------------------------------- */
-import { finalizePromotedVersion } from "../prototypes/carbon/publish-server.mjs";
+import { finalizePromotedVersion } from "./release-lib.mjs";
 
 function usage() {
   console.error("Usage: node scripts/finalize-promoted-version.mjs <vN>");
