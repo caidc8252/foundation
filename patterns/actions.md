@@ -57,6 +57,18 @@ where it lands, and whether it confirms — those are not per-screen choices.
 - **One carrier per row.** A row exposes its verbs as inline **icons** *or* a single
   **kebab** (`⋯`) menu — never both. Pick icons when there are ≤2 frequent verbs;
   collapse to a kebab past that.
+- **A peer action group shares one weight.** Actions of *equal emphasis* sitting
+  together in one row / cluster — a table row's inline verbs, a card-header action set,
+  a section-row group — use **one carrier**: never mix `secondary` with `ghost` for
+  peers (e.g. `Lock` as `secondary` next to `Reset password` as `ghost` is the bug —
+  pick one). A **destructive** verb inline among such peers takes **`ghost-danger`**
+  (still red — destructive still *looks* destructive — but low-chrome), **not** the
+  solid `danger` fill: solid `danger` is a destructive **primary** (a standalone CTA,
+  or the `AlertDialog` **Confirm**), and dropped into a peer row it becomes the group's
+  visual anchor — backwards for a destructive verb, and it reads as *taller/heavier*
+  than its outlined neighbours though the box is the same height. (Three inline text
+  verbs like Edit / Suspend / Terminate also trip **One carrier per row** — collapse
+  them to icons or a `⋯` menu.)
 - **A menu row is a menu item, not a button.** Inside a `⋯` / `dropdown-menu`, verbs
   are `.dropdown-menu__item` rows (destructive → the `--destructive` variant,
   `error-strong` text) — **never `.btn`** (`secondary` / `danger` / `ghost`) buttons. The
@@ -69,7 +81,9 @@ where it lands, and whether it confirms — those are not per-screen choices.
   the list **summary bar** (`batch-action`). Put verbs on a **list row** only when a
   requirement emphasizes single-row quick ops; when present they are
   **always-visible `xs` buttons** (the `list-page` override) — `secondary` for the
-  action, `danger` for a Delete that opens a `confirm-danger` dialog — not hover-reveal icons.
+  action, `ghost-danger` for a Delete that opens a `confirm-danger` dialog (low-chrome
+  to match its `secondary` peers per **A peer action group shares one weight**; the solid
+  `danger` fill is the dialog's Confirm, not the inline row trigger) — not hover-reveal icons.
 - **Every icon-only control needs a name.** An `aria-label` (and/or a tooltip) on every
   icon-only button — the single exception being a **passive trailing row chevron**, which
   is decorative (the row itself is the click target) and is `aria-hidden`.

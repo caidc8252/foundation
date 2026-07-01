@@ -94,7 +94,10 @@ whether or not a condition band sits above them):
   list supports creating a record, omitted for read-only / reference lists. The
   condition band's Search button (when a condition band is present), the
   Advanced filter trigger, and the summary bar's Export are all `secondary`;
-  bulk/row actions are `secondary` (destructive `danger`). Advanced is pushed to the far right
+  bulk/row actions are `secondary`, and a destructive one is **`ghost-danger`** (not the
+  solid `danger` fill) so it doesn't out-weigh its `secondary` peers — one weight per
+  action group ([`actions`](./actions.md) · *A peer action group shares one weight*; the
+  solid `danger` is the confirm dialog's Confirm). Advanced is pushed to the far right
   of the toolbar by `condition-band__spacer` — visually separated from the
   primary filter flow, signalling it is the less-common path.
   Icon-only actions are `ghost` / `ghost-danger` only. The Advanced trigger is
