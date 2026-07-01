@@ -551,6 +551,7 @@ export function publishSnapshot(payload, options = {}) {
     files: ["tokens.inline.css", "primitives.css", "composites.css", "manifest.json"],
     counts: manifest.counts,
     changes,
+    reviewSubject,
     sourceCommit: manifest.sourceCommit,
     sourceDirty: manifest.sourceDirty,
   };
