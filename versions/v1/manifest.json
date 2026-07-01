@@ -26,20 +26,14 @@
     "tokens": [],
     "classOverrides": []
   },
-  "sourceCommit": "7fe077c4f2972d6c73af3e7a4bcf94ebb042a031",
-  "sourceDirty": true,
+  "sourceCommit": "a10ad7bbc5c7c637483c045611c84a42383b0813",
+  "sourceDirty": false,
   "sourceGit": {
     "available": true,
-    "commit": "7fe077c4f2972d6c73af3e7a4bcf94ebb042a031",
-    "shortCommit": "7fe077c4f297",
-    "dirty": true,
-    "dirtyPaths": [
-      "M  composites/composites.css",
-      "A  composites/log-console.html",
-      "A  composites/log-console.md",
-      "M  patterns/create-form.html",
-      "M  patterns/create-form.md"
-    ],
+    "commit": "a10ad7bbc5c7c637483c045611c84a42383b0813",
+    "shortCommit": "a10ad7bbc5c7",
+    "dirty": false,
+    "dirtyPaths": [],
     "restorePaths": [
       "tokens",
       "primitives",
