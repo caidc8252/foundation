@@ -12,8 +12,7 @@
      node scripts/apply-draft.mjs v3        # re-apply versions/v3/manifest.json
    --------------------------------------------------------------------------- */
 import { existsSync, readFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join, resolve } from "node:path";
 import { publishSnapshot, ROOT } from "./release-lib.mjs";
 
 function usage() {
