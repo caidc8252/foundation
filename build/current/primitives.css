@@ -907,6 +907,7 @@ body { margin: 0; }
 .alert-dialog-overlay {
   position: fixed;
   inset: 0;
+  z-index: 50;   /* modal z-layer — above sticky page chrome (z-index 10); z-index conventionally exempt */
   background-color: var(--color-surface-overlay);
 }
 
@@ -916,6 +917,7 @@ body { margin: 0; }
   position: fixed;
   top: 50%;
   left: 50%;
+  z-index: 50;   /* modal z-layer — panel is a fixed sibling of its scrim, so it needs the layer too; z-index conventionally exempt */
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
@@ -1582,6 +1584,7 @@ body { margin: 0; }
 
 /* Open popup surface — width tracks the trigger; min-width floor 144px (min-w-36). */
 .combobox__content {
+  z-index: 60;   /* popover z-layer — above the dialog layer (z-index 50); inert until positioned; z-index conventionally exempt */
   min-width: calc(var(--space-16) + var(--space-20));   /* 144px — source min-w-36 */
   overflow: hidden;
   border: 1px solid var(--color-line-default);
@@ -1703,12 +1706,14 @@ body { margin: 0; }
 .command-dialog__backdrop {
   position: fixed;
   inset: 0;
+  z-index: 50;   /* modal z-layer — above sticky page chrome (z-index 10); z-index conventionally exempt */
   background-color: var(--color-surface-overlay);
 }
 .command-dialog {
   position: fixed;
   top: 33%;   /* source top-1/3 */
   left: 50%;
+  z-index: 50;   /* modal z-layer — panel is a fixed sibling of its backdrop; z-index conventionally exempt */
   transform: translateX(-50%);
   width: 100%;
   max-width: 460px;   /* source max-w-[460px]; no sizing token expresses popup width yet */
@@ -1847,6 +1852,7 @@ body { margin: 0; }
    row recipe with dropdown-menu (same tone/spacing, different trigger gesture). */
 
 .context-menu__content {
+  z-index: 60;   /* popover z-layer — above the dialog layer (z-index 50); inert until positioned; z-index conventionally exempt */
   min-width: 220px;   /* source min-w-[220px]; no sizing token expresses this yet */
   overflow-x: hidden;
   overflow-y: auto;   /* React caps height to --available-height, then this scrolls */
@@ -2194,6 +2200,7 @@ body { margin: 0; }
 .drawer-overlay {
   position: fixed;
   inset: 0;
+  z-index: 50;   /* modal z-layer — above sticky page chrome (z-index 10); z-index conventionally exempt */
   background-color: color-mix(in oklch, var(--color-content-primary) 10%, transparent);
 }
 @supports (backdrop-filter: blur(2px)) {
@@ -2203,6 +2210,7 @@ body { margin: 0; }
 /* Panel — docked surface, column stack; direction modifier sets the edge. */
 .drawer {
   position: fixed;
+  z-index: 50;   /* modal z-layer — panel is a fixed sibling of its overlay; z-index conventionally exempt */
   display: flex;
   flex-direction: column;
   height: auto;
@@ -2304,6 +2312,7 @@ body { margin: 0; }
    expresses popup width yet (see dropdown-menu.md notes). */
 
 .dropdown-menu {
+  z-index: 60;   /* popover z-layer — above the dialog layer (z-index 50) so a menu opened inside a dialog clears it; inert until positioned; z-index conventionally exempt */
   min-width: 240px;   /* source min-w-[240px]; no sizing token expresses this yet */
   max-height: 100%;
   overflow-x: hidden;
@@ -2411,6 +2420,7 @@ body { margin: 0; }
 
 /* Nested sub-menu popup — content recipe, narrower min-width. */
 .dropdown-menu__sub-content {
+  z-index: 60;   /* popover z-layer — matches its parent menu; inert until positioned; z-index conventionally exempt */
   min-width: 160px;   /* source min-w-[160px]; no sizing token yet */
 }
 
@@ -2498,6 +2508,7 @@ body { margin: 0; }
    token-change wish for a popup-width sizing token); everything else is a token. */
 
 .hover-card {
+  z-index: 60;   /* popover z-layer — above the dialog layer (z-index 50); inert until positioned; z-index conventionally exempt */
   width: 280px;   /* source w-[280px]; no sizing token expresses this yet */
   padding: var(--spacing-cx-md);   /* 14px — source p-3.5 */
   border: 1px solid var(--color-line-default);
@@ -2751,6 +2762,7 @@ body { margin: 0; }
 .modal-overlay {
   position: fixed;
   inset: 0;
+  z-index: 50;   /* modal z-layer — must sit above sticky page chrome (summary-bar/table head at z-index 10); z-index conventionally exempt */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3015,6 +3027,7 @@ body { margin: 0; }
    .popover__ so any list-shaped overlay can reuse it. */
 
 .popover {
+  z-index: 60;   /* popover z-layer — above the dialog layer (z-index 50) so it clears a modal it opens within; inert until the consumer positions this surface; z-index conventionally exempt */
   display: flex;
   flex-direction: column;
   gap: var(--spacing-cx-sm);            /* 10px (source gap-2.5) */
@@ -3786,6 +3799,7 @@ body { margin: 0; }
 
 .toast {
   position: relative;
+  z-index: 80;   /* toast z-layer — top of the stack, above tooltip (70)/popover (60)/dialog (50); z-index conventionally exempt */
   display: flex;
   align-items: flex-start;   /* items-start — icon top-aligns with the title */
   gap: var(--space-2);
@@ -4100,6 +4114,7 @@ body { margin: 0; }
 
 .tooltip {
   position: relative;
+  z-index: 70;   /* tooltip z-layer — above popover (60) and dialog (50) layers; z-index conventionally exempt */
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
