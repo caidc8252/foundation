@@ -55,7 +55,7 @@ Unlike Modal/Drawer the Sheet has **square corners** (docks flush to the edge, n
 - **description** — `text-sm` / `content-secondary`.
 - **close** — a built-in `ghost` icon button (×, `icon-sm`) pinned `top-3 right-3`; rendered when `showCloseButton` (default true). It is a real `.btn--ghost`, not a bespoke shell element.
 - **body** — children flow between header and footer; the panel scrolls this region.
-- **footer** — action shelf pinned to the panel bottom via `margin-top: auto`; stacks children in a column with `space-2` gaps, `space-4` padding. Holds `.btn` actions (typically `secondary`/`outline` cancel + `primary`/`danger` confirm).
+- **footer** — action shelf pinned to the panel bottom via `margin-top: auto`; stacks children in a column with `space-2` gaps, `space-4` padding. Holds `.btn` actions (typically `secondary` cancel + `primary`/`danger` confirm).
 
 ## Accessibility
 

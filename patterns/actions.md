@@ -22,7 +22,7 @@ where it lands, and whether it confirms — those are not per-screen choices.
 
 | action | intent | carrier (variant + surface) | lands in (pattern slots) | confirm / tone |
 |---|---|---|---|---|
-| **confirm-danger** | destructive confirm — delete / remove / revoke | a `ghost-danger` **icon** button *or* a `danger` **text** button → opens an `AlertDialog` (outline **Cancel** + danger **Confirm**) | list row · detail head · section rows | always confirms; the trigger carries `danger` tone (icon or text), and the dialog's Confirm is `danger` too |
+| **confirm-danger** | destructive confirm — delete / remove / revoke | a `ghost-danger` **icon** button *or* a `danger` **text** button → opens an `AlertDialog` (secondary **Cancel** + danger **Confirm**) | list row · detail head · section rows | always confirms; the trigger carries `danger` tone (icon or text), and the dialog's Confirm is `danger` too |
 | **secondary-action** | a secondary tool action (e.g. Export, Import) | a `secondary` button + a leading icon | list **summary bar** *or* page **header** — exactly **one** place | none; neutral tone |
 | **batch-action** | act on a multi-select | a selection-count label + a bulk **button group** in the `summary-bar` (e.g. secondary Assign, ghost-danger Delete) | list summary (replaces the idle actions on select) | destructive verbs route through **confirm-danger**; otherwise neutral |
 | **transition** | status flip / approve–reject | a status **button** or a `dropdown-menu` of statuses; destructive directions use `danger` + a confirm (or a reject-reason dialog) | detail head · section rows | confirm on destructive / service-interrupting directions; neutral on safe ones |
@@ -75,7 +75,7 @@ A confirm's friction tracks the action's **risk**, not its kind:
   feedback. Don't gate reversible actions behind a dialog (it trains click-through), and
   there is **no Undo** affordance.
 - **Simple confirm** — irreversible but contained (delete a record, remove a member): an
-  `AlertDialog` — a consequence line + `outline` Cancel + `danger` Confirm, no input, no
+  `AlertDialog` — a consequence line + `secondary` Cancel + `danger` Confirm, no input, no
   escape.
 - **Confirm with input** — the action must capture context (a reject reason, a suspend
   note): an `AlertDialog` can't hold a field, so use a **hardened `Modal`**
