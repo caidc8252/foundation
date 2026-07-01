@@ -4,13 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 
-import {
-  markReleasedVersions,
-  normalizePrototypeApiPath,
-  normalizeReviewSubject,
-  prototypeCorsHeaders,
-  readReleaseInfo,
-} from "./publish-server.mjs";
+import { markReleasedVersions, normalizeReviewDraft, normalizeReviewSubject, readReleaseInfo } from "./publish-server.mjs";
 
 test("readReleaseInfo reads the currently published version from release manifest", () => {
   const dir = mkdtempSync(join(tmpdir(), "foundation-release-"));
@@ -91,21 +85,70 @@ test("normalizeReviewSubject keeps only safe visible review target fields", () =
   assert.equal(normalizeReviewSubject({ selector: "body", sourceFile: "release/composites.css" }), null);
 });
 
-test("prototype agent API keeps legacy routes behind stable frontend paths", () => {
-  assert.equal(normalizePrototypeApiPath("/api/prototype/health"), "/api/prototype/health");
-  assert.equal(normalizePrototypeApiPath("/api/prototype/versions"), "/__prototype_versions");
-  assert.equal(normalizePrototypeApiPath("/api/prototype/save"), "/__prototype_save");
-  assert.equal(normalizePrototypeApiPath("/api/prototype/finalize"), "/__prototype_finalize");
-  assert.equal(normalizePrototypeApiPath("/api/prototype/promote"), "/__prototype_promote");
-  assert.equal(normalizePrototypeApiPath("/api/prototype/release"), "/__prototype_release");
-  assert.equal(normalizePrototypeApiPath("/__prototype_versions"), "/__prototype_versions");
-});
+test("normalizeReviewDraft converts exported review packages into publish payloads", () => {
+  assert.deepEqual(
+    normalizeReviewDraft({
+      kind: "foundation-prototype-review-draft",
+      schemaVersion: 1,
+      exportedAt: "2026-07-01T00:00:00.000Z",
+      page: { file: "customer-list.html", title: "Customers", href: "https://example.test/customer-list.html" },
+      baseVersion: "current",
+      reviewSubject: {
+        label: "按钮",
+        visualName: "按钮",
+        selector: ".btn",
+        className: "btn",
+        sourceFile: "primitives/primitives.css",
+      },
+      tokenOverrides: { "--space-2": "10px" },
+      classOverrides: { ".btn": { "border-radius": "var(--radius-lg)" } },
+      classOverrideMeta: {
+        ".btn": {
+          "border-radius": {
+            visualName: "按钮",
+            sourceFile: "primitives/primitives.css",
+            ignored: "drop me",
+          },
+        },
+      },
+      conflicts: [{ selector: ".btn", prop: "color" }],
+      ignored: "drop me",
+    }),
+    {
+      page: "customer-list.html",
+      href: "https://example.test/customer-list.html",
+      title: "Customers",
+      publishedAt: "2026-07-01T00:00:00.000Z",
+      baseVersion: "current",
+      reviewSubject: {
+        label: "按钮",
+        visualName: "按钮",
+        selector: ".btn",
+        className: "btn",
+        sourceFile: "primitives/primitives.css",
+        owner: null,
+      },
+      tokens: { "--space-2": "10px" },
+      classOverrides: { ".btn": { "border-radius": "var(--radius-lg)" } },
+      classOverrideMeta: {
+        ".btn": {
+          "border-radius": {
+            ownerLayer: "",
+            ownerName: "",
+            ownerTitle: "",
+            ownerClass: "",
+            compositeName: "",
+            compositeTitle: "",
+            visualName: "按钮",
+            reviewLabel: "",
+            sourceFile: "primitives/primitives.css",
+          },
+        },
+      },
+      elementOverrides: {},
+      conflicts: [{ selector: ".btn", prop: "color" }],
+    },
+  );
 
-test("prototype agent CORS headers allow GitHub Pages to call the local service", () => {
-  assert.deepEqual(prototypeCorsHeaders(), {
-    "access-control-allow-origin": "*",
-    "access-control-allow-headers": "content-type",
-    "access-control-allow-methods": "GET, POST, OPTIONS",
-    "access-control-allow-private-network": "true",
-  });
+  assert.equal(normalizeReviewDraft({ kind: "unknown" }), null);
 });

@@ -42,8 +42,19 @@ Prototype 页面也可以作为静态前端部署到 GitHub Pages。静态页面
 
 ## 保存与提升
 
-Prototype 保存会生成 `versions/vN` 候选版本。`manifest.json` 记录本次审查对象
-`reviewSubject`，以及 `tokenOverrides`、`classOverrides`、`classOverrideMeta`。
+当页面通过本地 `pnpm prototype:carbon` 服务打开时，Prototype 保存会生成 `versions/vN`
+候选版本。`manifest.json` 记录本次审查对象 `reviewSubject`，以及 `tokenOverrides`、
+`classOverrides`、`classOverrideMeta`。
+
+当页面作为 GitHub Pages 等静态前端打开、且本地服务不可用时，审核人员仍可完成视觉审查。
+此时保存按钮会导出 `foundation-review-*.json` 审查包；这个文件不写 repo，不生成 version。
+维护者收到审查包后在本地运行：
+
+```bash
+pnpm prototype:import-review path/to/foundation-review.json
+```
+
+导入命令会把审查包转换成正常的 `versions/vN` 候选版本，后续流程与本地保存一致。
 
 这些 override 是即将进入源 CSS 的 governed candidate，不是局部页面补丁。进入真实 source
 仍走维护流程：用 `pnpm promote -- vN` 生成 handoff，将同一设计事实提升到

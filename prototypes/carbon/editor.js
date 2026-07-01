@@ -838,56 +838,8 @@
   var versionMeta = {};
   var versionTokenLink = null, versionPrimitiveLink = null, versionCompositeLink = null;
   var versionLoading = null, versionLoadingDesc = null, versionLoadId = 0;
-  var apiBase = apiBaseForLocation(location);
-  var prototypeAgentConnected = false;
-  function cleanApiBase(value) {
-    value = String(value || '').trim();
-    return value ? value.replace(/\/+$/, '') : '';
-  }
-  function configuredApiBase() {
-    try {
-      var params = new URLSearchParams(location.search || '');
-      var fromQuery = cleanApiBase(params.get('api') || '');
-      if (fromQuery) {
-        localStorage.setItem(API_BASE_KEY, fromQuery);
-        return fromQuery;
-      }
-      return cleanApiBase(localStorage.getItem(API_BASE_KEY) || '');
-    } catch (e) {
-      return '';
-    }
-  }
-  function apiBaseForLocation(loc) {
-    var configured = configuredApiBase();
-    if (configured) return configured;
-    if (loc.protocol === 'file:') return DEFAULT_AGENT_BASE;
-    var host = loc.hostname || '';
-    var isLocal = host === 'localhost' || host === '127.0.0.1' || host === '::1' || host === '[::1]';
-    if (loc.protocol === 'https:' && !isLocal) return DEFAULT_AGENT_BASE;
-    return '';
-  }
-  function apiUrl(path) {
-    if (!apiBase) return path;
-    try { return new URL(path, apiBase + '/').toString(); } catch (e) { return path; }
-  }
-  function agentBaseLabel() {
-    return apiBase || location.origin || DEFAULT_AGENT_BASE;
-  }
-  function probePrototypeAgent() {
-    return fetch(apiUrl('/api/prototype/health')).then(function (res) {
-      return res.json().catch(function () { return {}; }).then(function (data) {
-        if (!res.ok || !data.ok) throw new Error(data.error || ('HTTP ' + res.status));
-        return data;
-      });
-    }).then(function (data) {
-      prototypeAgentConnected = true;
-      return data;
-    }).catch(function () {
-      prototypeAgentConnected = false;
-      setVersionStatus('本地 Agent 未连接：' + agentBaseLabel());
-      return null;
-    });
-  }
+  var versionServiceOnline = true;
+  function apiUrl(path) { return location.protocol === 'file:' ? 'http://localhost:4177' + path : path; }
   function setVersionStatus(text) { if (versionStatus) versionStatus.textContent = text || ''; }
   function selectedVersionMeta(version) { return versionMeta[version || selectedVersion] || null; }
   function versionReleasedSuffix(item) { return item && item.released ? ' · 已发布' : ''; }
@@ -930,6 +882,24 @@
   }
   function assetUrl(version, file) {
     return apiUrl('/versions/' + encodeURIComponent(version) + '/' + file) + '?t=' + Date.now();
+  }
+  function enterOfflineReviewMode() {
+    versionServiceOnline = false;
+    selectedVersion = selectedVersion || 'current';
+    versionMeta = {};
+    if (versionSelect) {
+      versionSelect.innerHTML = '';
+      var opt = document.createElement('option');
+      opt.value = selectedVersion;
+      opt.textContent = '离线审查草稿';
+      versionSelect.appendChild(opt);
+      versionSelect.value = selectedVersion;
+    }
+    setVersionStatus('离线审查：可导出审查包');
+    refreshReleaseButton();
+  }
+  function shouldUseOfflineReview() {
+    return location.protocol === 'https:' && /(^|\.)github\.io$/i.test(location.hostname || '');
   }
   function ensureVersionLoading() {
     if (versionLoading) return versionLoading;
@@ -1031,12 +1001,17 @@
   }
   function loadVersions(preferred) {
     if (!versionSelect) return;
-    fetch(apiUrl('/api/prototype/versions')).then(function (res) {
+    if (shouldUseOfflineReview()) {
+      enterOfflineReviewMode();
+      return;
+    }
+    fetch(apiUrl('/__prototype_versions')).then(function (res) {
       return res.json().catch(function () { return {}; }).then(function (data) {
         if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
         return data;
       });
     }).then(function (data) {
+      versionServiceOnline = true;
       var versions = data.versions || [];
       var latest = data.latest || (versions.length ? versions[versions.length - 1].version : '');
       var chosen = preferred || selectedVersion || latest;
@@ -1063,7 +1038,8 @@
       }
       applyVersion(chosen, false, { preserveDraft: !preferred });
     }).catch(function () {
-      setVersionStatus('版本服务未连接');
+      enterOfflineReviewMode();
+      setVersionStatus('版本服务未连接，可导出审查包');
     });
   }
   function buildVersionControl() {
@@ -1422,6 +1398,65 @@
     });
     return rows;
   }
+  function reviewDraftFromPayload(payload, collected) {
+    return {
+      kind: 'foundation-prototype-review-draft',
+      schemaVersion: 1,
+      exportedAt: new Date().toISOString(),
+      page: {
+        file: payload.page || '',
+        title: payload.title || '',
+        href: payload.href || ''
+      },
+      baseVersion: payload.baseVersion || 'current',
+      reviewSubject: payload.reviewSubject || null,
+      tokenOverrides: payload.tokens || {},
+      classOverrides: payload.classOverrides || {},
+      classOverrideMeta: payload.classOverrideMeta || {},
+      conflicts: payload.conflicts || [],
+      summary: reviewSummaryFromCollected(collected || { overrides: {}, meta: {} })
+    };
+  }
+  function safeFilePart(value) {
+    value = String(value || '').toLowerCase().replace(/[^a-z0-9_-]+/g, '-').replace(/^-+|-+$/g, '');
+    return value || 'review';
+  }
+  function reviewDraftFilename(payload) {
+    var stamp = new Date().toISOString().replace(/[:.]/g, '-');
+    return 'foundation-review-' + safeFilePart(payload.page || 'page') + '-' + stamp + '.json';
+  }
+  function downloadJson(filename, data) {
+    var blob = new Blob([JSON.stringify(data, null, 2) + '\n'], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.setAttribute('data-editor', '');
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 0);
+  }
+  function renderReviewExportSuccess(draft) {
+    saveBusy = false;
+    clearSaveModal();
+    appendSaveHero('已导出审查包', '这个 JSON 可以交给维护者导入成一个新的 version。', '\u2713');
+    var body = div('se-save-modal__body');
+    appendSaveStats(body, [
+      { label: 'Token', value: String(Object.keys(draft.tokenOverrides || {}).length) },
+      { label: '组件声明', value: String(countDecls(draft.classOverrides || {})) },
+      { label: '来源版本', value: draft.baseVersion || '-' },
+    ]);
+    body.appendChild(saveNode('div', 'se-save-callout', '维护者可运行 pnpm prototype:import-review <review.json> 生成 versions/vN。'));
+    saveModal.appendChild(body);
+    appendSaveFooter([mkbtn('完成', closeSaveModal, 'se-btn--primary')]);
+    openSaveModal();
+  }
+  function exportReviewDraft(payload, collected) {
+    var draft = reviewDraftFromPayload(payload, collected);
+    downloadJson(reviewDraftFilename(payload), draft);
+    renderReviewExportSuccess(draft);
+  }
   function appendSaveRows(body, title, hint, rows, mode) {
     var section = div('se-save-section');
     var head = div('se-save-section__head');
@@ -1462,7 +1497,13 @@
   function renderSaveConfirm(payload, collected, meta) {
     saveBusy = false;
     clearSaveModal();
-    appendSaveHero('保存样式改动', '保存后会生成一个新的 version，并展示每一项从旧值到新值的变化。', 'S');
+    appendSaveHero(
+      versionServiceOnline ? '保存样式改动' : '导出审查包',
+      versionServiceOnline
+        ? '保存后会生成一个新的 version，并展示每一项从旧值到新值的变化。'
+        : '本地 Agent 未连接，导出的 JSON 可交给维护者导入成 version。',
+      'S'
+    );
     var body = div('se-save-modal__body');
     appendSaveStats(body, [
       { label: 'Token', value: String(meta.tokenCount) },
@@ -1484,7 +1525,9 @@
     saveModal.appendChild(body);
     appendSaveFooter([
       mkbtn('取消', closeSaveModal, 'se-btn--ghost'),
-      mkbtn('保存为新版本', function () { submitSavePayload(payload); }, 'se-btn--primary'),
+      versionServiceOnline
+        ? mkbtn('保存为新版本', function () { submitSavePayload(payload); }, 'se-btn--primary')
+        : mkbtn('导出审查包', function () { exportReviewDraft(payload, collected); }, 'se-btn--primary'),
     ]);
     openSaveModal();
   }
@@ -1563,17 +1606,18 @@
       renderSaveNoChanges();
       return;
     }
-    if (!selectedVersion) {
+    if (!selectedVersion && versionServiceOnline) {
       renderSaveError(new Error('请先选择一个保存版本作为编辑基准。'), saveChanges);
       return;
     }
+    var baseVersion = selectedVersion || 'current';
 
     var payload = {
       page: location.pathname.split('/').pop() || 'index.html',
       href: location.href,
       title: document.title || '',
       publishedAt: new Date().toISOString(),
-      baseVersion: selectedVersion,
+      baseVersion: baseVersion,
       reviewSubject: currentReviewSubject,
       tokens: tokenStore,
       classOverrides: collected.overrides,

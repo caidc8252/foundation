@@ -214,6 +214,33 @@ export function normalizeReviewSubject(input = null) {
   };
 }
 
+export function normalizeReviewDraft(input = null) {
+  if (!input || typeof input !== "object" || Array.isArray(input)) return null;
+  if (metaText(input.kind) !== "foundation-prototype-review-draft") return null;
+  if (Number(input.schemaVersion) !== 1) return null;
+
+  const baseVersion = metaText(input.baseVersion) || CURRENT_VERSION;
+  if (!(baseVersion === CURRENT_VERSION || /^v\d+$/.test(baseVersion))) return null;
+
+  const page = input.page && typeof input.page === "object" && !Array.isArray(input.page) ? input.page : {};
+  const { tokens } = normalizeTokens(input.tokenOverrides || input.tokens || {});
+  const { classOverrides } = normalizeClassOverrides(input.classOverrides || {});
+  const classOverrideMeta = normalizeClassOverrideMeta(input.classOverrideMeta || {});
+  return {
+    page: metaText(page.file || input.pageFile),
+    href: metaText(page.href || input.href),
+    title: metaText(page.title || input.title),
+    publishedAt: metaText(input.exportedAt) || new Date().toISOString(),
+    baseVersion,
+    reviewSubject: normalizeReviewSubject(input.reviewSubject),
+    tokens,
+    classOverrides,
+    classOverrideMeta,
+    elementOverrides: {},
+    conflicts: Array.isArray(input.conflicts) ? input.conflicts : [],
+  };
+}
+
 function mergeClassOverrides(base = {}, next = {}) {
   const merged = {};
   for (const [selector, declarations] of Object.entries(base || {})) {
@@ -625,6 +652,12 @@ export function publishSnapshot(payload, options = {}) {
   };
 }
 
+export function importReviewDraft(input, options = {}) {
+  const payload = normalizeReviewDraft(input);
+  if (!payload) throw new Error("invalid review draft");
+  return publishSnapshot(payload, options);
+}
+
 export function finalizePromotedVersion(version, options = {}) {
   const repoRoot = options.repoRoot || ROOT;
   const versionRoot = options.versionRoot || VERSION_ROOT;
@@ -928,7 +961,11 @@ export function createHandler() {
         const payload = await readJson(req);
         return json(res, { ok: true, ...publishSnapshot(payload) });
       }
-      if (apiPath === "/__prototype_finalize" && req.method === "POST") {
+      if (url.pathname === "/__prototype_import_review" && req.method === "POST") {
+        const payload = await readJson(req);
+        return json(res, { ok: true, ...importReviewDraft(payload) });
+      }
+      if (url.pathname === "/__prototype_finalize" && req.method === "POST") {
         const payload = await readJson(req);
         return json(res, { ok: true, ...finalizePromotedVersion(payload.version) });
       }
