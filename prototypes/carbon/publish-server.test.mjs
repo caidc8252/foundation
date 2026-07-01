@@ -4,7 +4,13 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 
-import { markReleasedVersions, normalizeReviewSubject, readReleaseInfo } from "./publish-server.mjs";
+import {
+  markReleasedVersions,
+  normalizePrototypeApiPath,
+  normalizeReviewSubject,
+  prototypeCorsHeaders,
+  readReleaseInfo,
+} from "./publish-server.mjs";
 
 test("readReleaseInfo reads the currently published version from release manifest", () => {
   const dir = mkdtempSync(join(tmpdir(), "foundation-release-"));
@@ -83,4 +89,23 @@ test("normalizeReviewSubject keeps only safe visible review target fields", () =
   );
 
   assert.equal(normalizeReviewSubject({ selector: "body", sourceFile: "release/composites.css" }), null);
+});
+
+test("prototype agent API keeps legacy routes behind stable frontend paths", () => {
+  assert.equal(normalizePrototypeApiPath("/api/prototype/health"), "/api/prototype/health");
+  assert.equal(normalizePrototypeApiPath("/api/prototype/versions"), "/__prototype_versions");
+  assert.equal(normalizePrototypeApiPath("/api/prototype/save"), "/__prototype_save");
+  assert.equal(normalizePrototypeApiPath("/api/prototype/finalize"), "/__prototype_finalize");
+  assert.equal(normalizePrototypeApiPath("/api/prototype/promote"), "/__prototype_promote");
+  assert.equal(normalizePrototypeApiPath("/api/prototype/release"), "/__prototype_release");
+  assert.equal(normalizePrototypeApiPath("/__prototype_versions"), "/__prototype_versions");
+});
+
+test("prototype agent CORS headers allow GitHub Pages to call the local service", () => {
+  assert.deepEqual(prototypeCorsHeaders(), {
+    "access-control-allow-origin": "*",
+    "access-control-allow-headers": "content-type",
+    "access-control-allow-methods": "GET, POST, OPTIONS",
+    "access-control-allow-private-network": "true",
+  });
 });

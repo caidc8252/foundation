@@ -20,6 +20,12 @@ Admin 的编辑不直接写入受管 source。草稿只用于确认设计事实�
 `composite data-table` 这类内部名字，而是让审核人员直接点击页面上看得到的对象：表格、按钮、
 页头、卡片、筛选区、分页等。
 
+Prototype 页面也可以作为静态前端部署到 GitHub Pages。静态页面不直接访问文件系统；保存、
+版本列表、发布 handoff 和 release 操作都通过本机运行的 local Agent API 完成。启动命令是
+`pnpm prototype:agent`，默认地址是 `http://127.0.0.1:4177`。远端静态页面会探测
+`/api/prototype/health`，并通过 `/api/prototype/*` 调用本地服务；本地服务为 JSON API 和
+`versions/` CSS 资源返回 CORS 头，使 GitHub Pages 页面可以读取本地版本样式。
+
 进入 **视觉审查** 后：
 
 1. 点击页面中的可见对象。

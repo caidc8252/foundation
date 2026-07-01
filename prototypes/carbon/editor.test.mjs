@@ -38,6 +38,24 @@ test("visual review drafts are selector scoped global class changes", () => {
   assert.match(editorSource, /payload[\s\S]*reviewSubject:\s*currentReviewSubject/);
 });
 
+test("frontend can run from GitHub Pages against a local prototype agent", () => {
+  assert.match(editorSource, /tomsreview:apiBase/);
+  assert.match(editorSource, /http:\/\/127\.0\.0\.1:4177/);
+  assert.match(editorSource, /function apiBaseForLocation\(/);
+  assert.match(editorSource, /function probePrototypeAgent\(/);
+  assert.match(editorSource, /\/api\/prototype\/health/);
+  assert.match(editorSource, /fetch\(apiUrl\('\/api\/prototype\/versions'\)/);
+  assert.match(editorSource, /fetch\(apiUrl\('\/api\/prototype\/save'\)/);
+  assert.match(editorSource, /fetch\(apiUrl\('\/api\/prototype\/finalize'\)/);
+  assert.match(editorSource, /fetch\(apiUrl\('\/api\/prototype\/promote'\)/);
+  assert.match(editorSource, /fetch\(apiUrl\('\/api\/prototype\/release'\)/);
+});
+
+test("cross-origin version stylesheets are readable by the editor", () => {
+  assert.match(editorSource, /crossOrigin\s*=\s*'anonymous'/);
+  assert.match(editorSource, /assetUrl\(version, 'composites\.css'\)/);
+});
+
 test("visual review drafts survive initial version application", () => {
   assert.match(editorSource, /if \(!preserveDraft\) clearDraftOverrides\(\)/);
   assert.match(editorSource, /applyVersion\(chosen, false, \{ preserveDraft: !preferred \}\)/);

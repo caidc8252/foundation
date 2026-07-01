@@ -48,6 +48,7 @@
     "docs": "node emit/docs.mjs",
     "docs:serve": "node emit/docs.mjs && python3 emit/serve.py 4000",
     "prototype:carbon": "node prototypes/carbon/publish-server.mjs",
+    "prototype:agent": "node prototypes/carbon/publish-server.mjs",
     "promote": "node scripts/promote-version.mjs",
     "finalize": "node scripts/finalize-promoted-version.mjs",
     "restore:source": "node scripts/restore-version-source.mjs",

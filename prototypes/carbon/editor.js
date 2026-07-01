@@ -265,6 +265,8 @@
   var TOKEN_KEY = 'tomsreview:tokens';
   var CLASS_KEY = 'tomsreview:classes';
   var REVIEW_KEY = 'tomsreview:subject';
+  var API_BASE_KEY = 'tomsreview:apiBase';
+  var DEFAULT_AGENT_BASE = 'http://127.0.0.1:4177';
 
   // ───────────────── read tokens + per-class declared props from CSSOM ─────────────────
   var tokens = {};       // --name -> value
@@ -836,7 +838,56 @@
   var versionMeta = {};
   var versionTokenLink = null, versionPrimitiveLink = null, versionCompositeLink = null;
   var versionLoading = null, versionLoadingDesc = null, versionLoadId = 0;
-  function apiUrl(path) { return location.protocol === 'file:' ? 'http://localhost:4177' + path : path; }
+  var apiBase = apiBaseForLocation(location);
+  var prototypeAgentConnected = false;
+  function cleanApiBase(value) {
+    value = String(value || '').trim();
+    return value ? value.replace(/\/+$/, '') : '';
+  }
+  function configuredApiBase() {
+    try {
+      var params = new URLSearchParams(location.search || '');
+      var fromQuery = cleanApiBase(params.get('api') || '');
+      if (fromQuery) {
+        localStorage.setItem(API_BASE_KEY, fromQuery);
+        return fromQuery;
+      }
+      return cleanApiBase(localStorage.getItem(API_BASE_KEY) || '');
+    } catch (e) {
+      return '';
+    }
+  }
+  function apiBaseForLocation(loc) {
+    var configured = configuredApiBase();
+    if (configured) return configured;
+    if (loc.protocol === 'file:') return DEFAULT_AGENT_BASE;
+    var host = loc.hostname || '';
+    var isLocal = host === 'localhost' || host === '127.0.0.1' || host === '::1' || host === '[::1]';
+    if (loc.protocol === 'https:' && !isLocal) return DEFAULT_AGENT_BASE;
+    return '';
+  }
+  function apiUrl(path) {
+    if (!apiBase) return path;
+    try { return new URL(path, apiBase + '/').toString(); } catch (e) { return path; }
+  }
+  function agentBaseLabel() {
+    return apiBase || location.origin || DEFAULT_AGENT_BASE;
+  }
+  function probePrototypeAgent() {
+    return fetch(apiUrl('/api/prototype/health')).then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (data) {
+        if (!res.ok || !data.ok) throw new Error(data.error || ('HTTP ' + res.status));
+        return data;
+      });
+    }).then(function (data) {
+      prototypeAgentConnected = true;
+      return data;
+    }).catch(function () {
+      prototypeAgentConnected = false;
+      setVersionStatus('本地 Agent 未连接：' + agentBaseLabel());
+      return null;
+    });
+  }
   function setVersionStatus(text) { if (versionStatus) versionStatus.textContent = text || ''; }
   function selectedVersionMeta(version) { return versionMeta[version || selectedVersion] || null; }
   function versionReleasedSuffix(item) { return item && item.released ? ' · 已发布' : ''; }
@@ -941,18 +992,21 @@
     if (!versionTokenLink) {
       versionTokenLink = document.createElement('link');
       versionTokenLink.rel = 'stylesheet';
+      versionTokenLink.crossOrigin = 'anonymous';
       versionTokenLink.setAttribute('data-editor', '');
       document.head.appendChild(versionTokenLink);
     }
     if (!versionPrimitiveLink) {
       versionPrimitiveLink = document.createElement('link');
       versionPrimitiveLink.rel = 'stylesheet';
+      versionPrimitiveLink.crossOrigin = 'anonymous';
       versionPrimitiveLink.setAttribute('data-editor', '');
       document.head.insertBefore(versionPrimitiveLink, versionCompositeLink || null);
     }
     if (!versionCompositeLink) {
       versionCompositeLink = document.createElement('link');
       versionCompositeLink.rel = 'stylesheet';
+      versionCompositeLink.crossOrigin = 'anonymous';
       versionCompositeLink.setAttribute('data-editor', '');
       document.head.appendChild(versionCompositeLink);
     }
@@ -977,7 +1031,7 @@
   }
   function loadVersions(preferred) {
     if (!versionSelect) return;
-    fetch(apiUrl('/__prototype_versions')).then(function (res) {
+    fetch(apiUrl('/api/prototype/versions')).then(function (res) {
       return res.json().catch(function () { return {}; }).then(function (data) {
         if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
         return data;
@@ -1026,6 +1080,7 @@
     var spacer = header.querySelector('.app-frame__spacer');
     if (spacer && spacer.nextSibling) header.insertBefore(wrap, spacer.nextSibling);
     else header.appendChild(wrap);
+    probePrototypeAgent();
     loadVersions();
   }
 
@@ -1474,7 +1529,7 @@
     clearSaveModal();
     appendSaveHero('保存失败', error.message || String(error), '!');
     var body = div('se-save-modal__body');
-    body.appendChild(saveNode('div', 'se-save-callout', '请确认页面通过本地服务打开: npm run prototype:carbon / http://localhost:4177/'));
+    body.appendChild(saveNode('div', 'se-save-callout', '请确认本地 Agent 正在运行：pnpm prototype:agent / ' + agentBaseLabel()));
     saveModal.appendChild(body);
     appendSaveFooter([
       mkbtn('关闭', closeSaveModal, 'se-btn--ghost'),
@@ -1484,7 +1539,7 @@
   }
   function submitSavePayload(payload) {
     renderSaveLoading();
-    fetch(apiUrl('/__prototype_save'), {
+    fetch(apiUrl('/api/prototype/save'), {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(payload)
@@ -1635,7 +1690,7 @@
   }
   function submitFinalizePayload(version) {
     renderFinalizeLoading(version);
-    fetch(apiUrl('/__prototype_finalize'), {
+    fetch(apiUrl('/api/prototype/finalize'), {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ version: version })
@@ -1707,7 +1762,7 @@
     clearSaveModal();
     appendSaveHero('生成失败', error.message || String(error), '!');
     var body = div('se-save-modal__body');
-    body.appendChild(saveNode('div', 'se-save-callout', '请确认版本 ' + version + ' 存在，并且本地 prototype 服务能访问 versions 目录。'));
+    body.appendChild(saveNode('div', 'se-save-callout', '请确认版本 ' + version + ' 存在，并且本地 Agent 能访问 versions 目录。'));
     saveModal.appendChild(body);
     appendSaveFooter([
       mkbtn('关闭', closeSaveModal, 'se-btn--ghost'),
@@ -1717,7 +1772,7 @@
   }
   function submitPromotePayload(version) {
     renderPromoteLoading(version);
-    fetch(apiUrl('/__prototype_promote'), {
+    fetch(apiUrl('/api/prototype/promote'), {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ version: version })
@@ -1789,7 +1844,7 @@
     clearSaveModal();
     appendSaveHero('发布失败', error.message || String(error), '!');
     var body = div('se-save-modal__body');
-    body.appendChild(saveNode('div', 'se-save-callout', '请确认本地服务正在运行，并且版本 ' + version + ' 存在。'));
+    body.appendChild(saveNode('div', 'se-save-callout', '请确认本地 Agent 正在运行，并且版本 ' + version + ' 存在。'));
     saveModal.appendChild(body);
     appendSaveFooter([
       mkbtn('关闭', closeSaveModal, 'se-btn--ghost'),
@@ -1799,7 +1854,7 @@
   }
   function submitReleasePayload(version) {
     renderReleaseLoading(version);
-    fetch(apiUrl('/__prototype_release'), {
+    fetch(apiUrl('/api/prototype/release'), {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ version: version })

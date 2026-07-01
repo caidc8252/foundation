@@ -3,7 +3,7 @@ name: Deploy Carbon Prototype Pages
 
 on:
   push:
-    branches: [develop]
+    branches: [feature/prototype-pages-agent-api]
     paths:
       - "prototypes/carbon/**"
       - ".github/workflows/prototype-pages.yml"

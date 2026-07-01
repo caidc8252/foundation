@@ -46,11 +46,19 @@ const TOKEN_RE = /^--[-A-Za-z0-9_]+$/;
 const SELECTOR_RE = /^\.[-A-Za-z0-9_]+$/;
 const PROP_RE = /^-?[A-Za-z][-_A-Za-z0-9]*$/;
 
+export function prototypeCorsHeaders() {
+  return {
+    "access-control-allow-origin": "*",
+    "access-control-allow-headers": "content-type",
+    "access-control-allow-methods": "GET, POST, OPTIONS",
+    "access-control-allow-private-network": "true",
+  };
+}
+
 const json = (res, obj, status = 200) => {
   res.writeHead(status, {
     "content-type": "application/json; charset=utf-8",
-    "access-control-allow-origin": "*",
-    "access-control-allow-headers": "content-type",
+    ...prototypeCorsHeaders(),
   });
   res.end(JSON.stringify(obj));
 };
@@ -153,6 +161,25 @@ function normalizeClassOverrideMeta(input = {}) {
 }
 
 const REVIEW_SOURCE_FILES = new Set(["composites/composites.css", "primitives/primitives.css"]);
+
+const PROTOTYPE_API_ALIASES = new Map([
+  ["/api/prototype/versions", "/__prototype_versions"],
+  ["/api/prototype/save", "/__prototype_save"],
+  ["/api/prototype/publish", "/__prototype_publish"],
+  ["/api/prototype/finalize", "/__prototype_finalize"],
+  ["/api/prototype/promote", "/__prototype_promote"],
+  ["/api/prototype/release", "/__prototype_release"],
+]);
+
+export function normalizePrototypeApiPath(pathname) {
+  return PROTOTYPE_API_ALIASES.get(pathname) || pathname;
+}
+
+function isPrototypeApiPath(pathname) {
+  return pathname === "/api/prototype/health" ||
+    pathname.startsWith("/__prototype_") ||
+    PROTOTYPE_API_ALIASES.has(pathname);
+}
 
 export function normalizeReviewSubject(input = null) {
   if (!input || typeof input !== "object" || Array.isArray(input)) return null;
@@ -844,6 +871,7 @@ function serveStatic(url, res) {
   res.writeHead(200, {
     "content-type": MIME[extname(file)] || "application/octet-stream",
     "cache-control": "no-store",
+    ...prototypeCorsHeaders(),
   });
   res.end(readFileSync(file));
 }
@@ -859,6 +887,7 @@ function serveRootAsset(pathname, prefix, root, res) {
   res.writeHead(200, {
     "content-type": MIME[extname(file)] || "application/octet-stream",
     "cache-control": "no-store",
+    ...prototypeCorsHeaders(),
   });
   res.end(readFileSync(file));
 }
@@ -866,8 +895,22 @@ function serveRootAsset(pathname, prefix, root, res) {
 export function createHandler() {
   return async (req, res) => {
     const url = new URL(req.url, "http://localhost");
+    const apiPath = normalizePrototypeApiPath(url.pathname);
     try {
-      if (url.pathname === "/__prototype_versions" && req.method === "GET") {
+      if (isPrototypeApiPath(url.pathname) && req.method === "OPTIONS") {
+        res.writeHead(204, prototypeCorsHeaders());
+        return res.end();
+      }
+      if (apiPath === "/api/prototype/health" && req.method === "GET") {
+        const requestHost = req.headers.host || `127.0.0.1:${DEFAULT_PORT}`;
+        return json(res, {
+          ok: true,
+          service: "foundation-prototype-agent",
+          repoRoot: ROOT,
+          apiBase: `http://${requestHost}`,
+        });
+      }
+      if (apiPath === "/__prototype_versions" && req.method === "GET") {
         ensureCurrentVersion(ROOT);
         const releaseInfo = readReleaseInfo(RELEASE_ROOT);
         const current = markReleasedVersions([currentVersionSummary(ROOT)], releaseInfo)[0];
@@ -881,29 +924,21 @@ export function createHandler() {
           releasedAt: releaseInfo.releasedAt,
         });
       }
-      if ((url.pathname === "/__prototype_save" || url.pathname === "/__prototype_publish") && req.method === "POST") {
+      if ((apiPath === "/__prototype_save" || apiPath === "/__prototype_publish") && req.method === "POST") {
         const payload = await readJson(req);
         return json(res, { ok: true, ...publishSnapshot(payload) });
       }
-      if (url.pathname === "/__prototype_finalize" && req.method === "POST") {
+      if (apiPath === "/__prototype_finalize" && req.method === "POST") {
         const payload = await readJson(req);
         return json(res, { ok: true, ...finalizePromotedVersion(payload.version) });
       }
-      if (url.pathname === "/__prototype_promote" && req.method === "POST") {
+      if (apiPath === "/__prototype_promote" && req.method === "POST") {
         const payload = await readJson(req);
         return json(res, { ok: true, ...createPromotionBrief(payload.version) });
       }
-      if (url.pathname === "/__prototype_release" && req.method === "POST") {
+      if (apiPath === "/__prototype_release" && req.method === "POST") {
         const payload = await readJson(req);
         return json(res, { ok: true, ...releaseSnapshot(payload.version) });
-      }
-      if (url.pathname.startsWith("/__prototype_") && req.method === "OPTIONS") {
-        res.writeHead(204, {
-          "access-control-allow-origin": "*",
-          "access-control-allow-headers": "content-type",
-          "access-control-allow-methods": "GET, POST, OPTIONS",
-        });
-        return res.end();
       }
       return serveStatic(url, res);
     } catch (error) {
@@ -912,12 +947,14 @@ export function createHandler() {
   };
 }
 
-export function start(port = DEFAULT_PORT) {
-  return createServer(createHandler()).listen(port, () => {
-    console.log(`carbon prototype -> http://localhost:${port}`);
+export function start(port = DEFAULT_PORT, host = process.env.HOST || "127.0.0.1") {
+  return createServer(createHandler()).listen(port, host, () => {
+    const shownHost = host === "0.0.0.0" || host === "::" ? "localhost" : host;
+    console.log(`carbon prototype -> http://${shownHost}:${port}`);
+    console.log(`prototype agent api -> http://127.0.0.1:${port}/api/prototype/health`);
   });
 }
 
 if (process.argv[1] && process.argv[1].endsWith("publish-server.mjs")) {
-  start(Number(process.env.PORT) || DEFAULT_PORT);
+  start(Number(process.env.PORT) || DEFAULT_PORT, process.env.HOST || "127.0.0.1");
 }
