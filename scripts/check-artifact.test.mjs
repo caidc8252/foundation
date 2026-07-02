@@ -246,3 +246,44 @@ test("check-artifact flags spec-internal ids in copy, but not comments or mock-d
     rmSync(dir, { recursive: true, force: true });
   }
 });
+
+test("check-artifact flags a .theme-toggle in a frameless page, not in a full shell", () => {
+  const dir = mkdtempSync(join(tmpdir(), "foundation-artifact-"));
+  try {
+    // BAD: frameless business page invents app-shell chrome (a theme toggle).
+    const bad = join(dir, "frameless-chrome.html");
+    writeFileSync(
+      bad,
+      `<!doctype html>
+<div class="app-frame app-frame--frameless"><main class="app-frame__main">
+  <button class="theme-toggle" type="button" aria-label="Toggle dark mode">x</button>
+</main></div>
+`,
+      "utf8",
+    );
+    // GOOD: a full app-frame (with top bar) may host a theme toggle.
+    const good = join(dir, "fullshell-chrome.html");
+    writeFileSync(
+      good,
+      `<!doctype html>
+<div class="app-frame"><header class="app-frame__topbar">
+  <button class="theme-toggle" type="button" aria-label="Toggle dark mode">x</button>
+</header></div>
+`,
+      "utf8",
+    );
+
+    const bin = join(root, "scripts", "check-artifact.mjs");
+    const runBad = spawnSync(process.execPath, [bin, bad], { cwd: root, encoding: "utf8" });
+    const runGood = spawnSync(process.execPath, [bin, good], { cwd: root, encoding: "utf8" });
+
+    // Advisory only: surfaces the invented chrome but must NOT fail the build.
+    assert.equal(runBad.status, 0, runBad.stdout);
+    assert.match(runBad.stdout, /app-shell chrome in a frameless page/i);
+    // The full shell may carry the toggle — no advisory.
+    assert.equal(runGood.status, 0, runGood.stdout);
+    assert.doesNotMatch(runGood.stdout, /app-shell chrome in a frameless page/i);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});

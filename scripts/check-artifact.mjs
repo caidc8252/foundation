@@ -29,6 +29,10 @@
                                      TASK-*) in rendered UI text; traceability markers,
                                      not product copy. HTML-comment refs are exempt.
                                      Advisory only — never affects the exit code.
+     ⚠ app-shell chrome, frameless — a `.theme-toggle` (or similar top-bar chrome) in
+                                     an `.app-frame--frameless` page; invented chrome a
+                                     frameless business page has no bar to host.
+                                     Advisory only — never affects the exit code.
 
    The two ✗ categories are hard violations (non-zero exit). Classes are
    advisory by default; pass --strict to make off-set classes fail too.
@@ -220,6 +224,20 @@ const internalIdsFromMarkup = (markupWithScripts) => {
   const hits = new Set();
   for (const m of markupWithScripts.matchAll(INTERNAL_ID)) hits.add(m[0]);
   return [...hits].sort();
+};
+
+// A frameless business page must not invent app-shell chrome. A theme toggle
+// (`.theme-toggle`) belongs in the full app-frame's top bar — a frameless page has
+// no bar to host it, so its presence is invented chrome (dark/light is verified by
+// the visual pass's two renders, not a page-level switch). Flag `.theme-toggle`
+// class usage when the artifact declares `.app-frame--frameless`. Scan
+// markupWithScripts so a JS-built button counts; the inlined `.theme-toggle` CSS
+// lives in <style> (stripped). Advisory only.
+const frameChromeFromMarkup = (markupWithScripts) => {
+  if (!/\bapp-frame--frameless\b/.test(markupWithScripts)) return [];
+  const hits = new Set();
+  if (/class\s*=\s*["'][^"']*\btheme-toggle\b/.test(markupWithScripts)) hits.add(".theme-toggle");
+  return [...hits];
 };
 
 // A `.table-frame--flush` nested inside a `.card` is a self-defeating double-frame.
@@ -420,6 +438,9 @@ for (const file of files) {
   // (the sanctioned `<!-- enforces …#R-1 -->` traceability channel is not flagged).
   const internalIds = internalIdsFromMarkup(markupWithScripts);
 
+  // Advisory: app-shell chrome (a .theme-toggle) invented in a frameless page.
+  const frameChrome = frameChromeFromMarkup(markupWithScripts);
+
   const hard =
     unknownTokens.length +
     hardColors.length +
@@ -461,6 +482,8 @@ for (const file of files) {
     console.log(`  ⚠ review: ${searchOnChange.length} search/filter wired on change — filtering must commit on the Search button / Enter, never on change (principle 14). Verify these edit a draft only, not run the query: ${searchOnChange.join(" · ")}`);
   if (internalIds.length)
     console.log(`  ⚠ review: ${internalIds.length} spec-internal id(s) in rendered copy — R-N/SM-N/P-N/TASK-* are traceability markers, not user-facing text; strip them (put traceability in an HTML comment): ${internalIds.join(", ")}`);
+  if (frameChrome.length)
+    console.log(`  ⚠ review: app-shell chrome in a frameless page — ${frameChrome.join(", ")} belongs in the full app-frame top bar, not a frameless business page; drop it (dark/light is verified by the visual pass's two renders)`);
   const passText = strict
     ? "PASS (strict: no out-of-set tokens, hardcoded colors, or off-set classes)"
     : "PASS (no out-of-set tokens, no hardcoded colors)";
