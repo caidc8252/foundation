@@ -19,17 +19,28 @@ status-card ( = .card , no .card__header ; add .card--interactive when clickable
     └─ .status-card__footer-end        right cluster (icon button + count; future actions)
 ```
 
-## Slots
+## Slots — required vs. optional
 
-| slot | token recipe |
-|---|---|
-| root | `.card` frame; add `.card--interactive` for the clickable hover treatment |
-| `__head` | grid `auto 1fr auto`, `align-items:center`, column gap `space-3` |
-| `__media` | `object-tile` (default `--md`); `flex-shrink:0` |
-| `__heading` | `card__title` (text-md/600) + optional status `badge`; column, gap `space-1` |
-| `__trailing` | chevron, `content-tertiary` → hover `content-secondary`; decorative (`aria-hidden`) in interactive mode |
-| `__description` | `text-xs` / `content-tertiary`; **optional** |
-| `__footer-start` / `__footer-end` | flex clusters (gap `space-2`); end is right-aligned |
+The frame, the content slot, the heading, the title, and the footer are always
+present — a status-card **is** a `.card` with `.card__content` + `.card__footer`
+and **no** `.card__header`. Everything else is included only when the object
+needs it; most cards render a subset.
+
+| slot | required? | recipe / include when |
+|---|---|---|
+| root `.card.status-card` | **yes** | `.card` frame; add `.card--interactive` when the whole card is a link |
+| `.card__content` | **yes** | reused card slot; owns padding. Wrap blocks in `.stack.stack--3` |
+| `.status-card__head` | **yes** | grid `auto 1fr auto`, `align-items:center`, column gap `space-3` |
+| `.status-card__heading` | **yes** | column, gap `space-1`; holds the title (+ optional badge) |
+| `card__title` | **yes** | the object's name — `text-md` / 600 / `content-primary` |
+| status `badge` | no | the object has a state worth surfacing — `--warning` / `--error` / `--success` |
+| `.status-card__media` | no | a leading `object-tile` / logo (default `--md`); `flex-shrink:0` |
+| `.status-card__trailing` | no | a trailing chevron; `content-tertiary` → hover `content-secondary`. Decorative (`aria-hidden`) when the card is interactive |
+| `.status-card__link` | no | interactive only — one `<a href>` / `<button>` wrapping the title; its `::after` stretches the hit-area (see Interactive) |
+| `.status-card__description` | no | one or more lines below the heading — `text-xs` / `content-tertiary` |
+| `.card__footer` | **yes** | reused card slot; top hairline. The defining control strip — drop it and it's a plain `card`. Vertical padding tightened to `space-2` |
+| `.status-card__footer-start` | no | left cluster (switch + label …); flex, gap `space-2` |
+| `.status-card__footer-end` | no | right cluster, right-aligned (`margin-left:auto`); an icon button + count, or a `btn` action group |
 
 ## Sizes
 

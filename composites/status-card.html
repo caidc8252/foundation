@@ -13,11 +13,11 @@
   · kv-grid  — for static key:value attribute pairs, not live status
 
   Covers:
-    - Shape 1: minimal — title + footer switch only, no media/badge/description
-    - Shape 2: full static — media icon, title, error badge, description,
+    - Full static — media icon, title, error badge, description,
       footer switch (start) + notification button (end)
-    - Shape 3: interactive — whole card is a stretched link (.card--interactive
+    - Interactive — whole card is a stretched link (.card--interactive
       + .status-card__link), footer controls stay independently clickable
+    - Footer actions — footer-end holds a secondary + primary .btn group
   ──────────────────────────────────────────────────────────────────────
 -->
 <!DOCTYPE html>
@@ -184,10 +184,7 @@
         </div>
         <div class="card__footer">
           <div class="status-card__footer-start">
-            <button class="switch" role="switch" aria-checked="true" aria-label="Auto-failover enabled">
-              <span class="switch__thumb"></span>
-            </button>
-            <span>Auto-failover</span>
+            
           </div>
           <div class="status-card__footer-end">
             <button class="btn btn--secondary btn--sm">Details</button>
