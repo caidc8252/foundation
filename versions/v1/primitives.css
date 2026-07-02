@@ -42,6 +42,7 @@
    or page-glue rule still wins (e.g. .page-header__description's margin-top). */
 :where(h1, h2, h3, h4, h5, h6, p, figure, blockquote, dl, dd, dt, ul, ol) {
   margin: 0;
+  padding: 0;
 }
 
 /* UA body margin — browsers ship an 8px margin on <body>; zero it here so
@@ -151,31 +152,12 @@ body { margin: 0; }
   border-color: var(--color-line-strong);
 }
 
-/* DS 2.0: tertiary / outline / soft variants removed — fold into ghost / secondary.
-   Kept as no-op stubs so old artifact HTML doesn't hard-break; use ghost / secondary for new code. */
-.btn--tertiary,
-.btn--outline {
-  background-color: var(--color-surface-2);
-  color: var(--color-content-primary);
-  border-color: var(--color-line-default);
-}
-.btn--tertiary:hover:not(:disabled),
-.btn--outline:hover:not(:disabled) { background-color: var(--color-surface-hover); }
-
 .btn--ghost {
   background-color: transparent;
   color: var(--color-content-primary);
 }
 .btn--ghost:hover:not(:disabled) { background-color: var(--color-surface-hover); }
 .btn--ghost:active:not(:disabled) { background-color: var(--color-surface-active); }
-
-/* DS 2.0: soft removed — no direct replacement; use secondary or primary. */
-.btn--soft {
-  background-color: var(--color-surface-2);
-  color: var(--color-content-primary);
-  border-color: var(--color-line-default);
-}
-.btn--soft:hover:not(:disabled) { background-color: var(--color-surface-hover); }
 
 .btn--danger {
   background-color: var(--color-error);
@@ -358,7 +340,7 @@ body { margin: 0; }
   background-color: var(--color-surface-2);
   color: var(--color-content-primary);
   font-family: var(--font-sans);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   resize: vertical;
   transition: border-color 0.12s, background-color 0.12s, box-shadow 0.12s;
   outline: none;
@@ -559,38 +541,6 @@ body { margin: 0; }
   border-color: color-mix(in oklch, var(--color-info) 25%, transparent);
 }
 
-/* Badge · low-level variants */
-.badge--default {
-  background-color: var(--color-primary-700);
-  color: var(--color-content-on-primary);
-}
-.badge--secondary {
-  background-color: var(--color-surface-3);
-  color: var(--color-content-secondary);
-}
-.badge--destructive {
-  background-color: color-mix(in oklch, var(--color-error) 10%, transparent);
-  color: var(--color-error);
-}
-.badge--outline {
-  background-color: transparent;
-  color: var(--color-content-primary);
-  border-color: var(--color-line-default);
-}
-.badge--ghost {
-  background-color: transparent;
-  color: var(--color-content-secondary);
-}
-.badge--ghost:hover {
-  background-color: var(--color-surface-hover);
-  color: var(--color-content-primary);
-}
-.badge--link {
-  background-color: transparent;
-  color: var(--color-primary-700);
-}
-.badge--link:hover { text-decoration: underline; }
-
 /* Badge · tag shape (monospace, square corners) */
 .badge--tag {
   border-radius: var(--radius-sm);
@@ -625,7 +575,7 @@ body { margin: 0; }
   background-color: var(--color-surface-2);
   color: var(--color-content-primary);
   font-family: var(--font-sans);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   box-shadow: var(--shadow-1);        /* elevation 1 default */
 }
 
@@ -799,7 +749,7 @@ body { margin: 0; }
   background-color: var(--color-surface-2);
   color: var(--color-content-primary);
   font-family: var(--font-sans);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   font-weight: 500;
   text-align: left;
   cursor: pointer;
@@ -922,7 +872,7 @@ body { margin: 0; }
 }
 
 .alert__title {
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   font-weight: 600;
   line-height: 1.1;
 }
@@ -958,6 +908,7 @@ body { margin: 0; }
 .alert-dialog-overlay {
   position: fixed;
   inset: 0;
+  z-index: 50;   /* modal z-layer — above sticky page chrome (z-index 10); z-index conventionally exempt */
   background-color: var(--color-surface-overlay);
 }
 
@@ -967,6 +918,7 @@ body { margin: 0; }
   position: fixed;
   top: 50%;
   left: 50%;
+  z-index: 50;   /* modal z-layer — panel is a fixed sibling of its scrim, so it needs the layer too; z-index conventionally exempt */
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
@@ -1015,7 +967,7 @@ body { margin: 0; }
 
 /* Footer — action shelf, no border/fill (sits flush in the panel padding).
    Stacks reversed on mobile (Confirm on top so the safe Cancel sits nearest the
-   thumb); right-aligned row on sm+. Holds two .btn (.btn--outline Cancel +
+   thumb); right-aligned row on sm+. Holds two .btn (.btn--secondary Cancel +
    .btn--primary/.btn--danger Confirm). */
 .alert-dialog__footer {
   display: flex;
@@ -1104,7 +1056,7 @@ body { margin: 0; }
   line-height: 1;
 }
 /* Fallback type tracks the box for the larger sizes. */
-.avatar--lg .avatar__fallback { font-size: var(--text-sm); }
+.avatar--lg .avatar__fallback { font-size: var(--text-md); }
 .avatar--xl .avatar__fallback { font-size: var(--text-lg); }
 
 /* Group — overlapping chips, each ringed in the page ground (surface-1). */
@@ -1444,7 +1396,7 @@ body { margin: 0; }
   padding-top: var(--space-4);    /* source pt-4 (16px) */
 }
 
-/* Nav buttons — reuse .btn .btn--outline .btn--icon .btn--sm (icon-sm = 28px);
+/* Nav buttons — reuse .btn .btn--secondary .btn--icon .btn--sm (icon-sm = 28px);
    .carousel__nav adds the round shape + absolute placement just outside the
    viewport. Horizontal pins are the defaults; .carousel__prev / __next set the
    side, and .carousel--vertical re-pins + rotates the chevron 90°. */
@@ -1590,7 +1542,7 @@ body { margin: 0; }
   background-color: var(--color-surface-2);
   color: var(--color-content-primary);
   font-family: var(--font-sans);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   white-space: nowrap;
   cursor: pointer;
   user-select: none;
@@ -1633,6 +1585,7 @@ body { margin: 0; }
 
 /* Open popup surface — width tracks the trigger; min-width floor 144px (min-w-36). */
 .combobox__content {
+  z-index: 60;   /* popover z-layer — above the dialog layer (z-index 50); inert until positioned; z-index conventionally exempt */
   min-width: calc(var(--space-16) + var(--space-20));   /* 144px — source min-w-36 */
   overflow: hidden;
   border: 1px solid var(--color-line-default);
@@ -1665,7 +1618,7 @@ body { margin: 0; }
   background-color: transparent;
   color: var(--color-content-primary);
   font-family: var(--font-sans);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   outline: none;
 }
 .combobox__input::placeholder { color: var(--color-content-tertiary); }
@@ -1688,7 +1641,7 @@ body { margin: 0; }
   padding-inline-start: var(--spacing-cx-sm);   /* 10px — source pl-2.5 */
   padding-inline-end: var(--space-8);           /* 32px — source pr-8, room for check */
   border-radius: var(--radius-md);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   color: var(--color-content-primary);
   cursor: default;
   user-select: none;
@@ -1721,7 +1674,7 @@ body { margin: 0; }
 .combobox__empty {
   padding-block: var(--space-4);
   text-align: center;
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   color: var(--color-content-tertiary);
 }
 
@@ -1754,12 +1707,14 @@ body { margin: 0; }
 .command-dialog__backdrop {
   position: fixed;
   inset: 0;
+  z-index: 50;   /* modal z-layer — above sticky page chrome (z-index 10); z-index conventionally exempt */
   background-color: var(--color-surface-overlay);
 }
 .command-dialog {
   position: fixed;
   top: 33%;   /* source top-1/3 */
   left: 50%;
+  z-index: 50;   /* modal z-layer — panel is a fixed sibling of its backdrop; z-index conventionally exempt */
   transform: translateX(-50%);
   width: 100%;
   max-width: 460px;   /* source max-w-[460px]; no sizing token expresses popup width yet */
@@ -1798,7 +1753,7 @@ body { margin: 0; }
   background-color: transparent;
   color: var(--color-content-primary);
   font-family: var(--font-sans);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   outline: none;
 }
 .command__input::placeholder { color: var(--color-content-tertiary); }
@@ -1820,7 +1775,7 @@ body { margin: 0; }
 .command__empty {
   padding-block: var(--space-6);
   text-align: center;
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   color: var(--color-content-secondary);
 }
 
@@ -1857,7 +1812,7 @@ body { margin: 0; }
   padding-block: var(--space-2);
   border-radius: var(--radius-md);
   color: var(--color-content-primary);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   cursor: pointer;
   user-select: none;
   outline: none;
@@ -1898,6 +1853,7 @@ body { margin: 0; }
    row recipe with dropdown-menu (same tone/spacing, different trigger gesture). */
 
 .context-menu__content {
+  z-index: 60;   /* popover z-layer — above the dialog layer (z-index 50); inert until positioned; z-index conventionally exempt */
   min-width: 220px;   /* source min-w-[220px]; no sizing token expresses this yet */
   overflow-x: hidden;
   overflow-y: auto;   /* React caps height to --available-height, then this scrolls */
@@ -1943,7 +1899,7 @@ body { margin: 0; }
   padding-block: var(--space-2);
   color: var(--color-content-primary);
   font-family: var(--font-sans);
-  font-size: var(--text-xs);
+  font-size: var(--text-md);
   cursor: pointer;
   user-select: none;
   outline: none;   /* focused row shown by its fill, not a ring */
@@ -2008,7 +1964,7 @@ body { margin: 0; }
   padding-inline-end: var(--space-8);   /* pr-8 = 32px indicator gutter */
   color: var(--color-content-primary);
   font-family: var(--font-sans);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   cursor: pointer;
   user-select: none;
   outline: none;
@@ -2082,7 +2038,7 @@ body { margin: 0; }
   background-color: var(--color-surface-2);
   color: var(--color-content-primary);
   font-family: var(--font-sans);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   text-align: left;
   white-space: nowrap;
   cursor: pointer;
@@ -2117,7 +2073,7 @@ body { margin: 0; }
 .date-trigger--md {
   height: var(--spacing-control-md);
   padding-inline: var(--spacing-cx-md);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
 }
 .date-trigger--lg {
   height: var(--spacing-control-lg);
@@ -2184,7 +2140,7 @@ body { margin: 0; }
   background-color: transparent;
   color: var(--color-content-secondary);
   font-family: var(--font-sans);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   text-align: left;
   cursor: pointer;
   user-select: none;
@@ -2245,6 +2201,7 @@ body { margin: 0; }
 .drawer-overlay {
   position: fixed;
   inset: 0;
+  z-index: 50;   /* modal z-layer — above sticky page chrome (z-index 10); z-index conventionally exempt */
   background-color: color-mix(in oklch, var(--color-content-primary) 10%, transparent);
 }
 @supports (backdrop-filter: blur(2px)) {
@@ -2254,6 +2211,7 @@ body { margin: 0; }
 /* Panel — docked surface, column stack; direction modifier sets the edge. */
 .drawer {
   position: fixed;
+  z-index: 50;   /* modal z-layer — panel is a fixed sibling of its overlay; z-index conventionally exempt */
   display: flex;
   flex-direction: column;
   height: auto;
@@ -2261,7 +2219,7 @@ body { margin: 0; }
   background-color: var(--color-surface-2);
   color: var(--color-content-primary);
   font-family: var(--font-sans);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   box-shadow: var(--shadow-1);
 }
 
@@ -2331,7 +2289,7 @@ body { margin: 0; }
   color: var(--color-content-primary);
 }
 .drawer__description {
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   color: var(--color-content-secondary);
 }
 
@@ -2355,8 +2313,9 @@ body { margin: 0; }
    expresses popup width yet (see dropdown-menu.md notes). */
 
 .dropdown-menu {
+  z-index: 60;   /* popover z-layer — above the dialog layer (z-index 50) so a menu opened inside a dialog clears it; inert until positioned; z-index conventionally exempt */
   min-width: 240px;   /* source min-w-[240px]; no sizing token expresses this yet */
-  max-height: 100%;
+  max-height: 80vh;   /* viewport-capped, like .modal/.sheet — NOT 100%. A % max-height resolves against the containing block, so when a static artifact positions this popup `position:absolute` inside a trigger-sized `.overflow-wrap` (the taught detail-header pattern), `100%` collapsed to the trigger's height and clipped the menu. vh is containing-block-independent, so it works whether the popup is absolute-in-wrapper or portalled+fixed. */
   overflow-x: hidden;
   overflow-y: auto;
   padding: var(--space-1);
@@ -2389,10 +2348,22 @@ body { margin: 0; }
   padding-block: var(--space-2);
   border-radius: var(--radius-md);
   color: var(--color-content-primary);
-  font-size: var(--text-xs);
+  font-size: var(--text-md);
   cursor: pointer;
   user-select: none;
   outline: none;
+}
+/* Rows span the full popup width. A menu row is a <button> (form control): even in
+   a definite-width popup it shrink-wraps to its content, so the highlight + hit
+   target stop short of the row edge and narrower rows look ragged. width:100% (with
+   the global border-box) makes every row fill the popup regardless of its sizing —
+   min-width or definite. Covers the standalone checkbox/radio rows too (they don't
+   carry the __item base). */
+.dropdown-menu__item,
+.dropdown-menu__sub-trigger,
+.dropdown-menu__checkbox-item,
+.dropdown-menu__radio-item {
+  width: 100%;
 }
 /* Highlight follows keyboard/pointer focus; static stand-in is --active. */
 .dropdown-menu__item:hover,
@@ -2448,7 +2419,7 @@ body { margin: 0; }
   padding-block: var(--space-2);
   border-radius: var(--radius-md);
   color: var(--color-content-primary);
-  font-size: var(--text-xs);
+  font-size: var(--text-md);
   cursor: pointer;
   user-select: none;
   outline: none;
@@ -2462,6 +2433,7 @@ body { margin: 0; }
 
 /* Nested sub-menu popup — content recipe, narrower min-width. */
 .dropdown-menu__sub-content {
+  z-index: 60;   /* popover z-layer — matches its parent menu; inert until positioned; z-index conventionally exempt */
   min-width: 160px;   /* source min-w-[160px]; no sizing token yet */
 }
 
@@ -2476,7 +2448,7 @@ body { margin: 0; }
   padding-inline-start: calc(var(--space-1) + var(--space-1) / 2);   /* 6px — source pl-1.5 */
   padding-inline-end: var(--space-8);   /* 32px — source pr-8, room for the check */
   border-radius: var(--radius-md);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   color: var(--color-content-primary);
   cursor: pointer;
   user-select: none;
@@ -2549,6 +2521,7 @@ body { margin: 0; }
    token-change wish for a popup-width sizing token); everything else is a token. */
 
 .hover-card {
+  z-index: 60;   /* popover z-layer — above the dialog layer (z-index 50); inert until positioned; z-index conventionally exempt */
   width: 280px;   /* source w-[280px]; no sizing token expresses this yet */
   padding: var(--spacing-cx-md);   /* 14px — source p-3.5 */
   border: 1px solid var(--color-line-default);
@@ -2556,7 +2529,7 @@ body { margin: 0; }
   background-color: var(--color-surface-2);
   color: var(--color-content-primary);
   font-family: var(--font-sans);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   box-shadow: var(--shadow-4);
 }
 
@@ -2638,7 +2611,7 @@ body { margin: 0; }
   padding-block: var(--space-1);
   color: var(--color-content-secondary);
   font-family: var(--font-sans);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   font-weight: 500;
   white-space: nowrap; /* a text affix ("% off", "USD") stays on one line — never wraps when the field is narrow */
   cursor: text;
@@ -2676,7 +2649,7 @@ body { margin: 0; }
   gap: var(--space-2);
   color: var(--color-content-secondary);
   font-family: var(--font-sans);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
 }
 
 /* Action button inside the group reuses .btn (.btn--ghost .btn--xs / .btn--icon);
@@ -2772,7 +2745,7 @@ body { margin: 0; }
   align-items: center;
   gap: var(--space-2);
   font-family: var(--font-sans);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   font-weight: 500;
   line-height: 1;
   /* Primitive sets no color (it inherits). This bakes in the Field
@@ -2802,6 +2775,7 @@ body { margin: 0; }
 .modal-overlay {
   position: fixed;
   inset: 0;
+  z-index: 50;   /* modal z-layer — must sit above sticky page chrome (summary-bar/table head at z-index 10); z-index conventionally exempt */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2973,7 +2947,7 @@ body { margin: 0; }
   background-color: transparent;
   color: var(--color-content-primary);
   font-family: var(--font-sans);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   font-weight: 500;
   white-space: nowrap;
   cursor: pointer;
@@ -3023,7 +2997,7 @@ body { margin: 0; }
   padding: var(--space-2);
   border-radius: var(--radius-md);
   color: var(--color-content-primary);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   text-decoration: none;
   cursor: pointer;
   user-select: none;
@@ -3066,6 +3040,7 @@ body { margin: 0; }
    .popover__ so any list-shaped overlay can reuse it. */
 
 .popover {
+  z-index: 60;   /* popover z-layer — above the dialog layer (z-index 50) so it clears a modal it opens within; inert until the consumer positions this surface; z-index conventionally exempt */
   display: flex;
   flex-direction: column;
   gap: var(--spacing-cx-sm);            /* 10px (source gap-2.5) */
@@ -3076,7 +3051,7 @@ body { margin: 0; }
   background-color: var(--color-surface-1);
   color: var(--color-content-primary);
   font-family: var(--font-sans);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   box-shadow: var(--shadow-3);           /* source shadow-md → overlay elevation */
   /* 1px hairline ring (source ring-1 ring-foreground/10) */
   outline: 1px solid color-mix(in oklch, var(--color-content-primary) 10%, transparent);
@@ -3088,7 +3063,7 @@ body { margin: 0; }
   display: flex;
   flex-direction: column;
   gap: calc(var(--space-1) / 2);         /* 2px (source gap-0.5) */
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
 }
 .popover__title {
   font-weight: 500;                      /* source font-medium */
@@ -3110,7 +3085,7 @@ body { margin: 0; }
   background-color: transparent;
   color: var(--color-content-primary);
   font-family: var(--font-sans);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   text-align: left;
   cursor: pointer;
   user-select: none;
@@ -3121,7 +3096,7 @@ body { margin: 0; }
 .menu-item:focus-visible { box-shadow: var(--shadow-focus); }
 .menu-item:disabled {
   cursor: not-allowed;
-  opacity: 0.4;
+  opacity: 0.5;
 }
 
 /* Destructive row — delete-style actions. */
@@ -3420,7 +3395,7 @@ body { margin: 0; }
   background-color: var(--color-surface-3);
   color: var(--color-content-primary);
   font-family: var(--font-sans);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   box-shadow: var(--shadow-4);
   transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
 }
@@ -3467,7 +3442,7 @@ body { margin: 0; }
 }
 .sheet__description {
   color: var(--color-content-secondary);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
 }
 
 /* Close — a real ghost icon button (compose .btn .btn--ghost .btn--icon .btn--sm);
@@ -3744,7 +3719,7 @@ body { margin: 0; }
   background-color: transparent;
   color: var(--color-content-secondary);
   font-family: var(--font-sans);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   font-weight: 500;
   white-space: nowrap;
   cursor: pointer;
@@ -3837,6 +3812,7 @@ body { margin: 0; }
 
 .toast {
   position: relative;
+  z-index: 80;   /* toast z-layer — top of the stack, above tooltip (70)/popover (60)/dialog (50); z-index conventionally exempt */
   display: flex;
   align-items: flex-start;   /* items-start — icon top-aligns with the title */
   gap: var(--space-2);
@@ -3943,9 +3919,9 @@ body { margin: 0; }
 /* @component toggle */
 /* A press-toggle BUTTON (not a switch): shares button interaction tokens, the
    on state is aria-pressed="true" (static stand-in for base-ui data-pressed).
-   Group-driven looks (outline/segmented/cloud) live in .toggle-group below —
-   the artifact can't read an ancestor data-variant the way the React side does,
-   so each group skin is expressed as an explicit .toggle--in-<variant> class. */
+   This is the STANDALONE single toggle. Grouped / segmented looks live entirely
+   in the .toggle-group component below (.toggle-group + .toggle-group__item) —
+   one owner, no duplicate group skins here. */
 
 .toggle {
   display: inline-flex;
@@ -3959,7 +3935,7 @@ body { margin: 0; }
   background-color: var(--color-surface-2);
   color: var(--color-content-primary);
   font-family: var(--font-sans);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   font-weight: 500;
   line-height: 1;
   white-space: nowrap;
@@ -3989,93 +3965,13 @@ body { margin: 0; }
 .toggle--md {
   height: var(--spacing-control-md);
   padding-inline: var(--spacing-cx-md);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
 }
 .toggle--auto {
   height: auto;
   padding-inline: var(--spacing-cx-md);
   padding-block: var(--space-2);
-  font-size: var(--text-sm);
-}
-
-/* ── ToggleGroup containers ── */
-.toggle-group--outline {
-  display: inline-flex;
-  align-items: center;
-  overflow: hidden;
-  border: 1px solid var(--color-line-strong);
-  border-radius: var(--radius-md);
-  background-color: var(--color-surface-2);
-}
-.toggle-group--segmented {
-  display: inline-flex;
-  align-items: center;
-  gap: 1px;
-  padding: var(--space-1);
-  border: 1px solid var(--color-line-subtle);
-  border-radius: var(--radius-md);
-  background-color: var(--color-surface-3);
-}
-.toggle-group--cloud {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-1);
-}
-.toggle-group--plain {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-/* ── Group-driven item skins (stand-in for in-data-[variant=…]) ── */
-/* outline group: flatten edges; items share the track's outer border/radius */
-.toggle--in-outline {
-  border-radius: 0;
-  border: 0;
-  border-right: 1px solid var(--color-line-strong);
-}
-.toggle--in-outline:last-child { border-right: 0; }
-
-/* segmented group: borderless transparent item; pressed lifts into a pill */
-.toggle--in-segmented {
-  border-radius: var(--radius-sm);
-  border: 0;
-  background-color: transparent;
-  color: var(--color-content-secondary);
-}
-.toggle--in-segmented:hover:not(:disabled) {
-  background-color: transparent;
-  color: var(--color-content-primary);
-}
-.toggle--in-segmented[aria-pressed="true"]:not(:disabled) {
-  background-color: var(--color-surface-2);
-  color: var(--color-content-primary);
-  box-shadow: var(--shadow-1);
-}
-
-/* cloud group: standalone rounded-full chip, compact, tints primary when on */
-.toggle--in-cloud {
-  height: auto;
-  border-radius: var(--radius-full);
-  border: 1px solid var(--color-line-default);
-  background-color: var(--color-surface-2);
-  padding-inline: var(--spacing-cx-sm);
-  padding-block: var(--space-1);
-  font-size: var(--text-xs);
-  font-weight: 400;
-  color: var(--color-content-secondary);
-}
-.toggle--in-cloud:hover:not(:disabled) {
-  background-color: var(--color-surface-2);
-  border-color: var(--color-line-strong);
-}
-.toggle--in-cloud[aria-pressed="true"]:not(:disabled) {
-  border-color: var(--color-primary-500);
-  background-color: var(--color-primary-50);
-  font-weight: 500;
-  color: var(--color-primary-700);
+  font-size: var(--text-md);
 }
 
 /* ═══════════════════════════════ Toggle Group ═══════════════════════════════ */
@@ -4136,7 +4032,7 @@ body { margin: 0; }
   background-color: var(--color-surface-2);
   color: var(--color-content-primary);
   font-family: var(--font-sans);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   font-weight: 500;
   line-height: 1;
   white-space: nowrap;
@@ -4163,13 +4059,13 @@ body { margin: 0; }
 .toggle-group__item--md {
   height: var(--spacing-control-md);
   padding-inline: var(--spacing-cx-md);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
 }
 .toggle-group__item--auto {
   height: auto;
   padding-inline: var(--spacing-cx-md);
   padding-block: var(--space-2);
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
 }
 
 /* ── outline group: flatten item edges into one segmented border ── */
@@ -4221,7 +4117,8 @@ body { margin: 0; }
   font-weight: 500;
 }
 
-/* Tooltip */
+/* ═══════════════════════════════ Tooltip ═══════════════════════════════ */
+/* @component tooltip */
 /* Inverted hint bubble with a directional arrow. Open/close, portalling, and
    side/arrow positioning are React/base-ui behaviors; this static skin renders
    a single OPEN bubble (default top placement) — no enter/exit keyframes. The
@@ -4230,6 +4127,7 @@ body { margin: 0; }
 
 .tooltip {
   position: relative;
+  z-index: 70;   /* tooltip z-layer — above popover (60) and dialog (50) layers; z-index conventionally exempt */
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
@@ -4300,7 +4198,7 @@ body { margin: 0; }
 
 .dropzone--disabled {
   cursor: not-allowed;
-  opacity: 0.6;
+  opacity: 0.5;
 }
 .dropzone--disabled:hover { background-color: var(--color-surface-2); }
 
