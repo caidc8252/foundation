@@ -768,6 +768,7 @@
     "status-card__footer-start",
     "status-card__head",
     "status-card__heading",
+    "status-card__link",
     "status-card__media",
     "status-card__trailing",
     "step",
@@ -2249,6 +2250,7 @@
         ".status-card__footer-start",
         ".status-card__head",
         ".status-card__heading",
+        ".status-card__link",
         ".status-card__media",
         ".status-card__trailing"
       ]
