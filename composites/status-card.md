@@ -38,7 +38,7 @@ needs it; most cards render a subset.
 | `.status-card__trailing` | no | a trailing chevron; `content-tertiary` → hover `content-secondary`. Decorative (`aria-hidden`) when the card is interactive |
 | `.status-card__link` | no | interactive only — one `<a href>` / `<button>` wrapping the title; its `::after` stretches the hit-area (see Interactive) |
 | `.status-card__description` | no | one or more lines below the heading — `text-xs` / `content-tertiary` |
-| `.card__footer` | **yes** | reused card slot; top hairline. The defining control strip — drop it and it's a plain `card`. Vertical padding tightened to `space-2` |
+| `.card__footer` | **yes** | reused card slot; top hairline. The defining control strip — drop it and it's a plain `card`. Vertical padding tightened to `space-3` |
 | `.status-card__footer-start` | no | left cluster (switch + label …); flex, gap `space-2` |
 | `.status-card__footer-end` | no | right cluster, right-aligned (`margin-left:auto`); an icon button + count, or a `btn` action group |
 
