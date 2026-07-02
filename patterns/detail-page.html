@@ -105,11 +105,27 @@
             <!-- ⋯ overflow menu — shown ONLY because this record has a destructive verb
                  (Delete). Never render an empty ⋯; a header with only Edit + primary has none.
                  Destructive actions: dropdown-menu__item--destructive (never a .btn inside the menu). -->
-            <div style="position:relative; display:inline-block;">
+            <div id="overflow-wrap" style="position:relative; display:inline-block;">
               <button class="btn btn--ghost btn--icon" type="button" aria-label="More actions" aria-haspopup="true" aria-expanded="false" id="overflow-trigger">
                 <svg data-lucide="ellipsis" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
               </button>
-              <div class="dropdown-menu" id="overflow-menu" role="menu" aria-labelledby="overflow-trigger" style="display:none; position:absolute; right:0; top:100%; z-index:50; min-width:160px;">
+              <div class="dropdown-menu" id="overflow-menu" role="menu" aria-labelledby="overflow-trigger" hidden style="position:absolute; right:0; top:100%; z-index:50; min-width:200px;">
+                <!-- Secondary actions that don't warrant a header button — the dropdown-menu recipe:
+                     a group label, icon-led rows, a separator, then the --destructive action last. -->
+                <div class="dropdown-menu__label">Manage</div>
+                <button class="dropdown-menu__item" type="button" role="menuitem">
+                  <svg data-lucide="copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                  Copy account ID
+                </button>
+                <button class="dropdown-menu__item" type="button" role="menuitem">
+                  <svg data-lucide="download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>
+                  Export data
+                </button>
+                <button class="dropdown-menu__item" type="button" role="menuitem">
+                  <svg data-lucide="archive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg>
+                  Archive customer
+                </button>
+                <div class="dropdown-menu__separator"></div>
                 <!-- Delete — the --destructive variant; leads to a confirm step before acting -->
                 <button class="dropdown-menu__item dropdown-menu__item--destructive" type="button" role="menuitem">
                   <svg data-lucide="trash-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
@@ -476,6 +492,36 @@
 
     triggers.forEach(function (t) {
       t.addEventListener('click', function () { activate(t.getAttribute('data-tab')); });
+    });
+  })();
+
+  /* Overflow (⋯) menu — same interaction the dropdown-menu.html reference demos
+     (base-ui Menu behavior in @cloud/ui): toggle on trigger, close on outside-click
+     or Escape, close after an item click. Visibility via the `hidden` attribute so
+     the .dropdown-menu display rule can't override it; aria-expanded kept in sync. */
+  (function () {
+    var wrap = document.getElementById('overflow-wrap');
+    var trigger = document.getElementById('overflow-trigger');
+    var menu = document.getElementById('overflow-menu');
+    if (!wrap || !trigger || !menu) return;
+
+    function setOpen(open) {
+      menu.hidden = !open;
+      trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+
+    trigger.addEventListener('click', function (e) {
+      e.stopPropagation();
+      setOpen(menu.hidden);
+    });
+    document.addEventListener('click', function (e) {
+      if (!wrap.contains(e.target)) setOpen(false);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !menu.hidden) { setOpen(false); trigger.focus(); }
+    });
+    menu.querySelectorAll('.dropdown-menu__item').forEach(function (item) {
+      item.addEventListener('click', function () { setOpen(false); });
     });
   })();
 </script>

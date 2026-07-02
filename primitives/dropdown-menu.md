@@ -80,17 +80,24 @@ content (popup surface)
   control where a quiet menu row belongs. (A standalone `danger` **button** is the
   *alternative* carrier — used **instead of** a menu, not within one.)
 - **min-width is hardcoded** in the source: content `min-w-[240px]`, sub-content `min-w-[160px]`. No sizing token expresses these popup widths. The reference CSS keeps them as raw px and flags a token-change wish here (a `--popup-width-*` / menu-min-width token would close the gap — same wish noted in hover-card.md).
-- **Portalled + `position:fixed`? Make the rows `width:100%`.** The reference skin
-  carries no positioning (see Implementations), so a self-contained artifact that
-  portals the popup to `<body>` and pins it `position:fixed` — the usual way to
-  escape a clipping ancestor like a `table-frame`'s `overflow:clip` — turns the
-  popup into a **shrink-to-fit** box. There, a `<button class="dropdown-menu__item">`
-  (a form control) does **not** stretch to the popup width: it collapses to its
-  content (e.g. ~64px inside a 240px `min-width` menu), so the row's hit target and
-  any trailing `shortcut` (`margin-inline-start:auto`) stop spanning the row. Fix:
-  give the rows `width:100%`. (A normal-flow popup — or the reference's inline
-  definite width — doesn't hit this: block-level items fill it; the `<button>` in a
-  shrink-to-fit box is the exception.)
+- **Rows fill the popup width — the skin owns this now.** A menu row is a `<button>`
+  (a form control): it shrink-wraps to its content and does **not** stretch to the
+  popup width on its own — even in a definite-width popup — so the highlight / hit
+  target and any trailing `shortcut` (`margin-inline-start:auto`) would stop short of
+  the row edge, and narrower rows look ragged. The skin fixes this centrally:
+  `.dropdown-menu__item`, `.dropdown-menu__sub-trigger`, `.dropdown-menu__checkbox-item`,
+  `.dropdown-menu__radio-item` all carry `width:100%` (with the global border-box), so
+  rows fill the popup whether it is sized by `min-width` (shrink-to-fit),
+  `position:absolute` in a wrapper, or portalled + `position:fixed`. **Don't** re-add a
+  per-artifact `width:100%` on rows or reach for a definite popup width to force the
+  fill — that was the old workaround before the skin owned it.
+- **The popup `max-height` is `80vh`, not `100%`** (matches `.modal`/`.sheet`). A
+  percentage `max-height` resolves against the *containing block*, so the taught
+  detail-header pattern — a kebab trigger with the popup `position:absolute` inside a
+  trigger-sized `.overflow-wrap` — makes `100%` collapse to the **trigger's height**
+  (~36px), clipping the menu to a stub. `vh` is containing-block-independent, so the
+  cap holds whether the popup is absolute-in-wrapper or portalled+`fixed`. Don't
+  reintroduce a `%` height here.
 - The source's `bg-border` (separator) and `text-muted-foreground` (shortcut) are shadcn aliases; they resolve to `line-default` and `content-tertiary` in this token system.
 - Action `item` uses `text-xs` (12px) while `checkbox-item` / `radio-item` use `text-sm` (13px) — kept faithfully; do not normalize them.
 - The contract documents the static skin only — see Implementations.

@@ -2314,7 +2314,7 @@ body { margin: 0; }
 .dropdown-menu {
   z-index: 60;   /* popover z-layer — above the dialog layer (z-index 50) so a menu opened inside a dialog clears it; inert until positioned; z-index conventionally exempt */
   min-width: 240px;   /* source min-w-[240px]; no sizing token expresses this yet */
-  max-height: 100%;
+  max-height: 80vh;   /* viewport-capped, like .modal/.sheet — NOT 100%. A % max-height resolves against the containing block, so when a static artifact positions this popup `position:absolute` inside a trigger-sized `.overflow-wrap` (the taught detail-header pattern), `100%` collapsed to the trigger's height and clipped the menu. vh is containing-block-independent, so it works whether the popup is absolute-in-wrapper or portalled+fixed. */
   overflow-x: hidden;
   overflow-y: auto;
   padding: var(--space-1);
@@ -2351,6 +2351,18 @@ body { margin: 0; }
   cursor: pointer;
   user-select: none;
   outline: none;
+}
+/* Rows span the full popup width. A menu row is a <button> (form control): even in
+   a definite-width popup it shrink-wraps to its content, so the highlight + hit
+   target stop short of the row edge and narrower rows look ragged. width:100% (with
+   the global border-box) makes every row fill the popup regardless of its sizing —
+   min-width or definite. Covers the standalone checkbox/radio rows too (they don't
+   carry the __item base). */
+.dropdown-menu__item,
+.dropdown-menu__sub-trigger,
+.dropdown-menu__checkbox-item,
+.dropdown-menu__radio-item {
+  width: 100%;
 }
 /* Highlight follows keyboard/pointer focus; static stand-in is --active. */
 .dropdown-menu__item:hover,
