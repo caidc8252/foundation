@@ -1,0 +1,316 @@
+<!--
+  accordion.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Accordion primitive in the foundation design system.
+  Covers:
+    - Multiple-open accordion (default behavior)
+    - Single-open accordion (accordion-style, data-mode="single")
+    - Arrow left (DOM order: arrow span before label)
+    - Arrow hidden (showArrow=false)
+    - Disabled item
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accordion · foundation primitive</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../release/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-col2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+    @media (max-width: 640px) {
+      .demo-col2 { grid-template-columns: 1fr; }
+    }
+
+    /* Inline SVG icon helpers — consistent with lucide style */
+    .demo-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Multiple-open accordion (default)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Accordion · multiple-open (default)</h2>
+      <p class="demo-section__desc">
+        Each item toggles independently — siblings are not affected. Chevon on the
+        right (<code>arrowPosition="right"</code>, the default). Uses the contract's
+        verbatim artifact-behaviour JS for toggle + keyboard roaming.
+      </p>
+
+      <div class="accordion">
+        <div class="accordion__item accordion__item--open">
+          <button class="accordion__trigger" aria-expanded="true" aria-controls="a1-panel1">
+            <span class="accordion__label">Account settings</span>
+            <span class="accordion__arrow" aria-hidden="true">
+              <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+          </button>
+          <div class="accordion__content" id="a1-panel1">
+            <p>Manage your email, password, and profile preferences. Changes take effect immediately.</p>
+          </div>
+        </div>
+        <div class="accordion__item">
+          <button class="accordion__trigger" aria-expanded="false" aria-controls="a1-panel2">
+            <span class="accordion__label">Notifications</span>
+            <span class="accordion__arrow" aria-hidden="true">
+              <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+          </button>
+          <div class="accordion__content" id="a1-panel2">
+            <p>Configure which events trigger email alerts, in-app notifications, and push notifications.</p>
+          </div>
+        </div>
+        <div class="accordion__item">
+          <button class="accordion__trigger" aria-expanded="false" aria-controls="a1-panel3">
+            <span class="accordion__label">Billing</span>
+            <span class="accordion__arrow" aria-hidden="true">
+              <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+          </button>
+          <div class="accordion__content" id="a1-panel3">
+            <p>View invoices, update payment methods, and manage your subscription plan.</p>
+          </div>
+        </div>
+        <div class="accordion__item">
+          <button class="accordion__trigger" aria-expanded="false" aria-controls="a1-panel4" aria-disabled="true">
+            <span class="accordion__label">Security (disabled)</span>
+            <span class="accordion__arrow" aria-hidden="true">
+              <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+          </button>
+          <div class="accordion__content" id="a1-panel4">
+            <p>Two-factor authentication and session management.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Single-open accordion (accordion-style)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Accordion · single-open (accordion-style)</h2>
+      <p class="demo-section__desc">
+        Only one item open at a time — opening a new one closes the others.
+        Marked with <code>data-mode="single"</code>; the JS reads this and
+        switches from multi-toggle to exclusive-open.
+      </p>
+
+      <div class="accordion" data-mode="single">
+        <div class="accordion__item accordion__item--open">
+          <button class="accordion__trigger" aria-expanded="true" aria-controls="a2-panel1">
+            <span class="accordion__label">Getting started</span>
+            <span class="accordion__arrow" aria-hidden="true">
+              <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+          </button>
+          <div class="accordion__content" id="a2-panel1">
+            <p>Learn the basics of setting up your workspace and inviting team members.</p>
+          </div>
+        </div>
+        <div class="accordion__item">
+          <button class="accordion__trigger" aria-expanded="false" aria-controls="a2-panel2">
+            <span class="accordion__label">Integrations</span>
+            <span class="accordion__arrow" aria-hidden="true">
+              <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+          </button>
+          <div class="accordion__content" id="a2-panel2">
+            <p>Connect your favorite tools — Slack, GitHub, Jira, and more.</p>
+          </div>
+        </div>
+        <div class="accordion__item">
+          <button class="accordion__trigger" aria-expanded="false" aria-controls="a2-panel3">
+            <span class="accordion__label">Troubleshooting</span>
+            <span class="accordion__arrow" aria-hidden="true">
+              <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+          </button>
+          <div class="accordion__content" id="a2-panel3">
+            <p>Common issues and their resolutions, from connectivity to permissions.</p>
+          </div>
+        </div>
+        <div class="accordion__item">
+          <button class="accordion__trigger" aria-expanded="false" aria-controls="a2-panel4" aria-disabled="true">
+            <span class="accordion__label">Advanced (disabled)</span>
+            <span class="accordion__arrow" aria-hidden="true">
+              <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+          </button>
+          <div class="accordion__content" id="a2-panel4">
+            <p>Power-user features — requires an Enterprise plan.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Arrow position variants (DOM order)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Accordion · arrow position</h2>
+      <p class="demo-section__desc">
+        Arrow position is controlled by <strong>DOM order</strong>, not a modifier
+        class (matching the React <code>arrowPosition</code> prop). Left: render the
+        <code>.accordion__arrow</code> span <em>before</em> the label. Right (default):
+        render it <em>after</em> the label. The third example shows
+        <code>showArrow={false}</code> — omit the arrow span entirely.
+      </p>
+
+      <div class="demo-col2">
+        <!-- Arrow left (DOM order: arrow before label) -->
+        <div class="accordion">
+          <div class="accordion__item">
+            <button class="accordion__trigger" aria-expanded="false" aria-controls="a3a-panel1">
+              <span class="accordion__arrow" aria-hidden="true">
+                <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </span>
+              <span class="accordion__label">arrowPosition=left</span>
+            </button>
+            <div class="accordion__content" id="a3a-panel1">
+              <p>Arrow sits before the label — same DOM-order approach as the React implementation.</p>
+            </div>
+          </div>
+          <div class="accordion__item">
+            <button class="accordion__trigger" aria-expanded="false" aria-controls="a3a-panel2">
+              <span class="accordion__arrow" aria-hidden="true">
+                <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </span>
+              <span class="accordion__label">Also left</span>
+            </button>
+            <div class="accordion__content" id="a3a-panel2">
+              <p>Multiple items with arrow on the left side.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Arrow hidden (showArrow=false) -->
+        <div class="accordion">
+          <div class="accordion__item">
+            <button class="accordion__trigger" aria-expanded="false" aria-controls="a3b-panel1">
+              <span class="accordion__label">showArrow=false</span>
+            </button>
+            <div class="accordion__content" id="a3b-panel1">
+              <p>No arrow is rendered — the trigger label is the only disclosure cue. Expansion still shows the panel.</p>
+            </div>
+          </div>
+          <div class="accordion__item">
+            <button class="accordion__trigger" aria-expanded="false" aria-controls="a3b-panel2">
+              <span class="accordion__label">Also hidden</span>
+            </button>
+            <div class="accordion__content" id="a3b-panel2">
+              <p>Use when the trigger itself makes the disclosure obvious (e.g. a question that expands to its answer).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    (function () {
+      document.querySelectorAll('.accordion').forEach(function (root) {
+        var isSingle = root.getAttribute('data-mode') === 'single';
+
+        root.querySelectorAll('.accordion__trigger').forEach(function (trigger) {
+          trigger.addEventListener('click', function () {
+            if (trigger.disabled || trigger.getAttribute('aria-disabled') === 'true') return;
+
+            var item = trigger.closest('.accordion__item');
+            if (!item) return;
+            var isOpen = item.classList.contains('accordion__item--open');
+
+            if (isSingle) {
+              // Single-open: close all siblings first, then open the clicked one.
+              // If the clicked item was already open, closing it leaves all closed.
+              root.querySelectorAll('.accordion__item').forEach(function (i) {
+                i.classList.remove('accordion__item--open');
+                var t = i.querySelector('.accordion__trigger');
+                if (t) t.setAttribute('aria-expanded', 'false');
+              });
+              if (!isOpen) {
+                item.classList.add('accordion__item--open');
+                trigger.setAttribute('aria-expanded', 'true');
+              }
+            } else {
+              // Multiple-open: toggle this item, leave siblings alone.
+              if (isOpen) {
+                item.classList.remove('accordion__item--open');
+                trigger.setAttribute('aria-expanded', 'false');
+              } else {
+                item.classList.add('accordion__item--open');
+                trigger.setAttribute('aria-expanded', 'true');
+              }
+            }
+          });
+
+          // Keyboard: Space / Enter already fire click on <button>; add Home/End roaming
+          trigger.addEventListener('keydown', function (e) {
+            var triggers = Array.from(root.querySelectorAll('.accordion__trigger:not([aria-disabled="true"])'));
+            var idx = triggers.indexOf(trigger);
+            if (e.key === 'ArrowDown') {
+              e.preventDefault();
+              if (idx + 1 < triggers.length) triggers[idx + 1].focus();
+            } else if (e.key === 'ArrowUp') {
+              e.preventDefault();
+              if (idx > 0) triggers[idx - 1].focus();
+            } else if (e.key === 'Home') {
+              e.preventDefault(); triggers[0].focus();
+            } else if (e.key === 'End') {
+              e.preventDefault(); triggers[triggers.length - 1].focus();
+            }
+          });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

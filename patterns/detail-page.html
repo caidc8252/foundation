@@ -1,0 +1,528 @@
+<!--
+  Pattern · Detail page — copyable example
+  ─────────────────────────────────────────────────────────────────────────────
+  Companion to ./detail-page.md (the contract — when the two disagree, the .md wins).
+  Copy this file and edit the markup to build a real detail screen.
+
+  Mirrors packages/ui/docs/examples/pattern/detail-page.tsx:
+    - NO in-page breadcrumb.
+    - A detail-header BAND (not page-header): back button → logo → name+status+meta
+      → actions, with an OPTIONAL tab strip docked on the band's BOTTOM edge.
+    - Tabs are OPTIONAL: a single-section detail screen drops .detail-header__tabs
+      (and the panels/script) and stacks its sections straight in .page-body.
+      When present, the tab CONTENT lives in .page-body; Overview is the first tab.
+
+  HOW THE STYLES LOAD
+    This file LINKS the reference CSS (relative to patterns/), so run `pnpm build` after source edits to refresh release — no forked copy that can drift.
+    Order is load-bearing:  tokens → primitives → composites.
+    To ship as a self-contained artifact (CSP, no external fetch), inline those
+    three blocks into a <style> instead — see README "How each consumer uses it".
+
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pattern · Detail page — foundation example</title>
+
+<link rel="stylesheet" href="../release/tokens.inline.css">
+<link rel="stylesheet" href="../primitives/primitives.css">
+<link rel="stylesheet" href="../release/composites.css">
+
+<style>
+
+  /* Page-local composition — NOT new design vocabulary. All values are tokens. */
+
+  /* Overview = a key-value grid. The real .kv-grid composite in composites.css
+     provides the grid layout, label/value typography, and --full row span.
+     Page-local: only the reveal helper (inline-flex + gap) for the masked field. */
+  .kv__value--mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .kv__value--reveal { display: inline-flex; align-items: center; gap: var(--space-2); }
+
+  /* Meta-row icon sizing (the dot separators come from .detail-header__meta itself). */
+  .detail-header__meta svg { width: var(--space-3); height: var(--space-3); vertical-align: -1px; }
+  .detail-header__meta .meta-item { display: inline-flex; align-items: center; gap: var(--space-1); }
+</style>
+<body>
+
+<div class="app-frame">
+  <div class="app-frame__col">
+    <main class="app-frame__main">
+
+      <!-- detail-header BAND (full-bleed) — back · logo · name+status+meta · actions,
+           with the tab strip docked on the band's BOTTOM edge (below the name).
+           NO breadcrumb here: the path lives in the app shell, not the page. -->
+      <header class="detail-header">
+        <div class="detail-header__bar">
+          <!-- OPTIONAL — back button (icon-only ghost, first in the bar). Delete this
+               whole <button> if there is no list to return to; the app shell then
+               carries navigation. -->
+          <button class="btn btn--ghost btn--icon detail-header__back" type="button" aria-label="Back to customers">
+            <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+
+          <!-- OPTIONAL — entity logo/avatar. Omit for records with no visual identity. -->
+          <span class="detail-header__logo">A</span>
+
+          <!-- REQUIRED CORE — the identity. Only .detail-header__name is required;
+               the status chips and meta row inside it are each optional. -->
+          <div class="detail-header__main">
+            <div class="detail-header__title">
+              <!-- REQUIRED — the title/name (the only always-present head slot). -->
+              <span class="detail-header__name">Acme Robotics</span>
+              <!-- OPTIONAL — status badge(s). Multi-axis status = separate chips,
+                   SHOWN not editable here. Delete if the record has no status to surface. -->
+              <span class="badge badge--success"><span class="badge__dot"></span>Active</span>
+              <!-- category chip (plan tier) rides the SAME title line — neutral, no dot
+                   (tonal badges are reserved for status; category/type = neutral). -->
+              <span class="badge badge--neutral">Enterprise</span>
+            </div>
+            <!-- OPTIONAL — meta row: dot-joined facts (the · separators are inserted by
+                 the composite). ids are mono. Delete the whole .detail-header__meta if
+                 there are no at-a-glance facts to show. -->
+            <div class="detail-header__meta">
+              <span class="meta-item">
+                <svg data-lucide="calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+                Customer since 2021
+              </span>
+              <span class="meta-item kv__value--mono">#C-10293</span>
+              <span class="meta-item">Singapore · APAC</span>
+            </div>
+          </div>
+
+          <!-- OPTIONAL — header actions, business-driven. Include only the verbs this
+               record needs; a read-only record has none. At most ONE primary (rightmost);
+               Edit is secondary. Destructive (Delete / revoke) and any surplus secondary
+               verbs go behind a ⋯ dropdown-menu — added ONLY when such verbs exist; do
+               NOT render an empty ⋯ (see actions.md / dropdown-menu.md).
+               This is where a record MUTATES — Edit/Delete/status for a record reached
+               from a list live HERE, not on the list row (the list navigates, the
+               detail page mutates). See ./list-page.md. -->
+          <div class="detail-header__actions">
+            <button class="btn btn--secondary" type="button">
+              <svg data-lucide="square-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
+              Edit
+            </button>
+            <button class="btn btn--primary" type="button">New order</button>
+            <!-- ⋯ overflow menu — shown ONLY because this record has a destructive verb
+                 (Delete). Never render an empty ⋯; a header with only Edit + primary has none.
+                 Destructive actions: dropdown-menu__item--destructive (never a .btn inside the menu). -->
+            <div id="overflow-wrap" style="position:relative; display:inline-block;">
+              <button class="btn btn--ghost btn--icon" type="button" aria-label="More actions" aria-haspopup="true" aria-expanded="false" id="overflow-trigger">
+                <svg data-lucide="ellipsis" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+              </button>
+              <div class="dropdown-menu" id="overflow-menu" role="menu" aria-labelledby="overflow-trigger" hidden style="position:absolute; right:0; top:100%; z-index:50; min-width:200px;">
+                <!-- Secondary actions that don't warrant a header button — the dropdown-menu recipe:
+                     a group label, icon-led rows, a separator, then the --destructive action last. -->
+                <div class="dropdown-menu__label">Manage</div>
+                <button class="dropdown-menu__item" type="button" role="menuitem">
+                  <svg data-lucide="copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                  Copy account ID
+                </button>
+                <button class="dropdown-menu__item" type="button" role="menuitem">
+                  <svg data-lucide="download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>
+                  Export data
+                </button>
+                <button class="dropdown-menu__item" type="button" role="menuitem">
+                  <svg data-lucide="archive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg>
+                  Archive customer
+                </button>
+                <div class="dropdown-menu__separator"></div>
+                <!-- Delete — the --destructive variant; leads to a confirm step before acting -->
+                <button class="dropdown-menu__item dropdown-menu__item--destructive" type="button" role="menuitem">
+                  <svg data-lucide="trash-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  Delete customer
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- OPTIONAL — tab strip (the `tabbed` variant), docked on the band's bottom edge
+             (tabs PRIMITIVE, --line variant). Tab content lives below in .page-body.
+             For the `overview` variant (single-section screen): delete this whole
+             .detail-header__tabs block (and the non-Overview panels + the script) and
+             stack the sections straight in .page-body. -->
+        <div class="detail-header__tabs">
+          <div class="tabs__list tabs__list--line" role="tablist" aria-label="Customer detail sections">
+            <button class="tabs__trigger tabs__trigger--active" type="button" role="tab" aria-selected="true"  aria-controls="panel-overview" data-tab="overview">Overview</button>
+            <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false" aria-controls="panel-activity" data-tab="activity">Activity</button>
+            <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false" aria-controls="panel-orders"   data-tab="orders">Orders</button>
+            <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false" aria-controls="panel-billing"  data-tab="billing">Billing</button>
+            <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false" aria-controls="panel-settings" data-tab="settings">Settings</button>
+          </div>
+        </div>
+      </header>
+
+      <!-- REQUIRED CORE — the body. page-body holds the active tab's content (gutters +
+           stack). The required main is an Overview block (a kv-grid) OR a tab-set;
+           every other panel below is optional. -->
+      <div class="page-body">
+
+        <!-- REQUIRED — Overview (KV grid; columns follow the card's width). The
+             body's required main. The overview = main card (kv-grid) + OPTIONAL right rail
+             (stat-cards). Real .kv-grid composite: <dl> › .kv-grid__row
+             each with <dt> label + <dd> value; --full spans all columns. -->
+        <!-- ── Overview tab ── -->
+        <section class="tabs__content" role="tabpanel" id="panel-overview" data-panel="overview">
+          <div style="display:grid; grid-template-columns:1fr 240px; gap:var(--space-5); align-items:start;">
+
+            <!-- Main card: KV grid (real composite — dl › .kv-grid__row › dt + dd) -->
+            <div class="card">
+              <div class="card__header"><h2 class="card__title">Overview</h2></div>
+              <div class="card__content">
+                <!-- .kv-grid is the real composite from composites.css:1587 -->
+                <dl class="kv-grid">
+                  <!-- DP5: ID row with copy action — ghost icon btn beside the value -->
+                  <div class="kv-grid__row">
+                    <dt>Account ID</dt>
+                    <dd class="kv__value--reveal">
+                      <span class="kv__value--mono">C-10293</span>
+                      <button class="btn btn--ghost btn--sm btn--icon" type="button" aria-label="Copy account ID">
+                        <svg data-lucide="clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+                      </button>
+                    </dd>
+                  </div>
+                  <div class="kv-grid__row">
+                    <dt>Plan</dt>
+                    <dd>Enterprise (annual)</dd>
+                  </div>
+                  <div class="kv-grid__row">
+                    <dt>Primary contact</dt>
+                    <dd>Dana Okafor</dd>
+                  </div>
+                  <div class="kv-grid__row">
+                    <dt>Email</dt>
+                    <dd>dana@acme-robotics.example</dd>
+                  </div>
+                  <div class="kv-grid__row">
+                    <dt>Region</dt>
+                    <dd>APAC · Singapore</dd>
+                  </div>
+                  <div class="kv-grid__row">
+                    <dt>Renews</dt>
+                    <dd class="kv__value--mono">Jan 1, 2027</dd>
+                  </div>
+                  <!-- sensitive field: masked by default; reveal is an audited action -->
+                  <div class="kv-grid__row">
+                    <dt>Billing card</dt>
+                    <dd class="kv__value--reveal">
+                      <span class="kv__value--mono">•••• •••• •••• 4242</span>
+                      <button class="btn btn--ghost btn--xs" type="button">Reveal</button>
+                    </dd>
+                  </div>
+                  <!-- --full: long values (address, description) span all columns -->
+                  <div class="kv-grid__row kv-grid__row--full">
+                    <dt>Billing address</dt>
+                    <dd>2200 Mission St, Suite 4, San Francisco, CA 94110</dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+
+            <!-- OPTIONAL right rail — stat-cards stacked (DP4). Delete if no key metrics. -->
+            <div style="display:flex; flex-direction:column; gap:var(--space-3);">
+              <div class="stat-card">
+                <div class="stat-card__head">
+                  <span class="stat-card__label">Lifetime value</span>
+                </div>
+                <div class="stat-card__value stat-card__value--success">$48,200</div>
+                <p class="stat-card__description">All-time revenue</p>
+              </div>
+              <div class="stat-card">
+                <div class="stat-card__head">
+                  <span class="stat-card__label">Orders placed</span>
+                </div>
+                <div class="stat-card__value">14</div>
+                <p class="stat-card__description">All time</p>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- OPTIONAL — Activity tab (display-only timeline). Delete with its tab trigger. -->
+        <!-- ── Activity tab ── -->
+        <section class="tabs__content" role="tabpanel" id="panel-activity" data-panel="activity" hidden>
+          <div class="card">
+            <div class="card__header"><h2 class="card__title">Activity</h2></div>
+            <div class="card__content">
+              <ul class="timeline">
+                <li class="timeline__item">
+                  <div class="timeline__marker timeline__marker--icon timeline__marker--success">
+                    <div class="timeline__marker-node">
+                      <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                    </div>
+                    <div class="timeline__rail"></div>
+                  </div>
+                  <div class="timeline__content">
+                    <div class="timeline__header">
+                      <span class="timeline__title">Order SO-2026-0184 delivered</span>
+                      <time class="timeline__time" datetime="2026-05-09">May 9, 2026</time>
+                    </div>
+                    <p class="timeline__description">5 terminals shipped to the Singapore warehouse and signed for.</p>
+                    <span class="timeline__actor">system</span>
+                  </div>
+                </li>
+                <li class="timeline__item">
+                  <div class="timeline__marker timeline__marker--icon timeline__marker--primary">
+                    <div class="timeline__marker-node">
+                      <svg data-lucide="message-square" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/></svg>
+                    </div>
+                    <div class="timeline__rail"></div>
+                  </div>
+                  <div class="timeline__content">
+                    <div class="timeline__header">
+                      <span class="timeline__title">Support note added</span>
+                      <time class="timeline__time" datetime="2026-05-02">May 2, 2026</time>
+                    </div>
+                    <p class="timeline__description">Customer requested a firmware rollback on two devices; scheduled for next window.</p>
+                    <span class="timeline__actor">casey.m</span>
+                  </div>
+                </li>
+                <li class="timeline__item">
+                  <div class="timeline__marker timeline__marker--dot timeline__marker--neutral">
+                    <div class="timeline__marker-node"><span class="timeline__marker-dot"></span></div>
+                    <div class="timeline__rail"></div>
+                  </div>
+                  <div class="timeline__content">
+                    <div class="timeline__header">
+                      <span class="timeline__title">Plan upgraded to Enterprise</span>
+                      <time class="timeline__time" datetime="2026-04-12">Apr 12, 2026</time>
+                    </div>
+                    <p class="timeline__description">Moved from Growth to Enterprise (annual billing).</p>
+                    <span class="timeline__actor">dana.o</span>
+                  </div>
+                </li>
+                <li class="timeline__item timeline__item--last">
+                  <div class="timeline__marker timeline__marker--dot timeline__marker--neutral">
+                    <div class="timeline__marker-node"><span class="timeline__marker-dot"></span></div>
+                    <div class="timeline__rail"></div>
+                  </div>
+                  <div class="timeline__content">
+                    <div class="timeline__header">
+                      <span class="timeline__title">Account created</span>
+                      <time class="timeline__time" datetime="2021-06-18">Jun 18, 2021</time>
+                    </div>
+                    <p class="timeline__description">Onboarded via self-serve signup.</p>
+                    <span class="timeline__actor">system</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- OPTIONAL — Orders tab (collection section). Delete with its tab trigger.
+             DP2: a section that lists a collection = card › card__header
+             (title · count · at-most-one action) › card__content--flush › data-table.
+             When the collection is empty, swap the data-table rows for an empty-state. -->
+        <!-- ── Orders tab ── -->
+        <section class="tabs__content" role="tabpanel" id="panel-orders" data-panel="orders" hidden>
+          <div class="card">
+            <div class="card__header">
+              <h2 class="card__title">Orders</h2>
+              <p class="card__description">Purchase orders for this customer.</p>
+              <!-- at-most-one action → .card__action slot, right-aligned by the grid -->
+              <div class="card__action">
+                <button class="btn btn--primary btn--sm" type="button">New order</button>
+              </div>
+            </div>
+            <!-- card__content--flush: never an inline padding:0 hack -->
+            <div class="card__content card__content--flush">
+              <div class="table-frame table-frame--flush">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Order</th>
+                      <th>Date</th>
+                      <th>Status</th>
+                      <th>Amount</th>
+                      <th aria-hidden="true"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><span class="cell-2line"><span class="cell-2line__main">SO-2026-0184</span><span class="cell-2line__sub">5 terminals</span></span></td>
+                      <td>May 9, 2026</td>
+                      <td><span class="badge badge--success"><span class="badge__dot"></span>Delivered</span></td>
+                      <td class="cell-num kv__value--mono">$12,500</td>
+                      <td class="row-actions">
+                        <button class="btn btn--secondary btn--xs" type="button">View</button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><span class="cell-2line"><span class="cell-2line__main">SO-2026-0101</span><span class="cell-2line__sub">2 terminals</span></span></td>
+                      <td>Mar 14, 2026</td>
+                      <td><span class="badge badge--success"><span class="badge__dot"></span>Delivered</span></td>
+                      <td class="cell-num kv__value--mono">$5,000</td>
+                      <td class="row-actions">
+                        <button class="btn btn--secondary btn--xs" type="button">View</button>
+                      </td>
+                    </tr>
+                    <!-- When the collection is empty, replace rows with:
+                    <tr><td colspan="5">
+                      <div class="empty-state">
+                        <div class="empty-state__icon">…</div>
+                        <div class="empty-state__title">No orders yet</div>
+                        <p class="empty-state__description">…</p>
+                      </div>
+                    </td></tr>
+                    -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- OPTIONAL — Billing tab (no-description demo). Delete with its tab trigger.
+             Card header with title + action only (no .card__description).
+             Demonstrates .card__action vertical centering when there is only
+             one header row — the action spans both declared rows (row-span-2)
+             but effectively centers in the single visible row. -->
+        <!-- ── Billing tab ── -->
+        <section class="tabs__content" role="tabpanel" id="panel-billing" data-panel="billing" hidden>
+          <div class="stack stack--5">
+
+            <!-- card with title + action only — no description -->
+            <div class="card">
+              <div class="card__header">
+                <h2 class="card__title">Payment methods</h2>
+                <div class="card__action">
+                  <button class="btn btn--secondary btn--sm" type="button">Add card</button>
+                </div>
+              </div>
+              <div class="card__content">
+                <div class="empty-state">
+                  <div class="empty-state__icon">
+                    <svg data-lucide="credit-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                  </div>
+                  <div class="empty-state__title">No payment methods</div>
+                  <p class="empty-state__description">Add a card or bank account for automatic billing.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- card with title + action only — no description -->
+            <div class="card">
+              <div class="card__header">
+                <h2 class="card__title">Invoices</h2>
+                <div class="card__action">
+                  <button class="btn btn--secondary btn--sm" type="button">Download all</button>
+                </div>
+              </div>
+              <div class="card__content card__content--flush">
+                <div class="table-frame table-frame--flush">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Invoice</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="kv__value--mono">INV-2026-003</td>
+                        <td>Jun 1, 2026</td>
+                        <td class="cell-num kv__value--mono">$4,200</td>
+                        <td><span class="badge badge--success"><span class="badge__dot"></span>Paid</span></td>
+                      </tr>
+                      <tr>
+                        <td class="kv__value--mono">INV-2026-002</td>
+                        <td>May 1, 2026</td>
+                        <td class="cell-num kv__value--mono">$4,200</td>
+                        <td><span class="badge badge--success"><span class="badge__dot"></span>Paid</span></td>
+                      </tr>
+                      <tr>
+                        <td class="kv__value--mono">INV-2026-001</td>
+                        <td>Apr 1, 2026</td>
+                        <td class="cell-num kv__value--mono">$4,200</td>
+                        <td><span class="badge badge--success"><span class="badge__dot"></span>Paid</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- OPTIONAL — Settings tab (empty state placeholder). Delete with its tab trigger. -->
+        <!-- ── Settings tab ── -->
+        <section class="tabs__content" role="tabpanel" id="panel-settings" data-panel="settings" hidden>
+          <div class="card">
+            <div class="card__content">
+              <div class="empty-state">
+                <div class="empty-state__icon">
+                  <svg data-lucide="settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>
+                </div>
+                <div class="empty-state__title">Nothing to configure yet</div>
+                <p class="empty-state__description">Account-level settings for this customer will live here.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+    </main>
+  </div>
+</div>
+<script>
+  /* Static tab switching — pure presentation (in @cloud/ui this is the Tabs primitive's
+     base-ui behavior). Uses style.display so component display rules can't override it. */
+  (function () {
+    var triggers = document.querySelectorAll('.detail-header__tabs .tabs__trigger');
+    var panels   = document.querySelectorAll('.tabs__content[data-panel]');
+
+    function activate(name) {
+      triggers.forEach(function (t) {
+        var on = t.getAttribute('data-tab') === name;
+        t.classList.toggle('tabs__trigger--active', on);
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      panels.forEach(function (p) {
+        var on = p.getAttribute('data-panel') === name;
+        p.style.display = on ? '' : 'none';
+        if (on) { p.removeAttribute('hidden'); } else { p.setAttribute('hidden', ''); }
+      });
+    }
+
+    triggers.forEach(function (t) {
+      t.addEventListener('click', function () { activate(t.getAttribute('data-tab')); });
+    });
+  })();
+
+  /* Overflow (⋯) menu — same interaction the dropdown-menu.html reference demos
+     (base-ui Menu behavior in @cloud/ui): toggle on trigger, close on outside-click
+     or Escape, close after an item click. Visibility via the `hidden` attribute so
+     the .dropdown-menu display rule can't override it; aria-expanded kept in sync. */
+  (function () {
+    var wrap = document.getElementById('overflow-wrap');
+    var trigger = document.getElementById('overflow-trigger');
+    var menu = document.getElementById('overflow-menu');
+    if (!wrap || !trigger || !menu) return;
+
+    function setOpen(open) {
+      menu.hidden = !open;
+      trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+
+    trigger.addEventListener('click', function (e) {
+      e.stopPropagation();
+      setOpen(menu.hidden);
+    });
+    document.addEventListener('click', function (e) {
+      if (!wrap.contains(e.target)) setOpen(false);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !menu.hidden) { setOpen(false); trigger.focus(); }
+    });
+    menu.querySelectorAll('.dropdown-menu__item').forEach(function (item) {
+      item.addEventListener('click', function () { setOpen(false); });
+    });
+  })();
+</script>
+</body>

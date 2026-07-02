@@ -1,0 +1,313 @@
+<!--
+  dropdown-menu.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Dropdown Menu primitive. Matches the React
+  implementation: .dropdown-menu (min-w-[240px], p-1, rounded-lg,
+  bg-surface-2, border, shadow-4) with .dropdown-menu__label,
+  .dropdown-menu__item, .dropdown-menu__separator,
+  .dropdown-menu__checkbox-item, .dropdown-menu__radio-item,
+  .dropdown-menu__sub-trigger, .dropdown-menu__item--destructive.
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dropdown Menu · foundation primitive</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-dropdown-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+    #demo-menu {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      z-index: 1000;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    /* ── Reset browser defaults on <button> elements used as menu items.
+       React's base-ui Item renders as a <div> — no defaults to fight.
+       The CSS contract only defines the visible style, not the element reset. ── */
+    .dropdown-menu > button {
+      border: none;
+      background: transparent;
+      text-align: left;
+      font-family: inherit;
+      width: 100%;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Static dropdown panel
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Dropdown menu · panel</h2>
+      <p class="demo-section__desc">
+        Full dropdown menu showing: <code>.dropdown-menu__label</code>,
+        <code>.dropdown-menu__item</code> with icons and
+        <code>.dropdown-menu__shortcut</code>, <code>.dropdown-menu__separator</code>,
+        <code>.dropdown-menu__checkbox-item</code>,
+        <code>.dropdown-menu__radio-item</code>,
+        <code>.dropdown-menu__sub-trigger</code>, and
+        <code>.dropdown-menu__item--destructive</code>. All styling comes from
+        <code>primitives.css</code> — SVG icons have <strong>no</strong> inline
+        width/height so the CSS sizing (14px for items, 16px for indicators)
+        applies.
+      </p>
+
+      <div class="dropdown-menu" style="width:260px;">
+        <div class="dropdown-menu__label">ACCOUNT</div>
+
+        <button class="dropdown-menu__item" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
+          Profile
+        </button>
+
+        <button class="dropdown-menu__item" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
+          Billing
+        </button>
+
+        <button class="dropdown-menu__item" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Settings
+          <span class="dropdown-menu__shortcut">⌘,</span>
+        </button>
+
+        <div class="dropdown-menu__separator" role="separator"></div>
+
+        <div class="dropdown-menu__checkbox-item">
+          <span class="dropdown-menu__item-indicator">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+          </span>
+          Show gridlines
+        </div>
+
+        <div class="dropdown-menu__checkbox-item" data-disabled="true">
+          <span class="dropdown-menu__item-indicator"></span>
+          Compact mode (disabled)
+        </div>
+
+        <div class="dropdown-menu__separator" role="separator"></div>
+
+        <div class="dropdown-menu__radio-item">
+          <span class="dropdown-menu__item-indicator"></span>
+          Light mode
+        </div>
+
+        <div class="dropdown-menu__radio-item dropdown-menu__radio-item--active">
+          <span class="dropdown-menu__item-indicator">
+            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><circle cx="12" cy="12" r="3"/></svg>
+          </span>
+          Dark mode
+        </div>
+
+        <div class="dropdown-menu__separator" role="separator"></div>
+
+        <button class="dropdown-menu__item dropdown-menu__sub-trigger" type="button">
+          More tools
+          <span class="dropdown-menu__sub-trigger__chevron" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          </span>
+        </button>
+
+        <div class="dropdown-menu__separator" role="separator"></div>
+
+        <button class="dropdown-menu__item dropdown-menu__item--destructive" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+          Delete account
+        </button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Interactive demo
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Dropdown menu · interactive</h2>
+      <p class="demo-section__desc">
+        Click the trigger to toggle. Click outside or press <kbd>Escape</kbd> to close.
+      </p>
+
+      <div class="demo-dropdown-wrapper" id="demo-wrapper">
+        <button class="btn btn--ghost btn--sm" type="button" id="demo-trigger">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:16px;height:16px;"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+          Open menu
+        </button>
+
+        <div class="dropdown-menu" id="demo-menu" hidden style="width:260px;">
+          <div class="dropdown-menu__label">ACCOUNT</div>
+
+          <button class="dropdown-menu__item" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
+            Profile
+          </button>
+
+          <button class="dropdown-menu__item" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
+            Billing
+          </button>
+
+          <button class="dropdown-menu__item" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Settings
+            <span class="dropdown-menu__shortcut">⌘,</span>
+          </button>
+
+          <div class="dropdown-menu__separator" role="separator"></div>
+
+          <button class="dropdown-menu__checkbox-item" type="button" id="demo-checkbox-item" aria-checked="true">
+            <span class="dropdown-menu__item-indicator" id="demo-checkbox-indicator">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            Enable notifications
+          </button>
+
+          <button class="dropdown-menu__radio-item" type="button" id="demo-radio-light" aria-checked="false">
+            <span class="dropdown-menu__item-indicator"></span>
+            Light mode
+          </button>
+
+          <button class="dropdown-menu__radio-item dropdown-menu__radio-item--active" type="button" id="demo-radio-dark" aria-checked="true">
+            <span class="dropdown-menu__item-indicator">
+              <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><circle cx="12" cy="12" r="3"/></svg>
+            </span>
+            Dark mode
+          </button>
+
+          <div class="dropdown-menu__separator" role="separator"></div>
+
+          <button class="dropdown-menu__item dropdown-menu__sub-trigger" type="button">
+            More options
+            <span class="dropdown-menu__sub-trigger__chevron" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </span>
+          </button>
+
+          <div class="dropdown-menu__separator" role="separator"></div>
+
+          <button class="dropdown-menu__item dropdown-menu__item--destructive" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+            Delete account
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    (function () {
+      var trigger = document.getElementById('demo-trigger');
+      var menu = document.getElementById('demo-menu');
+      var wrapper = document.getElementById('demo-wrapper');
+      if (!trigger || !menu || !wrapper) return;
+
+      // Toggle menu on trigger click
+      trigger.addEventListener('click', function (e) {
+        e.stopPropagation();
+        menu.hidden = !menu.hidden;
+      });
+
+      // Close when clicking outside wrapper
+      document.addEventListener('click', function (e) {
+        if (wrapper.contains(e.target)) return;
+        menu.hidden = true;
+      });
+
+      // Close on Escape
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !menu.hidden) menu.hidden = true;
+      });
+
+      // ── Interactive items inside the menu ──────────────────────
+
+      // Regular item click → close menu (standard dropdown behaviour)
+      menu.querySelectorAll('.dropdown-menu__item:not(.dropdown-menu__sub-trigger):not(.dropdown-menu__item--destructive)').forEach(function (item) {
+        item.addEventListener('click', function () { menu.hidden = true; });
+      });
+
+      // Sub-trigger — keep menu open (stays open for nested demo)
+      // Destructive — close menu (action performed)
+      menu.querySelector('.dropdown-menu__item--destructive').addEventListener('click', function () { menu.hidden = true; });
+
+      // Checkbox toggle
+      var checkboxItem = document.getElementById('demo-checkbox-item');
+      var checkboxIndicator = document.getElementById('demo-checkbox-indicator');
+      checkboxItem.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var checked = checkboxItem.getAttribute('aria-checked') === 'true';
+        if (checked) {
+          checkboxItem.setAttribute('aria-checked', 'false');
+          checkboxIndicator.innerHTML = '';
+        } else {
+          checkboxItem.setAttribute('aria-checked', 'true');
+          checkboxIndicator.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+        }
+      });
+
+      // Radio toggle
+      var radioLight = document.getElementById('demo-radio-light');
+      var radioDark = document.getElementById('demo-radio-dark');
+      var radioItems = [radioLight, radioDark];
+      var currentRadio = 'dark';
+
+      function updateRadio() {
+        radioLight.setAttribute('aria-checked', currentRadio === 'light' ? 'true' : 'false');
+        radioDark.setAttribute('aria-checked', currentRadio === 'dark' ? 'true' : 'false');
+        radioLight.classList.toggle('dropdown-menu__radio-item--active', currentRadio === 'light');
+        radioDark.classList.toggle('dropdown-menu__radio-item--active', currentRadio === 'dark');
+        radioLight.querySelector('.dropdown-menu__item-indicator').innerHTML =
+          currentRadio === 'light' ? '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><circle cx="12" cy="12" r="3"/></svg>' : '';
+        radioDark.querySelector('.dropdown-menu__item-indicator').innerHTML =
+          currentRadio === 'dark' ? '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><circle cx="12" cy="12" r="3"/></svg>' : '';
+      }
+
+      radioLight.addEventListener('click', function (e) { e.stopPropagation(); currentRadio = 'light'; updateRadio(); });
+      radioDark.addEventListener('click', function (e) { e.stopPropagation(); currentRadio = 'dark'; updateRadio(); });
+    })();
+  </script>
+</body>
+</html>

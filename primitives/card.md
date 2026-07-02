@@ -41,6 +41,7 @@ Resting cards stay at `1`; reserve `2` for hover/overlay.
 ## States
 
 - **interactive** (`interactive` prop) — hover lifts border to `line-strong` + `shadow-3` + `cursor-pointer`. Use only on genuinely clickable cards.
+- **collapsible** — add `.card--collapsible` on the root. Wrap the header content in a `card__toggle` (`<button>` with `aria-expanded` / `aria-controls`), which holds the `card__title` and a `card__chevron` (the chevron icon rotates −90° when closed). Set `data-open="false"` on the root card to collapse: `card__content` hides and the `card__header` bottom hairline drops. By default the card is open (no attribute).
 - No focus/disabled state on the container itself — interactive cards should wrap a real link/button for keyboard access.
 
 ## Anatomy
@@ -54,6 +55,16 @@ Card
 
 `CardHeader` is a grid: it grows to two columns when a `CardAction` is present and two rows when a `CardDescription` is present. Header and footer carry hairline rules (`line-subtle`); content does not. Images placed as first/last child get their top/bottom corners rounded to match the card radius.
 
+**Collapsible anatomy** — when `.card--collapsible` is set, the `CardHeader` content is a `card__toggle` button spanning the full header:
+
+```
+Card (card--collapsible)
+└─ CardHeader
+   └─ card__toggle (button, aria-expanded)
+      ├─ CardTitle
+      └─ card__chevron (svg, aria-hidden — rotates −90° when data-open="false")
+```
+
 ## Accessibility
 
 - The card is a presentational container — it has no role of its own. For an `interactive` card, nest an actual `<a>`/`<button>` (or set proper role + key handling) so keyboard and AT users can act on it; `cursor-pointer` alone is not interactive.
@@ -62,9 +73,11 @@ Card
 
 - **The root owns NO padding.** All padding lives on the slots (`CardHeader`/`CardContent`/`CardFooter`), driven by the root's `size` via a `group-data` variant. Do not expect content to be inset unless you use a slot.
 - Because slot padding is a `group-data` variant class, a consumer's plain `p-0` can't override it (tailwind-merge won't dedupe across variants). Use the slot's `flush` prop for full-bleed content (tables, row lists) — rows then own their padding.
+- **Table or row-list in a card → flush the content slot.** A `data-table` / row-list inside `CardContent` must use `flush` (artifact: add `.card__content--flush` to the `.card__content` holding it) so the slot drops its padding and the table sits flush to the card edges, aligned with the header rule — the table frame and rows own their spacing. A non-flush `card__content` double-pads the table and misaligns its edges. (Mechanism is the **card's**, not the table's; `.table-frame--flush` is a separate data-table concern — corner clipping / sticky — not this.)
+- **Stacked sub-sections inside a card** (header ↔ alert ↔ body, or several blocks in one `card__content`) take the in-card rung — wrap them in a `.stack--3` (12px, the spacing ladder in principles §13). They never sit at 0-gap.
 - `CardAction` is vertically centered against the title block (team spec), not top-aligned like shadcn.
 
 ## Implementations
 
 - **Next / @cloud/ui** — `import { Card, CardHeader, CardTitle, CardDescription, CardAction, CardContent, CardFooter } from "@cloud/ui"`. Root props `size` `elevation` `interactive`; slot props include `flush`. API details: the `ui` skill. Compose slots; do not hand-pad the root.
-- **Artifact (self-contained HTML)** — use `.card` + `.card__header` / `.card__content` / `.card__footer` in `./primitives.css`, on top of the inlined `dist/tokens.inline.css`. Padding lives on the slot classes, matching the contract.
+- **Artifact (self-contained HTML)** — use `.card` + `.card__header` / `.card__content` / `.card__footer` in `./primitives.css`, on top of the inlined `release/tokens.inline.css`. Padding lives on the slot classes, matching the contract. For collapsible: add `.card--collapsible` on the root; replace the header content with a `card__toggle` `<button>` (carries `aria-expanded` / `aria-controls`) containing the `card__title` and a `card__chevron` `<span>` wrapping the chevron SVG; toggle `data-open="false"` on the root to collapse.

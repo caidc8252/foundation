@@ -1,0 +1,290 @@
+<!--
+  toggle.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Toggle primitive in the foundation design system.
+  Covers:
+    - Default variant (pressed/unpressed)
+    - Outline variant
+    - Size variants (sm, md)
+    - Icon-only toggle
+    - Toggle with icon + label
+    - Disabled toggle
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Toggle · foundation primitive</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../release/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-col2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+    @media (max-width: 640px) {
+      .demo-col2 { grid-template-columns: 1fr; }
+    }
+
+    /* Toggle base - default variant */
+    .toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      border: 1px solid var(--color-line-strong);
+      border-radius: var(--radius-md);
+      background: var(--color-surface-2);
+      color: var(--color-content-primary);
+      font-family: var(--font-sans);
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      user-select: none;
+      outline: none;
+      box-sizing: border-box;
+    }
+    .toggle:hover {
+      background: var(--color-surface-hover);
+    }
+    .toggle[aria-pressed="true"] {
+      background: var(--color-surface-active);
+    }
+    .toggle:focus-visible {
+      box-shadow: var(--shadow-focus);
+    }
+    .toggle:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    .toggle--md {
+      height: 36px;
+      padding: 0 var(--space-3);
+      font-size: var(--text-sm);
+    }
+    .toggle--sm {
+      height: 28px;
+      padding: 0 var(--space-2);
+      font-size: var(--text-xs);
+    }
+    .toggle--auto {
+      padding: var(--space-2) var(--space-3);
+      font-size: var(--text-sm);
+    }
+
+    /* Variants */
+    .toggle--outline {
+      background: transparent;
+    }
+    .toggle--outline[aria-pressed="true"] {
+      background: var(--color-surface-active);
+    }
+
+    .toggle svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      pointer-events: none;
+    }
+    .toggle--sm svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .demo-toggle-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Default variant
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Toggle · default variant</h2>
+      <p class="demo-section__desc">
+        Standalone press-toggle buttons with <code>.toggle</code>. Pressed state is
+        <code>aria-pressed="true"</code>. Click to toggle.
+      </p>
+
+      <div class="demo-toggle-row">
+        <button class="toggle toggle--md" type="button" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"/></svg>
+          Italic
+        </button>
+        <button class="toggle toggle--md" type="button" aria-pressed="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
+          Bold
+        </button>
+        <button class="toggle toggle--md" type="button" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4v6a6 6 0 0 0 12 0V4"/><line x1="4" y1="20" x2="20" y2="20"/></svg>
+          Underline
+        </button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Outline variant
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Toggle · outline variant</h2>
+      <p class="demo-section__desc">
+        The <code>.toggle--outline</code> variant has a transparent background unpressed.
+      </p>
+
+      <div class="demo-toggle-row">
+        <button class="toggle toggle--md toggle--outline" type="button" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"/></svg>
+          Italic
+        </button>
+        <button class="toggle toggle--md toggle--outline" type="button" aria-pressed="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
+          Bold
+        </button>
+        <button class="toggle toggle--md toggle--outline" type="button" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4v6a6 6 0 0 0 12 0V4"/><line x1="4" y1="20" x2="20" y2="20"/></svg>
+          Underline
+        </button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Size variants
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Toggle · sizes (sm, md)</h2>
+      <p class="demo-section__desc">
+        Small (<code>.toggle--sm</code>, 28px) for dense toolbars and default (<code>.toggle--md</code>, 36px).
+      </p>
+
+      <div class="demo-col2">
+        <div>
+          <h3 style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin:0 0 var(--space-2);">Small</h3>
+          <div class="demo-toggle-row">
+            <button class="toggle toggle--sm" type="button" aria-pressed="false" aria-label="Bold">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
+            </button>
+            <button class="toggle toggle--sm" type="button" aria-pressed="true" aria-label="Italic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"/></svg>
+            </button>
+            <button class="toggle toggle--sm" type="button" aria-pressed="false" aria-label="Underline">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4v6a6 6 0 0 0 12 0V4"/><line x1="4" y1="20" x2="20" y2="20"/></svg>
+            </button>
+          </div>
+        </div>
+        <div>
+          <h3 style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin:0 0 var(--space-2);">Default</h3>
+          <div class="demo-toggle-row">
+            <button class="toggle toggle--md" type="button" aria-pressed="false" aria-label="Bold">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
+            </button>
+            <button class="toggle toggle--md" type="button" aria-pressed="true" aria-label="Italic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"/></svg>
+            </button>
+            <button class="toggle toggle--md" type="button" aria-pressed="false" aria-label="Underline">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4v6a6 6 0 0 0 12 0V4"/><line x1="4" y1="20" x2="20" y2="20"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: Disabled toggle
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Toggle · disabled</h2>
+      <p class="demo-section__desc">
+        Disabled toggles use <code>:disabled</code> with <code>opacity-50</code>.
+      </p>
+
+      <div class="demo-toggle-row">
+        <button class="toggle toggle--md" type="button" disabled aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
+          Bold
+        </button>
+        <button class="toggle toggle--md" type="button" disabled aria-pressed="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"/></svg>
+          Italic
+        </button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 5: Icon-only toggles
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Toggle · icon-only</h2>
+      <p class="demo-section__desc">
+        Toggle buttons with only an icon. Uses <code>aria-label</code> for accessibility.
+      </p>
+
+      <div class="demo-toggle-row">
+        <button class="toggle toggle--md" type="button" aria-pressed="false" aria-label="Bold">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
+        </button>
+        <button class="toggle toggle--md" type="button" aria-pressed="true" aria-label="Italic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"/></svg>
+        </button>
+        <button class="toggle toggle--md" type="button" aria-pressed="false" aria-label="Underline">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4v6a6 6 0 0 0 12 0V4"/><line x1="4" y1="20" x2="20" y2="20"/></svg>
+        </button>
+      </div>
+    </div>
+
+  </div>
+  <script>
+    (function () {
+      document.querySelectorAll('.toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          if (btn.disabled) return;
+          var nowPressed = btn.getAttribute('aria-pressed') === 'true';
+          btn.setAttribute('aria-pressed', String(!nowPressed));
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

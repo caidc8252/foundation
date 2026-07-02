@@ -1,0 +1,236 @@
+<!--
+  input-group.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Input Group primitive in the foundation design system.
+  Covers:
+    - Prefix addon (icon inline-start + input)
+    - Suffix addon (input + text affix inline-end)
+    - Both addons (icon prefix + text suffix + kbd hint)
+    - Button addon (input with a ghost .btn inside the group)
+    - Block addon (textarea with block-end character count)
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Input Group · foundation primitive</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../release/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-col2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+    @media (max-width: 640px) {
+      .demo-col2 { grid-template-columns: 1fr; }
+    }
+    /* Hide browser-native clear button on search inputs inside input-group. */
+    .input-group input[type="search"]::-webkit-search-cancel-button,
+    .input-group input[type="search"]::-webkit-search-decoration {
+      display: none;
+    }
+    /* Match React InputGroupTextarea: tighter vertical padding, no resize handle. */
+    .input-group__control.textarea {
+      padding-block: var(--space-2);   /* 8px — source py-2 */
+      resize: none;
+    }
+    /* Page-local: a keycap for the ⌘K shortcut hint (no foundation .kbd yet). */
+    .kbd {
+      display: inline-flex;
+      align-items: center;
+      height: var(--space-5);
+      padding-inline: var(--space-1);
+      border: 1px solid var(--color-line-default);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface-2);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--color-content-secondary);
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Prefix addon
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Prefix addon</h2>
+      <p class="demo-section__desc">
+        An icon addon placed <code>inline-start</code> before the control.
+        Clicking the addon area focuses the input.
+      </p>
+
+      <div class="input-group" role="group">
+        <div class="input-group__addon input-group__addon--inline-start">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.35-4.35"/>
+          </svg>
+        </div>
+        <input class="input input-group__control" type="search" placeholder="Search products, orders…">
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Suffix addon
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Suffix addon</h2>
+      <p class="demo-section__desc">
+        A text affix placed <code>inline-end</code> after the control —
+        useful for currency symbols, units, or domain suffixes.
+      </p>
+
+      <div class="input-group" role="group">
+        <input class="input input-group__control" type="number" placeholder="0.00" step="0.01">
+        <div class="input-group__addon input-group__addon--inline-end">
+          <span class="input-group__text">USD</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Both addons
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Both addons</h2>
+      <p class="demo-section__desc">
+        An icon <code>inline-start</code> and a text affix + keyboard hint
+        <code>inline-end</code>. The group owns a single border and ring.
+      </p>
+
+      <div class="input-group" role="group">
+        <div class="input-group__addon input-group__addon--inline-start">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">
+            <line x1="12" y1="2" x2="12" y2="22"/>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </div>
+        <input class="input input-group__control" type="text" placeholder="Amount" inputmode="decimal">
+        <div class="input-group__addon input-group__addon--inline-end">
+          <span class="input-group__text">USD</span>
+          <kbd class="kbd">⌘K</kbd>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: Button addon
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Button addon</h2>
+      <p class="demo-section__desc">
+        An action <code>.btn--ghost</code> inside the group for search,
+        clear, reveal, or submit. The button drops its shadow to read flat.
+      </p>
+
+      <div class="demo-col2">
+        <div>
+          <div class="input-group" role="group">
+            <input class="input input-group__control" type="search" placeholder="Search…" value="wireless keyboard">
+            <div class="input-group__addon input-group__addon--inline-end">
+              <button class="btn btn--ghost btn--icon-xs" type="button" aria-label="Clear search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">
+                  <path d="M18 6 6 18"/>
+                  <path d="m6 6 12 12"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="input-group" role="group">
+            <div class="input-group__addon input-group__addon--inline-start">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="m21 21-4.35-4.35"/>
+              </svg>
+            </div>
+            <input class="input input-group__control" type="search" placeholder="Search customers…">
+            <div class="input-group__addon input-group__addon--inline-end">
+              <button class="btn btn--ghost btn--xs" type="button">Search</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 5: Block addon
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Block addon</h2>
+      <p class="demo-section__desc">
+        A <code>block-end</code> addon below a textarea — the group stacks
+        into a column (<code>height:auto</code>) and the addon spans full
+        width. Useful for character counts or toolbar actions.
+      </p>
+
+      <div class="input-group input-group--block" role="group">
+        <textarea class="input textarea input-group__control" placeholder="Write a note…" rows="5" aria-describedby="char-count" style="min-height:80px;"></textarea>
+        <div class="input-group__addon input-group__addon--block-end" id="char-count">
+          <span class="input-group__text" style="font-size:var(--text-xs);">0 / 500 characters</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    (function () {
+      // Clear button demo
+      var clearBtns = document.querySelectorAll('.input-group .btn--icon-xs');
+      clearBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var group = btn.closest('.input-group');
+          if (!group) return;
+          var input = group.querySelector('.input-group__control');
+          if (input) {
+            input.value = '';
+            input.focus();
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

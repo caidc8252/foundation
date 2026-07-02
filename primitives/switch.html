@@ -1,0 +1,335 @@
+<!--
+  switch.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Switch primitive in the foundation design system.
+  Covers:
+    - Default switch unchecked
+    - Default switch checked
+    - Small switch unchecked
+    - Small switch checked
+    - Disabled switch (unchecked and checked)
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Switch · foundation primitive</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../release/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-col2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+    @media (max-width: 640px) {
+      .demo-col2 { grid-template-columns: 1fr; }
+    }
+
+    /* Switch */
+    .switch {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      width: 36px;
+      height: 20px;
+      border: none;
+      border-radius: 9999px;
+      background: var(--color-line-strong);
+      cursor: pointer;
+      padding: 0;
+      box-sizing: content-box;
+      transition: background-color 150ms ease;
+      flex-shrink: 0;
+    }
+    .switch:hover {
+      background: var(--color-content-disabled);
+    }
+    .switch[aria-checked="true"],
+    .switch[data-checked] {
+      background: var(--color-primary-700);
+      box-shadow: var(--shadow-cta);
+    }
+    .switch[aria-checked="true"]:hover,
+    .switch[data-checked]:hover {
+      background: var(--color-primary-600);
+    }
+    .switch:focus-visible {
+      outline: none;
+      box-shadow: var(--shadow-focus);
+    }
+    .switch:disabled,
+    .switch[aria-disabled="true"] {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    .switch__thumb {
+      display: block;
+      width: 16px;
+      height: 16px;
+      background: var(--color-surface-1);
+      border-radius: 50%;
+      box-shadow: var(--shadow-1);
+      transition: transform 150ms ease;
+      pointer-events: none;
+      margin: 2px;
+    }
+    .switch[aria-checked="true"] .switch__thumb,
+    .switch[data-checked] .switch__thumb {
+      transform: translateX(16px);
+    }
+
+    /* Small variant */
+    .switch--sm {
+      width: 24px;
+      height: 14px;
+    }
+    .switch--sm .switch__thumb {
+      width: 12px;
+      height: 12px;
+      margin: 1px;
+    }
+    .switch--sm[aria-checked="true"] .switch__thumb,
+    .switch--sm[data-checked] .switch__thumb {
+      transform: translateX(10px);
+    }
+
+    .demo-switch-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .demo-switch-label {
+      font-size: var(--text-sm);
+      color: var(--color-content-primary);
+      cursor: pointer;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Default size - unchecked and checked
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Switch · default size</h2>
+      <p class="demo-section__desc">
+        Default (20x36px) switches. Click to toggle between checked and unchecked.
+        <code>aria-checked</code> drives the visual state.
+      </p>
+
+      <div class="demo-col2">
+        <div>
+          <h3 style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin:0 0 var(--space-2);">Unchecked</h3>
+          <div class="demo-switch-row">
+            <button class="switch" role="switch" aria-checked="false" aria-label="Enable notifications" type="button">
+              <span class="switch__thumb"></span>
+            </button>
+            <span class="demo-switch-label">Notifications</span>
+          </div>
+          <div class="demo-switch-row" style="margin-top:var(--space-2);">
+            <button class="switch" role="switch" aria-checked="false" aria-label="Enable dark mode" type="button">
+              <span class="switch__thumb"></span>
+            </button>
+            <span class="demo-switch-label">Dark mode</span>
+          </div>
+        </div>
+        <div>
+          <h3 style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin:0 0 var(--space-2);">Checked</h3>
+          <div class="demo-switch-row">
+            <button class="switch" role="switch" aria-checked="true" data-checked aria-label="Enable email alerts" type="button">
+              <span class="switch__thumb"></span>
+            </button>
+            <span class="demo-switch-label">Email alerts</span>
+          </div>
+          <div class="demo-switch-row" style="margin-top:var(--space-2);">
+            <button class="switch" role="switch" aria-checked="true" data-checked aria-label="Enable two-factor auth" type="button">
+              <span class="switch__thumb"></span>
+            </button>
+            <span class="demo-switch-label">Two-factor auth</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Small size
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Switch · sm size</h2>
+      <p class="demo-section__desc">
+        Small (14x24px) switches with <code>.switch--sm</code> for dense layouts.
+      </p>
+
+      <div class="demo-col2">
+        <div>
+          <h3 style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin:0 0 var(--space-2);">Unchecked</h3>
+          <div class="demo-switch-row">
+            <button class="switch switch--sm" role="switch" aria-checked="false" aria-label="Sound" type="button">
+              <span class="switch__thumb"></span>
+            </button>
+            <span class="demo-switch-label">Sound</span>
+          </div>
+        </div>
+        <div>
+          <h3 style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin:0 0 var(--space-2);">Checked</h3>
+          <div class="demo-switch-row">
+            <button class="switch switch--sm" role="switch" aria-checked="true" data-checked aria-label="Vibration" type="button">
+              <span class="switch__thumb"></span>
+            </button>
+            <span class="demo-switch-label">Vibration</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Disabled state
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Switch · disabled</h2>
+      <p class="demo-section__desc">
+        Disabled switches with <code>:disabled</code> and <code>opacity-50</code>.
+      </p>
+
+      <div class="demo-col2">
+        <div>
+          <h3 style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin:0 0 var(--space-2);">Unchecked</h3>
+          <div class="demo-switch-row">
+            <button class="switch" role="switch" aria-checked="false" aria-label="Beta features" type="button" disabled>
+              <span class="switch__thumb"></span>
+            </button>
+            <span class="demo-switch-label" style="opacity:0.5;">Beta features</span>
+          </div>
+        </div>
+        <div>
+          <h3 style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin:0 0 var(--space-2);">Checked</h3>
+          <div class="demo-switch-row">
+            <button class="switch" role="switch" aria-checked="true" data-checked aria-label="Auto-update" type="button" disabled>
+              <span class="switch__thumb"></span>
+            </button>
+            <span class="demo-switch-label" style="opacity:0.5;">Auto-update</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: In a card
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Switch · in a card</h2>
+      <p class="demo-section__desc">
+        Switches used in a settings card layout.
+      </p>
+
+      <div class="card">
+        <div class="card__header">
+          <h2 class="card__title">Preferences</h2>
+        </div>
+        <div class="card__content" style="display:flex;flex-direction:column;gap:var(--space-3);">
+          <div class="demo-switch-row">
+            <button class="switch" role="switch" aria-checked="true" data-checked aria-label="Email notifications" type="button">
+              <span class="switch__thumb"></span>
+            </button>
+            <span class="demo-switch-label">Email notifications</span>
+          </div>
+          <div class="separator" role="separator" aria-orientation="horizontal"></div>
+          <div class="demo-switch-row">
+            <button class="switch" role="switch" aria-checked="false" aria-label="Push notifications" type="button">
+              <span class="switch__thumb"></span>
+            </button>
+            <span class="demo-switch-label">Push notifications</span>
+          </div>
+          <div class="separator" role="separator" aria-orientation="horizontal"></div>
+          <div class="demo-switch-row">
+            <button class="switch switch--sm" role="switch" aria-checked="false" aria-label="Sound" type="button">
+              <span class="switch__thumb"></span>
+            </button>
+            <span class="demo-switch-label">Sound</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <script>
+    (function () {
+      document.querySelectorAll('.switch').forEach(function (sw) {
+        function isChecked() {
+          return sw.getAttribute('aria-checked') === 'true' || sw.hasAttribute('data-checked');
+        }
+
+        function toggle() {
+          if (sw.disabled || sw.getAttribute('aria-disabled') === 'true') return;
+          var nowChecked = !isChecked();
+          sw.setAttribute('aria-checked', String(nowChecked));
+          if (nowChecked) {
+            sw.setAttribute('data-checked', '');
+          } else {
+            sw.removeAttribute('data-checked');
+          }
+          // Fire a change-like event so surrounding code can react
+          sw.dispatchEvent(new CustomEvent('switch:change', { bubbles: true, detail: { checked: nowChecked } }));
+        }
+
+        sw.addEventListener('click', toggle);
+
+        sw.addEventListener('keydown', function (e) {
+          if (e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault();
+            toggle();
+          }
+        });
+
+        // Ensure the element is keyboard-reachable if not already
+        if (!sw.hasAttribute('tabindex') && sw.tagName !== 'BUTTON') {
+          sw.setAttribute('tabindex', '0');
+        }
+        // role="switch" is required for a11y; set it if the consumer forgot
+        if (!sw.getAttribute('role')) {
+          sw.setAttribute('role', 'switch');
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

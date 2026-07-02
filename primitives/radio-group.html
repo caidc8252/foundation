@@ -1,0 +1,208 @@
+<!--
+  radio-group.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Radio Group primitive in the foundation design system.
+  Covers:
+    - Vertical layout with 3 radio options
+    - Horizontal layout with 3 radio options in a row
+    - Radios paired with labels via htmlFor/id
+    - States: default, checked, disabled, disabled+checked, invalid (aria-invalid)
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Radio group · foundation primitive</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../release/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-6);
+      align-items: flex-start;
+    }
+    .demo-row--center {
+      align-items: center;
+    }
+    @media (max-width: 640px) {
+      .demo-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Vertical layout
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Vertical layout</h2>
+      <p class="demo-section__desc">
+        A <code>.radio</code> group with three options stacked vertically. Wrap radios in a
+        container using <code>display:grid; gap:var(--space-2)</code> and give them the same
+        <code>name</code> for native single-select behavior.
+      </p>
+
+      <div style="display:grid;gap:var(--space-2);">
+        <label style="display:flex;align-items:center;gap:var(--space-2);cursor:pointer;">
+          <input type="radio" name="vertical" class="radio" value="option-1">
+          Option one
+        </label>
+        <label style="display:flex;align-items:center;gap:var(--space-2);cursor:pointer;">
+          <input type="radio" name="vertical" class="radio" value="option-2" checked>
+          Option two
+        </label>
+        <label style="display:flex;align-items:center;gap:var(--space-2);cursor:pointer;">
+          <input type="radio" name="vertical" class="radio" value="option-3">
+          Option three
+        </label>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Horizontal layout
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Horizontal layout</h2>
+      <p class="demo-section__desc">
+        Radios placed side-by-side using <code>display:flex; flex-direction:row</code>.
+        The same single-select behavior applies via shared <code>name</code>.
+      </p>
+
+      <div style="display:flex;flex-direction:row;gap:var(--space-5);flex-wrap:wrap;">
+        <label style="display:flex;align-items:center;gap:var(--space-2);cursor:pointer;">
+          <input type="radio" name="horizontal" class="radio" value="small">
+          Small
+        </label>
+        <label style="display:flex;align-items:center;gap:var(--space-2);cursor:pointer;">
+          <input type="radio" name="horizontal" class="radio" value="medium" checked>
+          Medium
+        </label>
+        <label style="display:flex;align-items:center;gap:var(--space-2);cursor:pointer;">
+          <input type="radio" name="horizontal" class="radio" value="large">
+          Large
+        </label>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: With labels
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">With labels</h2>
+      <p class="demo-section__desc">
+        Radios paired with standalone <code>&lt;label&gt;</code> elements using
+        <code>htmlFor</code> / <code>id</code>. Each row uses a hidden span for the checked
+        indicator, demonstrating the pattern used by base-ui's <code>RadioGroupItem</code>.
+      </p>
+
+      <div style="display:grid;gap:var(--space-2);">
+        <div style="display:flex;align-items:center;gap:var(--space-2);">
+          <input type="radio" name="labeled" class="radio" id="labeled-1" value="free">
+          <label for="labeled-1">Free plan</label>
+        </div>
+        <div style="display:flex;align-items:center;gap:var(--space-2);">
+          <input type="radio" name="labeled" class="radio" id="labeled-2" value="pro" checked>
+          <label for="labeled-2">Pro plan</label>
+        </div>
+        <div style="display:flex;align-items:center;gap:var(--space-2);">
+          <input type="radio" name="labeled" class="radio" id="labeled-3" value="enterprise">
+          <label for="labeled-3">Enterprise plan</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: States
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">States</h2>
+      <p class="demo-section__desc">
+        Default, checked, disabled, disabled+checked, and invalid (<code>aria-invalid="true"</code>).
+        Disabled radios use <code>opacity-50</code> and <code>cursor:not-allowed</code>.
+        Invalid radios get a red border with a 2px error ring. The checked radio fills with
+        <code>primary-700</code> and shows a white dot.
+      </p>
+
+      <div class="demo-row demo-row--center">
+        <div style="display:flex;align-items:center;gap:var(--space-2);">
+          <input type="radio" name="states" class="radio" id="state-default" value="default">
+          <label for="state-default">Default</label>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:var(--space-2);">
+          <input type="radio" name="states" class="radio" id="state-checked" value="checked" checked>
+          <label for="state-checked">Checked</label>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:var(--space-2);">
+          <input type="radio" name="states-disabled" class="radio" id="state-disabled" value="disabled" disabled>
+          <label for="state-disabled" style="opacity:0.5;">Disabled</label>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:var(--space-2);">
+          <input type="radio" name="states-disabled" class="radio" id="state-disabled-checked" value="disabled-checked" disabled checked>
+          <label for="state-disabled-checked" style="opacity:0.5;">Disabled + checked</label>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:var(--space-2);">
+          <input type="radio" name="states-invalid" class="radio" id="state-invalid" value="invalid" aria-invalid="true">
+          <label for="state-invalid">Invalid</label>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    (function () {
+      // Log selection changes for demo feedback
+      var radios = document.querySelectorAll('.radio');
+      radios.forEach(function (input) {
+        input.addEventListener('change', function () {
+          if (this.checked) {
+            var name = this.getAttribute('name') || '(unnamed)';
+            console.log('[radio-group] selected: "' + this.value + '" in group "' + name + '"');
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

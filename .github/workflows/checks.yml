@@ -1,0 +1,33 @@
+name: checks
+
+# The foundation's guards, run on every push/PR. All three are plain Node scripts
+# with no external dependencies (only node: built-ins + in-repo files), so there
+# is no install step — checkout + Node is enough.
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # release/ + versions/ are generated — fail if a rebuild changes them
+      # (hand-edited snapshot / forgotten `pnpm build`).
+      - name: release snapshots are in sync with sources
+        run: node scripts/check-release.mjs
+
+      # The example HTML is the AI's primary reference — keep it inside the closed
+      # set. Strict: also fail on off-set classes and altered icon paths, the same
+      # gate AGENTS.md mandates for AI-generated artifacts.
+      - name: examples stay inside the closed set
+        run: node scripts/check-examples.mjs --strict
+
+      # router.json stays aligned with the catalog + the pattern contracts.
+      - name: pattern router is aligned
+        run: node scripts/check-pattern-router.mjs

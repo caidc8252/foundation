@@ -1,0 +1,115 @@
+<!--
+  patterns · copyable examples — gallery
+  ─────────────────────────────────────────────────────────────────────────────
+  Mirrors the Carbon handoff's ui-spec/diagrams/index.html: one place that links
+  each pattern's editable HTML companion. The CONTRACTS are the .md files beside
+  them (the single source of truth); these HTML files are copyable STARTERS that
+  render the contract using foundation's reference layers.
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>patterns · copyable examples</title>
+
+<link rel="stylesheet" href="../release/tokens.inline.css">
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background-color: var(--color-surface-1);
+    color: var(--color-content-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    padding: var(--space-10) var(--space-6) var(--space-16);
+  }
+  .wrap { max-width: 60rem; margin-inline: auto; }
+  h1 { font-size: var(--text-2xl); font-weight: 600; letter-spacing: -0.01em; }
+  .lede { margin-top: var(--space-2); max-width: 48rem; font-size: var(--text-md); line-height: 1.6; color: var(--color-content-secondary); }
+  .lede code { font-family: var(--font-mono); font-size: var(--text-xs); background-color: var(--color-surface-3); padding: 0.1em 0.4em; border-radius: var(--radius-sm); }
+  .note {
+    margin-top: var(--space-5);
+    font-size: var(--text-sm); line-height: 1.6; color: var(--color-content-secondary);
+    background-color: var(--color-info-bg);
+    border: 1px solid color-mix(in oklch, var(--color-info) 22%, transparent);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+  }
+  .note code { font-family: var(--font-mono); font-size: var(--text-xs); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: var(--space-4); margin-top: var(--space-8); }
+  .dcard {
+    display: block; text-decoration: none; color: inherit;
+    background-color: var(--color-surface-2);
+    border: 1px solid var(--color-line-default);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-1);
+    padding: var(--space-5);
+    transition: border-color 0.12s, box-shadow 0.12s;
+  }
+  .dcard:hover { border-color: var(--color-line-strong); box-shadow: var(--shadow-3); }
+  .dcard__tag {
+    display: inline-block; font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 600; letter-spacing: 0.04em;
+    color: var(--color-primary-700); background-color: var(--color-primary-50);
+    border: 1px solid color-mix(in oklch, var(--color-primary-500) 25%, transparent);
+    border-radius: var(--radius-sm); padding: 0.2em 0.5em;
+  }
+  .dcard__t { font-size: var(--text-lg); font-weight: 600; margin-top: var(--space-3); }
+  .dcard__d { font-size: var(--text-sm); color: var(--color-content-tertiary); margin-top: var(--space-2); line-height: 1.55; }
+  .dcard__md { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-content-tertiary); margin-top: var(--space-3); }
+</style>
+
+<div class="wrap">
+  <h1>patterns · copyable examples</h1>
+  <p class="lede">
+    The L3 pattern <b>contracts</b> live in the <code>*.md</code> files beside this page — they are the
+    single source of truth. Each card below opens an <b>editable HTML companion</b>: a ready-to-copy
+    starter that renders the contract using foundation's reference layers. Copy one, then edit the markup.
+  </p>
+
+  <div class="note">
+    Each example <b>links</b> the reference CSS — <code>../release/tokens.inline.css</code> →
+    <code>../primitives/primitives.css</code> → <code>../release/composites.css</code> (that load
+    order matters) — so <code>pnpm build</code> refreshes the release snapshot after source edits and nothing forks.
+    To ship one as a self-contained artifact (CSP, no external fetch), inline those three blocks into a
+    <code>&lt;style&gt;</code> instead, per the README. Each file is a ready-to-copy frameless page — the
+    markup starts directly with <code>&lt;main class="app-frame__main"&gt;</code>, no shell to strip.
+  </div>
+
+  <div class="grid">
+    <a class="dcard" href="list-page.html">
+      <span class="dcard__tag">L3 · list</span>
+      <div class="dcard__t">List page</div>
+      <div class="dcard__d">Header + condition band + applied-filter chips + list card (sticky summary bar · sticky-head table · rich pagination). Empty / loading states included as swap snippets.</div>
+      <div class="dcard__md">list-page.html · list-page.md</div>
+    </a>
+    <a class="dcard" href="list-page-advanced-filter.html">
+      <span class="dcard__tag">L3 · list · variant</span>
+      <div class="dcard__t">List page — advanced filter</div>
+      <div class="dcard__d">Same anatomy as List page, plus an Advanced (secondary) trigger that opens a right-side filter sheet. Interactive: Apply reflects chips; chip ✕ removes; Clear all resets. Demonstrates the drawer + condition-band advanced-filter variant.</div>
+      <div class="dcard__md">list-page-advanced-filter.html · list-page.md §advanced-filter</div>
+    </a>
+    <a class="dcard" href="detail-page.html">
+      <span class="dcard__tag">L3 · detail</span>
+      <div class="dcard__t">Detail page</div>
+      <div class="dcard__d">Breadcrumb + header (status chips + actions) + overview key-value grid + tabs + an activity timeline. Status shown, not edited.</div>
+      <div class="dcard__md">detail-page.html · detail-page.md</div>
+    </a>
+    <a class="dcard" href="create-form.html">
+      <span class="dcard__tag">L3 · form</span>
+      <div class="dcard__t">Create / edit form</div>
+      <div class="dcard__d">The single-step shape: a centered card of Field units (grouped into labelled section cards when long) with a cancel/submit footer. ≥3 steps or branching → the wizard.</div>
+      <div class="dcard__md">create-form.html · create-form.md</div>
+    </a>
+    <a class="dcard" href="create-wizard.html">
+      <span class="dcard__tag">L3 · wizard</span>
+      <div class="dcard__t">Create wizard</div>
+      <div class="dcard__d">Multi-step create: step-indicator → current-step form-section cards beside an optional sticky summary rail → Back / Continue footer → done state. For stage dependencies, branching, or review-before-commit.</div>
+      <div class="dcard__md">create-wizard.html · create-wizard.md</div>
+    </a>
+    <a class="dcard" href="actions.html">
+      <span class="dcard__tag">L3 · actions</span>
+      <div class="dcard__t">Action patterns</div>
+      <div class="dcard__d">The shared verb vocabulary that lands in the page slots — confirm-danger · export · batch · transition · picker · inline-edit · copy — each with its carrier, tone, and confirm rule. A reference, not a page.</div>
+      <div class="dcard__md">actions.html · actions.md</div>
+    </a>
+  </div>
+</div>

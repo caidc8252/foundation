@@ -1,0 +1,233 @@
+<!--
+  calendar.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Calendar primitive in the foundation design system.
+  Covers:
+    - Static calendar grid with month navigation (prev/next)
+    - Today highlighted (outlined+bold)
+    - Selected day (primary fill)
+    - Range selection (start, middle, end)
+    - Outside month days
+    - Disabled days
+    - Footer with Clear / Today links
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar · foundation primitive</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../release/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: var(--space-6);
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Default calendar (single select)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Calendar · single select</h2>
+      <p class="demo-section__desc">
+        A bare month view using <code>.calendar</code> with <code>.calendar__header</code>
+        (nav buttons + caption), <code>.calendar__grid</code> (weekdays + days),
+        and optional <code>.calendar__footer</code>. Day states use
+        <code>.calendar__day--today</code>, <code>--selected</code>,
+        <code>--outside</code>, <code>--disabled</code>.
+      </p>
+
+      <div class="calendar" id="cal-single">
+        <div class="calendar__header">
+          <button class="calendar__nav-btn" type="button" id="cal-single-prev" aria-label="Previous month">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <div class="calendar__caption" id="cal-single-caption">June 2026</div>
+          <button class="calendar__nav-btn" type="button" id="cal-single-next" aria-label="Next month">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+        </div>
+        <div class="calendar__grid" id="cal-single-grid">
+          <!-- Weekdays rendered by JS -->
+          <!-- Days rendered by JS -->
+        </div>
+        <div class="calendar__footer">
+          <button class="calendar__link" type="button">Clear</button>
+          <button class="calendar__link" type="button">Today</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Range selection calendar
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Calendar · range selection</h2>
+      <p class="demo-section__desc">
+        Range state classes: <code>.calendar__day--range-start</code>,
+        <code>.calendar__day--range-middle</code>,
+        <code>.calendar__day--range-end</code>. The range start/end use
+        <code>primary-700</code> fill; middle uses <code>surface-3</code>.
+      </p>
+
+      <div class="calendar" id="cal-range">
+        <div class="calendar__header">
+          <button class="calendar__nav-btn" type="button" id="cal-range-prev" aria-label="Previous month">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <div class="calendar__caption" id="cal-range-caption">June 2026</div>
+          <button class="calendar__nav-btn" type="button" id="cal-range-next" aria-label="Next month">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+        </div>
+        <div class="calendar__grid" id="cal-range-grid">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    (function () {
+      // --- Calendar helper ---
+      var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      var DAYS = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+
+      function buildGrid(year, month, opts) {
+        opts = opts || {};
+        var html = '';
+        // Weekdays
+        DAYS.forEach(function (d) {
+          html += '<div class="calendar__weekday">' + d + '</div>';
+        });
+        // First day of month
+        var first = new Date(year, month, 1);
+        var startDow = first.getDay();
+        var daysInMonth = new Date(year, month + 1, 0).getDate();
+        var daysInPrev = new Date(year, month, 0).getDate();
+        // Total cells
+        var totalCells = Math.ceil((startDow + daysInMonth) / 7) * 7;
+
+        for (var i = 0; i < totalCells; i++) {
+          var dayNum, classes = 'calendar__day';
+          if (i < startDow) {
+            // Previous month
+            dayNum = daysInPrev - startDow + i + 1;
+            classes += ' calendar__day--outside';
+          } else if (i >= startDow + daysInMonth) {
+            // Next month
+            dayNum = i - startDow - daysInMonth + 1;
+            classes += ' calendar__day--outside';
+          } else {
+            dayNum = i - startDow + 1;
+          }
+
+          // Today highlight
+          var today = new Date();
+          if (dayNum === today.getDate() && month === today.getMonth() && year === today.getFullYear() && !classes.match(/outside/)) {
+            classes += ' calendar__day--today';
+          }
+
+          // Apply opts
+          if (opts.selected && dayNum === opts.selected && !classes.match(/outside/)) {
+            classes += ' calendar__day--selected';
+            classes = classes.replace('calendar__day--today', '');
+          }
+          if (opts.rangeStart && dayNum === opts.rangeStart && !classes.match(/outside/)) {
+            classes += ' calendar__day--range-start';
+          }
+          if (opts.rangeEnd && dayNum === opts.rangeEnd && !classes.match(/outside/)) {
+            classes += ' calendar__day--range-end';
+          }
+          if (opts.rangeMiddle && opts.rangeMiddle.indexOf(dayNum) !== -1 && !classes.match(/outside/)) {
+            classes += ' calendar__day--range-middle';
+          }
+          if (opts.disabled && opts.disabled.indexOf(dayNum) !== -1 && !classes.match(/outside/)) {
+            classes += ' calendar__day--disabled';
+          }
+
+          html += '<button class="' + classes.trim() + '" type="button"' + (classes.indexOf('disabled') !== -1 ? ' disabled' : '') + '>' + dayNum + '</button>';
+        }
+        return html;
+      }
+
+      // --- Single calendar ---
+      var calYear = 2026, calMonth = 5; // June
+      function renderSingle() {
+        document.getElementById('cal-single-caption').textContent = MONTHS[calMonth] + ' ' + calYear;
+        document.getElementById('cal-single-grid').innerHTML = buildGrid(calYear, calMonth, { selected: 15 });
+      }
+      renderSingle();
+      document.getElementById('cal-single-prev').addEventListener('click', function () {
+        calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } renderSingle();
+      });
+      document.getElementById('cal-single-next').addEventListener('click', function () {
+        calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; } renderSingle();
+      });
+
+      // --- Range calendar ---
+      var rangeYear = 2026, rangeMonth = 5;
+      function renderRange() {
+        document.getElementById('cal-range-caption').textContent = MONTHS[rangeMonth] + ' ' + rangeYear;
+        var rangeMiddle = [];
+        for (var d = 11; d <= 14; d++) rangeMiddle.push(d);
+        document.getElementById('cal-range-grid').innerHTML = buildGrid(rangeYear, rangeMonth, {
+          rangeStart: 10,
+          rangeEnd: 15,
+          rangeMiddle: rangeMiddle,
+          disabled: [7, 8, 21, 22]
+        });
+      }
+      renderRange();
+      document.getElementById('cal-range-prev').addEventListener('click', function () {
+        rangeMonth--; if (rangeMonth < 0) { rangeMonth = 11; rangeYear--; } renderRange();
+      });
+      document.getElementById('cal-range-next').addEventListener('click', function () {
+        rangeMonth++; if (rangeMonth > 11) { rangeMonth = 0; rangeYear++; } renderRange();
+      });
+    })();
+  </script>
+</body>
+</html>

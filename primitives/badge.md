@@ -2,32 +2,17 @@
 
 A small inline label for status or category. Non-interactive by default; can render as a link/element via `render`.
 
-## Variants
+## Tones
 
-Two axes drive a badge: a low-level **`variant`** (visual style) and a high-level **`tone`** (semantic status). Prefer `tone` for status indicators; reach for `variant` only for non-semantic chrome.
-
-### `tone` (preferred for status)
+Color is driven entirely by **`tone`** — there is no `variant` prop. Each tone maps to a semantic color pair.
 
 | tone | token recipe |
 |---|---|
-| `neutral` | bg `surface-3` · text `content-secondary` · border `line-default` |
+| `neutral` *(default)* | bg `surface-3` · text `content-secondary` · border `line-default` |
 | `success` | bg `success-bg` · text `success-strong` · border `success`/25 |
 | `warning` | bg `warning-bg` · text `warning-strong` · border `warning`/25 |
 | `error` | bg `error-bg` · text `error-strong` · border `error`/25 |
 | `info` | bg `info-bg` · text `info-strong` · border `info`/25 |
-
-### `variant` (low-level)
-
-| variant | use | token recipe |
-|---|---|---|
-| `default` *(default)* | solid emphasis chip | bg `primary-700` · text `content-on-primary` |
-| `secondary` | neutral filled chip | bg `surface-3` · text `content-secondary` |
-| `destructive` | error-tinted chip | bg `error`/10 · text `error` |
-| `outline` | bordered, transparent | border `line-default` · text `content-primary` |
-| `ghost` | no chrome until hover | hover bg `surface-hover` + text `content-primary` |
-| `link` | text styled as link | text `primary-700` · hover underline |
-
-`tone` is resolved on top of `variant`: setting `tone` picks a base `variant` and then overlays the tonal color recipe, so the tonal tables above win. Setting `variant` explicitly overrides `tone`'s base.
 
 ## Shapes
 
@@ -38,30 +23,36 @@ Two axes drive a badge: a low-level **`variant`** (visual style) and a high-leve
 
 ## Sizes
 
-No size prop — fixed height `h-5` (20px), `text-xs`, `font-medium`, `px-2`. Inline SVG icons are clamped to `size-3`; padding tightens on the icon side (`pr-1.5`/`pl-1.5`) when an icon adornment is present.
+No size prop — fixed height `h-5` (20px), `text-xs`, `font-medium`, `px-2`. Inline SVG icons are clamped to `size-3` (12px); padding tightens on the icon side via `has-data-[icon=inline-start]:pl-1.5` / `has-data-[icon=inline-end]:pr-1.5` when an icon adornment is present.
 
 ## States
 
-- **focus-visible** (only when interactive via `render`) — border `line-focus` + ring.
-- **hover** — only the `ghost`/`outline`/`link`/solid variants define a hover (and only when rendered as an `<a>`); tonal badges are static.
-- **invalid** (`aria-invalid`) — destructive border + ring.
+- **focus-visible** (only when interactive via `render`) — `shadow-focus` ring.
+- **hover** — only when rendered as an `<a>` (interactive); the base `<span>` is static.
+- No disabled / invalid states — the badge is a presentational label.
 
 ## Anatomy
 
-`[ dot? ] [ iconLeft? ] children [ iconRight? ]` — `dot` prefixes a 6px status dot in the current text color (`bg-current`), so it matches the tone and stays a shade darker than the badge bg. Icons are inline SVG slots clamped to 12px.
+`[ dot? ] [ icon? ] children` — `dot` prefixes a 6px status dot in the current text color (`bg-current`), so it matches the tone and stays a shade darker than the badge bg. Icons are inline SVG slots clamped to 12px.
+
+```
+┌──────────────────────────────────┐
+│ [●?] [icon?] label text         │   ← .badge + .badge--<tone>
+└──────────────────────────────────┘
+```
 
 ## Accessibility
 
-- Default element is a `<span>` (non-interactive). If you make it actionable via `render` (e.g. an `<a>`), it gains the focus ring and hover; ensure it has an accessible name.
+- Default element is a `<span>` (non-interactive). If made actionable via `render` (e.g. an `<a>`), it gains the focus ring and hover; ensure it has an accessible name.
 - Status conveyed by color alone is not accessible — keep the text label; `dot` is decorative (`aria-hidden`).
 
 ## Notes
 
-- **Use `tone`, not `variant`, for status** (order state, health, severity). `variant` is for non-semantic chrome and compat. The two interact: `tone` selects a base variant via an internal map (`neutral→secondary`, `success→default`, `warning→outline`, `error→destructive`, `info→secondary`) then overlays its own colors.
+- **Use `tone` for color — there is no `variant`.** The previous `variant` axis (`default`/`secondary`/`destructive`/`outline`/`ghost`/`link`) was removed in DS 2.0, and the compat stubs have now been dropped from the stylesheet too — the skin is tone-only. Migrating old usage: `secondary`→`neutral`, `destructive`→`error`; `default`/`outline`/`ghost`/`link` have no tonal equivalent, so pick the tone that matches the status/category the badge conveys (or `neutral` for a plain label).
+- **Semantic `tone` is for status / severity only.** Informational / category / plain-display fields (plan tier, type, category, a bare label) use `tone="neutral"` — never borrow a semantic tone (or a categorical color) to tint or distinguish a non-status field. (See `principles.md` §10.)
 - `shape="tag"` switches to monospace + `radius-sm` — intended for code-like tokens/IDs, not prose labels.
-- The implementation's `bg-primary` / `text-primary-foreground` / `text-destructive` are shadcn aliases mapping to `primary-700` / `content-on-primary` / `error` in this token system.
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Badge } from "@cloud/ui"`. Renders a `<span>` (or any element via `render`); props `tone` `variant` `shape` `dot`. API details: the `ui` skill. Prefer `tone` for status.
-- **Artifact (self-contained HTML)** — use `.badge` + a tone/variant modifier in `./primitives.css`, on top of the inlined `dist/tokens.inline.css`. Same tonal recipe and names.
+- **Next / @cloud/ui** — `import { Badge } from "@cloud/ui"`. Renders a `<span>` (or any element via `render`); props `tone` `shape` `dot`. API details: the `ui` skill. Color is set entirely by `tone`; there is no `variant` prop.
+- **Artifact (self-contained HTML)** — use `.badge` + `.badge--<tone>` (5 tones), optionally `.badge--tag` for the tag shape and `.badge__dot` for a leading status dot, in `./primitives.css`, on top of the inlined `release/tokens.inline.css`. Same tonal recipe and names.

@@ -11,7 +11,7 @@ config-driven table — columns + rows — not hand-written cell markup.
 
 ```
 ┌ table-frame ─────────────────────────────────────────────────┐
-│ ☐ │ Header ▴   Header        Header        〔actions on hover〕│  ← thead (sticky)
+│ ☐ │ Header ▴   Header        Header            〔row actions〕│  ← thead (sticky)
 ├───┼───────────────────────────────────────────────────────────┤
 │ ☑ │ cell        cell          cell                       ⋯ ✎  │  ← selected row
 │ ☐ │ cell        cell          cell                            │
@@ -33,25 +33,63 @@ config-driven table — columns + rows — not hand-written cell markup.
 
 - **Framed appearance** — wrap in `.table-frame` (rounded-xl + `line-default`
   border + `surface-2` + `shadow-1`, corners clipped). Header is `surface-3`,
-  `text-xs` / weight 600 / `content-tertiary`.
+  `text-xs` / weight 500 / UPPERCASE / `tracking-overline` / `content-tertiary`.
 - **Sort** is tri-state per column: unsorted → asc → desc → unsorted. The active
   column shows a primary-tinted chevron; sortable-but-inactive reveals a dim
   chevron on hover.
-- **Selection** uses a leading checkbox column; the selected row gets
-  `state-selected` background + a 2px primary left bar (`shadow-row-selected`),
+- **Selection is opt-in** — add the leading `col-select` checkbox column **only
+  when the table supports multi-row (bulk) operations**; a table with no bulk ops
+  has **no checkbox column** (never a default). When present, the selected row
+  gets `state-selected` background + a 2px primary left bar (`shadow-row-selected`),
   and drives a bulk-action bar (in the summary bar / page header).
-- **Row actions** sit at the row end and **appear on hover / focus-within** — they
-  don't clutter the resting row. Icon-only → `ghost` / `ghost-danger` only.
+- **Row actions** sit at the row end and are **always visible** — a table with an
+  action column is operated in place, so its verbs are never hidden behind hover.
+  **Hover-reveal is not a table behavior**: it belongs to an info-first **list** (a
+  self-authored `list-item` whose actions stay out of the way until hover), not a
+  `data-table` action column. (A list whose rows are primarily a **navigation**
+  target carries no action column at all — just a trailing chevron; the row click
+  navigates — see `list-page`.) The action `<td>` is **right-aligned to the row
+  edge** (add `.cell-right`) so its verbs sit at the row end, not the left of a
+  stretched last column; the buttons live in a **`.row-actions__inner`** flex
+  wrapper that supplies their gap + vertical centering — bare button siblings
+  dropped straight into the cell butt together with no gap. This holds for the
+  collapsed single `⋯` carrier too.
+- **Row-action variant: a text verb is `secondary`, never bare `ghost`.** An
+  always-visible row action must read as a button at rest, so a **text** row verb is
+  a `secondary` `xs` button — a **destructive** one (delete / terminate / revoke) is
+  `danger` and confirms. Reserve `ghost` / `ghost-danger` for **icon-only** row
+  actions. A `ghost` *text* verb reads as a link, not a control — don't use it for
+  row actions. Past ~2 verbs, collapse to a single `⋯` menu (one carrier per row).
+  (Mirrors [`actions.md`](../patterns/actions.md) and the `list-page` row recipe.)
 - **Numeric / id columns** render mono + tabular (`.cell-num`) and usually
   right-align so digits line up.
 - **Sticky header** docks the column header to the scroll root; pair with a
   `--flush` frame and set its top offset to the summary bar's height so they tile.
   Wide tables scroll **inside `.table-scroll`** — the page never scrolls sideways.
+  That scroll root is `.app-frame__main` in the shell; a **frameless** page must
+  give its own `overflow-y:auto` root or drop `--sticky-head` + the `top:` offset
+  (see `.claude/docs/artifact-build-guide.md` §6 "frameless shell 的 sticky 滚动根").
 - **Pagination is `simple`** — the list/table footer shows `‹ Prev · current page
   · Next ›` only (no numbered jump, no ellipsis); it is `RichPagination`, which is
   always simple. The total lives in its range summary. See `pagination.md`.
 - **Empty / loading** are not the table's job to invent — render `empty-state`
   in place of rows, or a `skeleton` table while loading.
+
+## Column recipes
+
+Common column shapes — compose cell content from tokens; never invent an
+off-scale type/color pairing.
+
+| column | recipe |
+|---|---|
+| **two-line text** (primary + sub, e.g. name + id) | `.cell-2line` (`min-w-0`): main `.cell-2line__main` `text-lg` / `500` / `content-primary` truncate · sub `.cell-2line__sub` `text-xs` / `content-tertiary` truncate. A leading `object-tile` / logo → `gap-3`. |
+| **numeric / date / id** | `font-mono` `tabular-nums` `content-secondary`, right-aligned (`.cell-num` + `.cell-right`) so digits line up. |
+| **plain text** | table default size + `content-secondary`. |
+| **tag / multi-badge set** | one wrapping row of `badge`s — `flex flex-wrap gap-1` (`.cell-tags`). |
+| **trailing arrow** (row is a navigation target) | right-aligned passive `ChevronRight` in `content-tertiary` — the cell carries **both `.cell-right .cell-chevron`** (`.cell-chevron` sets only the tint + arrow size; the right-alignment is `.cell-right`, so the arrow pins to the row edge instead of floating at the left of a stretched last column). The **whole row** is the click target — no inline buttons. If the row needs inline actions, drop the arrow and use a row-action column instead. |
+
+- **Empty value** — render an em-dash `—` in `content-tertiary` (`.cell-empty`), never a blank cell.
+- A stable new column type (progress, risk level…) is a shared column component, not a per-page restyle — propose it rather than hand-rolling cell markup.
 
 ## Implementations
 
@@ -60,7 +98,9 @@ config-driven table — columns + rows — not hand-written cell markup.
   `rowState`. Prefer the typed config over manual `<table>`. `ui` skill → data-display.
 - **Artifact** — `.table-frame` › `.table-scroll` › `table.data-table` with
   `--compact`/`--spacious`, `--sticky-head`, `--sticky-col`, `--striped`; cells
-  `.cell-num`/`.cell-right`, `.row-actions`, `.col-select`. In `composites.css`.
+  `.cell-num`/`.cell-right`/`.cell-2line`/`.cell-tags`/`.cell-chevron`/`.cell-empty`,
+  `.row-actions` (right-align with `.cell-right`; wrap its buttons in
+  `.row-actions__inner`), `.col-select`. In `composites.css`.
   `--sticky-head` th carry their own opaque `surface-3` background (a pinned th
   detaches from the thead's, so rows would otherwise bleed through); when paired
   with a sticky summary bar, give the th a `top` equal to the bar's height

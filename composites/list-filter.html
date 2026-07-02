@@ -1,0 +1,420 @@
+<!--
+  list-filter.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the list-filter family of composites in the foundation
+  design system.
+
+  When to use (AI decision guide)
+  ──────────────────────────────────────────────────────────────────────
+  Use list-filter (condition-band) when a list page needs search + quick
+  filter dropdowns + visible applied chips. Every filter change commits
+  on the Search button click, not on change.
+  · For lists with many filter dimensions → use list-page-advanced-filter
+    pattern (filter sheet)
+  · For simple single-field search → a bare .search-input is sufficient
+  · Do NOT use condition-band on detail or create pages
+
+  Covers:
+    - Condition band (toolbar + applied-filters rows)
+    - Search input with leading magnifier icon via .search-input__icon
+      wrapper (NEVER drop a bare <svg> into .search-input)
+    - Quick filters as <select> dropdowns
+    - Search button (positioned WITH the filters, not at the far end) —
+      carries a LEADING MAGNIFIER (data-lucide="search"), the same glyph as the
+      search-input icon. It is NOT a funnel; the funnel belongs to the Advanced
+      trigger only. Matches patterns/list-page.html's Search button.
+    - condition-band__spacer pushing Advanced/secondary trigger right
+    - Applied-filters row: label + filter-chips (pill-shaped, tonal
+      primary, control-xs) + inline "clear all" ghost button
+    - Filter-chip remove button (ghost hit-target, X icon)
+    - Applied-filters renders nothing when empty (shown as hidden)
+    - Empty state: no applied filters
+    - Multiple active chips demonstrating different filter types
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>List filter · foundation composite</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="../primitives/primitives.css">
+  <link rel="stylesheet" href="../release/composites.css">
+  <style>
+    /* Page-local overrides for this demo page */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-card {
+      border: 1px solid var(--color-line-default);
+      border-radius: var(--radius-xl);
+      background-color: var(--color-surface-2);
+      box-shadow: var(--shadow-1);
+      overflow: clip;
+    }
+    .demo-card__body {
+      padding: var(--space-5);
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-content-tertiary);
+      font-size: var(--text-sm);
+      border-top: 1px solid var(--color-line-subtle);
+    }
+    /* The condition-band lives inside a card frame, above the table/list.
+       contract says applied-filters renders nothing when empty */
+    .applied-filters--empty {
+      display: none !important;
+    }
+
+    /* Simulate a card header padding for the condition-band */
+    .list-card__filter-area {
+      padding: var(--space-4);
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ── Section: Full condition band with applied filters ── -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">List filter · full condition band with active chips</h2>
+      <p class="demo-section__desc">
+        Complete filtering apparatus: search input, quick-filter dropdown,
+        Search button, Advanced trigger (pushed right by spacer), and an
+        applied-filters row with chips + clear all. Chips are tonal primary
+        (primary-50 bg, primary-700 text), pill-shaped, control-xs height.
+        The ✕ remove button is a tiny ghost hit-target.
+      </p>
+
+      <div class="demo-card">
+        <div class="list-card__filter-area">
+          <div class="condition-band">
+            <!-- Toolbar row -->
+            <div class="condition-band__toolbar">
+              <!-- Search input — note the .search-input__icon WRAPPER (never bare <svg>) -->
+              <div class="search-input">
+                <span class="search-input__icon">
+                  <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+                </span>
+                <input class="input" type="search" placeholder="Search by name, email, ID…" aria-label="Search">
+              </div>
+
+              <!-- Quick filter dropdown -->
+              <select class="select" aria-label="Status filter">
+                <option value="">All statuses</option>
+                <option value="active">Active</option>
+                <option value="pending">Pending</option>
+                <option value="inactive">Inactive</option>
+              </select>
+
+              <!-- Search button — sits WITH the filters, not at the far end.
+                   Carries the leading magnifier (data-lucide="search"), same glyph as
+                   the search-input icon — NOT a funnel (that's the Advanced trigger). -->
+              <button class="btn btn--secondary">
+                <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+                Search
+              </button>
+
+              <!-- Spacer pushes Advanced to the right -->
+              <span class="condition-band__spacer"></span>
+
+              <!-- Advanced trigger (secondary) -->
+              <button class="btn btn--secondary">
+                <svg data-lucide="funnel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"/></svg>
+                Advanced
+              </button>
+            </div>
+
+            <!-- Applied-filters row: label + chips + clear all -->
+            <div class="applied-filters">
+              <span class="applied-filters__label">Filters:</span>
+
+              <!-- Chip: Status: Active -->
+              <span class="filter-chip">
+                Status: Active
+                <button class="filter-chip__remove" aria-label="Remove filter: Status: Active">
+                  <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+              </span>
+
+              <!-- Chip: Region: APAC -->
+              <span class="filter-chip">
+                Region: APAC
+                <button class="filter-chip__remove" aria-label="Remove filter: Region: APAC">
+                  <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+              </span>
+
+              <!-- Chip: Created after -->
+              <span class="filter-chip">
+                Created: After Jan 1, 2026
+                <button class="filter-chip__remove" aria-label="Remove filter: Created: After Jan 1, 2026">
+                  <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+              </span>
+
+              <!-- Clear all — ghost xs button, flows inline after chips -->
+              <button class="btn btn--ghost btn--xs">clear all</button>
+            </div>
+          </div>
+        </div>
+        <div class="demo-card__body">
+          <em>Table results would appear below the filter band</em>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section: Draft state (no applied filters) ── -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">List filter · draft state (no applied filters)</h2>
+      <p class="demo-section__desc">
+        Search field has typed text but nothing has been submitted yet.
+        No chips are shown — the Search button commits the draft. The
+        applied-filters row renders nothing when empty (display:none).
+      </p>
+
+      <div class="demo-card">
+        <div class="list-card__filter-area">
+          <div class="condition-band">
+            <div class="condition-band__toolbar">
+              <div class="search-input">
+                <span class="search-input__icon">
+                  <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+                </span>
+                <input class="input" type="search" placeholder="Search by name, email, ID…" value="in progress" aria-label="Search">
+              </div>
+
+              <select class="select" aria-label="Status filter">
+                <option value="">All statuses</option>
+                <option value="active">Active</option>
+                <option value="pending">Pending</option>
+                <option value="inactive">Inactive</option>
+              </select>
+
+              <button class="btn btn--secondary">
+                <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+                Search
+              </button>
+              <span class="condition-band__spacer"></span>
+              <button class="btn btn--secondary">
+                <svg data-lucide="funnel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"/></svg>
+                Advanced
+              </button>
+            </div>
+
+            <!-- Applied filters: empty — hidden (display:none by class or nothing rendered) -->
+            <!-- <div class="applied-filters applied-filters--empty"> would be hidden -->
+          </div>
+        </div>
+        <div class="demo-card__body">
+          <em>Nothing submitted — chips are not shown until Search is clicked</em>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section: Single filter chip ── -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">List filter · single active filter</h2>
+      <p class="demo-section__desc">
+        After submitting, a single criterion is shown as one chip. The
+        label "Filters:" is always shown before the chips. The clear all
+        button removes all filters at once.
+      </p>
+
+      <div class="demo-card">
+        <div class="list-card__filter-area">
+          <div class="condition-band">
+            <div class="condition-band__toolbar">
+              <div class="search-input">
+                <span class="search-input__icon">
+                  <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+                </span>
+                <input class="input" type="search" placeholder="Search by name, email, ID…" aria-label="Search">
+              </div>
+
+              <select class="select" aria-label="Status filter">
+                <option value="">All statuses</option>
+                <option value="active" selected>Active</option>
+                <option value="pending">Pending</option>
+                <option value="inactive">Inactive</option>
+              </select>
+
+              <button class="btn btn--secondary">
+                <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+                Search
+              </button>
+              <span class="condition-band__spacer"></span>
+              <button class="btn btn--secondary">
+                <svg data-lucide="funnel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"/></svg>
+                Advanced
+              </button>
+            </div>
+
+            <div class="applied-filters">
+              <span class="applied-filters__label">Filters:</span>
+              <span class="filter-chip">
+                Status: Active
+                <button class="filter-chip__remove" aria-label="Remove filter: Status: Active">
+                  <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+              </span>
+              <button class="btn btn--ghost btn--xs">clear all</button>
+            </div>
+          </div>
+        </div>
+        <div class="demo-card__body">
+          <em>Results filtered by active status</em>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section: Many chips (overflow wrap) ── -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">List filter · many chips (wrapping)</h2>
+      <p class="demo-section__desc">
+        When there are multiple filters, chips wrap naturally to the next
+        line inside the applied-filters flex container (flex-wrap: wrap).
+        Each chip is a consistent height (control-xs, 22px).
+      </p>
+
+      <div class="demo-card">
+        <div class="list-card__filter-area">
+          <div class="condition-band">
+            <div class="condition-band__toolbar">
+              <div class="search-input">
+                <span class="search-input__icon">
+                  <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+                </span>
+                <input class="input" type="search" placeholder="Search by name, email, ID…" aria-label="Search">
+              </div>
+
+              <select class="select" aria-label="Department filter">
+                <option value="">All departments</option>
+                <option value="engineering" selected>Engineering</option>
+                <option value="marketing">Marketing</option>
+                <option value="sales">Sales</option>
+              </select>
+
+              <button class="btn btn--secondary">
+                <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+                Search
+              </button>
+              <span class="condition-band__spacer"></span>
+              <button class="btn btn--secondary">
+                <svg data-lucide="funnel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"/></svg>
+                Advanced
+              </button>
+            </div>
+
+            <div class="applied-filters">
+              <span class="applied-filters__label">Filters:</span>
+              <span class="filter-chip">
+                Status: Active
+                <button class="filter-chip__remove" aria-label="Remove filter: Status: Active">
+                  <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+              </span>
+              <span class="filter-chip">
+                Department: Engineering
+                <button class="filter-chip__remove" aria-label="Remove filter: Department: Engineering">
+                  <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+              </span>
+              <span class="filter-chip">
+                Region: APAC
+                <button class="filter-chip__remove" aria-label="Remove filter: Region: APAC">
+                  <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+              </span>
+              <span class="filter-chip">
+                Created: After Jan 1, 2026
+                <button class="filter-chip__remove" aria-label="Remove filter: Created: After Jan 1, 2026">
+                  <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+              </span>
+              <span class="filter-chip">
+                Priority: High
+                <button class="filter-chip__remove" aria-label="Remove filter: Priority: High">
+                  <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+              </span>
+              <span class="filter-chip">
+                Assignee: Current User
+                <button class="filter-chip__remove" aria-label="Remove filter: Assignee: Current User">
+                  <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+              </span>
+              <button class="btn btn--ghost btn--xs">clear all</button>
+            </div>
+          </div>
+        </div>
+        <div class="demo-card__body">
+          <em>Results filtered by 6 criteria — chips wrap as needed</em>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section: Search input structure detail ── -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Search input · exact structure reference</h2>
+      <p class="demo-section__desc">
+        The leading magnifier MUST be wrapped in <code>.search-input__icon</code>
+        (a <code>&lt;span&gt;</code>), never a bare <code>&lt;svg&gt;</code>
+        inside <code>.search-input</code>. A bare svg renders unsized and floods
+        the bar. The <code>.input</code> gets <code>padding-inline-start: space-8</code>
+        via CSS to make room for the icon.
+      </p>
+
+      <div class="demo-card">
+        <div class="list-card__filter-area">
+          <!-- Exact contract markup from list-filter.md -->
+          <div class="search-input" style="max-inline-size:24rem;flex:none">
+            <span class="search-input__icon">
+              <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+            </span>
+            <input class="input" type="search" placeholder="Search…">
+          </div>
+          <p style="font-size:var(--text-xs);color:var(--color-content-tertiary);margin:var(--space-2) 0 0">
+            Icon is wrapped in <code>.search-input__icon</code> — the only correct structure.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

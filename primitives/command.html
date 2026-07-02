@@ -1,0 +1,319 @@
+<!--
+  command.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Command primitive in the foundation design system.
+  Covers:
+    - Embedded command palette (shell with input, groups, items, shortcuts)
+    - CommandDialog variant (modal with backdrop overlay)
+    - Empty state (no results found)
+    - Disabled item demo
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Command · foundation primitive</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../release/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-col2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+    @media (max-width: 640px) {
+      .demo-col2 { grid-template-columns: 1fr; }
+    }
+    .demo-command-wrap {
+      max-width: 560px;
+    }
+    .demo-command-standalone {
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* ── CommandDialog demo toggle ── */
+    .command-dialog-demo {
+      display: none;   /* hidden by default */
+    }
+    .command-dialog-demo.is-open {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Embedded Command Palette
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Embedded Command Palette</h2>
+      <p class="demo-section__desc">
+        A <code>.command</code> shell with <code>.command__input-wrapper</code> containing the
+        <code>.command__input</code>, then a <code>.command__list</code> with groups,
+        items, shortcuts, and a <code>.command__separator</code>. One item carries
+        <code>.command__item--active</code>.
+      </p>
+
+      <div class="demo-command-wrap">
+        <div class="command">
+          <div class="command__input-wrapper">
+            <div class="input-group">
+              <div class="input-group__addon">
+                <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+              </div>
+              <input class="command__input" type="text" placeholder="Search..." value="">
+            </div>
+          </div>
+          <div class="command__list">
+            <div class="command__group">
+              <div class="command__group-heading">SUGGESTIONS</div>
+              <div class="command__item command__item--active">
+                <svg data-lucide="calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+                <span>Calendar</span>
+                <span class="command__shortcut">⌘K</span>
+              </div>
+              <div class="command__item">
+                <svg data-lucide="mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+                <span>Emails</span>
+                <span class="command__shortcut">⌘E</span>
+              </div>
+              <div class="command__item">
+                <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+                <span>Search</span>
+                <span class="command__shortcut">⌘S</span>
+              </div>
+            </div>
+            <div class="command__separator"></div>
+            <div class="command__group">
+              <div class="command__group-heading">SETTINGS</div>
+              <div class="command__item">
+                <svg data-lucide="user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span>Profile</span>
+              </div>
+              <div class="command__item">
+                <svg data-lucide="credit-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                <span>Billing</span>
+              </div>
+              <div class="command__item">
+                <svg data-lucide="bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg>
+                <span>Notifications</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: CommandDialog variant (toggleable)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">CommandDialog variant</h2>
+      <p class="demo-section__desc">
+        The modal <code>.command-dialog</code> wrapped in a fixed
+        <code>.command-dialog__backdrop</code> overlay. Click the button below
+        (or press <kbd>⌘K</kbd>) to open — click the backdrop or press
+        <kbd>Esc</kbd> to close.
+      </p>
+
+      <div>
+        <button class="btn btn--primary btn--md" id="btn-open-dialog" type="button">
+          Open Command Palette
+        </button>
+        <span style="font-size:var(--text-xs);color:var(--color-content-tertiary);margin-left:var(--space-2);">or press ⌘K</span>
+      </div>
+
+      <!-- Hidden by default; shown when is-open class is added by JS -->
+      <div class="command-dialog-demo" id="command-dialog-demo">
+        <div class="command-dialog__backdrop" id="command-backdrop"></div>
+        <div class="command-dialog" role="dialog" aria-label="Command palette" aria-modal="true">
+          <div class="command">
+            <div class="command__input-wrapper">
+              <div class="input-group">
+                <div class="input-group__addon">
+                  <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+                </div>
+                <input class="command__input" type="text" placeholder="Type a command..." value="">
+              </div>
+            </div>
+            <div class="command__list">
+              <div class="command__group">
+                <div class="command__group-heading">PAGES</div>
+                <div class="command__item command__item--active">
+                  <svg data-lucide="house" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                  <span>Dashboard</span>
+                </div>
+                <div class="command__item">
+                  <svg data-lucide="users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
+                  <span>Team</span>
+                </div>
+                <div class="command__item">
+                  <svg data-lucide="settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>
+                  <span>Settings</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Empty state
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Empty state</h2>
+      <p class="demo-section__desc">
+        When no results match the query, <code>.command__empty</code> displays
+        "No results found." inside the <code>.command__list</code>.
+      </p>
+
+      <div class="demo-command-standalone">
+        <div class="command">
+          <div class="command__input-wrapper">
+            <div class="input-group">
+              <div class="input-group__addon">
+                <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+              </div>
+              <input class="command__input" type="text" placeholder="Search..." value="xyzzy">
+            </div>
+          </div>
+          <div class="command__list">
+            <div class="command__empty">No results found.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: Disabled item demo
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Disabled item</h2>
+      <p class="demo-section__desc">
+        Use <code>data-disabled="true"</code> on a <code>.command__item</code>
+        to mark it as unavailable. The item is visually dimmed and non-interactive.
+      </p>
+
+      <div class="demo-command-standalone">
+        <div class="command">
+          <div class="command__input-wrapper">
+            <div class="input-group">
+              <div class="input-group__addon">
+                <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+              </div>
+              <input class="command__input" type="text" placeholder="Search..." value="">
+            </div>
+          </div>
+          <div class="command__list">
+            <div class="command__group">
+              <div class="command__group-heading">ACTIONS</div>
+              <div class="command__item">
+                <svg data-lucide="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                <span>New project</span>
+                <span class="command__shortcut">⌘N</span>
+              </div>
+              <div class="command__item" data-disabled="true">
+                <svg data-lucide="archive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg>
+                <span>Archive (unavailable)</span>
+                <span class="command__shortcut">⌘⇧A</span>
+              </div>
+              <div class="command__item">
+                <svg data-lucide="download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>
+                <span>Export data</span>
+                <span class="command__shortcut">⌘E</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    (function () {
+      var dialogWrap = document.getElementById('command-dialog-demo');
+      var backdrop = document.getElementById('command-backdrop');
+      var openBtn = document.getElementById('btn-open-dialog');
+      var input = dialogWrap.querySelector('.command__input');
+
+      function openDialog() {
+        dialogWrap.classList.add('is-open');
+        // Focus the search input after the browser paints
+        requestAnimationFrame(function () { input.focus(); });
+      }
+
+      function closeDialog() {
+        dialogWrap.classList.remove('is-open');
+        openBtn.focus();
+      }
+
+      openBtn.addEventListener('click', openDialog);
+
+      // Close on backdrop click
+      backdrop.addEventListener('click', function (e) {
+        if (e.target === backdrop) closeDialog();
+      });
+
+      // Close on Escape
+      document.addEventListener('keydown', function (e) {
+        if (!dialogWrap.classList.contains('is-open')) return;
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          closeDialog();
+        }
+      });
+
+      // ⌘K / Ctrl+K shortcut
+      document.addEventListener('keydown', function (e) {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+          e.preventDefault();
+          if (dialogWrap.classList.contains('is-open')) {
+            closeDialog();
+          } else {
+            openDialog();
+          }
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

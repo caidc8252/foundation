@@ -1,0 +1,169 @@
+<!--
+  Pattern · Create / edit form — copyable example
+  ─────────────────────────────────────────────────────────────────────────────
+  Companion to ./create-form.md (the contract — when the two disagree, the .md wins).
+  Copy this file and edit the markup to build a real single-step create/edit form:
+  a sticky page-header carrying Cancel + Create/Save on the right, a centered card
+  of Field units (no bottom footer). Long forms group their fields into labelled
+  section cards by concern (one Card per concern).
+  Need ≥3 steps or branching? Reach for the multi-step wizard instead — that is
+  its own pattern now: ./create-wizard.md (./create-wizard.html).
+
+  HOW THE STYLES LOAD
+    This file LINKS the reference CSS (relative to patterns/), so run `pnpm build` after source edits to refresh release — no forked copy that can drift.
+    Order is load-bearing:  tokens → primitives → composites.
+    To ship as a self-contained artifact (CSP, no external fetch), inline those
+    three blocks into a <style> instead — see README "How each consumer uses it".
+
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pattern · Create / edit form — foundation example</title>
+
+<link rel="stylesheet" href="../release/tokens.inline.css">
+<link rel="stylesheet" href="../primitives/primitives.css">
+<link rel="stylesheet" href="../release/composites.css">
+
+<style>
+
+  /* Page-local composition — NOT new design vocabulary. All values are tokens. */
+
+  /* Forms CENTER (not full-bleed): cap the measure and center the column. */
+  .form-page { max-width: 42rem; margin-inline: auto; width: 100%; }
+
+  /* One Field unit per row; consistent vertical rhythm between fields. */
+  .form-stack { display: flex; flex-direction: column; gap: var(--space-4); }
+  /* Selects in a form span the row (the toolbar default is fit-content). */
+  .form-stack .select { width: 100%; }
+  /* Two-up field rows now use the shared .form-grid utility (composites.css). */
+
+  .form-title { font-size: var(--text-md); font-weight: 600; color: var(--color-content-primary); }
+
+  /* (no form-footer — actions live in the sticky page-header) */
+
+  .field-check { display: flex; align-items: flex-start; gap: var(--space-2); }
+  .field-check__text { font-size: var(--text-sm); color: var(--color-content-primary); }
+</style>
+<body>
+
+<div class="app-frame">
+  <div class="app-frame__col">
+    <main class="app-frame__main">
+      <!--
+        REQUIRED CORE (do not drop): the sticky page-header (title + secondary Cancel +
+        primary Create/Save) AND at least one form-section card of fields below.
+        Everything marked OPTIONAL is removable per the page's job — copying this
+        fully-dressed example does NOT mean keeping every slot.
+        See create-form.md "Slots" + governance principle #9 (patterns are frameworks).
+      -->
+      <header class="page-header page-header--sticky">
+        <div class="page-header__bar">
+          <div class="page-header__titles">
+            <div class="page-header__heading"><h1 class="page-header__title">New customer</h1></div>
+            <!-- OPTIONAL: header description — drop when the title alone is self-explanatory. -->
+            <p class="page-header__description">A single-step create/edit form — a centered card of fields, actions in the sticky header.</p>
+          </div>
+          <div class="page-header__actions">
+            <!-- REQUIRED: secondary Cancel + primary Create/Save. The primary verb follows
+                 the variant: "Create customer" (create) / "Save changes" (edit).
+                 A SECONDARY header action beyond Cancel is OPTIONAL — add one only for a
+                 genuine page-level secondary verb. -->
+            <button class="btn btn--secondary" type="button">Cancel</button>
+            <button class="btn btn--primary" type="submit" form="create-form">Create customer</button>
+          </div>
+        </div>
+      </header>
+
+      <div class="page-body">
+
+        <!-- OPTIONAL: status banner (alert under the header) — render only when a
+             record-level status/notice must be surfaced before the fields. Removable.
+        <div class="alert alert--info" role="status">
+          <p class="alert__title">Trial account</p>
+          <p class="alert__description">This customer is in trial until 30 Jun.</p>
+        </div>
+        -->
+
+        <!-- OPTIONAL: file-upload block (dropzone) inside the body — render only when the
+             form captures a file/attachment. Uses the `dropzone` primitive (see
+             create-form.md "File-upload block" + primitives/dropzone.md). Presentation
+             only: the host wires the actual upload and feeds status back. Removable.
+        <div class="card form-page">
+          <div class="card__header"><span class="form-title">Attachments</span></div>
+          <div class="card__content form-stack">
+            <label class="dropzone">
+              <svg data-lucide="upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:var(--space-6);height:var(--space-6);"><path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>
+              <span>Drop files here or click to browse</span>
+              <input type="file" hidden multiple>
+            </label>
+          </div>
+        </div>
+        -->
+
+
+        <!-- ───────────── SINGLE-STEP FORM (≤ ~8 fields, no branching) ─────────────
+             REQUIRED CORE: at least one form-section card (this one). Long forms group
+             fields into labelled section cards by concern — one Card per concern
+             (Identity, Billing, …) — not one flat list. The FIRST card is required;
+             any further section cards are OPTIONAL (see the commented stub below). -->
+        <form id="create-form" class="card form-page" onsubmit="return false">
+          <!-- REQUIRED: a section header. OPTIONAL: a per-section description below it,
+               added only when the section's purpose isn't obvious from its header. -->
+          <div class="card__header"><span class="form-title">Customer details</span></div>
+
+          <div class="card__content form-stack">
+            <!-- One Field = label + control + help/error, vertically stacked -->
+            <div class="field">
+              <label class="label" for="f-name">Company name <span class="field__required">*</span></label>
+              <input id="f-name" class="input" type="text" placeholder="Acme Robotics" value="Acme Robotics">
+            </div>
+
+            <div class="form-grid form-grid--2">
+              <div class="field">
+                <label class="label" for="f-plan">Plan</label>
+                <select id="f-plan" class="select">
+                  <option>Growth</option><option selected>Enterprise</option><option>Trial</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="label" for="f-region">Region</label>
+                <select id="f-region" class="select">
+                  <option>APAC</option><option>EMEA</option><option>Americas</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- invalid field: control carries aria-invalid; error REPLACES hint, in the interface's voice -->
+            <div class="field">
+              <label class="label" for="f-email">Billing email <span class="field__required">*</span></label>
+              <input id="f-email" class="input" type="email" value="dana@acme" aria-invalid="true">
+              <p class="field__error" role="alert">Enter a valid email address, e.g. dana@acme-robotics.example</p>
+            </div>
+
+            <div class="field">
+              <label class="label" for="f-notes">Notes</label>
+              <textarea id="f-notes" class="textarea" placeholder="Anything the team should know…"></textarea>
+              <p class="field__hint">Optional — internal only, never shown to the customer.</p>
+            </div>
+
+            <div class="field-check">
+              <input id="f-welcome" class="checkbox" type="checkbox" checked>
+              <label class="field-check__text" for="f-welcome">Send a welcome email when the account is created</label>
+            </div>
+          </div>
+
+        </form>
+
+        <!-- OPTIONAL: additional form-section cards beyond the first — add one per extra
+             concern only when the form is long enough to split. Removable.
+        <section class="card form-page">
+          <div class="card__header"><span class="form-title">Billing</span></div>
+          <div class="card__content form-stack"> … Field units … </div>
+        </section>
+        -->
+
+      </div>
+    </main>
+  </div>
+</div>
+</body>

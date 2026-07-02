@@ -1,0 +1,264 @@
+<!--
+  input.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Input primitive in the foundation design system.
+  Covers:
+    - Size variants (sm, md, lg)
+    - Common input types (text, password, email, search)
+    - Native HTML states (default, disabled, read-only, invalid)
+    - Validation axis (warn, ok)
+    - Filled variant (default, disabled, with value)
+    - Input with inline icon prefix
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Input · foundation primitive</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../release/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: end;
+      gap: var(--space-4);
+    }
+    .demo-field {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      min-width: 200px;
+      flex: 1;
+    }
+    .icon-input {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      position: relative;
+    }
+    .icon-input svg {
+      position: absolute;
+      left: 10px;
+      width: var(--space-4);
+      height: var(--space-4);
+      color: var(--color-content-tertiary);
+      pointer-events: none;
+    }
+    .icon-input .input {
+      padding-left: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-field { min-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Sizes
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Input · sizes</h2>
+      <p class="demo-section__desc">
+        Three size tiers: <code>.input--sm</code> (28px), <code>.input--md</code> (36px, default), and
+        <code>.input--lg</code> (44px with larger text). The <code>.input</code> class alone defaults to md.
+      </p>
+
+      <div class="demo-row">
+        <div class="demo-field">
+          <label class="label" for="input-sm">Small</label>
+          <input id="input-sm" class="input input--sm" type="text" placeholder="Small input">
+        </div>
+        <div class="demo-field">
+          <label class="label" for="input-md">Medium (default)</label>
+          <input id="input-md" class="input input--md" type="text" placeholder="Medium input">
+        </div>
+        <div class="demo-field">
+          <label class="label" for="input-lg">Large</label>
+          <input id="input-lg" class="input input--lg" type="text" placeholder="Large input">
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Types
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Input · types</h2>
+      <p class="demo-section__desc">
+        Common <code>type</code> attribute values. All use the base <code>.input</code> class.
+      </p>
+
+      <div class="demo-row">
+        <div class="demo-field">
+          <label class="label" for="input-text">Text</label>
+          <input id="input-text" class="input" type="text" placeholder="Enter your name">
+        </div>
+        <div class="demo-field">
+          <label class="label" for="input-password">Password</label>
+          <input id="input-password" class="input" type="password" placeholder="Enter password">
+        </div>
+        <div class="demo-field">
+          <label class="label" for="input-email">Email</label>
+          <input id="input-email" class="input" type="email" placeholder="user@example.com">
+        </div>
+        <div class="demo-field">
+          <label class="label" for="input-search">Search</label>
+          <input id="input-search" class="input" type="search" placeholder="Search...">
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: States
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Input · states</h2>
+      <p class="demo-section__desc">
+        Native HTML states. <code>disabled</code> dims at opacity-50; <code>readonly</code> swaps to surface-3;
+        <code>aria-invalid</code> applies the error border and ring.
+      </p>
+
+      <div class="demo-row">
+        <div class="demo-field">
+          <label class="label" for="input-default">Default</label>
+          <input id="input-default" class="input" type="text" placeholder="Default state">
+        </div>
+        <div class="demo-field">
+          <label class="label" for="input-disabled">Disabled</label>
+          <input id="input-disabled" class="input" type="text" placeholder="Disabled input" disabled>
+        </div>
+        <div class="demo-field">
+          <label class="label" for="input-readonly">Read-only</label>
+          <input id="input-readonly" class="input" type="text" value="Read-only value" readonly>
+        </div>
+        <div class="demo-field">
+          <label class="label" for="input-invalid">Invalid</label>
+          <input id="input-invalid" class="input" type="text" placeholder="Invalid input" aria-invalid="true">
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: Validation
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Input · validation</h2>
+      <p class="demo-section__desc">
+        The orthogonal validation axis: <code>.input--warn</code> (warning-500 border) and
+        <code>.input--ok</code> (success-500 border). These are independent of the size variant.
+      </p>
+
+      <div class="demo-row">
+        <div class="demo-field">
+          <label class="label" for="input-warn">Warning</label>
+          <input id="input-warn" class="input input--warn" type="text" placeholder="Expiring soon">
+        </div>
+        <div class="demo-field">
+          <label class="label" for="input-ok">OK / Success</label>
+          <input id="input-ok" class="input input--ok" type="text" placeholder="All good">
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 5: Filled variant
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Input · filled variant</h2>
+      <p class="demo-section__desc">
+        The <code>.input--filled</code> variant uses a tonal surface-3 background with a transparent
+        border. The border appears only on focus. Ideal for dense toolbars and nested forms.
+      </p>
+
+      <div class="demo-row">
+        <div class="demo-field">
+          <label class="label" for="input-filled-default">Filled · default</label>
+          <input id="input-filled-default" class="input input--filled" type="text" placeholder="Filled input">
+        </div>
+        <div class="demo-field">
+          <label class="label" for="input-filled-disabled">Filled · disabled</label>
+          <input id="input-filled-disabled" class="input input--filled" type="text" placeholder="Filled disabled" disabled>
+        </div>
+        <div class="demo-field">
+          <label class="label" for="input-filled-value">Filled · with value</label>
+          <input id="input-filled-value" class="input input--filled" type="text" value="Prefilled value">
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 6: With icon
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Input · with icon prefix</h2>
+      <p class="demo-section__desc">
+        An inline SVG icon positioned inside the input using an absolute-positioned wrapper.
+        The input gains additional left padding to accommodate the icon.
+      </p>
+
+      <div class="demo-row">
+        <div class="demo-field">
+          <label class="label" for="input-icon-user">User icon</label>
+          <div class="icon-input">
+            <svg data-lucide="user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <input id="input-icon-user" class="input" type="text" placeholder="Username">
+          </div>
+        </div>
+        <div class="demo-field">
+          <label class="label" for="input-icon-mail">Mail icon</label>
+          <div class="icon-input">
+            <svg data-lucide="mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+            <input id="input-icon-mail" class="input" type="email" placeholder="Email address">
+          </div>
+        </div>
+        <div class="demo-field">
+          <label class="label" for="input-icon-search">Search icon</label>
+          <div class="icon-input">
+            <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+            <input id="input-icon-search" class="input" type="search" placeholder="Search...">
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

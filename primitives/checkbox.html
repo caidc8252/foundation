@@ -1,0 +1,255 @@
+<!--
+  checkbox.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Checkbox primitive in the foundation design system.
+  Covers:
+    - Unchecked / checked / indeterminate states
+    - Disabled states
+    - Interactive click to toggle
+    - "Select all" tri-state pattern
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkbox · foundation primitive</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../release/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-5);
+    }
+    .demo-checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .demo-checkbox-row label {
+      font-size: var(--text-sm);
+      color: var(--color-content-primary);
+      cursor: pointer;
+      user-select: none;
+    }
+    .demo-checkbox-row label.has-disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Basic states
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Checkbox · basic states</h2>
+      <p class="demo-section__desc">
+        A 16×16 square <code>&lt;input type="checkbox" class="checkbox"&gt;</code>.
+        All styling comes from <code>primitives.css</code> — no inline overrides.
+        The check glyph (4×8 px) and minus glyph (8×2 px) are drawn by
+        <code>::after</code> pseudo-elements.
+      </p>
+
+      <div class="demo-row">
+        <div class="demo-checkbox-row">
+          <input type="checkbox" class="checkbox" id="chk-unchecked">
+          <label for="chk-unchecked">Unchecked</label>
+        </div>
+
+        <div class="demo-checkbox-row">
+          <input type="checkbox" class="checkbox" id="chk-checked" checked>
+          <label for="chk-checked">Checked</label>
+        </div>
+
+        <div class="demo-checkbox-row">
+          <input type="checkbox" class="checkbox" id="chk-indeterminate">
+          <label for="chk-indeterminate">Indeterminate</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Disabled states
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Checkbox · disabled</h2>
+      <p class="demo-section__desc">
+        <code>:disabled</code> adds <code>cursor-not-allowed</code> + <code>opacity-50</code>.
+      </p>
+
+      <div class="demo-row">
+        <div class="demo-checkbox-row">
+          <input type="checkbox" class="checkbox" id="chk-disabled-unchecked" disabled>
+          <label for="chk-disabled-unchecked" class="has-disabled">Disabled unchecked</label>
+        </div>
+
+        <div class="demo-checkbox-row">
+          <input type="checkbox" class="checkbox" id="chk-disabled-checked" disabled checked>
+          <label for="chk-disabled-checked" class="has-disabled">Disabled checked</label>
+        </div>
+
+        <div class="demo-checkbox-row">
+          <input type="checkbox" class="checkbox" id="chk-disabled-indeterminate" disabled>
+          <label for="chk-disabled-indeterminate" class="has-disabled">Disabled indeterminate</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Interactive — click to toggle
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Checkbox · interactive toggles</h2>
+      <p class="demo-section__desc">
+        Click to toggle. The cycle checkbox (right) goes:
+        unchecked → checked → indeterminate → unchecked.
+      </p>
+
+      <div class="demo-row">
+        <div class="demo-checkbox-row">
+          <input type="checkbox" class="checkbox" id="chk-inter-1">
+          <label for="chk-inter-1">Standard toggle</label>
+        </div>
+
+        <div class="demo-checkbox-row">
+          <input type="checkbox" class="checkbox" id="chk-inter-2">
+          <label for="chk-inter-2">Cycle (unchecked → checked → indeterminate → …)</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: "Select all" pattern
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Checkbox · "select all" pattern</h2>
+      <p class="demo-section__desc">
+        The header checkbox uses <code>.indeterminate = true</code> (the native DOM
+        property — matching <code>:indeterminate</code> in primitives.css) when some
+        but not all items are selected. Clicking the header toggles all items.
+      </p>
+
+      <div style="display:flex;flex-direction:column;gap:var(--space-2);">
+        <div class="demo-checkbox-row" style="padding-bottom:var(--space-2);border-bottom:1px solid var(--color-line-subtle);">
+          <input type="checkbox" class="checkbox" id="chk-select-all">
+          <label for="chk-select-all" style="font-weight:600;">Select all</label>
+        </div>
+        <div class="demo-checkbox-row">
+          <input type="checkbox" class="checkbox" id="chk-item-1" checked>
+          <label for="chk-item-1">Item 1</label>
+        </div>
+        <div class="demo-checkbox-row">
+          <input type="checkbox" class="checkbox" id="chk-item-2">
+          <label for="chk-item-2">Item 2</label>
+        </div>
+        <div class="demo-checkbox-row">
+          <input type="checkbox" class="checkbox" id="chk-item-3" checked>
+          <label for="chk-item-3">Item 3</label>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    (function () {
+      // ── Static indeterminate example (Section 1) ──────────────────
+      var staticIndet = document.getElementById('chk-indeterminate');
+      staticIndet.indeterminate = true;
+
+      // ── Cycle checkbox: unchecked → checked → indeterminate → … ──
+      var cycleChk = document.getElementById('chk-inter-2');
+      // 0 = unchecked, 1 = checked, 2 = indeterminate
+      var cycleState = 0;
+      cycleChk.addEventListener('click', function (e) {
+        e.preventDefault();
+        cycleState = (cycleState + 1) % 3;
+        if (cycleState === 0) {
+          cycleChk.checked = false;
+          cycleChk.indeterminate = false;
+        } else if (cycleState === 1) {
+          cycleChk.checked = true;
+          cycleChk.indeterminate = false;
+        } else {
+          cycleChk.checked = false;
+          cycleChk.indeterminate = true;
+        }
+      });
+
+      // ── Select-all logic ──────────────────────────────────────────
+      var selectAll = document.getElementById('chk-select-all');
+      selectAll.indeterminate = true; // initial: 2 of 3 checked
+
+      var items = [
+        document.getElementById('chk-item-1'),
+        document.getElementById('chk-item-2'),
+        document.getElementById('chk-item-3')
+      ];
+
+      function updateSelectAll() {
+        var checkedCount = items.filter(function (i) { return i.checked; }).length;
+        if (checkedCount === 0) {
+          selectAll.checked = false;
+          selectAll.indeterminate = false;
+        } else if (checkedCount === items.length) {
+          selectAll.checked = true;
+          selectAll.indeterminate = false;
+        } else {
+          selectAll.checked = false;
+          selectAll.indeterminate = true;
+        }
+      }
+
+      selectAll.addEventListener('click', function (e) {
+        e.preventDefault();
+        var allChecked = items.every(function (i) { return i.checked; });
+        items.forEach(function (i) { i.checked = !allChecked; });
+        updateSelectAll();
+      });
+
+      items.forEach(function (item) {
+        item.addEventListener('change', updateSelectAll);
+      });
+    })();
+  </script>
+</body>
+</html>

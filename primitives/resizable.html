@@ -1,0 +1,293 @@
+<!--
+  resizable.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Resizable split-pane primitive in the foundation design system.
+  Covers:
+    - Horizontal split (side by side) — two panels with a vertical handle
+    - Vertical split (stacked) — two panels stacked with a horizontal handle
+    - Three panel layout — left + handle + center + handle + right
+    - With grip nub — side-by-side panels with visible drag affordance
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resizable · foundation primitive</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../release/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-group {
+      height: 300px;
+    }
+    .demo-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-4);
+      gap: var(--space-2);
+      border: 1px solid var(--color-line-subtle);
+      border-radius: var(--radius-md);
+    }
+    .demo-panel-a {
+      background-color: var(--color-surface-2);
+    }
+    .demo-panel-b {
+      background-color: var(--color-surface-3);
+    }
+    .demo-panel__label {
+      font-weight: 600;
+      color: var(--color-content-primary);
+      font-size: var(--text-sm);
+    }
+    .demo-panel__desc {
+      font-size: var(--text-xs);
+      color: var(--color-content-tertiary);
+      text-align: center;
+      line-height: 1.4;
+    }
+    .demo-panel__size {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--color-content-tertiary);
+      background-color: var(--color-surface-1);
+      padding: var(--space-0) var(--space-2);
+      border-radius: var(--radius-sm);
+      margin-top: var(--space-1);
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Horizontal split (side by side)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Horizontal split (side by side)</h2>
+      <p class="demo-section__desc">
+        Two panels side by side inside a <code>.resizable-group</code> (row flex).
+        The vertical <code>.resizable-handle</code> is a <code>1px</code> track
+        with an invisible <code>4px</code> hit strip (<code>::after</code>) for
+        forgiving targeting. Drag the rule left or right.
+      </p>
+
+      <div class="resizable-group demo-group">
+        <div class="resizable-panel demo-panel demo-panel-a">
+          <span class="demo-panel__label">Editor</span>
+          <span class="demo-panel__desc">Drag the handle right to make this panel wider and give the editor more room.</span>
+          <span class="demo-panel__size">-</span>
+        </div>
+        <div class="resizable-handle" role="separator" tabindex="0" aria-orientation="vertical"></div>
+        <div class="resizable-panel demo-panel demo-panel-b">
+          <span class="demo-panel__label">Preview</span>
+          <span class="demo-panel__desc">Your changes appear here in real time as you edit.</span>
+          <span class="demo-panel__size">-</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Vertical split (stacked)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Vertical split (stacked)</h2>
+      <p class="demo-section__desc">
+        Two panels stacked vertically. The group uses
+        <code>.resizable-group--vertical</code> (column flex) and the handle adds
+        <code>.resizable-handle--horizontal</code> so it renders as a full-width
+        bar. Drag the rule up or down.
+      </p>
+
+      <div class="resizable-group resizable-group--vertical demo-group">
+        <div class="resizable-panel demo-panel demo-panel-a">
+          <span class="demo-panel__label">Output</span>
+          <span class="demo-panel__desc">Console output and logs appear in this panel.</span>
+          <span class="demo-panel__size">-</span>
+        </div>
+        <div class="resizable-handle resizable-handle--horizontal" role="separator" tabindex="0" aria-orientation="horizontal"></div>
+        <div class="resizable-panel demo-panel demo-panel-b">
+          <span class="demo-panel__label">Terminal</span>
+          <span class="demo-panel__desc">A command-line interface for running scripts.</span>
+          <span class="demo-panel__size">-</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Three panel layout
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Three panel layout</h2>
+      <p class="demo-section__desc">
+        Three panels with two handles. Each <code>.resizable-handle</code> controls
+        the panel to its left (<code>previousElementSibling</code>). The outermost
+        panels can be resized independently; the center panel absorbs remaining space.
+      </p>
+
+      <div class="resizable-group demo-group">
+        <div class="resizable-panel demo-panel demo-panel-a">
+          <span class="demo-panel__label">File tree</span>
+          <span class="demo-panel__desc">Project files and folders.</span>
+          <span class="demo-panel__size">-</span>
+        </div>
+        <div class="resizable-handle" role="separator" tabindex="0" aria-orientation="vertical"></div>
+        <div class="resizable-panel demo-panel demo-panel-b">
+          <span class="demo-panel__label">Editor</span>
+          <span class="demo-panel__desc">The active file being edited.</span>
+          <span class="demo-panel__size">-</span>
+        </div>
+        <div class="resizable-handle" role="separator" tabindex="0" aria-orientation="vertical"></div>
+        <div class="resizable-panel demo-panel demo-panel-a">
+          <span class="demo-panel__label">Outline</span>
+          <span class="demo-panel__desc">Symbols and structure of the active file.</span>
+          <span class="demo-panel__size">-</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: With grip nub
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">With grip nub</h2>
+      <p class="demo-section__desc">
+        Side-by-side panels with an explicit drag affordance:
+        <code>.resizable-handle__grip</code> inside the handle. The nub is
+        <code>8px &times; 24px</code> (<code>--space-2 &times; --space-6</code>)
+        with <code>--color-line-strong</code> fill. On a horizontal handle the nub
+        rotates 90&deg; to stay perpendicular to the drag axis.
+      </p>
+
+      <div class="resizable-group demo-group">
+        <div class="resizable-panel demo-panel demo-panel-a">
+          <span class="demo-panel__label">Source</span>
+          <span class="demo-panel__desc">The input data or content area.</span>
+          <span class="demo-panel__size">-</span>
+        </div>
+        <div class="resizable-handle" role="separator" tabindex="0" aria-orientation="vertical">
+          <span class="resizable-handle__grip" aria-hidden="true"></span>
+        </div>
+        <div class="resizable-panel demo-panel demo-panel-b">
+          <span class="demo-panel__label">Result</span>
+          <span class="demo-panel__desc">Transformed output from the source panel.</span>
+          <span class="demo-panel__size">-</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    (function () {
+      /* ───────── helpers ───────── */
+
+      function panelSize(panel, vertical) {
+        return Math.round(vertical ? panel.offsetHeight : panel.offsetWidth) + 'px';
+      }
+
+      function refreshSizes() {
+        var groups = document.querySelectorAll('.resizable-group');
+        Array.prototype.forEach.call(groups, function (g) {
+          var vert = g.classList.contains('resizable-group--vertical');
+          var panels = g.querySelectorAll('.resizable-panel');
+          Array.prototype.forEach.call(panels, function (p) {
+            var el = p.querySelector('.demo-panel__size');
+            if (el) el.textContent = panelSize(p, vert);
+          });
+        });
+      }
+
+      function updateGroupSizes(group, vertical) {
+        var panels = group.querySelectorAll('.resizable-panel');
+        Array.prototype.forEach.call(panels, function (p) {
+          var el = p.querySelector('.demo-panel__size');
+          if (el) el.textContent = panelSize(p, vertical);
+        });
+      }
+
+      /* ───────── drag state ───────── */
+
+      var state = null;
+
+      document.addEventListener('mousedown', function (e) {
+        var handle = e.target.closest('.resizable-handle');
+        if (!handle) return;
+        e.preventDefault();
+
+        var group = handle.parentElement;
+        var vertical = group.classList.contains('resizable-group--vertical');
+        var panel = handle.previousElementSibling;
+        if (!panel || !panel.classList.contains('resizable-panel')) return;
+
+        var rect = panel.getBoundingClientRect();
+        var initSize = vertical ? rect.height : rect.width;
+        var initPos  = vertical ? e.clientY : e.clientX;
+
+        /* lock the panel to its current size */
+        panel.style.flex = '0 0 ' + initSize + 'px';
+
+        state = { panel: panel, group: group, initPos: initPos, initSize: initSize, vertical: vertical };
+      });
+
+      document.addEventListener('mousemove', function (e) {
+        if (!state) return;
+        var pos = state.vertical ? e.clientY : e.clientX;
+        var delta = pos - state.initPos;
+        var size = Math.max(60, state.initSize + delta);
+        state.panel.style.flex = '0 0 ' + size + 'px';
+        updateGroupSizes(state.group, state.vertical);
+      });
+
+      document.addEventListener('mouseup', function () {
+        if (state) updateGroupSizes(state.group, state.vertical);
+        state = null;
+      });
+
+      /* ───────── init ───────── */
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', refreshSizes);
+      } else {
+        refreshSizes();
+      }
+      window.addEventListener('resize', refreshSizes);
+    })();
+  </script>
+</body>
+</html>

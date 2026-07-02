@@ -1,0 +1,154 @@
+<!--
+  aspect-ratio.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Aspect Ratio primitive in the foundation design system.
+  Covers:
+    - 16/9 ratio (video thumbnail)
+    - 4/3 ratio (media tile)
+    - 1/1 ratio (square avatar)
+    - 3/2 ratio (photo)
+    - With placeholder content
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aspect Ratio · foundation primitive</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../release/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: var(--space-6);
+    }
+    .demo-card {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-line-subtle);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .demo-card__label {
+      padding: var(--space-2) var(--space-3);
+      font-size: var(--text-xs);
+      color: var(--color-content-secondary);
+      text-align: center;
+    }
+    .aspect-ratio-demo {
+      background: var(--color-surface-3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-content-tertiary);
+      font-size: var(--text-sm);
+      font-family: var(--font-mono);
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Aspect Ratio variants
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Aspect Ratio · ratio variants</h2>
+      <p class="demo-section__desc">
+        A layout box that locks its content to a fixed width:height ratio using
+        <code>.aspect-ratio</code> with an inline <code>--ratio</code> custom property.
+        The box sets no width of its own — it inherits from its container.
+      </p>
+
+      <div class="demo-grid">
+        <div class="demo-card">
+          <div class="aspect-ratio aspect-ratio-demo" style="--ratio: 16/9;">
+            16:9
+          </div>
+          <div class="demo-card__label"><code>--ratio: 16/9</code> — Video thumbnail</div>
+        </div>
+
+        <div class="demo-card">
+          <div class="aspect-ratio aspect-ratio-demo" style="--ratio: 4/3;">
+            4:3
+          </div>
+          <div class="demo-card__label"><code>--ratio: 4/3</code> — Media tile</div>
+        </div>
+
+        <div class="demo-card">
+          <div class="aspect-ratio aspect-ratio-demo" style="--ratio: 1/1;">
+            1:1
+          </div>
+          <div class="demo-card__label"><code>--ratio: 1/1</code> — Square avatar</div>
+        </div>
+
+        <div class="demo-card">
+          <div class="aspect-ratio aspect-ratio-demo" style="--ratio: 3/2;">
+            3:2
+          </div>
+          <div class="demo-card__label"><code>--ratio: 3/2</code> — Photo</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Fixed-width examples
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Aspect Ratio · constrained width</h2>
+      <p class="demo-section__desc">
+        Set <code>max-width</code> at the call site to control the box size.
+        The height derives from the ratio.
+      </p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-6);">
+        <div>
+          <div class="aspect-ratio aspect-ratio-demo" style="--ratio: 16/9; max-width: 300px;">
+            16:9 · 300px max-width
+          </div>
+        </div>
+        <div>
+          <div class="aspect-ratio aspect-ratio-demo" style="--ratio: 1/1; max-width: 150px;">
+            1:1 · 150px max-width
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

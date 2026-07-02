@@ -1,0 +1,184 @@
+<!--
+  badge.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Badge primitive in the foundation design system.
+  Covers:
+    - All 5 tones: neutral, success, warning, error, info
+    - Shapes: pill (default, rounded-full) and tag (rounded-sm, font-mono)
+    - Dot indicator: leading status dot via bg-current
+    - With inline icon (size-3, 12px)
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Badge · foundation primitive</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../release/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-3);
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Tones (the only color axis)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Badge · tones</h2>
+      <p class="demo-section__desc">
+        Color is driven entirely by <code>tone</code> — there is no
+        <code>variant</code> prop. Each tone maps to a semantic color pair.
+        Default tone is <strong>neutral</strong>.
+      </p>
+
+      <div class="demo-row">
+        <span class="badge badge--neutral">Neutral</span>
+        <span class="badge badge--success">Success</span>
+        <span class="badge badge--warning">Warning</span>
+        <span class="badge badge--error">Error</span>
+        <span class="badge badge--info">Info</span>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Shapes — pill (default) vs tag
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Badge · shapes</h2>
+      <p class="demo-section__desc">
+        <strong>pill</strong> (default, <code>rounded-full</code>) for status/category
+        labels. <strong>tag</strong> (<code>.badge--tag</code>,
+        <code>rounded-sm</code> + <code>font-mono</code>) for code-like tokens/IDs.
+        No modifier class needed for pill — it's the base shape.
+      </p>
+
+      <div class="demo-row">
+        <span class="badge badge--neutral">Pill (default)</span>
+        <span class="badge badge--neutral badge--tag">TAG-ID-001</span>
+        <span class="badge badge--info badge--tag">v3.2.1</span>
+        <span class="badge badge--success badge--tag">BUILD-42</span>
+        <span class="badge badge--error badge--tag">ERR-500</span>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Dot indicator
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Badge · dot indicator</h2>
+      <p class="demo-section__desc">
+        Add a leading <code>.badge__dot</code> span (6px, <code>bg-current</code>) to
+        reinforce status. The dot inherits the badge's text color so it always matches
+        the tone and reads a shade darker than the background.
+      </p>
+
+      <div class="demo-row">
+        <span class="badge badge--success"><span class="badge__dot" aria-hidden="true"></span>Active</span>
+        <span class="badge badge--warning"><span class="badge__dot" aria-hidden="true"></span>Pending</span>
+        <span class="badge badge--error"><span class="badge__dot" aria-hidden="true"></span>Failed</span>
+        <span class="badge badge--neutral"><span class="badge__dot" aria-hidden="true"></span>Inactive</span>
+        <span class="badge badge--info"><span class="badge__dot" aria-hidden="true"></span>Updated</span>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: With inline icon
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Badge · with icon</h2>
+      <p class="demo-section__desc">
+        Inline SVG icons are clamped to 12px (<code>size-3</code>). Padding tightens
+        on the icon side via <code>has-data-[icon=inline-start]</code> /
+        <code>has-data-[icon=inline-end]</code> on the React side; the artifact just
+        places the SVG as the first child.
+      </p>
+
+      <div class="demo-row">
+        <span class="badge badge--success">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+          Verified
+        </span>
+        <span class="badge badge--warning">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+          Needs review
+        </span>
+        <span class="badge badge--error">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
+          Blocked
+        </span>
+        <span class="badge badge--info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          Beta
+        </span>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 5: Status-in-context
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Badge · in context</h2>
+      <p class="demo-section__desc">
+        Typical use of badges for status in a table row or card.
+      </p>
+
+      <div class="demo-row" style="gap:var(--space-8);align-items:flex-start;">
+        <div style="display:flex;flex-direction:column;gap:var(--space-2);font-size:var(--text-sm);">
+          <span>Order #1024 <span class="badge badge--success"><span class="badge__dot" aria-hidden="true"></span>Completed</span></span>
+          <span>Order #1025 <span class="badge badge--warning"><span class="badge__dot" aria-hidden="true"></span>Processing</span></span>
+          <span>Order #1026 <span class="badge badge--error"><span class="badge__dot" aria-hidden="true"></span>Cancelled</span></span>
+          <span>Order #1027 <span class="badge badge--neutral"><span class="badge__dot" aria-hidden="true"></span>Draft</span></span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:var(--space-2);font-size:var(--text-sm);">
+          <span>Plan: <span class="badge badge--info">Enterprise</span></span>
+          <span>Region: <span class="badge badge--neutral badge--tag">us-east-1</span></span>
+          <span>Version: <span class="badge badge--neutral badge--tag">v4.2.0</span></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

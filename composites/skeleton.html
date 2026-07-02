@@ -1,0 +1,287 @@
+<!--
+  skeleton — Foundation composite example
+  ========================================
+  When to use (AI decision guide)
+  ──────────────────────────────────────────────────────────────────────
+  Use skeleton for content-loading placeholders that preserve layout.
+  Shapes: line, text, title, block, circle. Use skeleton-row inside
+  table-frame for table loading states.
+  · spinner — for inline button/control loading, not whole-page
+  · Do NOT leave a blank void while content loads; always show skeleton
+  · Skeleton replaces content in the SAME spatial region
+
+  Demonstrates:
+    - .skeleton with shape variants: --line, --text, --title, --block, --circle
+    - .skeleton-row for table-loading scaffold (inside .table-frame)
+    - Card skeleton layout (matching stat-card / card shape)
+    - KV grid loading state with skeleton rows
+    - Slow opacity pulse animation (reduced-motion compliant)
+    - The skeleton preserves layout so nothing jumps on load
+
+  Cross-reference: @cloud/ui ui/primitives/Skeleton.
+    The @cloud/ui version uses Tailwind's animate-pulse + rounded-md + bg-muted;
+    the composite CSS implements the same with a custom keyframe skeleton-pulse.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skeleton · Foundation composite</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="../primitives/primitives.css">
+  <link rel="stylesheet" href="../release/composites.css">
+  <style>
+    /* Page-local layout */
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--color-surface-1);
+      padding: var(--space-6);
+    }
+    .example-section {
+      margin-bottom: var(--space-10);
+    }
+    .example-section h2 {
+      font-size: var(--text-xl);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin-bottom: var(--space-4);
+    }
+    .example-section h3 {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--color-content-tertiary);
+      margin-bottom: var(--space-3);
+      margin-top: var(--space-6);
+    }
+    /* Label on skeleton shapes */
+    .skeleton-label {
+      font-size: var(--text-xs);
+      color: var(--color-content-tertiary);
+      margin-bottom: var(--space-2);
+      display: block;
+    }
+    .demo-card {
+      border: 1px solid var(--color-line-default);
+      border-radius: var(--radius-xl);
+      background-color: var(--color-surface-2);
+      box-shadow: var(--shadow-1);
+      max-width: 600px;
+    }
+    .demo-card__header {
+      padding-inline: var(--space-5);
+      padding-block: var(--space-4);
+      border-bottom: 1px solid var(--color-line-subtle);
+      font-weight: 600;
+      font-size: var(--text-md);
+      color: var(--color-content-primary);
+    }
+    .demo-card__content {
+      padding: var(--space-5);
+    }
+    /* Gallery of individual shapes */
+    .shape-gallery {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: var(--space-4);
+    }
+    .shape-gallery__item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-1);
+    }
+    .shape-gallery__item .skeleton-label {
+      margin-bottom: 0;
+    }
+    /* Loading card skeleton layout */
+    .loading-card {
+      border: 1px solid var(--color-line-default);
+      border-radius: var(--radius-xl);
+      background-color: var(--color-surface-2);
+      box-shadow: var(--shadow-1);
+      padding: var(--space-4);
+      max-width: 320px;
+    }
+    .loading-card__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: var(--space-3);
+    }
+    .loading-card__body {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    .loading-card__footer {
+      margin-top: var(--space-3);
+    }
+    /* Flex row for side-by-side examples */
+    .demo-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-6);
+    }
+    .demo-row > * {
+      flex: 1;
+      min-width: 280px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="example-section">
+    <h2>Skeleton · shape variants</h2>
+    <p style="font-size: var(--text-sm); color: var(--color-content-secondary); margin-bottom: var(--space-4);">
+      Five named shapes — <code>--line</code>, <code>--text</code>,
+      <code>--title</code>, <code>--block</code>, <code>--circle</code> — driven
+      by a slow CSS opacity pulse. The pulse is removed under
+      <code>prefers-reduced-motion</code>.
+    </p>
+
+    <div class="shape-gallery">
+      <div class="shape-gallery__item">
+        <span class="skeleton-label">--line</span>
+        <div class="skeleton skeleton--line" style="width: 80px;"></div>
+      </div>
+      <div class="shape-gallery__item">
+        <span class="skeleton-label">--text</span>
+        <div class="skeleton skeleton--text" style="width: 120px;"></div>
+      </div>
+      <div class="shape-gallery__item">
+        <span class="skeleton-label">--title</span>
+        <div class="skeleton skeleton--title"></div>
+      </div>
+      <div class="shape-gallery__item">
+        <span class="skeleton-label">--block</span>
+        <div class="skeleton skeleton--block" style="width: 80px;"></div>
+      </div>
+      <div class="shape-gallery__item">
+        <span class="skeleton-label">--circle</span>
+        <div class="skeleton skeleton--circle" style="width: var(--space-10);"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="example-section">
+    <h2>Skeleton · stat card loading placeholder</h2>
+    <p style="font-size: var(--text-sm); color: var(--color-content-secondary); margin-bottom: var(--space-4);">
+      A stat-card-shaped loading skeleton: a title line + icon placeholder in the
+      header, a large value placeholder, and a description line.
+    </p>
+
+    <div class="loading-card">
+      <div class="loading-card__header">
+        <div style="display: flex; flex-direction: column; gap: var(--space-2); flex: 1;">
+          <div class="skeleton skeleton--line" style="width: 80px;"></div>
+          <div class="skeleton skeleton--title" style="height: var(--text-2xl);"></div>
+        </div>
+        <div class="skeleton skeleton--circle" style="width: var(--space-6); height: var(--space-6);"></div>
+      </div>
+      <div class="loading-card__body">
+        <div class="skeleton skeleton--text" style="width: 60%;"></div>
+        <div class="skeleton skeleton--text" style="width: 40%;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="example-section">
+    <h2>Skeleton · table loading scaffold</h2>
+    <p style="font-size: var(--text-sm); color: var(--color-content-secondary); margin-bottom: var(--space-4);">
+      A <code>.table-frame</code> with <code>.skeleton-row</code> children,
+      each holding multiple <code>.skeleton--line</code> bars that simulate
+      columns. The scaffold occupies the same box as the loaded table.
+    </p>
+
+    <div class="demo-card">
+      <div class="demo-card__header">Loading transactions</div>
+      <div class="table-frame" style="border: none; border-radius: 0; box-shadow: none;">
+        <div class="skeleton-row">
+          <div class="skeleton skeleton--line" style="width: 20%;"></div>
+          <div class="skeleton skeleton--line" style="width: 35%;"></div>
+          <div class="skeleton skeleton--line" style="width: 15%;"></div>
+          <div class="skeleton skeleton--line" style="width: 12%;"></div>
+          <div class="skeleton skeleton--line" style="width: 10%;"></div>
+        </div>
+        <div class="skeleton-row">
+          <div class="skeleton skeleton--line" style="width: 20%;"></div>
+          <div class="skeleton skeleton--line" style="width: 35%;"></div>
+          <div class="skeleton skeleton--line" style="width: 15%;"></div>
+          <div class="skeleton skeleton--line" style="width: 12%;"></div>
+          <div class="skeleton skeleton--line" style="width: 10%;"></div>
+        </div>
+        <div class="skeleton-row">
+          <div class="skeleton skeleton--line" style="width: 20%;"></div>
+          <div class="skeleton skeleton--line" style="width: 35%;"></div>
+          <div class="skeleton skeleton--line" style="width: 15%;"></div>
+          <div class="skeleton skeleton--line" style="width: 12%;"></div>
+          <div class="skeleton skeleton--line" style="width: 10%;"></div>
+        </div>
+        <div class="skeleton-row">
+          <div class="skeleton skeleton--line" style="width: 20%;"></div>
+          <div class="skeleton skeleton--line" style="width: 35%;"></div>
+          <div class="skeleton skeleton--line" style="width: 15%;"></div>
+          <div class="skeleton skeleton--line" style="width: 12%;"></div>
+          <div class="skeleton skeleton--line" style="width: 10%;"></div>
+        </div>
+        <div class="skeleton-row" style="border-bottom: none;">
+          <div class="skeleton skeleton--line" style="width: 20%;"></div>
+          <div class="skeleton skeleton--line" style="width: 35%;"></div>
+          <div class="skeleton skeleton--line" style="width: 15%;"></div>
+          <div class="skeleton skeleton--line" style="width: 12%;"></div>
+          <div class="skeleton skeleton--line" style="width: 10%;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="example-section">
+    <h2>Skeleton · card content loading</h2>
+    <p style="font-size: var(--text-sm); color: var(--color-content-secondary); margin-bottom: var(--space-4);">
+      A loading state for a card's content: title, multiple text lines, and an
+      action button area. The structure matches the eventual loaded layout so
+      nothing jumps.
+    </p>
+
+    <div class="demo-card">
+      <div class="demo-card__header">
+        <div class="skeleton skeleton--title" style="width: 120px; height: var(--text-md);"></div>
+      </div>
+      <div class="demo-card__content">
+        <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+          <div class="skeleton skeleton--text" style="width: 100%;"></div>
+          <div class="skeleton skeleton--text" style="width: 100%;"></div>
+          <div class="skeleton skeleton--text" style="width: 65%;"></div>
+        </div>
+        <div style="margin-top: var(--space-4); display: flex; gap: var(--space-2);">
+          <div class="skeleton skeleton--block" style="width: 100px; height: var(--spacing-control-md); border-radius: var(--radius-md);"></div>
+          <div class="skeleton skeleton--block" style="width: 100px; height: var(--spacing-control-md); border-radius: var(--radius-md);"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="example-section">
+    <h2>Skeleton · profile / avatar + details</h2>
+    <p style="font-size: var(--text-sm); color: var(--color-content-secondary); margin-bottom: var(--space-4);">
+      A common pattern: circular avatar skeleton beside a vertical stack of text
+      skeletons for a user/profile loading state.
+    </p>
+
+    <div style="display: flex; gap: var(--space-4); padding: var(--space-4); border: 1px solid var(--color-line-default); border-radius: var(--radius-xl); background-color: var(--color-surface-2); max-width: 400px;">
+      <div class="skeleton skeleton--circle" style="width: var(--space-12); height: var(--space-12);"></div>
+      <div style="flex: 1; display: flex; flex-direction: column; gap: var(--space-2); justify-content: center;">
+        <div class="skeleton skeleton--title" style="width: 140px; height: var(--text-lg);"></div>
+        <div class="skeleton skeleton--text" style="width: 200px;"></div>
+        <div class="skeleton skeleton--text" style="width: 160px;"></div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

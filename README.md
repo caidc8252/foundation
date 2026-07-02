@@ -10,6 +10,11 @@ and drifting apart. Token values, primitive contracts, pattern archetypes, and
 the design law are defined **here, once**; each consumer reads them in the form
 it can use.
 
+> **Building an artifact (esp. with an AI agent)?** Read [`AGENTS.md`](AGENTS.md) —
+> the closed set you may use and how to find each piece fast. The legal token /
+> class / pattern names are enumerated in the committed [`release/catalog.md`](release/catalog.md)
+> (machine mirror: `release/catalog.json`); validate with `node scripts/check-artifact.mjs <file>`.
+
 > Scope: **one brand**, same-brand prototype→production pipeline. Not a generic
 > theme — off-brand artifact work forks its own tokens. See
 > `governance/principles.md` §7.
@@ -18,7 +23,7 @@ it can use.
 
 | Layer | Lives in | What's shared | What stays per-consumer |
 |---|---|---|---|
-| **L1 · Tokens** | `tokens/` (+ emitted `dist/`) | the values | — |
+| **L1 · Tokens** | `tokens/` (+ emitted `build/current` / `release`) | the values | — |
 | **L2 · Primitives** | `primitives/` | contract (`*.md`) + reference CSS | React impl (Next) · bespoke HTML (artifact) |
 | **L2.5 · Composites** | `composites/` | contract (`*.md`) + reference CSS | React impl (Next) · bespoke HTML (artifact) |
 | **L3 · Patterns** | `patterns/` | named archetype structure | the page implementations |
@@ -44,13 +49,29 @@ foundation/
   tokens/            L1 — @theme source (the single source of truth for values)
     palette·surface·typography·elevation·motion·layout·chart·dark.css
     index.css          import-only entry
-  emit/build.mjs     emitter: @theme source → Tailwind-free artifact outputs
-  dist/              GENERATED — never hand-edit
+  emit/build.mjs     emitter: source → build/current + release metadata
+  build/
+    current/         generated current-source style snapshot for prototype preview
+      tokens.inline.css
+      primitives.css
+      composites.css
+      manifest.json
+  versions/
+    v1/              first saved prototype snapshot
+      tokens.inline.css
+      composites.css
+      manifest.json
+  release/           committed current artifact snapshot used by agents
     tokens.inline.css  flat :root{} + dark, paste into an artifact <style>
     tokens.json        { light, dark } maps for artifact JS
+    composites.css      current composite snapshot
+    catalog.md/json     closed-set catalog
+    manifest.json       snapshot metadata
   primitives/        L2 — button.md … (contracts) + primitives.css (reference)
   composites/        L2.5 — app-frame · page-body · page-header · data-table · list-filter ·
-                       summary-bar · pagination · empty-state · skeleton (contracts) + composites.css
+                       summary-bar · pagination · empty-state · skeleton (list archetype) ·
+                       detail-header · kv-grid · section-card · feed-list · diff (detail archetype) ·
+                       option-card · product-card (+ product-grid) (contracts) + composites.css
   patterns/          L3 — list-page · detail-page · create-form (archetypes)
   governance/        L4 — principles · token-change · enforcement
 ```
@@ -74,14 +95,36 @@ the primitive reference classes:
 
 ```html
 <style>
-  /* paste dist/tokens.inline.css       here — token values first */
+  /* paste release/tokens.inline.css    here — token values first */
   /* paste primitives/primitives.css    here — atoms next */
-  /* paste composites/composites.css    here — building blocks last (reuse atoms) */
+  /* paste release/composites.css       here — building blocks last (reuse atoms) */
 </style>
 ```
 
 Order matters: composites reuse primitive classes (`.btn`, `.input`), so the
 primitive CSS must come first.
+
+For pattern-based pages, start with the builder instead of copying by hand:
+
+```bash
+node scripts/build-artifact.mjs --list
+node scripts/build-artifact.mjs --pattern list-page --out artifacts/customers.html --title "Customers"
+```
+
+It ports the page inside `.app-frame__main`, inlines the three CSS layers, wraps
+the result in the frameless shell (the app-frame skeleton minus the sidebar/header
+chrome, `main.app-frame__main` as the scroll root), and runs the strict artifact check.
+
+For natural-language requests, read `patterns/router.json` first. It maps intent
+phrases like "registration", "multi-step onboarding", "customer management", and
+"detail page" to a catalog pattern plus the `build-artifact` example to start
+from. Each route lists the composites it uses in `route.composites`; configure
+each from its own contract (`composites/<x>.md`) and HTML sample. Keep the router
+aligned with the catalog and examples:
+
+```bash
+node scripts/check-pattern-router.mjs
+```
 
 `primitives.css` opens with a `*{box-sizing:border-box}` baseline — the controls
 size with width/height + padding and require it. The Next app gets border-box
@@ -97,21 +140,32 @@ column that deviates once shipped. The **port boundary is `.app-frame__main`'s
 contents**; the frame is discarded (the app already has `Layout`). The frame's
 `248 / 56 / 56` mirror `Layout`'s hardcoded consts — promoting those to shared
 foundation layout tokens that `Layout` consumes is the open single-source
-follow-up (it touches `packages/ui`, so it needs a deliberate go-ahead).
+follow-up (it reaches into the consumer's component package, so it needs a deliberate go-ahead).
 
 Artifacts are frozen snapshots by nature (CSP, no external fetch). "Syncing" an
-artifact = re-inlining the current `dist/` — there is no live link, and that's
-correct.
+artifact = re-inlining the current `release/` — there is no live link, and
+that's correct.
 
 ## Sync model
 
-One upstream (this repo). Each consumer pins a version (pnpm git dependency, e.g.
-`"@cloud/foundation": "github:<org>/foundation#v0.1.0"`) and bumps when ready.
-Token/contract changes are PRs **here**, then a tagged release — never a local
-patch in a consumer. Full process: `governance/token-change.md`.
-
-> `dist/` is committed so git-dependency consumers get it without a build step.
-> Regenerate with `pnpm build` (or `node emit/build.mjs`) after editing `tokens/`.
+One upstream (this repo). `release/` is committed as the current artifact
+snapshot, and `build/current/` is the generated current-source style snapshot
+for prototype preview. Numbered `versions/vN/` directories are saved prototype
+snapshots; `pnpm build` does not overwrite them. Token/contract changes are PRs
+**here**, then `pnpm build` refreshes `build/current` and release
+catalog/token metadata. Publishing a saved prototype version updates `release/`
+to that selected snapshot only after editor token/class overrides have been
+promoted back into source CSS/contracts. For a draft, click `申请发布` or run
+`node scripts/promote-version.mjs vN` (or `pnpm promote -- vN`) to generate the
+Agent handoff brief. Agent promotion updates source, runs `pnpm build` and
+validation, then creates the promotion PR and reports its URL. After that PR
+lands, finalize the same saved version with `pnpm finalize -- vN`; `vN` is rewritten from the promoted source
+and becomes the releaseable version. The prototype selector remains focused on
+saved `vN` snapshots; `build/current` is a generated build/release check artifact.
+Saved version manifests record the governed source Git commit; release
+restores `tokens/`, `primitives/`, `composites/`, `patterns/`, and
+`governance/` from that commit before writing `release/`. Manual restore:
+`pnpm restore:source -- vN --build`. Full process: `governance/token-change.md`.
 
 ## Status — first draft
 
@@ -121,6 +175,15 @@ patch in a consumer. Full process: `governance/token-change.md`.
   list-filter · summary-bar · pagination (incl. the `RichPagination` list footer) ·
   empty-state · skeleton (contracts + `composites.css`), mirroring @cloud/ui's
   `layout/` + `list-filter/` + table families.
+- ✅ L2.5 composites for the **detail archetype**, lifted from the carbon-admin
+  portal — detail-header · kv-grid · section-card · feed-list · diff, plus the
+  admin-shell option-card (contracts + `composites.css`). These back the
+  [`detail-page`](patterns/detail-page.md) pattern, which previously named a
+  KV grid + detail header it had no composite for.
+- ✅ L2.5 `product-card` (+ `product-grid`) — the storefront catalog tile from
+  the carbon-admin `shop-browse` screen: a card-grid catalog, the buyer-facing
+  cousin of the operator-facing `data-table` (the admin product *management*
+  list stays a `data-table`).
 - ✅ L3 archetype stubs · ✅ L4 governance.
 - ⏳ **Not yet wired**: `@cloud/ui`'s `index.css` still defines its own token
   values; pointing it at `@cloud/foundation/tokens` (and verifying the compiled

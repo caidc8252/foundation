@@ -1,0 +1,193 @@
+<!--
+  object-tile.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Object Tile primitive in the foundation design system.
+  Covers:
+    - All sizes (sm / md / lg) with initials
+    - Tone variants (neutral + cat-1 through cat-6)
+    - Content modes: icon, initials, label
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Object Tile · foundation primitive</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../release/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-flex {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-6);
+    }
+    .demo-flex-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .demo-tile-label {
+      font-size: var(--text-xs);
+      color: var(--color-content-secondary);
+      white-space: nowrap;
+    }
+    .demo-grid6 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-4);
+    }
+    @media (max-width: 640px) {
+      .demo-grid6 { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: All sizes
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Object Tile · all sizes</h2>
+      <p class="demo-section__desc">
+        Three sizes: <code>.object-tile--sm</code> (32px),
+        <code>.object-tile--md</code> (40px, default), and
+        <code>.object-tile--lg</code> (48px). Each tile shows
+        initials rendered with a neutral avatar surface.
+      </p>
+
+      <div class="demo-flex">
+        <div class="demo-flex-col">
+          <div class="object-tile object-tile--sm object-tile--neutral" aria-hidden="true">AC</div>
+          <span class="demo-tile-label">sm</span>
+        </div>
+        <div class="demo-flex-col">
+          <div class="object-tile object-tile--md object-tile--neutral" aria-hidden="true">NP</div>
+          <span class="demo-tile-label">md</span>
+        </div>
+        <div class="demo-flex-col">
+          <div class="object-tile object-tile--lg object-tile--neutral" aria-hidden="true">SB</div>
+          <span class="demo-tile-label">lg</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Tones
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Object Tile · tones</h2>
+      <p class="demo-section__desc">
+        Neutral tone (<code>.object-tile--neutral</code>) uses
+        <code>avatar-bg</code> / <code>avatar-fg</code>.
+        Categorical tones (<code>.object-tile--cat-1</code> through
+        <code>.object-tile--cat-6</code>) colour the tile from the
+        content-hashed palette. All shown at <code>md</code> size.
+      </p>
+
+      <div class="demo-flex">
+        <div class="demo-flex-col">
+          <div class="object-tile object-tile--md object-tile--neutral" aria-hidden="true">AC</div>
+          <span class="demo-tile-label">neutral</span>
+        </div>
+        <div class="demo-flex-col">
+          <div class="object-tile object-tile--md object-tile--cat-1" aria-hidden="true">AC</div>
+          <span class="demo-tile-label">cat-1</span>
+        </div>
+        <div class="demo-flex-col">
+          <div class="object-tile object-tile--md object-tile--cat-2" aria-hidden="true">AC</div>
+          <span class="demo-tile-label">cat-2</span>
+        </div>
+        <div class="demo-flex-col">
+          <div class="object-tile object-tile--md object-tile--cat-3" aria-hidden="true">AC</div>
+          <span class="demo-tile-label">cat-3</span>
+        </div>
+        <div class="demo-flex-col">
+          <div class="object-tile object-tile--md object-tile--cat-4" aria-hidden="true">AC</div>
+          <span class="demo-tile-label">cat-4</span>
+        </div>
+        <div class="demo-flex-col">
+          <div class="object-tile object-tile--md object-tile--cat-5" aria-hidden="true">AC</div>
+          <span class="demo-tile-label">cat-5</span>
+        </div>
+        <div class="demo-flex-col">
+          <div class="object-tile object-tile--md object-tile--cat-6" aria-hidden="true">AC</div>
+          <span class="demo-tile-label">cat-6</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Content modes
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Object Tile · content modes</h2>
+      <p class="demo-section__desc">
+        Three content modes: <strong>icon</strong> (a glyph SVG wrapped in
+        <code>.object-tile__icon</code>), <strong>initials</strong> (text
+        node), and <strong>label</strong> (short code shown whole).
+      </p>
+
+      <div class="demo-flex">
+        <div class="demo-flex-col">
+          <div class="object-tile object-tile--md object-tile--neutral" aria-hidden="true">
+            <span class="object-tile__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+            </span>
+          </div>
+          <span class="demo-tile-label">icon</span>
+        </div>
+        <div class="demo-flex-col">
+          <div class="object-tile object-tile--md object-tile--neutral" aria-hidden="true">NP</div>
+          <span class="demo-tile-label">initials</span>
+        </div>
+        <div class="demo-flex-col">
+          <div class="object-tile object-tile--md object-tile--neutral" aria-hidden="true">v2.0</div>
+          <span class="demo-tile-label">label (code)</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

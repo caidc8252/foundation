@@ -1,0 +1,195 @@
+<!--
+  breadcrumb.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Breadcrumb primitive in the foundation design system.
+  Covers:
+    - Standard breadcrumb trail with / separators
+    - Breadcrumb with chevron separators
+    - Breadcrumb with ellipsis (collapsed middle)
+    - Multi-level trail
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Breadcrumb · foundation primitive</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../release/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Standard breadcrumb (/ separator)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Breadcrumb · default / separator</h2>
+      <p class="demo-section__desc">
+        A two-level breadcrumb using <code>.breadcrumb__list</code> with
+        <code>.breadcrumb__link</code> for ancestors and
+        <code>.breadcrumb__page</code> for the current page. Separators are
+        <code>.breadcrumb__separator</code> with a <code>/</code> glyph.
+      </p>
+
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb__list">
+          <li class="breadcrumb__item">
+            <a class="breadcrumb__link" href="#">Dashboard</a>
+          </li>
+          <li class="breadcrumb__separator" role="presentation" aria-hidden="true">/</li>
+          <li class="breadcrumb__item">
+            <a class="breadcrumb__link" href="#">Projects</a>
+          </li>
+          <li class="breadcrumb__separator" role="presentation" aria-hidden="true">/</li>
+          <li class="breadcrumb__item">
+            <span class="breadcrumb__page" role="link" aria-disabled="true" aria-current="page">Acme Corp</span>
+          </li>
+        </ol>
+      </nav>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Chevron separator
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Breadcrumb · chevron separator</h2>
+      <p class="demo-section__desc">
+        Replace the <code>/</code> glyph with a chevron SVG for a lighter visual.
+      </p>
+
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb__list">
+          <li class="breadcrumb__item">
+            <a class="breadcrumb__link" href="#">Home</a>
+          </li>
+          <li class="breadcrumb__separator" role="presentation" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:block;"><path d="m9 18 6-6-6-6"/></svg>
+          </li>
+          <li class="breadcrumb__item">
+            <a class="breadcrumb__link" href="#">Settings</a>
+          </li>
+          <li class="breadcrumb__separator" role="presentation" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:block;"><path d="m9 18 6-6-6-6"/></svg>
+          </li>
+          <li class="breadcrumb__item">
+            <span class="breadcrumb__page" role="link" aria-disabled="true" aria-current="page">Preferences</span>
+          </li>
+        </ol>
+      </nav>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: With ellipsis (collapsed middle)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Breadcrumb · with ellipsis</h2>
+      <p class="demo-section__desc">
+        A <code>.breadcrumb__ellipsis</code> collapses deep middle crumbs into a
+        "More" button with a horizontal-dots icon. The current page uses
+        <code>.breadcrumb__page</code> with <code>aria-current="page"</code>.
+      </p>
+
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb__list">
+          <li class="breadcrumb__item">
+            <a class="breadcrumb__link" href="#">Root</a>
+          </li>
+          <li class="breadcrumb__separator" role="presentation" aria-hidden="true">/</li>
+          <li class="breadcrumb__item">
+            <a class="breadcrumb__link" href="#">Level 1</a>
+          </li>
+          <li class="breadcrumb__separator" role="presentation" aria-hidden="true">/</li>
+          <li class="breadcrumb__item">
+            <span class="breadcrumb__ellipsis">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:block;" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+              <span class="sr-only">More</span>
+            </span>
+          </li>
+          <li class="breadcrumb__separator" role="presentation" aria-hidden="true">/</li>
+          <li class="breadcrumb__item">
+            <a class="breadcrumb__link" href="#">Deep level</a>
+          </li>
+          <li class="breadcrumb__separator" role="presentation" aria-hidden="true">/</li>
+          <li class="breadcrumb__item">
+            <span class="breadcrumb__page" role="link" aria-disabled="true" aria-current="page">Current page</span>
+          </li>
+        </ol>
+      </nav>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: Deep trail
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Breadcrumb · deep trail</h2>
+      <p class="demo-section__desc">
+        A 4-level breadcrumb showing a full hierarchy from root to the current page.
+      </p>
+
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb__list">
+          <li class="breadcrumb__item">
+            <a class="breadcrumb__link" href="#">Organization</a>
+          </li>
+          <li class="breadcrumb__separator" role="presentation" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:block;"><path d="m9 18 6-6-6-6"/></svg>
+          </li>
+          <li class="breadcrumb__item">
+            <a class="breadcrumb__link" href="#">Team</a>
+          </li>
+          <li class="breadcrumb__separator" role="presentation" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:block;"><path d="m9 18 6-6-6-6"/></svg>
+          </li>
+          <li class="breadcrumb__item">
+            <a class="breadcrumb__link" href="#">Projects</a>
+          </li>
+          <li class="breadcrumb__separator" role="presentation" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;display:block;"><path d="m9 18 6-6-6-6"/></svg>
+          </li>
+          <li class="breadcrumb__item">
+            <span class="breadcrumb__page" role="link" aria-disabled="true" aria-current="page">Acme Web App</span>
+          </li>
+        </ol>
+      </nav>
+    </div>
+
+  </div>
+</body>
+</html>

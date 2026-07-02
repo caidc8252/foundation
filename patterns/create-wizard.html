@@ -1,0 +1,538 @@
+<!--
+  Pattern · Create wizard — copyable example
+  ─────────────────────────────────────────────────────────────────────────────
+  Companion to ./create-wizard.md (the contract — when the two disagree, the .md wins).
+  Copy this file and edit the markup to build a real multi-step create flow:
+  a sticky page-header with a secondary Cancel, a step-indicator rail, the CURRENT
+  step's form-section card beside a sticky summary rail, and a Back/Continue nav
+  below the card. Includes all three interactive steps and the done state.
+  Just one step (or two, no branching)? Use the single-step form instead — that is
+  its own pattern: ./create-form.md (./create-form.html).
+
+  HOW THE STYLES LOAD
+    This file LINKS the reference CSS (relative to patterns/), so run `pnpm build` after source edits to refresh release — no forked copy that can drift.
+    Order is load-bearing:  tokens → primitives → composites.
+    To ship as a self-contained artifact (CSP, no external fetch), inline those
+    three blocks into a <style> instead — see README "How each consumer uses it".
+
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pattern · Create wizard — foundation example</title>
+
+<link rel="stylesheet" href="../release/tokens.inline.css">
+<link rel="stylesheet" href="../primitives/primitives.css">
+<link rel="stylesheet" href="../release/composites.css">
+
+<style>
+
+  /* Ensure [hidden] always wins over component display rules (e.g. .btn { display: inline-flex }). */
+  [hidden] { display: none !important; }
+
+  /* Page-local composition — NOT new design vocabulary. All values are tokens. */
+
+  /* One Field unit per row; consistent vertical rhythm between fields. */
+  .form-stack { display: flex; flex-direction: column; gap: var(--space-4); }
+  /* Selects in a form span the row (the toolbar default is fit-content). */
+  .form-stack .select { width: 100%; }
+  /* Two fields side by side on wider widths. */
+  .form-row { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
+
+  .form-title { font-size: var(--text-md); font-weight: 600; color: var(--color-content-primary); }
+  .group-label { font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-content-tertiary); margin-bottom: var(--space-1); }
+
+  /* Wrap the bare step-indicator for the card look (per step-indicator.md). */
+  .stepper-card { border: 1px solid var(--color-line-default); background-color: var(--color-surface-2); border-radius: var(--radius-xl); box-shadow: var(--shadow-1); padding: var(--space-4) var(--space-6); }
+
+  /* Body row: the step's form-section cards (flex-1) beside the summary rail. */
+  .wizard-cols { display: flex; align-items: flex-start; gap: var(--space-6); }
+  .wizard-main { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: var(--space-6); }
+
+  /* Summary rail — sticky card, fixed width (mirrors tsx w-75 = 300px). */
+  .summary-rail { flex: 0 0 18rem; position: sticky; top: var(--space-6); }
+  .summary-rail__title { font-size: var(--text-sm); font-weight: 600; letter-spacing: -0.01em; color: var(--color-content-primary); }
+  /* dl is a flex column; each row is its own flex div so dt width is per-row. */
+  .summary-dl { display: flex; flex-direction: column; gap: var(--space-2); font-size: var(--text-xs); }
+  .summary-row { display: flex; gap: var(--space-3); }
+  .summary-row dt { width: 5rem; flex-shrink: 0; color: var(--color-content-tertiary);
+    text-transform: uppercase;   /* kv-grid recipe: mandatory UPPERCASE */
+    letter-spacing: 0.06em;      /* overline tracking */
+    font-weight: 500;            /* kv-grid label weight */
+  }
+  .summary-row dd { min-width: 0; flex: 1; word-break: break-word; color: var(--color-content-primary); margin: 0; }
+  .summary-row dd.is-empty { color: var(--color-content-tertiary); }
+
+  /* Wizard footer nav: sits BELOW the step card(s), actions right-aligned. */
+  .wizard-footer { display: flex; align-items: center; justify-content: flex-end; gap: var(--space-2); }
+
+  .field-check { display: flex; align-items: flex-start; gap: var(--space-2); }
+  .field-check__text { font-size: var(--text-sm); color: var(--color-content-primary); }
+
+  /* Review step: read-only key-value sections. */
+  .review-section + .review-section { margin-top: var(--space-5); padding-top: var(--space-5); border-top: 1px solid var(--color-line-subtle); }
+  .review-kv { display: grid; grid-template-columns: 10rem 1fr; gap: var(--space-2) var(--space-4); }
+  .review-kv dt { font-size: var(--text-sm); color: var(--color-content-tertiary); }
+  .review-kv dd { font-size: var(--text-sm); color: var(--color-content-primary); margin: 0; }
+  .review-kv dd.is-empty { color: var(--color-content-tertiary); }
+
+  /* Line-item collector: compact inline add-form + item list. */
+  .line-item-form { display: flex; gap: var(--space-2); align-items: flex-end; flex-wrap: wrap; }
+  .line-item-form .field { flex: 1 1 10rem; margin: 0; }
+  .line-item-list { display: flex; flex-direction: column; gap: var(--space-1); margin-top: var(--space-4); }
+  .line-item-row { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-3); border: 1px solid var(--color-line-subtle); border-radius: var(--radius-md); background: var(--color-surface-1); }
+  .line-item-row__label { flex: 1; font-size: var(--text-sm); color: var(--color-content-primary); }
+  .line-item-row__sub { font-size: var(--text-xs); color: var(--color-content-tertiary); margin-left: var(--space-2); }
+
+  /* Done state: centered success card. */
+  .wizard-done { max-width: 28rem; margin-inline: auto; text-align: center; }
+  .wizard-done__icon { display: grid; place-items: center; width: var(--space-16); height: var(--space-16); margin-inline: auto; margin-bottom: var(--space-4); border-radius: var(--radius-full); background-color: var(--color-success-bg); color: var(--color-success-strong); }
+  .wizard-done__icon svg { width: var(--space-8); height: var(--space-8); }
+  .wizard-done__title { font-size: var(--text-2xl); font-weight: 600; letter-spacing: -0.01em; color: var(--color-content-primary); margin-bottom: var(--space-2); }
+  .wizard-done__text { font-size: var(--text-sm); color: var(--color-content-secondary); line-height: 1.6; margin-bottom: var(--space-6); }
+</style>
+<body>
+
+<div class="app-frame">
+  <div class="app-frame__col">
+    <main class="app-frame__main">
+      <!-- REQUIRED CORE (governance principle #9): header + step indicator + step body + nav.
+           These four slots are what make this a wizard — keep all four. The summary rail and
+           the done state below are OPTIONAL and marked removable where they appear. -->
+
+      <!-- [REQUIRED] header: title + a single SECONDARY Cancel (exit without committing).
+           No primary here — the commit verb lives in the nav footer. -->
+      <header class="page-header page-header--sticky">
+        <div class="page-header__bar">
+          <div class="page-header__titles">
+            <div class="page-header__heading"><h1 class="page-header__title">New customer</h1></div>
+            <p class="page-header__description">A multi-step create flow — Back never loses what you entered.</p>
+          </div>
+          <div class="page-header__actions">
+            <button class="btn btn--secondary" type="button">Cancel</button>
+          </div>
+        </div>
+      </header>
+
+      <div class="page-body">
+
+        <!-- [REQUIRED] steps: step-indicator wrapped for card chrome; JS updates step--* classes. -->
+        <div class="stepper-card" id="stepper">
+          <ol class="step-indicator">
+            <li class="step step--active" id="step-item-0" aria-current="step">
+              <span class="step__body">
+                <span class="step__dot" id="step-dot-0">1</span>
+                <span class="step__text"><span class="step__caption">Step 1</span><span class="step__title">Details</span></span>
+              </span>
+              <span class="step__connector"></span>
+            </li>
+            <li class="step step--upcoming" id="step-item-1">
+              <span class="step__body">
+                <span class="step__dot" id="step-dot-1">2</span>
+                <span class="step__text"><span class="step__caption">Step 2</span><span class="step__title">Terms</span></span>
+              </span>
+              <span class="step__connector"></span>
+            </li>
+            <li class="step step--upcoming" id="step-item-2">
+              <span class="step__body">
+                <span class="step__dot" id="step-dot-2">3</span>
+                <span class="step__text"><span class="step__caption">Step 3</span><span class="step__title">Contacts</span></span>
+              </span>
+              <span class="step__connector"></span>
+            </li>
+            <li class="step step--upcoming" id="step-item-3">
+              <span class="step__body">
+                <span class="step__dot" id="step-dot-3">4</span>
+                <span class="step__text"><span class="step__caption">Step 4</span><span class="step__title">Review</span></span>
+              </span>
+            </li>
+          </ol>
+        </div>
+
+        <!-- body (required) + summary rail (optional), side by side -->
+        <div class="wizard-cols" id="wizard-cols">
+
+          <!-- [REQUIRED] CURRENT STEP body (form-section card(s)) + nav footer -->
+          <div class="wizard-main">
+
+            <!-- ── Step 1: Customer details ── -->
+            <div id="step-content-0">
+              <form id="step-form-0" class="card" onsubmit="return false">
+                <div class="card__header"><span class="form-title">Customer details</span></div>
+                <div class="card__content form-stack">
+                  <div class="field">
+                    <label class="label" for="f-name">Company name <span class="field__required">*</span></label>
+                    <input id="f-name" class="input" type="text" placeholder="Acme Robotics" autocomplete="off">
+                    <p class="field__error" role="alert" id="err-name" hidden>Enter the company name</p>
+                  </div>
+                  <div class="form-row">
+                    <div class="field">
+                      <label class="label" for="f-plan">Plan</label>
+                      <select id="f-plan" class="select">
+                        <option>Trial</option>
+                        <option>Growth</option>
+                        <option selected>Enterprise</option>
+                      </select>
+                    </div>
+                    <div class="field">
+                      <label class="label" for="f-region">Region</label>
+                      <select id="f-region" class="select">
+                        <option selected>APAC</option>
+                        <option>EMEA</option>
+                        <option>Americas</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label" for="f-email">Billing email <span class="field__required">*</span></label>
+                    <input id="f-email" class="input" type="email" placeholder="billing@company.example" autocomplete="off">
+                    <p class="field__error" role="alert" id="err-email" hidden>Enter a valid email address, e.g. dana@company.example</p>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <!-- ── Step 2: Terms & billing ── -->
+            <div id="step-content-1" hidden>
+              <form id="step-form-1" class="card" onsubmit="return false">
+                <div class="card__header"><span class="form-title">Terms &amp; billing</span></div>
+                <div class="card__content form-stack">
+                  <div>
+                    <div class="group-label">Billing cycle</div>
+                    <div class="form-stack" style="gap:var(--space-2)" role="radiogroup" aria-label="Billing cycle">
+                      <label class="field-check">
+                        <input id="cycle-annual" class="radio" type="radio" name="cycle" value="annual" checked>
+                        <span class="field-check__text">Annual — 2 months free</span>
+                      </label>
+                      <label class="field-check">
+                        <input id="cycle-monthly" class="radio" type="radio" name="cycle" value="monthly">
+                        <span class="field-check__text">Monthly</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="field-check">
+                      <input id="f-terms" class="checkbox" type="checkbox">
+                      <label class="field-check__text" for="f-terms">I accept the master services agreement and data-processing terms.</label>
+                    </div>
+                    <p class="field__error" role="alert" id="err-terms" hidden style="margin-top:var(--space-1)">You must accept the terms to continue</p>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <!-- ── Step 3: Contacts (line-item collector) ── -->
+            <!-- CW2: demonstrates the line-item / add-to-list step shape.
+                 Rules (create-wizard.md:73-86 + actions.md:63-68):
+                 • One "Add" affordance at a time — never two buttons that both read "Add".
+                 • Empty → empty-state; has items → editable/removable list + one inline add-form.
+                 • Inline add-form (≤8 fields, no branching) commits with a single primary Add.
+                 • This Add appends to the list; it is NOT the wizard's Continue. -->
+            <div id="step-content-2" hidden>
+              <div class="card">
+                <div class="card__header"><span class="form-title">Contacts</span></div>
+                <div class="card__content form-stack">
+                  <!-- Inline add-form: single primary Add that appends to list (no separate "open" button). -->
+                  <div class="line-item-form" id="contact-add-form" aria-label="Add a contact">
+                    <div class="field">
+                      <label class="label" for="f-contact-name">Name</label>
+                      <input id="f-contact-name" class="input" type="text" placeholder="Full name" autocomplete="off">
+                    </div>
+                    <div class="field">
+                      <label class="label" for="f-contact-email">Email</label>
+                      <input id="f-contact-email" class="input" type="email" placeholder="name@company.example" autocomplete="off">
+                    </div>
+                    <!-- EXACTLY ONE primary Add — no secondary "open" button alongside it. -->
+                    <button id="btn-add-contact" class="btn btn--primary" type="button" style="flex-shrink:0;align-self:flex-end">Add</button>
+                  </div>
+                  <p class="field__error" role="alert" id="err-contact" hidden>Enter a name and valid email to add a contact</p>
+
+                  <!-- Empty state (shown when no contacts added yet). -->
+                  <div id="contacts-empty" class="empty-state">
+                    <p class="empty-state__description">No contacts added yet. Use the form above to add the first one.</p>
+                  </div>
+
+                  <!-- Item list (hidden until at least one item exists). -->
+                  <div id="contacts-list" class="line-item-list" hidden aria-label="Added contacts" aria-live="polite"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Step 4: Review & confirm ── -->
+            <div id="step-content-3" hidden>
+              <div class="card">
+                <div class="card__header"><span class="form-title">Review &amp; confirm</span></div>
+                <div class="card__content" id="review-content">
+                  <!-- populated by renderReview() when the user reaches this step -->
+                </div>
+              </div>
+            </div>
+
+            <!-- [REQUIRED] nav footer: Back ghost (hidden on step 1, visible from step 2) + Continue/Create primary.
+                 Sits BELOW the step card, never inside card__footer. A Review step precedes commit. -->
+            <div class="wizard-footer">
+              <button id="btn-back" class="btn btn--ghost" type="button" hidden>
+                <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+                Back
+              </button>
+              <button id="btn-next" class="btn btn--primary" type="button">
+                Continue
+                <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- [OPTIONAL] SUMMARY RAIL — REMOVABLE. Per principle #9 this slot is optional;
+               drop the whole <aside> if the flow doesn't need a recap (the wizard-main column
+               then fills the width). When present it is all-or-nothing across steps; always
+               visible. Empty values render an em-dash (—), never blank.
+               (Removing it? Also drop the s-* updates in updateSummary().) -->
+          <aside class="card summary-rail">
+            <div class="card__header"><span class="summary-rail__title">Summary</span></div>
+            <div class="card__content">
+              <dl class="summary-dl">
+                <div class="summary-row"><dt>Name</dt><dd id="s-name" class="is-empty">—</dd></div>
+                <div class="summary-row"><dt>Plan</dt><dd id="s-plan">Enterprise</dd></div>
+                <div class="summary-row"><dt>Region</dt><dd id="s-region">APAC</dd></div>
+                <div class="summary-row"><dt>Email</dt><dd id="s-email" class="is-empty">—</dd></div>
+                <div class="summary-row"><dt>Cycle</dt><dd id="s-cycle">Annual</dd></div>
+                <div class="summary-row"><dt>Terms</dt><dd id="s-terms" class="is-empty">—</dd></div>
+                <div class="summary-row"><dt>Contacts</dt><dd id="s-contacts" class="is-empty">—</dd></div>
+              </dl>
+            </div>
+          </aside>
+
+        </div>
+
+        <!-- [OPTIONAL] DONE STATE — REMOVABLE. Per principle #9 this slot is optional;
+             the flow may redirect to the new record instead of showing a completion screen.
+             When present it replaces wizard-cols + stepper after commit.
+             (Removing it? In btn-next's step===2 branch, redirect instead of revealing #done-state.) -->
+        <div id="done-state" hidden>
+          <div class="card wizard-done">
+            <div class="card__content" style="display:flex;flex-direction:column;align-items:center;gap:var(--space-4)">
+              <div class="wizard-done__icon">
+                <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+              </div>
+              <div>
+                <div class="wizard-done__title" id="done-title">Customer created</div>
+                <p class="wizard-done__text" id="done-text">The account is set up and ready. You can start adding orders now.</p>
+              </div>
+              <button class="btn btn--primary" type="button">Go to customer</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+  /* show/hide via style.display — reliable regardless of CSS class specificity */
+  function show(el) { el.style.display = ''; el.removeAttribute('hidden'); }
+  function hide(el) { el.style.display = 'none'; }
+
+  var step = 0;
+  var TOTAL_STEPS = 4; /* CW2: 4 steps — Details · Terms · Contacts (line-item) · Review */
+  var data = { name: '', plan: 'Enterprise', region: 'APAC', email: '', cycle: 'annual', terms: false, contacts: [] };
+
+  var CHECK = '<svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+  var NEXT  = '<svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>';
+
+  var btnBack    = document.getElementById('btn-back');
+  var btnNext    = document.getElementById('btn-next');
+  var stepper    = document.getElementById('stepper');
+  var wizardCols = document.getElementById('wizard-cols');
+  var doneState  = document.getElementById('done-state');
+
+  /* ── Step indicator ── */
+  /* CW3 (branching): if the flow branches (e.g. skipping Contacts for an account type),
+     call updateIndicator() after inserting/removing a step from the DOM and updating TOTAL_STEPS.
+     The rail reflects only the actual path taken — never show a removed step as upcoming. */
+  function updateIndicator() {
+    for (var i = 0; i < TOTAL_STEPS; i++) {
+      var item = document.getElementById('step-item-' + i);
+      var dot  = document.getElementById('step-dot-'  + i);
+      if (!item) continue;
+      if (i < step) {
+        item.className = 'step step--completed';
+        item.removeAttribute('aria-current');
+        dot.innerHTML = CHECK;
+      } else if (i === step) {
+        item.className = 'step step--active';
+        item.setAttribute('aria-current', 'step');
+        dot.textContent = String(i + 1);
+      } else {
+        item.className = 'step step--upcoming';
+        item.removeAttribute('aria-current');
+        dot.textContent = String(i + 1);
+      }
+    }
+  }
+
+  /* ── Step panels ── */
+  function updatePanels() {
+    for (var i = 0; i < TOTAL_STEPS; i++) {
+      var panel = document.getElementById('step-content-' + i);
+      if (!panel) continue;
+      if (i === step) show(panel); else hide(panel);
+    }
+  }
+
+  /* ── Nav buttons ── */
+  function updateNav() {
+    if (step === 0) { hide(btnBack); } else { show(btnBack); }
+    btnNext.innerHTML = (step === TOTAL_STEPS - 1) ? CHECK + ' Create customer' : 'Continue ' + NEXT;
+  }
+
+  /* ── Summary rail ── */
+  function setSummaryRow(id, val) {
+    var dd = document.getElementById(id);
+    if (!dd) return;
+    if (!val) { dd.textContent = '—'; dd.classList.add('is-empty'); }
+    else      { dd.textContent = val;  dd.classList.remove('is-empty'); }
+  }
+  function updateSummary() {
+    setSummaryRow('s-name',     data.name);
+    setSummaryRow('s-plan',     data.plan);
+    setSummaryRow('s-region',   data.region);
+    setSummaryRow('s-email',    data.email);
+    setSummaryRow('s-cycle',    data.cycle === 'annual' ? 'Annual' : 'Monthly');
+    setSummaryRow('s-terms',    data.terms ? 'Accepted' : '');
+    setSummaryRow('s-contacts', data.contacts.length ? data.contacts.length + (data.contacts.length === 1 ? ' contact' : ' contacts') : '');
+  }
+
+  /* ── Review content (step 4) ── */
+  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function kv(label, val) {
+    return '<dt>' + label + '</dt><dd>' + (val ? esc(val) : '<span class="is-empty">—</span>') + '</dd>';
+  }
+  function renderReview() {
+    var cycle = data.cycle === 'annual' ? 'Annual (2 months free)' : 'Monthly';
+    var contactsHtml = data.contacts.length
+      ? data.contacts.map(function(c) { return '<li style="font-size:var(--text-sm)">' + esc(c.name) + ' &lt;' + esc(c.email) + '&gt;</li>'; }).join('')
+      : '<li><span class="is-empty">—</span></li>';
+    document.getElementById('review-content').innerHTML =
+      '<div class="review-section">' +
+        '<div class="group-label">Customer details</div>' +
+        '<dl class="review-kv">' +
+          kv('Company name', data.name) + kv('Plan', data.plan) +
+          kv('Region', data.region)     + kv('Billing email', data.email) +
+        '</dl>' +
+      '</div>' +
+      '<div class="review-section">' +
+        '<div class="group-label">Terms &amp; billing</div>' +
+        '<dl class="review-kv">' +
+          kv('Billing cycle', cycle) +
+          '<dt>Terms</dt><dd>' + (data.terms ? 'Accepted' : '<span class="is-empty">—</span>') + '</dd>' +
+        '</dl>' +
+      '</div>' +
+      '<div class="review-section">' +
+        '<div class="group-label">Contacts</div>' +
+        '<ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:var(--space-1)">' + contactsHtml + '</ul>' +
+      '</div>';
+  }
+
+  /* ── Validation ── */
+  function validateStep0() {
+    var ok = true;
+    var nameEl = document.getElementById('f-name'), errName = document.getElementById('err-name');
+    if (!data.name.trim()) { nameEl.setAttribute('aria-invalid','true'); show(errName); ok = false; }
+    else                   { nameEl.removeAttribute('aria-invalid');     hide(errName); }
+    var emailEl = document.getElementById('f-email'), errEmail = document.getElementById('err-email');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) { emailEl.setAttribute('aria-invalid','true'); show(errEmail); ok = false; }
+    else                                                  { emailEl.removeAttribute('aria-invalid');     hide(errEmail); }
+    return ok;
+  }
+  function validateStep1() {
+    var errTerms = document.getElementById('err-terms');
+    if (!data.terms) { show(errTerms); return false; }
+    hide(errTerms); return true;
+  }
+
+  /* ── Render ── */
+  /* CW3 (branching): insert/remove a step panel + step-item-N in the DOM, then call
+     render() — the rail reflects the actual path. Example: if account type === 'Partner'
+     inject a step-content-2b panel and a matching step-item; bump TOTAL_STEPS. */
+  function render() {
+    updateIndicator();
+    updatePanels();
+    updateNav();
+    if (step === TOTAL_STEPS - 1) renderReview();
+    updateSummary();
+  }
+
+  /* ── Navigation ── */
+  btnNext.addEventListener('click', function() {
+    if (step === 0 && !validateStep0()) return;
+    if (step === 1 && !validateStep1()) return;
+    /* Step 2 (Contacts) has no required validation — contacts are optional. */
+    if (step === TOTAL_STEPS - 1) {
+      var label = data.name.trim() || 'Customer';
+      document.getElementById('done-title').textContent = label + ' created';
+      document.getElementById('done-text').textContent  = label + ' is set up and ready. You can start adding orders now.';
+      hide(stepper); hide(wizardCols); show(doneState);
+      return;
+    }
+    step++; render();
+  });
+
+  btnBack.addEventListener('click', function() {
+    if (step > 0) { step--; render(); }
+  });
+
+  /* ── Live field sync ── */
+  document.getElementById('f-name').addEventListener('input',  function(e) { data.name  = e.target.value;   updateSummary(); });
+  document.getElementById('f-plan').addEventListener('change', function(e) { data.plan  = e.target.value;   updateSummary(); });
+  document.getElementById('f-region').addEventListener('change',function(e){ data.region= e.target.value;   updateSummary(); });
+  document.getElementById('f-email').addEventListener('input', function(e) { data.email = e.target.value;   updateSummary(); });
+  document.querySelectorAll('input[name="cycle"]').forEach(function(r) {
+    r.addEventListener('change', function(e) { data.cycle = e.target.value; updateSummary(); });
+  });
+  document.getElementById('f-terms').addEventListener('change', function(e) { data.terms = e.target.checked; updateSummary(); });
+
+  /* ── Contact line-item add / remove (CW2) ── */
+  function renderContactList() {
+    var listEl   = document.getElementById('contacts-list');
+    var emptyEl  = document.getElementById('contacts-empty');
+    if (data.contacts.length === 0) {
+      hide(listEl); show(emptyEl);
+      listEl.innerHTML = '';
+    } else {
+      hide(emptyEl); show(listEl);
+      listEl.innerHTML = data.contacts.map(function(c, idx) {
+        return '<div class="line-item-row">' +
+          '<span class="line-item-row__label">' + esc(c.name) + '<span class="line-item-row__sub">' + esc(c.email) + '</span></span>' +
+          '<button class="btn btn--ghost btn--xs" type="button" aria-label="Remove ' + esc(c.name) + '" data-remove="' + idx + '">Remove</button>' +
+          '</div>';
+      }).join('');
+    }
+    updateSummary();
+  }
+
+  document.getElementById('btn-add-contact').addEventListener('click', function() {
+    var nameEl  = document.getElementById('f-contact-name');
+    var emailEl = document.getElementById('f-contact-email');
+    var errEl   = document.getElementById('err-contact');
+    var name    = nameEl.value.trim();
+    var email   = emailEl.value.trim();
+    if (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      show(errEl); return;
+    }
+    hide(errEl);
+    data.contacts.push({ name: name, email: email });
+    nameEl.value = ''; emailEl.value = '';
+    renderContactList();
+  });
+
+  document.getElementById('contacts-list').addEventListener('click', function(e) {
+    var btn = e.target.closest('[data-remove]');
+    if (!btn) return;
+    var idx = parseInt(btn.getAttribute('data-remove'), 10);
+    data.contacts.splice(idx, 1);
+    renderContactList();
+  });
+
+  /* ── Init ── */
+  render();
+</script>
+</body>

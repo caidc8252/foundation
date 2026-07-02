@@ -1,0 +1,495 @@
+<!--
+  date-time-picker.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the date-time-picker primitive in the foundation design system.
+  Covers:
+    - Default trigger (placeholder state)
+    - Trigger with a committed value + clear button
+    - Three size variants: sm, md, lg
+    - Disabled trigger
+    - Interactive date-time picker: calendar grid with month navigation,
+      date selection, time input, OK commit, and clear
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Date-time picker · foundation primitive</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-4);
+    }
+    .demo-col2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+    @media (max-width: 640px) {
+      .demo-col2 { grid-template-columns: 1fr; }
+    }
+
+    /* Local popover positioning — overlays below the trigger in-demo. */
+    .demo-popover {
+      position: relative;
+    }
+    .demo-popover__panel {
+      position: absolute;
+      z-index: 10;
+      top: calc(100% + var(--space-1));
+      left: 0;
+    }
+
+    /* Interactive popover — toggled via .demo-popover--open on the wrapper. */
+    .demo-popover .demo-popover__panel {
+      display: none;
+    }
+    .demo-popover--open .demo-popover__panel {
+      display: flex;
+    }
+
+    /* ── Clear button wrapper ─────────────────────────────────── */
+    .date-picker__clear-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+    .date-trigger__clear {
+      position: absolute;
+      right: var(--space-2);
+      top: 50%;
+      transform: translateY(-50%);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--color-content-tertiary);
+      padding: 0;
+      z-index: 1;
+    }
+    .date-trigger__clear:hover {
+      color: var(--color-content-primary);
+    }
+    .date-trigger--clearable {
+      padding-right: calc(var(--space-8) + var(--space-1));
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Default trigger (placeholder)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Date-time picker · default trigger</h2>
+      <p class="demo-section__desc">
+        An idle trigger with placeholder text. Clicking opens the popover calendar.
+        Root element is <code>.date-picker</code> wrapping an
+        <code>.date-trigger</code>.
+      </p>
+
+      <div class="date-picker" style="width:280px;">
+        <button class="date-trigger" type="button">
+          <svg class="date-trigger__icon" data-lucide="calendar-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 14v2.2l1.6 1"/><path d="M16 2v4"/><path d="M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5"/><path d="M3 10h5"/><path d="M8 2v4"/><circle cx="16" cy="16" r="6"/></svg>
+          <span class="date-trigger__value date-trigger__value--placeholder">Pick a date and time</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Trigger with value + clear
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Date-time picker · with value</h2>
+      <p class="demo-section__desc">
+        A trigger that shows a committed date-time and a clear button.
+        The <code>.date-trigger--clearable</code> modifier makes room for the
+        absolutely-positioned <code>.date-trigger__clear</code>.
+      </p>
+
+      <div class="date-picker__clear-wrapper" style="width:280px;">
+        <button class="date-trigger date-trigger--clearable" type="button">
+          <svg class="date-trigger__icon" data-lucide="calendar-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 14v2.2l1.6 1"/><path d="M16 2v4"/><path d="M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5"/><path d="M3 10h5"/><path d="M8 2v4"/><circle cx="16" cy="16" r="6"/></svg>
+          <span class="date-trigger__value">Mar 14, 2026 09:30</span>
+        </button>
+        <button class="date-trigger__clear" type="button" aria-label="Clear date">
+          <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Size variants
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Date-time picker · size variants</h2>
+      <p class="demo-section__desc">
+        Three sizes: <code>.date-trigger--sm</code>, <code>.date-trigger--md</code>
+        (default), and <code>.date-trigger--lg</code>.
+      </p>
+
+      <div class="demo-col2">
+        <div>
+          <p style="font-size:var(--text-xs);color:var(--color-content-tertiary);margin-bottom:var(--space-2);">Small (--sm)</p>
+          <div class="date-picker" style="width:240px;">
+            <button class="date-trigger date-trigger--sm" type="button">
+              <svg class="date-trigger__icon" data-lucide="calendar-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 14v2.2l1.6 1"/><path d="M16 2v4"/><path d="M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5"/><path d="M3 10h5"/><path d="M8 2v4"/><circle cx="16" cy="16" r="6"/></svg>
+              <span class="date-trigger__value date-trigger__value--placeholder">Pick a date and time</span>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <p style="font-size:var(--text-xs);color:var(--color-content-tertiary);margin-bottom:var(--space-2);">Medium (--md, default)</p>
+          <div class="date-picker" style="width:280px;">
+            <button class="date-trigger date-trigger--md" type="button">
+              <svg class="date-trigger__icon" data-lucide="calendar-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 14v2.2l1.6 1"/><path d="M16 2v4"/><path d="M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5"/><path d="M3 10h5"/><path d="M8 2v4"/><circle cx="16" cy="16" r="6"/></svg>
+              <span class="date-trigger__value date-trigger__value--placeholder">Pick a date and time</span>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <p style="font-size:var(--text-xs);color:var(--color-content-tertiary);margin-bottom:var(--space-2);">Large (--lg)</p>
+          <div class="date-picker" style="width:320px;">
+            <button class="date-trigger date-trigger--lg" type="button">
+              <svg class="date-trigger__icon" data-lucide="calendar-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 14v2.2l1.6 1"/><path d="M16 2v4"/><path d="M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5"/><path d="M3 10h5"/><path d="M8 2v4"/><circle cx="16" cy="16" r="6"/></svg>
+              <span class="date-trigger__value date-trigger__value--placeholder">Pick a date and time</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: Disabled state
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Date-time picker · disabled</h2>
+      <p class="demo-section__desc">
+        A trigger with <code>disabled</code> attribute. Dimmed, no pointer cursor.
+      </p>
+
+      <div class="date-picker" style="width:280px;">
+        <button class="date-trigger" type="button" disabled>
+          <svg class="date-trigger__icon" data-lucide="calendar-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 14v2.2l1.6 1"/><path d="M16 2v4"/><path d="M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5"/><path d="M3 10h5"/><path d="M8 2v4"/><circle cx="16" cy="16" r="6"/></svg>
+          <span class="date-trigger__value date-trigger__value--placeholder">Pick a date and time</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 5: Interactive date-time picker
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Date-time picker · interactive</h2>
+      <p class="demo-section__desc">
+        A fully functional date-time picker. Click the trigger to toggle the
+        popover. Navigate months with the prev/next buttons, click a day to
+        select it, set the time with the time input, and press OK to commit
+        the combined selection. The clear button resets the trigger.
+      </p>
+
+      <div id="demo-interactive" class="demo-popover" style="width:fit-content;">
+        <div class="date-picker__clear-wrapper" style="width:280px;">
+          <button id="dt-trigger" class="date-trigger" type="button">
+            <svg class="date-trigger__icon" data-lucide="calendar-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 14v2.2l1.6 1"/><path d="M16 2v4"/><path d="M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5"/><path d="M3 10h5"/><path d="M8 2v4"/><circle cx="16" cy="16" r="6"/></svg>
+            <span id="dt-value" class="date-trigger__value date-trigger__value--placeholder">Pick a date and time</span>
+          </button>
+          <button id="dt-clear" class="date-trigger__clear" type="button" aria-label="Clear date" style="display:none;">
+            <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+
+        <!-- Popover panel -->
+        <div id="dt-popover" class="demo-popover__panel">
+          <div class="popover" style="width:auto;min-width:260px;">
+            <!-- Calendar -->
+            <div class="calendar" style="border:none;box-shadow:none;padding:0;width:100%;">
+              <!-- Header: prev / caption / next -->
+              <div class="calendar__header">
+                <button id="dt-prev" class="calendar__nav-btn" type="button" aria-label="Previous month">
+                  <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                </button>
+                <span id="dt-caption" class="calendar__caption">June 2026</span>
+                <button id="dt-next" class="calendar__nav-btn" type="button" aria-label="Next month">
+                  <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
+              </div>
+
+              <!-- Day grid -->
+              <div id="dt-grid" class="calendar__grid">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+
+            <!-- Date-time row: top hairline + time input + OK button -->
+            <div class="date-time-row">
+              <label class="date-time-row__label" for="dt-time-input">Time</label>
+              <input id="dt-time-input" class="input input--sm" type="time" value="09:30" style="flex:1;">
+              <button id="dt-ok" class="btn btn--sm" type="button">OK</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    (function () {
+      /* ── Interactive date-time picker ── */
+
+      // State
+      var now = new Date(2026, 5, 14, 9, 30);      // Jun 14, 2026 09:30
+      var viewYear = now.getFullYear();
+      var viewMonth = now.getMonth();               // 0-indexed
+      var selectedDate = null;                      // Date object (date only)
+      var selectedTime = '09:30';
+      var committedValue = null;                    // { date, time } or null
+
+      // DOM refs
+      var trigger = document.getElementById('dt-trigger');
+      var valueSpan = document.getElementById('dt-value');
+      var clearBtn = document.getElementById('dt-clear');
+      var popover = document.getElementById('dt-popover');
+      var wrapper = document.getElementById('demo-interactive');
+      var caption = document.getElementById('dt-caption');
+      var grid = document.getElementById('dt-grid');
+      var prevBtn = document.getElementById('dt-prev');
+      var nextBtn = document.getElementById('dt-next');
+      var timeInput = document.getElementById('dt-time-input');
+      var okBtn = document.getElementById('dt-ok');
+
+      var MONTHS = ['January','February','March','April','May','June',
+                    'July','August','September','October','November','December'];
+
+      /* ── Helpers ── */
+
+      function formatDate(d) {
+        if (!d) return '';
+        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      }
+
+      function updateTrigger() {
+        if (committedValue) {
+          var d = committedValue.date;
+          var t = committedValue.time || '00:00';
+          valueSpan.textContent = formatDate(d) + ' ' + t;
+          valueSpan.classList.remove('date-trigger__value--placeholder');
+          trigger.classList.add('date-trigger--clearable');
+          clearBtn.style.display = '';
+        } else {
+          valueSpan.textContent = 'Pick a date and time';
+          valueSpan.classList.add('date-trigger__value--placeholder');
+          trigger.classList.remove('date-trigger--clearable');
+          clearBtn.style.display = 'none';
+        }
+      }
+
+      function getDaysInMonth(year, month) {
+        return new Date(year, month + 1, 0).getDate();
+      }
+
+      function getFirstDayOfMonth(year, month) {
+        return new Date(year, month, 1).getDay();   // 0=Sun
+      }
+
+      function isSameDay(a, b) {
+        return a && b &&
+          a.getFullYear() === b.getFullYear() &&
+          a.getMonth() === b.getMonth() &&
+          a.getDate() === b.getDate();
+      }
+
+      function isToday(year, month, day) {
+        var t = new Date();
+        return t.getFullYear() === year && t.getMonth() === month && t.getDate() === day;
+      }
+
+      function closePopover() {
+        wrapper.classList.remove('demo-popover--open');
+      }
+
+      function togglePopover() {
+        wrapper.classList.toggle('demo-popover--open');
+        if (wrapper.classList.contains('demo-popover--open')) {
+          renderCalendar();
+        }
+      }
+
+      /* ── Render calendar grid ── */
+
+      function renderCalendar() {
+        caption.textContent = MONTHS[viewMonth] + ' ' + viewYear;
+
+        var daysInMonth = getDaysInMonth(viewYear, viewMonth);
+        var firstDay = getFirstDayOfMonth(viewYear, viewMonth);
+        var daysInPrev = getDaysInMonth(viewYear, viewMonth - 1);
+
+        var html = '';
+
+        // Weekday headers
+        var weekdays = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+        for (var w = 0; w < weekdays.length; w++) {
+          html += '<span class="calendar__weekday">' + weekdays[w] + '</span>';
+        }
+
+        // Previous month fill
+        for (var p = firstDay - 1; p >= 0; p--) {
+          var prevDay = daysInPrev - p;
+          html += '<button class="calendar__day calendar__day--outside" type="button" disabled>' + prevDay + '</button>';
+        }
+
+        // Current month days
+        for (var d = 1; d <= daysInMonth; d++) {
+          var classes = ['calendar__day'];
+          if (isToday(viewYear, viewMonth, d)) classes.push('calendar__day--today');
+          if (selectedDate &&
+              selectedDate.getFullYear() === viewYear &&
+              selectedDate.getMonth() === viewMonth &&
+              selectedDate.getDate() === d) {
+            classes.push('calendar__day--selected');
+          }
+          html += '<button class="' + classes.join(' ') + '" type="button" data-day="' + d + '">' + d + '</button>';
+        }
+
+        // Next month fill
+        var totalCells = firstDay + daysInMonth;
+        var remaining = (7 - (totalCells % 7)) % 7;
+        for (var n = 1; n <= remaining; n++) {
+          html += '<button class="calendar__day calendar__day--outside" type="button" disabled>' + n + '</button>';
+        }
+
+        grid.innerHTML = html;
+
+        // Attach click listeners to day buttons
+        var dayButtons = grid.querySelectorAll('.calendar__day:not(.calendar__day--outside)');
+        for (var i = 0; i < dayButtons.length; i++) {
+          dayButtons[i].addEventListener('click', function () {
+            var day = parseInt(this.getAttribute('data-day'), 10);
+            selectedDate = new Date(viewYear, viewMonth, day);
+            renderCalendar();
+          });
+        }
+      }
+
+      /* ── Navigation ── */
+
+      prevBtn.addEventListener('click', function () {
+        viewMonth--;
+        if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+        renderCalendar();
+      });
+
+      nextBtn.addEventListener('click', function () {
+        viewMonth++;
+        if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+        renderCalendar();
+      });
+
+      /* ── Trigger toggle ── */
+
+      trigger.addEventListener('click', function () {
+        if (trigger.disabled) return;
+        // Sync time input from committed value
+        if (committedValue) {
+          timeInput.value = committedValue.time;
+          selectedDate = committedValue.date;
+          viewYear = selectedDate.getFullYear();
+          viewMonth = selectedDate.getMonth();
+        } else {
+          timeInput.value = selectedTime;
+        }
+        togglePopover();
+      });
+
+      /* ── OK button: commit selection ── */
+
+      okBtn.addEventListener('click', function () {
+        if (!selectedDate) {
+          // If no date selected, use today
+          selectedDate = new Date();
+          viewYear = selectedDate.getFullYear();
+          viewMonth = selectedDate.getMonth();
+        }
+        var timeVal = timeInput.value || '00:00';
+        committedValue = { date: selectedDate, time: timeVal };
+        selectedTime = timeVal;
+        updateTrigger();
+        closePopover();
+      });
+
+      /* ── Clear button ── */
+
+      clearBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        committedValue = null;
+        selectedDate = null;
+        selectedTime = '09:30';
+        timeInput.value = '09:30';
+        // Reset view to current month
+        viewYear = now.getFullYear();
+        viewMonth = now.getMonth();
+        updateTrigger();
+        closePopover();
+      });
+
+      /* ── Close popover on outside click ── */
+
+      document.addEventListener('click', function (e) {
+        if (wrapper.classList.contains('demo-popover--open') &&
+            !wrapper.contains(e.target)) {
+          closePopover();
+        }
+      });
+
+      /* ── Initial render ── */
+      renderCalendar();
+      updateTrigger();
+
+    })();
+  </script>
+</body>
+</html>

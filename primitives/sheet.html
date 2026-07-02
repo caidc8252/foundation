@@ -1,0 +1,411 @@
+<!--
+  sheet.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Sheet primitive in the foundation design system.
+  Covers:
+    - Sheet from right (default)
+    - Sheet from left
+    - Sheet from top
+    - Sheet from bottom
+    - Sheet with header, description, footer
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sheet · foundation primitive</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../release/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-col2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+    @media (max-width: 640px) {
+      .demo-col2 { grid-template-columns: 1fr; }
+    }
+    .demo-btn-row {
+      display: flex;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+
+    /* Sheet overlay */
+    .sheet-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: color-mix(in oklch, var(--color-content-primary) 10%, transparent);
+      display: flex;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 150ms ease-in-out, visibility 150ms ease-in-out;
+    }
+    .sheet-overlay--open {
+      visibility: visible;
+      opacity: 1;
+    }
+    .sheet-overlay--center {
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Sheet panel */
+    .sheet {
+      position: fixed;
+      display: flex;
+      flex-direction: column;
+      background: var(--color-surface-3);
+      color: var(--color-content-primary);
+      font-size: var(--text-sm);
+      box-shadow: var(--shadow-4);
+      z-index: 210;
+      box-sizing: border-box;
+    }
+    .sheet--right {
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: min(560px, 90vw);
+      border-left: 1px solid var(--color-line-default);
+      transform: translateX(100%);
+      transition: transform 200ms ease-in-out;
+    }
+    .sheet-overlay--open .sheet--right {
+      transform: translateX(0);
+    }
+    .sheet--left {
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: min(560px, 90vw);
+      border-right: 1px solid var(--color-line-default);
+      transform: translateX(-100%);
+      transition: transform 200ms ease-in-out;
+    }
+    .sheet-overlay--open .sheet--left {
+      transform: translateX(0);
+    }
+    .sheet--top {
+      top: 0;
+      left: 0;
+      right: 0;
+      height: auto;
+      border-bottom: 1px solid var(--color-line-default);
+      transform: translateY(-100%);
+      transition: transform 200ms ease-in-out;
+    }
+    .sheet-overlay--open .sheet--top {
+      transform: translateY(0);
+    }
+    .sheet--bottom {
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: auto;
+      border-top: 1px solid var(--color-line-default);
+      transform: translateY(100%);
+      transition: transform 200ms ease-in-out;
+    }
+    .sheet-overlay--open .sheet--bottom {
+      transform: translateY(0);
+    }
+
+    /* Sheet header */
+    .sheet__header {
+      padding: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .sheet__title {
+      font-size: var(--text-lg);
+      font-weight: 500;
+      color: var(--color-content-primary);
+      margin: 0;
+    }
+    .sheet__description {
+      font-size: var(--text-sm);
+      color: var(--color-content-secondary);
+      margin: 0;
+    }
+
+    /* Close button */
+    .sheet__close {
+      position: absolute;
+      top: var(--space-3);
+      right: var(--space-3);
+    }
+
+    /* Sheet body (scrollable) */
+    .sheet__body {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    /* Sheet footer */
+    .sheet__footer {
+      padding: var(--space-4);
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    /* Demo content inside sheet */
+    .demo-sheet-field {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+    .demo-sheet-field label {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--color-content-primary);
+    }
+    .demo-sheet-input {
+      height: 36px;
+      padding: 0 var(--space-3);
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-line-default);
+      border-radius: var(--radius-md);
+      color: var(--color-content-primary);
+      font-size: var(--text-sm);
+      font-family: var(--font-sans);
+      box-sizing: border-box;
+    }
+    .demo-sheet-row {
+      display: flex;
+      gap: var(--space-3);
+    }
+    .demo-sheet-row .demo-sheet-field {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Sheet open controls
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Sheet · launch buttons</h2>
+      <p class="demo-section__desc">
+        Click a button below to open a sheet from that edge. Close by clicking the ×, the
+        overlay, or pressing <kbd>Escape</kbd>.
+      </p>
+
+      <div class="demo-btn-row">
+        <button class="btn btn--primary" type="button" data-sheet="right">Open right sheet</button>
+        <button class="btn btn--secondary" type="button" data-sheet="left">Open left sheet</button>
+        <button class="btn btn--secondary" type="button" data-sheet="top">Open top sheet</button>
+        <button class="btn btn--secondary" type="button" data-sheet="bottom">Open bottom sheet</button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Sheet (right) - details panel
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="sheet-overlay" data-sheet-id="right" id="sheet-right">
+      <div class="sheet sheet--right" role="dialog" aria-labelledby="sheet-right-title" aria-describedby="sheet-right-desc">
+        <button class="btn btn--ghost btn--icon btn--sm sheet__close" type="button" data-sheet-close="right" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <div class="sheet__header">
+          <h2 class="sheet__title" id="sheet-right-title">Member details</h2>
+          <p class="sheet__description" id="sheet-right-desc">View and edit team member information.</p>
+        </div>
+        <div class="sheet__body">
+          <div class="demo-sheet-field">
+            <label for="sr-name">Full name</label>
+            <input class="demo-sheet-input" id="sr-name" value="Alice Johnson">
+          </div>
+          <div class="demo-sheet-field">
+            <label for="sr-email">Email</label>
+            <input class="demo-sheet-input" id="sr-email" value="alice@acme.com">
+          </div>
+          <div class="demo-sheet-field">
+            <label for="sr-role">Role</label>
+            <select class="demo-sheet-input" id="sr-role">
+              <option>Admin</option>
+              <option selected>Member</option>
+              <option>Viewer</option>
+            </select>
+          </div>
+        </div>
+        <div class="sheet__footer">
+          <button class="btn btn--primary" type="button">Save changes</button>
+          <button class="btn btn--ghost" type="button" data-sheet-close="right">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Sheet (left) - navigation
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="sheet-overlay" data-sheet-id="left" id="sheet-left">
+      <div class="sheet sheet--left" role="dialog" aria-labelledby="sheet-left-title">
+        <button class="btn btn--ghost btn--icon btn--sm sheet__close" type="button" data-sheet-close="left" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <div class="sheet__header">
+          <h2 class="sheet__title" id="sheet-left-title">Navigation</h2>
+        </div>
+        <div class="sheet__body">
+          <div style="display:flex;flex-direction:column;gap:var(--space-1);">
+            <span style="padding:var(--space-2);border-radius:var(--radius-md);background:var(--color-surface-hover);font-weight:500;">Dashboard</span>
+            <span style="padding:var(--space-2);border-radius:var(--radius-md);">Analytics</span>
+            <span style="padding:var(--space-2);border-radius:var(--radius-md);">Projects</span>
+            <span style="padding:var(--space-2);border-radius:var(--radius-md);">Settings</span>
+            <span style="padding:var(--space-2);border-radius:var(--radius-md);">Help</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Sheet (top) - notification
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="sheet-overlay" data-sheet-id="top" id="sheet-top">
+      <div class="sheet sheet--top" role="dialog" aria-labelledby="sheet-top-title">
+        <button class="btn btn--ghost btn--icon btn--sm sheet__close" type="button" data-sheet-close="top" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <div class="sheet__header">
+          <h2 class="sheet__title" id="sheet-top-title">Notifications</h2>
+        </div>
+        <div class="sheet__body">
+          <div style="display:flex;flex-direction:column;gap:var(--space-2);">
+            <div style="padding:var(--space-2);border:1px solid var(--color-line-subtle);border-radius:var(--radius-md);">
+              <p style="margin:0;font-weight:500;">Deployment complete</p>
+              <p style="margin:0;font-size:var(--text-xs);color:var(--color-content-secondary);">Production deploy v3.2.1 finished successfully.</p>
+            </div>
+            <div style="padding:var(--space-2);border:1px solid var(--color-line-subtle);border-radius:var(--radius-md);">
+              <p style="margin:0;font-weight:500;">New team member</p>
+              <p style="margin:0;font-size:var(--text-xs);color:var(--color-content-secondary);">Bob has joined the Engineering team.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Sheet (bottom) - action sheet
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="sheet-overlay" data-sheet-id="bottom" id="sheet-bottom">
+      <div class="sheet sheet--bottom" role="dialog" aria-labelledby="sheet-bottom-title">
+        <button class="btn btn--ghost btn--icon btn--sm sheet__close" type="button" data-sheet-close="bottom" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <div class="sheet__header">
+          <h2 class="sheet__title" id="sheet-bottom-title">Export options</h2>
+        </div>
+        <div class="sheet__body">
+          <button class="btn btn--secondary" type="button" style="justify-content:flex-start;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export as CSV
+          </button>
+          <button class="btn btn--secondary" type="button" style="justify-content:flex-start;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export as PDF
+          </button>
+          <button class="btn btn--secondary" type="button" style="justify-content:flex-start;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export as Excel
+          </button>
+        </div>
+        <div class="sheet__footer">
+          <button class="btn btn--ghost" type="button" data-sheet-close="bottom">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <script>
+    (function () {
+      // Open sheets
+      document.querySelectorAll('[data-sheet]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var id = btn.getAttribute('data-sheet');
+          var overlay = document.querySelector('.sheet-overlay[data-sheet-id="' + id + '"]');
+          if (overlay) {
+            overlay.classList.add('sheet-overlay--open');
+          }
+        });
+      });
+
+      // Close sheets
+      function closeSheet(overlay) {
+        overlay.classList.remove('sheet-overlay--open');
+      }
+
+      document.querySelectorAll('[data-sheet-close]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var id = btn.getAttribute('data-sheet-close');
+          var overlay = document.querySelector('.sheet-overlay[data-sheet-id="' + id + '"]');
+          if (overlay) closeSheet(overlay);
+        });
+      });
+
+      // Close on overlay click (clicking the scrim, not the sheet panel)
+      document.querySelectorAll('.sheet-overlay').forEach(function (overlay) {
+        overlay.addEventListener('click', function (e) {
+          if (e.target === overlay) {
+            closeSheet(overlay);
+          }
+        });
+      });
+
+      // Close on Escape
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+          document.querySelectorAll('.sheet-overlay--open').forEach(function (overlay) {
+            closeSheet(overlay);
+          });
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

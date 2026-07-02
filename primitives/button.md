@@ -11,21 +11,19 @@ A clickable action. The primary way to trigger a mutation, submit, or navigate-a
 
 ## Variants
 
+DS 2.0 canonical set — six variants only.
+
 | variant | use | token recipe |
 |---|---|---|
 | `primary` *(default)* | the one main action on a surface | bg `primary-700` · text `content-on-primary` · `shadow-cta` · hover `primary-600` · active `primary-800` |
 | `secondary` | neutral action beside a primary | bg `surface-2` · text `content-primary` · border `line-default` · `shadow-1` · hover `surface-hover` + border `line-strong` |
-| `tertiary` | low-emphasis filled action | bg `surface-3` · text `content-primary` · hover `surface-hover` |
-| `outline` | bordered, transparent fill | border `line-default` · bg `background` · hover `surface-hover` |
 | `ghost` | toolbar / icon actions, no chrome until hover | hover bg `surface-hover` · active `surface-active` |
-| `subtle` | text-only until hover | text `content-secondary` · hover bg `surface-hover` + text `content-primary` |
-| `soft` | tonal low-emphasis CTA | bg `primary-50` · text `primary-700` · hover `primary-100` |
-| `soft-success` `soft-warning` `soft-danger` `soft-info` | tonal action inside an inline alert ("Retry") | bg `{semantic}-bg` · text `{semantic}-strong` · hover `brightness-95` |
 | `danger` | destructive primary (Delete, Terminate) | bg `error` · text `content-inverse` · `shadow-cta` · hover `error-strong` · active `error-active` |
 | `ghost-danger` | destructive icon/low-emphasis action | text `error` · hover bg `error-bg` + text `error-strong` |
 | `link` | inline text link styled as a button | text `primary-500` · hover underline · no height/padding |
 
-> Aliases kept for compat: `default` = `primary`, `destructive` = `danger`.
+> Removed in DS 2.0 (v1) — no longer part of the closed set: `.btn--tertiary`,
+> `.btn--outline`, `.btn--soft` (use `.btn--secondary`).
 
 ## Sizes
 
@@ -62,4 +60,4 @@ Horizontal padding follows the `cx-*` scale (`px-cx-sm/md/lg`); never an arbitra
 ## Implementations
 
 - **Next / @cloud/ui** — `import { Button } from "@cloud/ui"`. base-ui `Button` under the hood; props `variant` `size` `loading` `block` `iconLeft` `iconRight`. Prop/API details: the `ui` skill. Do not re-skin via `className`; pick a variant.
-- **Artifact (self-contained HTML)** — use the `.btn` + `.btn--<variant>` + `.btn--<size>` classes in `../primitives/primitives.css`, on top of the inlined `dist/tokens.inline.css`. Same token recipe, same names.
+- **Artifact (self-contained HTML)** — use the `.btn` + `.btn--<variant>` + `.btn--<size>` classes in `../primitives/primitives.css`, on top of the inlined `release/tokens.inline.css`. Same token recipe, same names.

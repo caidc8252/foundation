@@ -1,0 +1,185 @@
+<!--
+  scroll-area.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Scroll Area primitive in the foundation design system.
+  Covers:
+    - Vertical scroll-area with long content list
+    - Horizontal scroll-area with wide content
+    - Focusable viewport
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scroll Area · foundation primitive</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../release/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-col2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+    @media (max-width: 640px) {
+      .demo-col2 { grid-template-columns: 1fr; }
+    }
+    .demo-scroll-box {
+      height: 240px;
+      border: 1px solid var(--color-line-default);
+      border-radius: var(--radius-md);
+    }
+    .demo-scroll-box--wide {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--color-line-default);
+      border-radius: var(--radius-md);
+    }
+    .demo-scroll-item {
+      padding: var(--space-3) var(--space-4);
+      border-bottom: 1px solid var(--color-line-subtle);
+      font-size: var(--text-sm);
+      color: var(--color-content-primary);
+    }
+    .demo-scroll-item:last-child {
+      border-bottom: none;
+    }
+    .demo-scroll-item--wide {
+      display: inline-block;
+      padding: var(--space-3) var(--space-4);
+      border-right: 1px solid var(--color-line-subtle);
+      font-size: var(--text-sm);
+      color: var(--color-content-primary);
+      white-space: nowrap;
+      min-width: 160px;
+    }
+    .demo-scroll-item--wide:last-child {
+      border-right: none;
+    }
+    .scroll-area__viewport:focus-visible {
+      outline: 2px solid var(--color-line-focus);
+      outline-offset: -2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Vertical scroll area
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Scroll Area · vertical</h2>
+      <p class="demo-section__desc">
+        A <code>.scroll-area</code> with <code>.scroll-area__viewport</code> wrapping a long list.
+        The viewport is focusable (<kbd>Tab</kbd> into it, then arrow keys scroll).
+      </p>
+
+      <div class="scroll-area demo-scroll-box">
+        <div class="scroll-area__viewport" tabindex="0">
+          <div class="demo-scroll-item">Account settings</div>
+          <div class="demo-scroll-item">Billing & plans</div>
+          <div class="demo-scroll-item">Team members</div>
+          <div class="demo-scroll-item">API keys</div>
+          <div class="demo-scroll-item">Webhooks</div>
+          <div class="demo-scroll-item">Security</div>
+          <div class="demo-scroll-item">Notifications</div>
+          <div class="demo-scroll-item">Activity log</div>
+          <div class="demo-scroll-item">Integrations</div>
+          <div class="demo-scroll-item">Usage metrics</div>
+          <div class="demo-scroll-item">Export data</div>
+          <div class="demo-scroll-item">Support tickets</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Horizontal scroll area
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Scroll Area · horizontal</h2>
+      <p class="demo-section__desc">
+        A scroll viewport with wide inline content for horizontal overflow.
+      </p>
+
+      <div class="scroll-area demo-scroll-box demo-scroll-box--wide">
+        <div class="scroll-area__viewport" tabindex="0" style="white-space:nowrap;">
+          <span class="demo-scroll-item--wide">Dashboard</span>
+          <span class="demo-scroll-item--wide">Analytics</span>
+          <span class="demo-scroll-item--wide">Reports</span>
+          <span class="demo-scroll-item--wide">Audit trail</span>
+          <span class="demo-scroll-item--wide">User management</span>
+          <span class="demo-scroll-item--wide">Permissions</span>
+          <span class="demo-scroll-item--wide">Data sources</span>
+          <span class="demo-scroll-item--wide">Scheduled tasks</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Scroll area in a card
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Scroll Area · inside a card</h2>
+      <p class="demo-section__desc">
+        The scroll area nested in a card content region typical of a detail panel.
+      </p>
+
+      <div class="card">
+        <div class="card__header">
+          <h2 class="card__title">Recent activity</h2>
+        </div>
+        <div class="card__content" style="padding:0;">
+          <div class="scroll-area" style="max-height:200px;">
+            <div class="scroll-area__viewport" tabindex="0">
+              <div class="demo-scroll-item">Alice created invoice INV-042</div>
+              <div class="demo-scroll-item">Bob updated the billing address</div>
+              <div class="demo-scroll-item">Carol disabled API key sk_live_3f8a</div>
+              <div class="demo-scroll-item">Dave added team member eve@acme.com</div>
+              <div class="demo-scroll-item">System rotated database credentials</div>
+              <div class="demo-scroll-item">Alice exported usage report Q2</div>
+              <div class="demo-scroll-item">Bob changed plan to Enterprise</div>
+              <div class="demo-scroll-item">Carol removed expired webhook</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

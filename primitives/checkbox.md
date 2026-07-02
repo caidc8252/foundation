@@ -43,4 +43,4 @@ A square box that renders a single indicator (check or minus). base-ui renders t
 ## Implementations
 
 - **Next / @cloud/ui** — `import { Checkbox } from "@cloud/ui"`. base-ui `Checkbox` under the hood; pass `indeterminate` for tri-state. API details: the `ui` skill. For a labeled field use `ToggleCheckbox`.
-- **Artifact (self-contained HTML)** — use `<input type="checkbox" class="checkbox">` styled by `./primitives.css`, on top of the inlined `dist/tokens.inline.css`. Same checked-fill recipe (`primary-700` + `content-on-primary` glyph).
+- **Artifact (self-contained HTML)** — use `<input type="checkbox" class="checkbox">` styled by `./primitives.css`, on top of the inlined `release/tokens.inline.css`. Same checked-fill recipe (`primary-700` + `content-on-primary` glyph).

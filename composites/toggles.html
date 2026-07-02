@@ -1,0 +1,417 @@
+<!--
+  toggles · Foundation composite example
+  =======================================
+  When to use (AI decision guide)
+  ──────────────────────────────────────────────────────────────────────
+  Use toggles for labeled checkbox / radio / switch controls. Each wraps
+  a native <input> inside a <label> so the text is part of the hit target.
+  · toggle-switch   — for immediate setting toggles (on/off)
+  · toggle-checkbox — for form submission choices (multi-select)
+  · toggle-radio    — for single-select within a fieldset/legend group
+  · For large card-style selections, use option-card instead of toggle-radio
+
+  Demonstrates:
+    - .toggle-checkbox — checkbox + label (checked, unchecked, disabled)
+    - .toggle-radio — radio + label inside a radio group with fieldset/legend
+    - .toggle-switch — switch + label (on, off, disabled)
+    - All three share the same flex-row layout recipe (gap: space-2, cursor: pointer)
+    - data-disabled="true" state (opacity 0.5, cursor not-allowed, pointer-events none)
+    - Control inside a <label> element so clicking the text activates the control
+
+  Cross-reference: @cloud/ui ToggleCheckbox, ToggleRadio, ToggleSwitch.
+    React components wire label + control automatically.
+    This static CSS paints the inline wrapper layout; control styling defers to primitives.
+
+  Layout: Minimal page body with labeled sections for each toggle type.
+
+  Token deps: tokens.inline.css · primitives.css · composites.css
+-->
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>toggles · composite example</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css" />
+  <link rel="stylesheet" href="../primitives/primitives.css" />
+  <link rel="stylesheet" href="../release/composites.css" />
+  <style>
+    /* --- Page-local overrides --- */
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--color-surface-1);
+      color: var(--color-content-primary);
+      padding: var(--space-6);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .demo-section {
+      margin-block: var(--space-8) var(--space-4);
+      padding-block: var(--space-2);
+      border-top: 2px solid var(--color-line-default);
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+    }
+
+    .demo-label {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-md);
+      background-color: var(--color-surface-3);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--color-content-tertiary);
+      margin-block-end: var(--space-3);
+    }
+
+    .demo-card {
+      padding: var(--space-5);
+      border: 1px solid var(--color-line-default);
+      border-radius: var(--radius-xl);
+      background-color: var(--color-surface-2);
+      margin-block-end: var(--space-4);
+    }
+
+    .demo-stack {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .demo-divider {
+      height: 1px;
+      background-color: var(--color-line-subtle);
+      margin-block: var(--space-4);
+    }
+
+    .demo-state-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+    }
+
+    .demo-state-tag {
+      display: inline-block;
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-sm);
+      background-color: var(--color-surface-3);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--color-content-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* Ensure radio group has consistent spacing */
+    .toggle-radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .label {
+      font-size: var(--text-sm);
+      color: var(--color-content-primary);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1 style="font-size: var(--text-2xl); font-weight: 600; margin-block-end: var(--space-1);">toggles · composite</h1>
+  <p style="font-size: var(--text-sm); color: var(--color-content-secondary); margin-block-end: var(--space-6);">
+    Inline control-with-label wrappers: pairs a checkbox, radio, or switch primitive with
+    an optional text label. This composite owns only the flex alignment layout;
+    all control styling delegates to the underlying primitive.
+  </p>
+
+  <!-- ================================================================
+       Example 1: .toggle-checkbox
+       ================================================================ -->
+  <div class="demo-section">1. Toggle Checkbox — multiple-select / boolean opt-in</div>
+  <p style="font-size: var(--text-sm); color: var(--color-content-secondary); margin-block-end: var(--space-3);">
+    <code>.toggle-checkbox</code> wrapping a <code>.checkbox</code> primitive + <code>.label</code>.
+    Clicking the label text toggles the checkbox. Supports <code>data-disabled="true"</code>.
+  </p>
+
+  <div class="demo-card">
+    <div class="demo-stack">
+
+      <!-- Checked -->
+      <div class="demo-state-row">
+        <span class="demo-state-tag">Checked</span>
+        <label class="toggle-checkbox">
+          <input type="checkbox" class="checkbox" checked />
+          <span class="label">Enable email notifications</span>
+        </label>
+      </div>
+
+      <!-- Unchecked -->
+      <div class="demo-state-row">
+        <span class="demo-state-tag">Unchecked</span>
+        <label class="toggle-checkbox">
+          <input type="checkbox" class="checkbox" />
+          <span class="label">Send weekly summary report</span>
+        </label>
+      </div>
+
+      <!-- Indeterminate -->
+      <div class="demo-state-row">
+        <span class="demo-state-tag">Indeterminate</span>
+        <label class="toggle-checkbox">
+          <input type="checkbox" class="checkbox" id="cb-indeterminate" />
+          <span class="label">Notify on all transactions (2 of 3 selected)</span>
+        </label>
+      </div>
+
+      <!-- Disabled (unchecked) -->
+      <div class="demo-state-row">
+        <span class="demo-state-tag">Disabled</span>
+        <label class="toggle-checkbox" data-disabled="true">
+          <input type="checkbox" class="checkbox" disabled />
+          <span class="label">Legacy notification channel (deprecated)</span>
+        </label>
+      </div>
+
+      <!-- Disabled (checked) -->
+      <div class="demo-state-row">
+        <span class="demo-state-tag">Disabled + Checked</span>
+        <label class="toggle-checkbox" data-disabled="true">
+          <input type="checkbox" class="checkbox" checked disabled />
+          <span class="label">System alerts (always on)</span>
+        </label>
+      </div>
+
+    </div>
+  </div>
+
+  <p style="font-size: var(--text-xs); color: var(--color-content-secondary); margin-block-start: var(--space-1);">
+    Use <code>.toggle-checkbox</code> for multiple-select lists or boolean opt-in preferences.
+    The <code>&lt;label&gt;</code> wrapper makes the text clickable to toggle the control.
+  </p>
+
+  <!-- ================================================================
+       Example 2: .toggle-radio
+       ================================================================ -->
+  <div class="demo-section">2. Toggle Radio — single-select from a group</div>
+  <p style="font-size: var(--text-sm); color: var(--color-content-secondary); margin-block-end: var(--space-3);">
+    <code>.toggle-radio</code> wrapping a <code>.radio</code> inside a <code>&lt;fieldset&gt;</code>
+    with <code>&lt;legend&gt;</code> for accessible group naming.
+  </p>
+
+  <div class="demo-card">
+    <fieldset style="border: none; padding: 0; margin: 0;">
+      <legend style="font-size: var(--text-sm); font-weight: 600; color: var(--color-content-primary); margin-block-end: var(--space-3);">
+        Shipping method
+      </legend>
+
+      <div class="toggle-radio-group">
+
+        <!-- Option 1: selected -->
+        <label class="toggle-radio">
+          <input type="radio" class="radio" name="shipping" value="standard" checked />
+          <span class="label">
+            Standard (5–7 business days)
+            <span style="font-size: var(--text-xs); color: var(--color-content-tertiary);"> — Free</span>
+          </span>
+        </label>
+
+        <!-- Option 2 -->
+        <label class="toggle-radio">
+          <input type="radio" class="radio" name="shipping" value="express" />
+          <span class="label">
+            Express (2–3 business days)
+            <span style="font-size: var(--text-xs); color: var(--color-content-tertiary);"> — $12.99</span>
+          </span>
+        </label>
+
+        <!-- Option 3 -->
+        <label class="toggle-radio">
+          <input type="radio" class="radio" name="shipping" value="overnight" />
+          <span class="label">
+            Overnight (next business day)
+            <span style="font-size: var(--text-xs); color: var(--color-content-tertiary);"> — $24.99</span>
+          </span>
+        </label>
+
+        <!-- Option 4: disabled -->
+        <label class="toggle-radio" data-disabled="true">
+          <input type="radio" class="radio" name="shipping" value="international" disabled />
+          <span class="label">
+            International
+            <span style="font-size: var(--text-xs); color: var(--color-content-tertiary);"> — Unavailable for this order</span>
+          </span>
+        </label>
+
+      </div>
+    </fieldset>
+  </div>
+
+  <p style="font-size: var(--text-xs); color: var(--color-content-secondary); margin-block-start: var(--space-1);">
+    Wrap radio groups in <code>&lt;fieldset&gt;</code> + <code>&lt;legend&gt;</code> for an accessible group name.
+    The <code>name</code> attribute links radios into a single-select group.
+  </p>
+
+  <!-- ================================================================
+       Example 3: .toggle-switch
+       ================================================================ -->
+  <div class="demo-section">3. Toggle Switch — binary on/off preference</div>
+  <p style="font-size: var(--text-sm); color: var(--color-content-secondary); margin-block-end: var(--space-3);">
+    <code>.toggle-switch</code> wrapping a <code>.switch</code> primitive + <code>.label</code>.
+    The switch uses <code>data-checked</code> and <code>aria-checked</code> attributes for checked state.
+  </p>
+
+  <div class="demo-card">
+    <div class="demo-stack">
+
+      <!-- Switch on -->
+      <div class="demo-state-row">
+        <span class="demo-state-tag">On</span>
+        <label class="toggle-switch">
+          <span class="switch" role="switch" aria-checked="true" data-checked tabindex="0">
+            <span class="switch__thumb"></span>
+          </span>
+          <span class="label">Wi-Fi</span>
+        </label>
+      </div>
+
+      <!-- Switch off -->
+      <div class="demo-state-row">
+        <span class="demo-state-tag">Off</span>
+        <label class="toggle-switch">
+          <span class="switch" role="switch" aria-checked="false" tabindex="0">
+            <span class="switch__thumb"></span>
+          </span>
+          <span class="label">Bluetooth</span>
+        </label>
+      </div>
+
+      <!-- Switch on, disabled -->
+      <div class="demo-state-row">
+        <span class="demo-state-tag">On + Disabled</span>
+        <label class="toggle-switch" data-disabled="true">
+          <span class="switch" role="switch" aria-checked="true" data-checked aria-disabled="true" tabindex="-1">
+            <span class="switch__thumb"></span>
+          </span>
+          <span class="label">Dark mode (disabled)</span>
+        </label>
+      </div>
+
+      <!-- Switch off, disabled -->
+      <div class="demo-state-row">
+        <span class="demo-state-tag">Off + Disabled</span>
+        <label class="toggle-switch" data-disabled="true">
+          <span class="switch" role="switch" aria-checked="false" aria-disabled="true" tabindex="-1">
+            <span class="switch__thumb"></span>
+          </span>
+          <span class="label">Auto-update (managed by IT)</span>
+        </label>
+      </div>
+
+    </div>
+  </div>
+
+  <p style="font-size: var(--text-xs); color: var(--color-content-secondary); margin-block-start: var(--space-1);">
+    The <code>.switch</code> primitive uses <code>data-checked</code> / <code>aria-checked="true"</code> for the
+    on state. The <code>.switch__thumb</code> slides inside the track. Disabled switches
+    use <code>aria-disabled="true"</code>.
+  </p>
+
+  <!-- ================================================================
+       Example 4: All three in a settings-like layout
+       ================================================================ -->
+  <div class="demo-section">4. All toggle types in a settings panel layout</div>
+  <p style="font-size: var(--text-sm); color: var(--color-content-secondary); margin-block-end: var(--space-3);">
+    A realistic settings panel mixing checkboxes, radios, and switches.
+  </p>
+
+  <div class="demo-card">
+    <h3 style="font-size: var(--text-md); font-weight: 600; color: var(--color-content-primary); margin-block-end: var(--space-4);">
+      Notification Preferences
+    </h3>
+
+    <div class="demo-stack">
+
+      <label class="toggle-checkbox">
+        <input type="checkbox" class="checkbox" checked />
+        <span class="label">Order confirmation</span>
+      </label>
+
+      <label class="toggle-checkbox">
+        <input type="checkbox" class="checkbox" checked />
+        <span class="label">Shipping updates</span>
+      </label>
+
+      <label class="toggle-checkbox">
+        <input type="checkbox" class="checkbox" />
+        <span class="label">Promotional offers</span>
+      </label>
+
+      <div class="demo-divider"></div>
+
+      <label class="toggle-switch">
+        <span class="switch" role="switch" aria-checked="true" data-checked tabindex="0">
+          <span class="switch__thumb"></span>
+        </span>
+        <span class="label">Push notifications</span>
+      </label>
+
+      <label class="toggle-switch">
+        <span class="switch" role="switch" aria-checked="false" tabindex="0">
+          <span class="switch__thumb"></span>
+        </span>
+        <span class="label">SMS notifications</span>
+      </label>
+
+      <label class="toggle-switch" data-disabled="true">
+        <span class="switch" role="switch" aria-checked="true" data-checked aria-disabled="true" tabindex="-1">
+          <span class="switch__thumb"></span>
+        </span>
+        <span class="label">Email digest (disabled by admin)</span>
+      </label>
+
+      <div class="demo-divider"></div>
+
+      <fieldset style="border: none; padding: 0; margin: 0;">
+        <legend style="font-size: var(--text-sm); font-weight: 600; color: var(--color-content-primary); margin-block-end: var(--space-2);">
+          Notification Frequency
+        </legend>
+        <div class="toggle-radio-group">
+          <label class="toggle-radio">
+            <input type="radio" class="radio" name="frequency" value="realtime" checked />
+            <span class="label">Real-time</span>
+          </label>
+          <label class="toggle-radio">
+            <input type="radio" class="radio" name="frequency" value="daily" />
+            <span class="label">Daily digest</span>
+          </label>
+          <label class="toggle-radio">
+            <input type="radio" class="radio" name="frequency" value="weekly" />
+            <span class="label">Weekly summary</span>
+          </label>
+        </div>
+      </fieldset>
+
+    </div>
+  </div>
+
+  <!-- bottom spacer -->
+  <div style="height: var(--space-12);"></div>
+
+  <script>
+    // Set indeterminate state for the demo checkbox
+    document.addEventListener('DOMContentLoaded', function () {
+      var cb = document.getElementById('cb-indeterminate');
+      if (cb) cb.indeterminate = true;
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,460 @@
+<!--
+  Composite · Timeline — copyable example
+  -------------------------------------------------------------------------------
+  When to use (AI decision guide)
+  ──────────────────────────────────────────────────────────────────────
+  Use timeline for rich chronological event history (audit trails, order
+  status progression, activity logs with actors). Supports dot and icon
+  markers, 6 tones, compact density, and stacked time layout.
+  · feed-list — for compact notification / activity feeds
+  · kv-grid   — for static attribute display (not chronological)
+  · list-row  — for interactive item lists (settings, members)
+
+  Companion to timeline.md (the contract — when the two disagree, the .md wins).
+  A standalone page demonstrating ALL variants and states of the Timeline
+  composite: dot vs icon markers, all 6 tones (neutral/primary/success/warning/
+  error/info), default (time-right) vs stacked time layout, and default vs
+  compact density, inside realistic card and section-card contexts.
+
+  HOW THE STYLES LOAD
+    This file LINKS the reference CSS (relative to composites/), so run
+    `pnpm build` after source edits to refresh release — no forked copy
+    that can drift. Order is load-bearing: tokens → primitives → composites.
+    To ship as a self-contained artifact (CSP, no external fetch), inline those
+    three blocks into a <style> instead.
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Composite · Timeline — foundation example</title>
+
+<link rel="stylesheet" href="../release/tokens.inline.css">
+<link rel="stylesheet" href="../primitives/primitives.css">
+<link rel="stylesheet" href="composites.css">
+
+<style>
+
+  /* Page-local composition — arranges demo sections side by side. */
+  .demo-page { padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-8); }
+  .demo-section__title { font-size: var(--text-lg); font-weight: 600; color: var(--color-content-primary); margin-bottom: var(--space-4); }
+  .demo-section__desc { font-size: var(--text-sm); color: var(--color-content-tertiary); margin-bottom: var(--space-4); }
+  .demo-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); }
+
+  .card {
+    border: 1px solid var(--color-line-default);
+    border-radius: var(--radius-xl);
+    background-color: var(--color-surface-2);
+    box-shadow: var(--shadow-1);
+    overflow: clip;
+  }
+  .card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding-inline: var(--space-5);
+    padding-block: var(--space-3) var(--space-3);
+    border-bottom: 1px solid var(--color-line-subtle);
+  }
+  .card__header-title { font-size: var(--text-sm); font-weight: 600; color: var(--color-content-primary); }
+  .card__header-meta { font-size: var(--text-xs); color: var(--color-content-tertiary); }
+  .card__content { padding: var(--space-5); }
+
+  @media (max-width: 700px) { .demo-row { grid-template-columns: 1fr; } }
+</style>
+
+<body class="demo-page">
+
+  <!-- ============================================================
+       Section 1: Default timeline (time-right, default density)
+       ============================================================ -->
+  <section>
+    <h2 class="demo-section__title">Default timeline</h2>
+    <p class="demo-section__desc">Time-right layout (<code>stacked=false</code>), default density. Demonstrates all 6 tones with dot markers (neutral, primary, success, warning, error, info).</p>
+
+    <div class="card">
+      <div class="card__header">
+        <span class="card__header-title">Deployment history</span>
+        <span class="card__header-meta">6 events</span>
+      </div>
+      <div class="card__content">
+        <ul class="timeline">
+
+          <!-- Item 1: dot · primary tone -->
+          <li class="timeline__item">
+            <div class="timeline__marker timeline__marker--dot timeline__marker--primary">
+              <div class="timeline__marker-node">
+                <div class="timeline__marker-dot"></div>
+              </div>
+              <div class="timeline__rail"></div>
+            </div>
+            <div class="timeline__content">
+              <div class="timeline__header">
+                <span class="timeline__title">Production deployment completed</span>
+                <time class="timeline__time" datetime="2026-06-28T14:30:00Z">2 hours ago</time>
+              </div>
+              <p class="timeline__description">v3.8.2 rolled out to all regions — includes the new billing module and hotfix for the rate-limiter regression.</p>
+              <span class="timeline__actor">deploy-bot</span>
+            </div>
+          </li>
+
+          <!-- Item 2: dot · success tone -->
+          <li class="timeline__item">
+            <div class="timeline__marker timeline__marker--dot timeline__marker--success">
+              <div class="timeline__marker-node">
+                <div class="timeline__marker-dot"></div>
+              </div>
+              <div class="timeline__rail"></div>
+            </div>
+            <div class="timeline__content">
+              <div class="timeline__header">
+                <span class="timeline__title">Health check passed</span>
+                <time class="timeline__time" datetime="2026-06-28T12:15:00Z">4 hours ago</time>
+              </div>
+              <p class="timeline__description">All 12 pods reporting healthy — average response time 42ms, error rate 0.02%.</p>
+              <span class="timeline__actor">observability</span>
+            </div>
+          </li>
+
+          <!-- Item 3: dot · info tone -->
+          <li class="timeline__item">
+            <div class="timeline__marker timeline__marker--dot timeline__marker--info">
+              <div class="timeline__marker-node">
+                <div class="timeline__marker-dot"></div>
+              </div>
+              <div class="timeline__rail"></div>
+            </div>
+            <div class="timeline__content">
+              <div class="timeline__header">
+                <span class="timeline__title">Review requested for feature flag</span>
+                <time class="timeline__time" datetime="2026-06-28T10:00:00Z">6 hours ago</time>
+              </div>
+              <p class="timeline__description">Feature flag "new-dashboard-v2" is pending approval from the product team before rollout.</p>
+              <span class="timeline__actor">m.ortiz</span>
+            </div>
+          </li>
+
+          <!-- Item 4: dot · warning tone -->
+          <li class="timeline__item">
+            <div class="timeline__marker timeline__marker--dot timeline__marker--warning">
+              <div class="timeline__marker-node">
+                <div class="timeline__marker-dot"></div>
+              </div>
+              <div class="timeline__rail"></div>
+            </div>
+            <div class="timeline__content">
+              <div class="timeline__header">
+                <span class="timeline__title">CPU threshold exceeded</span>
+                <time class="timeline__time" datetime="2026-06-28T08:45:00Z">8 hours ago</time>
+              </div>
+              <p class="timeline__description">us-east-2 cluster crossed 85% CPU utilization — auto-scaling triggered 2 additional replicas.</p>
+              <span class="timeline__actor">prometheus</span>
+            </div>
+          </li>
+
+          <!-- Item 5: dot · error tone -->
+          <li class="timeline__item">
+            <div class="timeline__marker timeline__marker--dot timeline__marker--error">
+              <div class="timeline__marker-node">
+                <div class="timeline__marker-dot"></div>
+              </div>
+              <div class="timeline__rail"></div>
+            </div>
+            <div class="timeline__content">
+              <div class="timeline__header">
+                <span class="timeline__title">Failed payment webhook retry</span>
+                <time class="timeline__time" datetime="2026-06-28T06:30:00Z">10 hours ago</time>
+              </div>
+              <p class="timeline__description">Stripe webhook `payment_intent.succeeded` returned 503 after 3 retries — alert dispatched to on-call.</p>
+              <span class="timeline__actor">webhook-svc</span>
+            </div>
+          </li>
+
+          <!-- Item 6: dot · neutral tone (last item — no rail) -->
+          <li class="timeline__item timeline__item--last">
+            <div class="timeline__marker timeline__marker--dot timeline__marker--neutral">
+              <div class="timeline__marker-node">
+                <div class="timeline__marker-dot"></div>
+              </div>
+              <div class="timeline__rail"></div>
+            </div>
+            <div class="timeline__content">
+              <div class="timeline__header">
+                <span class="timeline__title">Scheduled maintenance window</span>
+                <time class="timeline__time" datetime="2026-06-27T22:00:00Z">1 day ago</time>
+              </div>
+              <p class="timeline__description">Database cluster upgrade to PostgreSQL 16 completed in the maintenance window.</p>
+              <span class="timeline__actor">ops-team</span>
+            </div>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       Section 2: Timeline with icon markers across tones
+       ============================================================ -->
+  <section>
+    <h2 class="demo-section__title">Timeline with icon markers</h2>
+    <p class="demo-section__desc">Using <code>timeline__marker--icon</code> — tinted 24px circles with an inner glyph instead of a ring-dot. Same 6 tones.</p>
+
+    <div class="card">
+      <div class="card__header">
+        <span class="card__header-title">Audit trail — Account #A-45219</span>
+        <span class="card__header-meta">Last 6 entries</span>
+      </div>
+      <div class="card__content">
+        <ul class="timeline">
+
+          <li class="timeline__item">
+            <div class="timeline__marker timeline__marker--icon timeline__marker--primary">
+              <div class="timeline__marker-node">
+                <svg data-lucide="settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>
+              </div>
+              <div class="timeline__rail"></div>
+            </div>
+            <div class="timeline__content">
+              <div class="timeline__header">
+                <span class="timeline__title">Plan upgraded to Enterprise</span>
+                <time class="timeline__time" datetime="2026-06-28T14:30:00Z">Today</time>
+              </div>
+              <p class="timeline__description">Monthly billing limit raised from $5,000 to $25,000 — terms accepted via digital signature.</p>
+              <span class="timeline__actor">a.lee</span>
+            </div>
+          </li>
+
+          <li class="timeline__item">
+            <div class="timeline__marker timeline__marker--icon timeline__marker--success">
+              <div class="timeline__marker-node">
+                <svg data-lucide="circle-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+              </div>
+              <div class="timeline__rail"></div>
+            </div>
+            <div class="timeline__content">
+              <div class="timeline__header">
+                <span class="timeline__title">KYC verification approved</span>
+                <time class="timeline__time" datetime="2026-06-27T09:15:00Z">Yesterday</time>
+              </div>
+              <p class="timeline__description">Identity documents verified — all three checks (facial match, document validity, AML screening) passed.</p>
+              <span class="timeline__actor">compliance-bot</span>
+            </div>
+          </li>
+
+          <li class="timeline__item">
+            <div class="timeline__marker timeline__marker--icon timeline__marker--info">
+              <div class="timeline__marker-node">
+                <svg data-lucide="mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+              </div>
+              <div class="timeline__rail"></div>
+            </div>
+            <div class="timeline__content">
+              <div class="timeline__header">
+                <span class="timeline__title">Welcome email sent</span>
+                <time class="timeline__time" datetime="2026-06-26T16:45:00Z">2 days ago</time>
+              </div>
+              <p class="timeline__description">Onboarding sequence initiated — 5-step drip campaign scheduled over 14 days.</p>
+              <span class="timeline__actor">marketing-svc</span>
+            </div>
+          </li>
+
+          <li class="timeline__item">
+            <div class="timeline__marker timeline__marker--icon timeline__marker--warning">
+              <div class="timeline__marker-node">
+                <svg data-lucide="triangle-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+              </div>
+              <div class="timeline__rail"></div>
+            </div>
+            <div class="timeline__content">
+              <div class="timeline__header">
+                <span class="timeline__title">Payment method expiring</span>
+                <time class="timeline__time" datetime="2026-06-25T08:00:00Z">3 days ago</time>
+              </div>
+              <p class="timeline__description">Card ending in 4242 expires next month — reminder sent to primary contact.</p>
+              <span class="timeline__actor">billing-svc</span>
+            </div>
+          </li>
+
+          <li class="timeline__item">
+            <div class="timeline__marker timeline__marker--icon timeline__marker--error">
+              <div class="timeline__marker-node">
+                <svg data-lucide="circle-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
+              </div>
+              <div class="timeline__rail"></div>
+            </div>
+            <div class="timeline__content">
+              <div class="timeline__header">
+                <span class="timeline__title">SSO integration failed</span>
+                <time class="timeline__time" datetime="2026-06-24T11:20:00Z">4 days ago</time>
+              </div>
+              <p class="timeline__description">SAML assertion signature mismatch — IdP certificate rotated without updating the service provider.</p>
+              <span class="timeline__actor">a.lee</span>
+            </div>
+          </li>
+
+          <!-- Last: neutral tone icon marker, no rail -->
+          <li class="timeline__item timeline__item--last">
+            <div class="timeline__marker timeline__marker--icon timeline__marker--neutral">
+              <div class="timeline__marker-node">
+                <svg data-lucide="user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <div class="timeline__rail"></div>
+            </div>
+            <div class="timeline__content">
+              <div class="timeline__header">
+                <span class="timeline__title">Account created</span>
+                <time class="timeline__time" datetime="2026-06-20T10:00:00Z">8 days ago</time>
+              </div>
+              <p class="timeline__description">Account registered with marketplace-owner role — initial onboarding pending.</p>
+              <span class="timeline__actor">signup-svc</span>
+            </div>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       Section 3: Compact + Stacked timelines
+       ============================================================ -->
+  <section>
+    <h2 class="demo-section__title">Compact &amp; Stacked</h2>
+    <p class="demo-section__desc">Two additional axes: <code>timeline--compact</code> (tighter vertical rhythm, smaller title) and <code>timeline--stacked</code> (time+actor row below the title).</p>
+
+    <div class="demo-row">
+
+      <!-- Compact timeline -->
+      <div class="card">
+        <div class="card__header">
+          <span class="card__header-title">Compact (dense audit log)</span>
+          <span class="card__header-meta">timeline--compact</span>
+        </div>
+        <div class="card__content">
+          <ul class="timeline timeline--compact">
+            <li class="timeline__item">
+              <div class="timeline__marker timeline__marker--dot timeline__marker--primary">
+                <div class="timeline__marker-node"><div class="timeline__marker-dot"></div></div>
+                <div class="timeline__rail"></div>
+              </div>
+              <div class="timeline__content">
+                <div class="timeline__header">
+                  <span class="timeline__title">Role updated: admin → viewer</span>
+                  <time class="timeline__time" datetime="2026-06-28T14:30:00Z">14:30</time>
+                </div>
+                <span class="timeline__actor">j.doerr</span>
+              </div>
+            </li>
+            <li class="timeline__item">
+              <div class="timeline__marker timeline__marker--dot timeline__marker--success">
+                <div class="timeline__marker-node"><div class="timeline__marker-dot"></div></div>
+                <div class="timeline__rail"></div>
+              </div>
+              <div class="timeline__content">
+                <div class="timeline__header">
+                  <span class="timeline__title">Password changed</span>
+                  <time class="timeline__time" datetime="2026-06-28T13:15:00Z">13:15</time>
+                </div>
+                <span class="timeline__actor">system</span>
+              </div>
+            </li>
+            <li class="timeline__item">
+              <div class="timeline__marker timeline__marker--dot timeline__marker--info">
+                <div class="timeline__marker-node"><div class="timeline__marker-dot"></div></div>
+                <div class="timeline__rail"></div>
+              </div>
+              <div class="timeline__content">
+                <div class="timeline__header">
+                  <span class="timeline__title">MFA method enrolled: TOTP</span>
+                  <time class="timeline__time" datetime="2026-06-28T11:45:00Z">11:45</time>
+                </div>
+                <span class="timeline__actor">m.ortiz</span>
+              </div>
+            </li>
+            <li class="timeline__item timeline__item--last">
+              <div class="timeline__marker timeline__marker--dot timeline__marker--warning">
+                <div class="timeline__marker-node"><div class="timeline__marker-dot"></div></div>
+                <div class="timeline__rail"></div>
+              </div>
+              <div class="timeline__content">
+                <div class="timeline__header">
+                  <span class="timeline__title">Login from new device</span>
+                  <time class="timeline__time" datetime="2026-06-28T10:00:00Z">10:00</time>
+                </div>
+                <span class="timeline__actor">a.lee</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Stacked timeline -->
+      <div class="card">
+        <div class="card__header">
+          <span class="card__header-title">Stacked (time below title)</span>
+          <span class="card__header-meta">timeline--stacked</span>
+        </div>
+        <div class="card__content">
+          <ul class="timeline timeline--stacked">
+            <li class="timeline__item">
+              <div class="timeline__marker timeline__marker--icon timeline__marker--success">
+                <div class="timeline__marker-node">
+                  <svg data-lucide="thumbs-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/><path d="M7 10v12"/></svg>
+                </div>
+                <div class="timeline__rail"></div>
+              </div>
+              <div class="timeline__content">
+                <div class="timeline__header">
+                  <span class="timeline__title">Proposal approved by stakeholder</span>
+                </div>
+                <div class="timeline__time-row">
+                  <time class="timeline__time" datetime="2026-06-28T15:00:00Z">3:00 PM</time>
+                  <span class="timeline__actor">s.chen</span>
+                </div>
+                <p class="timeline__description">Q3 strategic roadmap proposal received sign-off from the VP of Product.</p>
+              </div>
+            </li>
+            <li class="timeline__item">
+              <div class="timeline__marker timeline__marker--icon timeline__marker--primary">
+                <div class="timeline__marker-node">
+                  <svg data-lucide="file-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+                </div>
+                <div class="timeline__rail"></div>
+              </div>
+              <div class="timeline__content">
+                <div class="timeline__header">
+                  <span class="timeline__title">Draft reviewed — 3 comments</span>
+                </div>
+                <div class="timeline__time-row">
+                  <time class="timeline__time" datetime="2026-06-27T11:30:00Z">Jun 27</time>
+                  <span class="timeline__actor">k.nakamura</span>
+                </div>
+                <p class="timeline__description">Peer review completed with minor suggestions on the data migration section.</p>
+              </div>
+            </li>
+            <li class="timeline__item timeline__item--last">
+              <div class="timeline__marker timeline__marker--icon timeline__marker--neutral">
+                <div class="timeline__marker-node">
+                  <svg data-lucide="square-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
+                </div>
+                <div class="timeline__rail"></div>
+              </div>
+              <div class="timeline__content">
+                <div class="timeline__header">
+                  <span class="timeline__title">Document created</span>
+                </div>
+                <div class="timeline__time-row">
+                  <time class="timeline__time" datetime="2026-06-25T09:00:00Z">Jun 25</time>
+                  <span class="timeline__actor">a.lee</span>
+                </div>
+                <p class="timeline__description">Initial draft of the Q3 roadmap proposal uploaded to the shared drive.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</body>

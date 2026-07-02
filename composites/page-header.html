@@ -1,0 +1,218 @@
+<!--
+  page-header.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the page-header composite in the foundation design system.
+
+  When to use (AI decision guide)
+  ──────────────────────────────────────────────────────────────────────
+  Use page-header on EVERY page. It names the page and exposes
+  page-level actions. Only the title is required.
+  · list / create / wizard pages → page-header
+  · detail / profile pages       → detail-header (carries identity)
+  · At most ONE primary action, rightmost; everything else secondary/ghost
+
+  Covers:
+    - Default with full anatomy: title + status adornment + description + actions
+    - Minimal (title only, info page)
+    - Title + description + single primary action
+    - Sticky variant (pins to top of scroll container)
+    - Read-only page (status, no actions)
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page header · foundation composite</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="../primitives/primitives.css">
+  <link rel="stylesheet" href="../release/composites.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    /* Sticky demo scroll container */
+    .demo-scroll {
+      max-height: 280px;
+      overflow-y: auto;
+      border: 1px solid var(--color-line-subtle);
+      border-radius: var(--radius-md);
+    }
+    .demo-scroll__filler {
+      height: 400px;
+      padding: var(--space-6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--color-surface-3);
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Default — full anatomy
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Page header · default (full anatomy)</h2>
+      <p class="demo-section__desc">
+        Title, status badge adornment on the heading line, description below,
+        and action cluster (primary rightmost, secondary on its left).
+      </p>
+
+      <div class="page-header">
+        <div class="page-header__bar">
+          <div class="page-header__titles">
+            <div class="page-header__heading">
+              <h1 class="page-header__title">Customers</h1>
+              <span class="badge badge--success"><span class="badge__dot"></span>Active</span>
+            </div>
+            <p class="page-header__description">Manage customer accounts, view orders, and adjust settings.</p>
+          </div>
+          <div class="page-header__actions">
+            <button class="btn btn--secondary" type="button">
+              <svg data-lucide="download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>
+              Export
+            </button>
+            <button class="btn btn--primary" type="button">
+              <svg data-lucide="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+              Create customer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Minimal — title only
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Page header · minimal (title only)</h2>
+      <p class="demo-section__desc">
+        A read-only info page with nothing but the title. No adornment, no actions.
+      </p>
+
+      <div class="page-header">
+        <div class="page-header__bar">
+          <div class="page-header__titles">
+            <div class="page-header__heading">
+              <h1 class="page-header__title">About</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Title + description + single primary action
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Page header · title + description + single action</h2>
+      <p class="demo-section__desc">
+        Common settings/edit page pattern: a descriptive subtitle and one primary save button.
+      </p>
+
+      <div class="page-header">
+        <div class="page-header__bar">
+          <div class="page-header__titles">
+            <div class="page-header__heading">
+              <h1 class="page-header__title">Settings</h1>
+            </div>
+            <p class="page-header__description">Configure application preferences, notification rules, and team permissions.</p>
+          </div>
+          <div class="page-header__actions">
+            <button class="btn btn--primary" type="button">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: Sticky variant
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Page header · sticky variant</h2>
+      <p class="demo-section__desc">
+        Add <code>.page-header--sticky</code> to pin the band to the top of the scroll
+        container. Scroll the box below to see it stick.
+      </p>
+
+      <div class="demo-scroll">
+        <div class="page-header page-header--sticky">
+          <div class="page-header__bar">
+            <div class="page-header__titles">
+              <div class="page-header__heading">
+                <h1 class="page-header__title">Create order</h1>
+              </div>
+              <p class="page-header__description">Fill in the order details below — actions are always reachable.</p>
+            </div>
+            <div class="page-header__actions">
+              <button class="btn btn--ghost" type="button">Cancel</button>
+              <button class="btn btn--primary" type="button">Save &amp; continue</button>
+            </div>
+          </div>
+        </div>
+        <div class="demo-scroll__filler">
+          <span>Form content area — scrolling keeps the sticky header in view</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 5: Read-only — count + status, no actions
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Page header · read-only (status, no actions)</h2>
+      <p class="demo-section__desc">
+        An informational page with a status adornment but no action buttons.
+      </p>
+
+      <div class="page-header">
+        <div class="page-header__bar">
+          <div class="page-header__titles">
+            <div class="page-header__heading">
+              <h1 class="page-header__title">Incident history</h1>
+              <span class="badge badge--info">Resolved</span>
+            </div>
+            <p class="page-header__description">A chronological record of system incidents and their resolution status.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

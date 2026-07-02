@@ -1,0 +1,347 @@
+<!--
+  Composite · Option Card — copyable example
+  -------------------------------------------------------------------------------
+  When to use (AI decision guide)
+  ──────────────────────────────────────────────────────────────────────
+  Use option-card for large selectable cards (plan selection, feature
+  picker, template chooser). Each card is a <label> over a native radio
+  or checkbox — the whole card is the hit target.
+  · radio-group — for compact inline radio options
+  · select      — for dropdown single-select
+  · product-card — for catalog tiles (commerce), not selections
+
+  Companion to option-card.md (the contract — when the two disagree, the .md wins).
+  Demonstrates all variants and states of the Option Card composite: radio
+  (single-select, .option-card--radio) vs checkbox (multi-select) indicators,
+  selected/hover/focus-visible/disabled states, with and without icon tiles,
+  inside both a radiogroup (single-select group) and a checkbox group. The card
+  is a <label> over a visually-hidden native <input> — accessibility comes from
+  the real control.
+
+  HOW THE STYLES LOAD
+    This file LINKS the reference CSS (relative to composites/), so run
+    `pnpm build` after source edits to refresh release — no forked copy
+    that can drift. Order is load-bearing: tokens → primitives → composites.
+    To ship as a self-contained artifact (CSP, no external fetch), inline those
+    three blocks into a <style> instead.
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Composite · Option Card — foundation example</title>
+
+<link rel="stylesheet" href="../release/tokens.inline.css">
+<link rel="stylesheet" href="../primitives/primitives.css">
+<link rel="stylesheet" href="composites.css">
+
+<style>
+
+  /* Page-local composition — arranges demo sections. */
+  .demo-page { padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-8); max-width: 800px; }
+  .demo-section__title { font-size: var(--text-lg); font-weight: 600; color: var(--color-content-primary); margin-bottom: var(--space-4); }
+  .demo-section__desc { font-size: var(--text-sm); color: var(--color-content-tertiary); margin-bottom: var(--space-5); }
+
+  /* Card surface for framing the demo groups. */
+  .card {
+    border: 1px solid var(--color-line-default);
+    border-radius: var(--radius-xl);
+    background-color: var(--color-surface-2);
+    box-shadow: var(--shadow-1);
+    padding: var(--space-5);
+  }
+  .card__title { font-size: var(--text-sm); font-weight: 600; color: var(--color-content-primary); margin-bottom: var(--space-1); }
+  .card__desc { font-size: var(--text-xs); color: var(--color-content-tertiary); margin-bottom: var(--space-4); }
+
+  /* Option card grid — auto-fill like the real page would. */
+  .option-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+    gap: var(--space-3);
+  }
+
+  /* Two-column layout for radio vs checkbox side-by-side. */
+  .demo-side-by-side {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-5);
+  }
+
+  @media (max-width: 700px) {
+    .demo-side-by-side { grid-template-columns: 1fr; }
+  }
+</style>
+
+<body class="demo-page">
+
+  <!-- ============================================================
+       Section 1: Single-select (radio) — account type
+       ============================================================ -->
+  <section>
+    <h2 class="demo-section__title">Single-select (radio) — Account type</h2>
+    <p class="demo-section__desc">Use <code>.option-card--radio</code> for single-select groups. The indicator is a round radio dot. One card is selected (primary border + tint), showing the <code>--selected</code> recipe.</p>
+
+    <div class="card">
+      <div class="card__title">Select account type</div>
+      <div class="card__desc">Choose the type of account that best fits your business model.</div>
+
+      <div class="option-grid" role="radiogroup" aria-label="Account type">
+
+        <!-- Option 1: radio, selected, with icon -->
+        <label class="option-card option-card--radio option-card--selected">
+          <input class="option-card__input" type="radio" name="account-type" value="isv" checked>
+          <span class="option-card__check"></span>
+          <span class="option-card__icon">
+            <svg data-lucide="package" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><polyline points="3.29 7 12 12 20.71 7"/><path d="m7.5 4.27 9 5.15"/></svg>
+          </span>
+          <span class="option-card__body">
+            <span class="option-card__title">ISV Partner</span>
+            <span class="option-card__desc">Builds and lists apps on the marketplace. Access to SDK, analytics, and API management.</span>
+          </span>
+        </label>
+
+        <!-- Option 2: radio, unselected, with icon -->
+        <label class="option-card option-card--radio">
+          <input class="option-card__input" type="radio" name="account-type" value="agency">
+          <span class="option-card__check"></span>
+          <span class="option-card__icon">
+            <svg data-lucide="users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
+          </span>
+          <span class="option-card__body">
+            <span class="option-card__title">Agency Partner</span>
+            <span class="option-card__desc">Manages accounts on behalf of clients. Multi-tenant dashboard and white-label options.</span>
+          </span>
+        </label>
+
+        <!-- Option 3: radio, unselected, with icon -->
+        <label class="option-card option-card--radio">
+          <input class="option-card__input" type="radio" name="account-type" value="enterprise">
+          <span class="option-card__check"></span>
+          <span class="option-card__icon">
+            <svg data-lucide="building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M12 6h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M16 6h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/><path d="M8 6h.01"/><path d="M9 22v-3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"/><rect x="4" y="2" width="16" height="20" rx="2"/></svg>
+          </span>
+          <span class="option-card__body">
+            <span class="option-card__title">Enterprise</span>
+            <span class="option-card__desc">Custom integrations, SLA-backed support, dedicated account manager, and volume pricing.</span>
+          </span>
+        </label>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       Section 2: Multi-select (checkbox) — features
+       ============================================================ -->
+  <section>
+    <h2 class="demo-section__title">Multi-select (checkbox) — Features</h2>
+    <p class="demo-section__desc">Default option cards (no <code>--radio</code>) use a checkbox indicator. Cards can omit the icon tile for simpler choices.</p>
+
+    <div class="card">
+      <div class="card__title">Choose add-on features</div>
+      <div class="card__desc">Select any combination of features to include in your plan.</div>
+
+      <div class="option-grid">
+
+        <!-- Option 1: checkbox, selected, with icon -->
+        <label class="option-card option-card--selected">
+          <input class="option-card__input" type="checkbox" name="features" value="analytics" checked>
+          <span class="option-card__check">
+            <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          </span>
+          <span class="option-card__icon">
+            <svg data-lucide="chart-bar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M7 16h8"/><path d="M7 11h12"/><path d="M7 6h3"/></svg>
+          </span>
+          <span class="option-card__body">
+            <span class="option-card__title">Advanced Analytics</span>
+            <span class="option-card__desc">Real-time dashboards, custom reports, and data export.</span>
+          </span>
+        </label>
+
+        <!-- Option 2: checkbox, unselected, with icon -->
+        <label class="option-card">
+          <input class="option-card__input" type="checkbox" name="features" value="support">
+          <span class="option-card__check">
+            <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          </span>
+          <span class="option-card__icon">
+            <svg data-lucide="headset" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5Zm0 0a9 9 0 1 1 18 0m0 0v5a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3Z"/><path d="M21 16v2a4 4 0 0 1-4 4h-5"/></svg>
+          </span>
+          <span class="option-card__body">
+            <span class="option-card__title">Premium Support</span>
+            <span class="option-card__desc">24/7 priority support with 1-hour SLA and dedicated engineer.</span>
+          </span>
+        </label>
+
+        <!-- Option 3: checkbox, unselected, no icon -->
+        <label class="option-card">
+          <input class="option-card__input" type="checkbox" name="features" value="sandbox">
+          <span class="option-card__check">
+            <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          </span>
+          <span class="option-card__body">
+            <span class="option-card__title">Sandbox Environment</span>
+            <span class="option-card__desc">Isolated test environment with sample data for development and QA.</span>
+          </span>
+        </label>
+
+        <!-- Option 4: checkbox, disabled (native disabled on input) -->
+        <label class="option-card">
+          <input class="option-card__input" type="checkbox" name="features" value="custom-domain" disabled>
+          <span class="option-card__check">
+            <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          </span>
+          <span class="option-card__body">
+            <span class="option-card__title">Custom Domain</span>
+            <span class="option-card__desc">Bring your own domain with SSL. Available on Enterprise plan.</span>
+          </span>
+        </label>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       Section 3: Side-by-side — Radio vs Checkbox indicators
+       ============================================================ -->
+  <section>
+    <h2 class="demo-section__title">Indicator comparison</h2>
+    <p class="demo-section__desc">Left: single-select radio dots (<code>--radio</code>). Right: multi-select checkboxes (default). Same layout, same selected recipe.</p>
+
+    <div class="demo-side-by-side">
+
+      <!-- Radio group -->
+      <div class="card">
+        <div class="card__title">Plan (radio)</div>
+        <div class="card__desc">Choose one plan.</div>
+
+        <div class="option-grid" role="radiogroup" aria-label="Plan">
+          <label class="option-card option-card--radio">
+            <input class="option-card__input" type="radio" name="plan" value="starter">
+            <span class="option-card__check"></span>
+            <span class="option-card__body">
+              <span class="option-card__title">Starter</span>
+              <span class="option-card__desc">$29/mo · Up to 5 users</span>
+            </span>
+          </label>
+          <label class="option-card option-card--radio option-card--selected">
+            <input class="option-card__input" type="radio" name="plan" value="growth" checked>
+            <span class="option-card__check"></span>
+            <span class="option-card__body">
+              <span class="option-card__title">Growth</span>
+              <span class="option-card__desc">$99/mo · Up to 25 users</span>
+            </span>
+          </label>
+          <label class="option-card option-card--radio">
+            <input class="option-card__input" type="radio" name="plan" value="enterprise">
+            <span class="option-card__check"></span>
+            <span class="option-card__body">
+              <span class="option-card__title">Enterprise</span>
+              <span class="option-card__desc">$299/mo · Unlimited users</span>
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Checkbox group -->
+      <div class="card">
+        <div class="card__title">Permissions (checkbox)</div>
+        <div class="card__desc">Select all that apply.</div>
+
+        <div class="option-grid">
+          <label class="option-card">
+            <input class="option-card__input" type="checkbox" name="perm" value="read">
+            <span class="option-card__check">
+              <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <span class="option-card__body">
+              <span class="option-card__title">Read-only</span>
+              <span class="option-card__desc">View resources and export data.</span>
+            </span>
+          </label>
+          <label class="option-card option-card--selected">
+            <input class="option-card__input" type="checkbox" name="perm" value="write" checked>
+            <span class="option-card__check">
+              <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <span class="option-card__body">
+              <span class="option-card__title">Read &amp; Write</span>
+              <span class="option-card__desc">Create and modify resources.</span>
+            </span>
+          </label>
+          <label class="option-card">
+            <input class="option-card__input" type="checkbox" name="perm" value="admin">
+            <span class="option-card__check">
+              <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <span class="option-card__body">
+              <span class="option-card__title">Admin</span>
+              <span class="option-card__desc">Full access including user management.</span>
+            </span>
+          </label>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       Section 4: Disabled card (demo)
+       ============================================================ -->
+  <section>
+    <h2 class="demo-section__title">Disabled state</h2>
+    <p class="demo-section__desc">A card with <code>disabled</code> on the input — <code>cursor: not-allowed</code> + <code>opacity: 0.5</code>.</p>
+
+    <div style="max-width: 300px;">
+      <label class="option-card">
+        <input class="option-card__input" type="checkbox" name="disabled-demo" value="unavailable" disabled>
+        <span class="option-card__check">
+          <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        </span>
+        <span class="option-card__icon">
+          <svg data-lucide="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </span>
+        <span class="option-card__body">
+          <span class="option-card__title">Legacy Plan (unavailable)</span>
+          <span class="option-card__desc">This plan is no longer available for new accounts.</span>
+        </span>
+      </label>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       Interactive behavior
+       ============================================================ -->
+  <script>
+    (function () {
+      /* Radio groups — mutually exclusive selection ("default vs non-default").
+         Remove --selected from all cards in the same radiogroup, then add it
+         to the newly checked card only.                                            */
+      document.querySelectorAll('.option-card--radio .option-card__input[type="radio"]').forEach(function (radio) {
+        radio.addEventListener('change', function () {
+          var group = radio.closest('[role="radiogroup"]');
+          if (!group) return;
+          /* clear all --selected in this group */
+          group.querySelectorAll('.option-card--radio').forEach(function (card) {
+            card.classList.remove('option-card--selected');
+          });
+          /* apply --selected to the checked card (native radio already flipped :checked) */
+          if (radio.checked) {
+            var card = radio.closest('.option-card');
+            if (card) card.classList.add('option-card--selected');
+          }
+        });
+      });
+
+      /* Checkbox groups — toggle --selected on the individual card.
+         For the checkbox variant, the visual state is already driven by
+         :has(:checked) in CSS; the class is synced as a secondary hook.            */
+      document.querySelectorAll('.option-card:not(.option-card--radio) .option-card__input[type="checkbox"]').forEach(function (checkbox) {
+        checkbox.addEventListener('change', function () {
+          var card = checkbox.closest('.option-card');
+          if (!card) return;
+          card.classList.toggle('option-card--selected', checkbox.checked);
+        });
+      });
+    })();
+  </script>
+
+</body>

@@ -1,0 +1,337 @@
+<!--
+  summary-bar.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the list summary-bar composite in the foundation design system.
+
+  When to use (AI decision guide)
+  ──────────────────────────────────────────────────────────────────────
+  Use summary-bar inside .table-frame--flush above .table-scroll on every
+  list page. It shows the result count on the left and list-level actions
+  (Export, bulk actions) on the right.
+  · Required for list pages — the count bar is part of the results core
+  · Sticky variant (--sticky) docks under a sticky page-header
+  · Right actions are business-driven; never add a default "Columns" action
+
+  Covers:
+    - Default bar: mono result count + label on the left, Export button on the right
+    - No actions (count only)
+    - Sticky variant (--sticky): docks at top-0 z-10 inside a constrained scroll root
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Summary bar · foundation composite</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="../primitives/primitives.css">
+  <link rel="stylesheet" href="../release/composites.css">
+  <style>
+    /* Page-local overrides for this demo page */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    /* Offset sticky thead by the summary-bar height so header tiles flush below it */
+    .sticky-demo .data-table--sticky-head thead th {
+      top: var(--space-12); /* 48px = summary-bar height */
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ── Section 1: Default summary bar ── -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Summary bar · default (count + Export)</h2>
+      <p class="demo-section__desc">
+        The standard bar: mono tabular count (content-primary, weight 600) + label on
+        the left, secondary Export button on the right. Fixed height 48px. Sits
+        directly above the table inside a <code>table-frame table-frame--flush</code>.
+      </p>
+
+      <div class="table-frame table-frame--flush">
+        <div class="summary-bar">
+          <div class="summary-bar__count">
+            <strong>1,248</strong> results · sorted by name
+          </div>
+          <div class="summary-bar__actions">
+            <button class="btn btn--secondary btn--sm">
+              <svg data-lucide="download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>
+              Export
+            </button>
+          </div>
+        </div>
+        <div class="table-scroll">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Company</th>
+                <th>Plan</th>
+                <th>Status</th>
+                <th class="cell-right">MRR</th>
+                <th>Joined</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Acme Corporation</td>
+                <td>Enterprise</td>
+                <td><span class="badge badge--success">Active</span></td>
+                <td class="cell-num cell-right">$12,400</td>
+                <td>Jan 15, 2024</td>
+              </tr>
+              <tr>
+                <td>Beta Systems</td>
+                <td>Growth</td>
+                <td><span class="badge badge--success">Active</span></td>
+                <td class="cell-num cell-right">$4,800</td>
+                <td>Mar 3, 2024</td>
+              </tr>
+              <tr>
+                <td>Cobalt Industries</td>
+                <td>Starter</td>
+                <td><span class="badge badge--warning">Trial</span></td>
+                <td class="cell-num cell-right">$0</td>
+                <td>Jun 1, 2024</td>
+              </tr>
+              <tr>
+                <td>Delta Analytics</td>
+                <td>Growth</td>
+                <td><span class="badge badge--neutral">Churned</span></td>
+                <td class="cell-num cell-right">$0</td>
+                <td>Nov 20, 2023</td>
+              </tr>
+              <tr>
+                <td>Echo Technologies</td>
+                <td>Enterprise</td>
+                <td><span class="badge badge--success">Active</span></td>
+                <td class="cell-num cell-right">$31,200</td>
+                <td>Aug 8, 2023</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section 2: Summary bar — no actions (count only) ── -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Summary bar · no actions (count only)</h2>
+      <p class="demo-section__desc">
+        When there are no list-level actions, only the count + label are shown.
+        The right slot is empty — no default buttons.
+      </p>
+
+      <div class="table-frame table-frame--flush">
+        <div class="summary-bar">
+          <div class="summary-bar__count">
+            <strong>87</strong> transactions
+          </div>
+          <div class="summary-bar__actions"><!-- no actions for this list --></div>
+        </div>
+        <div class="table-scroll">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Reference</th>
+                <th>Description</th>
+                <th>Type</th>
+                <th class="cell-right">Amount</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="cell-num">TXN-00412</td>
+                <td>Monthly subscription — Enterprise</td>
+                <td><span class="badge badge--neutral">Charge</span></td>
+                <td class="cell-num cell-right">$12,400.00</td>
+                <td>Jun 1, 2024</td>
+              </tr>
+              <tr>
+                <td class="cell-num">TXN-00411</td>
+                <td>Proration credit — seat reduction</td>
+                <td><span class="badge badge--success">Credit</span></td>
+                <td class="cell-num cell-right">−$320.00</td>
+                <td>May 28, 2024</td>
+              </tr>
+              <tr>
+                <td class="cell-num">TXN-00410</td>
+                <td>Monthly subscription — Growth</td>
+                <td><span class="badge badge--neutral">Charge</span></td>
+                <td class="cell-num cell-right">$4,800.00</td>
+                <td>May 1, 2024</td>
+              </tr>
+              <tr>
+                <td class="cell-num">TXN-00409</td>
+                <td>Overage — API calls</td>
+                <td><span class="badge badge--warning">Overage</span></td>
+                <td class="cell-num cell-right">$140.00</td>
+                <td>Apr 30, 2024</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section 3: Sticky summary bar ── -->
+    <div class="demo-section sticky-demo">
+      <h2 class="demo-section__title">Summary bar · sticky (with scroll demo)</h2>
+      <p class="demo-section__desc">
+        The <code>--sticky</code> variant docks the bar at the top of the nearest
+        scroll ancestor. Use <code>table-frame--flush</code> (<code>overflow:clip</code>
+        — not <code>hidden</code>) so sticky elements propagate up. For a constrained
+        demo the outer wrapper supplies the scroll root; in production the page scroll
+        container does. Pair with <code>data-table--sticky-head</code>; offset thead
+        by 48px (<code>--space-12</code>) so the column header tiles flush below the bar.
+      </p>
+
+      <!-- Outer div is the scroll root; table-frame--flush clips corners without trapping sticky -->
+      <div class="table-frame table-frame--flush" style="max-height:360px; overflow-y:auto;">
+        <div class="summary-bar summary-bar--sticky">
+          <div class="summary-bar__count">
+            <strong>1,248</strong> results · sorted by name
+          </div>
+          <div class="summary-bar__actions">
+            <button class="btn btn--secondary btn--sm">
+              <svg data-lucide="download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>
+              Export
+            </button>
+          </div>
+        </div>
+        <div class="table-scroll">
+          <table class="data-table data-table--sticky-head">
+            <thead>
+              <tr>
+                <th>Company</th>
+                <th>Plan</th>
+                <th>Status</th>
+                <th class="cell-right">MRR</th>
+                <th>Joined</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Acme Corporation</td>
+                <td>Enterprise</td>
+                <td><span class="badge badge--success">Active</span></td>
+                <td class="cell-num cell-right">$12,400</td>
+                <td>Jan 15, 2024</td>
+              </tr>
+              <tr>
+                <td>Beta Systems</td>
+                <td>Growth</td>
+                <td><span class="badge badge--success">Active</span></td>
+                <td class="cell-num cell-right">$4,800</td>
+                <td>Mar 3, 2024</td>
+              </tr>
+              <tr>
+                <td>Cobalt Industries</td>
+                <td>Starter</td>
+                <td><span class="badge badge--warning">Trial</span></td>
+                <td class="cell-num cell-right">$0</td>
+                <td>Jun 1, 2024</td>
+              </tr>
+              <tr>
+                <td>Delta Analytics</td>
+                <td>Growth</td>
+                <td><span class="badge badge--neutral">Churned</span></td>
+                <td class="cell-num cell-right">$0</td>
+                <td>Nov 20, 2023</td>
+              </tr>
+              <tr>
+                <td>Echo Technologies</td>
+                <td>Enterprise</td>
+                <td><span class="badge badge--success">Active</span></td>
+                <td class="cell-num cell-right">$31,200</td>
+                <td>Aug 8, 2023</td>
+              </tr>
+              <tr>
+                <td>Foxtrot Media</td>
+                <td>Growth</td>
+                <td><span class="badge badge--success">Active</span></td>
+                <td class="cell-num cell-right">$4,800</td>
+                <td>Feb 14, 2024</td>
+              </tr>
+              <tr>
+                <td>Gamma Retail</td>
+                <td>Starter</td>
+                <td><span class="badge badge--success">Active</span></td>
+                <td class="cell-num cell-right">$800</td>
+                <td>Apr 5, 2024</td>
+              </tr>
+              <tr>
+                <td>Harbor Logistics</td>
+                <td>Enterprise</td>
+                <td><span class="badge badge--success">Active</span></td>
+                <td class="cell-num cell-right">$18,600</td>
+                <td>Oct 12, 2023</td>
+              </tr>
+              <tr>
+                <td>Indigo Software</td>
+                <td>Growth</td>
+                <td><span class="badge badge--warning">Past due</span></td>
+                <td class="cell-num cell-right">$4,800</td>
+                <td>Jan 29, 2024</td>
+              </tr>
+              <tr>
+                <td>Jupiter Consulting</td>
+                <td>Starter</td>
+                <td><span class="badge badge--success">Active</span></td>
+                <td class="cell-num cell-right">$800</td>
+                <td>May 17, 2024</td>
+              </tr>
+              <tr>
+                <td>Kestrel Finance</td>
+                <td>Enterprise</td>
+                <td><span class="badge badge--success">Active</span></td>
+                <td class="cell-num cell-right">$24,800</td>
+                <td>Sep 2, 2023</td>
+              </tr>
+              <tr>
+                <td>Lunar Health</td>
+                <td>Growth</td>
+                <td><span class="badge badge--neutral">Churned</span></td>
+                <td class="cell-num cell-right">$0</td>
+                <td>Dec 11, 2023</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
