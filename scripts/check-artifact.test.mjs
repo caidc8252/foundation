@@ -292,7 +292,9 @@ test("check-artifact rejects native date/time inputs (hard), but not plain text 
   const dir = mkdtempSync(join(tmpdir(), "foundation-artifact-"));
   try {
     // Native rich date/time chrome — a hard violation; must name the picker family.
-    // Covers a static input, a JS-templated one (in <script>), plus month/week.
+    // Covers a static input, a JS-templated one (in <script>), month, plus a BARE
+    // (unskinned) time input — the date types are flagged even when they wear
+    // `.input` (native calendar is unskinnable); a raw time input is flagged too.
     const bad = join(dir, "native-date.html");
     writeFileSync(
       bad,
@@ -300,13 +302,15 @@ test("check-artifact rejects native date/time inputs (hard), but not plain text 
 <div>
   <input class="input input--sm" type="date" aria-label="From date">
   <input class="input" type="month">
+  <input type="time" aria-label="Bare time">
   <script>el.innerHTML = '<input class="input" type="datetime-local">';</script>
 </div>
 `,
       "utf8",
     );
 
-    // Legitimate foundation inputs — plain text/search/number on .input must PASS.
+    // Legitimate foundation inputs — plain text/search/number on .input must PASS,
+    // and a SKINNED native time input IS the foundation time-picker (allowed).
     const good = join(dir, "text-inputs.html");
     writeFileSync(
       good,
@@ -315,6 +319,7 @@ test("check-artifact rejects native date/time inputs (hard), but not plain text 
   <input class="input" type="text" placeholder="Name">
   <input class="input" type="search" aria-label="Search">
   <input class="input" type="number">
+  <input class="input input--md input-group__control" type="time" aria-label="Start time">
 </div>
 `,
       "utf8",
@@ -330,8 +335,10 @@ test("check-artifact rejects native date/time inputs (hard), but not plain text 
     assert.match(runBad.stdout, /date-picker/);
     assert.match(runBad.stdout, /date-time-picker/);
     assert.match(runBad.stdout, /\.date-trigger/);
+    // The bare time input is flagged and routed to the time-picker recipe.
+    assert.match(runBad.stdout, /time-picker/);
 
-    // Plain text/search/number inputs are the legitimate primitive — must not trip.
+    // Plain text/search/number + a SKINNED native time input must not trip.
     assert.equal(runGood.status, 0, runGood.stdout);
     assert.match(runGood.stdout, /date\/time inputs: ok/i);
   } finally {

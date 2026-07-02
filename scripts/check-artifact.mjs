@@ -9,12 +9,13 @@
      ✗ hardcoded color literals   — a token covers every brand color
      ✗ unknown var(--…) refs      — token name not in the set (typo / invented)
      ✗ native date/time input     — `<input type="date|datetime-local|month|
-                                     week">` renders browser-native calendar chrome
-                                     that ignores the token skin; the date-picker
-                                     family (.date-trigger) is the closed-set
-                                     control. `type="time"` is NOT flagged — the
-                                     foundation time-picker IS a styled native time
-                                     input (no non-native time control exists).
+                                     week">` pops unskinnable native calendar
+                                     chrome; the date-picker family (.date-trigger)
+                                     is the closed-set control. `type="time"` is
+                                     allowed ONLY when skinned (.input /
+                                     .input-group__control) — that IS the foundation
+                                     time-picker; a bare native time input is still
+                                     flagged.
      ⚠ classes not in the set     — neither a foundation class nor defined in
                                      this file's own <style> (page-local
                                      composition is allowed; an off-set
@@ -235,15 +236,18 @@ const structuralFindingsFromHtml = (html) => {
 // Native CALENDAR date inputs bypass the foundation picker family. The date
 // pickers (date-picker / date-range-picker / date-time-picker /
 // date-time-range-picker) replace the browser-native calendar with a custom
-// `.date-trigger` + `.calendar` popover; a raw `<input type="date">` renders
-// inconsistent browser-native chrome that ignores the token skin entirely, so it
-// is a closed-set breach — a HARD violation, not a style smell.
-//   `type="time"` is deliberately NOT flagged: the foundation time-picker IS a
-// styled native `<input type="time">` (input-group + clock addon, native
-// indicator hidden) — there is no non-native time control in the closed set, so a
-// native time input has no `.date-trigger`-style alternative to route to.
+// `.date-trigger` + `.calendar` popover; a raw `<input type="date">` — even one
+// wearing `.input` — still pops unskinnable native calendar chrome, so it is a
+// closed-set breach — a HARD violation, not a style smell.
+//   `type="time"` is the exception: the foundation time-picker IS a native
+// `<input type="time">` wearing the foundation input skin (its only native
+// chrome is a minimal spinner, which the design accepts; there is no non-native
+// time control in the closed set). So a time input is allowed ONLY when it wears
+// that skin — class `.input` or `.input-group__control`. A bare / unskinned
+// `<input type="time">` (raw browser chrome) is still a HARD violation, routed to
+// the time-picker recipe. This keeps "native time = the time-picker, nothing else".
 // Scan the RAW html (scripts included) so a JS-templated `<input type="date">`
-// counts too. Plain `<input class="input" type="text|search|number|email|time|…">`
+// counts too. Plain `<input class="input" type="text|search|number|email|…">`
 // stays allowed — the legitimate foundation input primitive.
 const PICKER_FOR = {
   date: "date-picker",
@@ -252,11 +256,19 @@ const PICKER_FOR = {
   week: "date-picker",
 };
 const NATIVE_DATE_INPUT = /<input\b[^>]*\btype\s*=\s*["'](date|datetime-local|month|week)["'][^>]*>/gi;
+// Time inputs are matched separately so we can allow the skinned time-picker
+// recipe and flag only the raw ones.
+const NATIVE_TIME_INPUT = /<input\b[^>]*\btype\s*=\s*["']time["'][^>]*>/gi;
+const isSkinnedInput = (tag) => /\bclass\s*=\s*["'][^"']*\b(?:input|input-group__control)\b/i.test(tag);
 const nativeDateInputsFromHtml = (html) => {
   const hits = new Map();
   for (const m of html.matchAll(NATIVE_DATE_INPUT)) {
     const type = m[1].toLowerCase();
     if (!hits.has(type)) hits.set(type, PICKER_FOR[type]);
+  }
+  for (const m of html.matchAll(NATIVE_TIME_INPUT)) {
+    if (isSkinnedInput(m[0])) continue; // skinned native time = the time-picker recipe, allowed
+    if (!hits.has("time")) hits.set("time", "time-picker");
   }
   return [...hits.entries()].map(([type, picker]) => ({ type, picker }));
 };
