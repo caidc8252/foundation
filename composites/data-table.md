@@ -48,7 +48,12 @@ config-driven table — columns + rows — not hand-written cell markup.
   self-authored `list-item` whose actions stay out of the way until hover), not a
   `data-table` action column. (A list whose rows are primarily a **navigation**
   target carries no action column at all — just a trailing chevron; the row click
-  navigates — see `list-page`.)
+  navigates — see `list-page`.) The action `<td>` is **right-aligned to the row
+  edge** (add `.cell-right`) so its verbs sit at the row end, not the left of a
+  stretched last column; the buttons live in a **`.row-actions__inner`** flex
+  wrapper that supplies their gap + vertical centering — bare button siblings
+  dropped straight into the cell butt together with no gap. This holds for the
+  collapsed single `⋯` carrier too.
 - **Row-action variant: a text verb is `secondary`, never bare `ghost`.** An
   always-visible row action must read as a button at rest, so a **text** row verb is
   a `secondary` `xs` button — a **destructive** one (delete / terminate / revoke) is
@@ -81,7 +86,7 @@ off-scale type/color pairing.
 | **numeric / date / id** | `font-mono` `tabular-nums` `content-secondary`, right-aligned (`.cell-num` + `.cell-right`) so digits line up. |
 | **plain text** | table default size + `content-secondary`. |
 | **tag / multi-badge set** | one wrapping row of `badge`s — `flex flex-wrap gap-1` (`.cell-tags`). |
-| **trailing arrow** (row is a navigation target) | right-aligned passive `ChevronRight` in `content-tertiary` (`.cell-chevron`); the **whole row** is the click target — no inline buttons. If the row needs inline actions, drop the arrow and use a row-action column instead. |
+| **trailing arrow** (row is a navigation target) | right-aligned passive `ChevronRight` in `content-tertiary` — the cell carries **both `.cell-right .cell-chevron`** (`.cell-chevron` sets only the tint + arrow size; the right-alignment is `.cell-right`, so the arrow pins to the row edge instead of floating at the left of a stretched last column). The **whole row** is the click target — no inline buttons. If the row needs inline actions, drop the arrow and use a row-action column instead. |
 
 - **Empty value** — render an em-dash `—` in `content-tertiary` (`.cell-empty`), never a blank cell.
 - A stable new column type (progress, risk level…) is a shared column component, not a per-page restyle — propose it rather than hand-rolling cell markup.
@@ -94,7 +99,8 @@ off-scale type/color pairing.
 - **Artifact** — `.table-frame` › `.table-scroll` › `table.data-table` with
   `--compact`/`--spacious`, `--sticky-head`, `--sticky-col`, `--striped`; cells
   `.cell-num`/`.cell-right`/`.cell-2line`/`.cell-tags`/`.cell-chevron`/`.cell-empty`,
-  `.row-actions`, `.col-select`. In `composites.css`.
+  `.row-actions` (right-align with `.cell-right`; wrap its buttons in
+  `.row-actions__inner`), `.col-select`. In `composites.css`.
   `--sticky-head` th carry their own opaque `surface-3` background (a pinned th
   detaches from the thead's, so rows would otherwise bleed through); when paired
   with a sticky summary bar, give the th a `top` equal to the bar's height

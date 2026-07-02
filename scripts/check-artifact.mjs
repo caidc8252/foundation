@@ -33,6 +33,10 @@
                                      an `.app-frame--frameless` page; invented chrome a
                                      frameless business page has no bar to host.
                                      Advisory only — never affects the exit code.
+     ⚠ cell-chevron w/o cell-right — a `.cell-chevron` trailing-arrow cell missing
+                                     `.cell-right`, so the nav arrow floats mid-column
+                                     instead of pinning to the row end (data-table.md).
+                                     Advisory only — never affects the exit code.
 
    The two ✗ categories are hard violations (non-zero exit). Classes are
    advisory by default; pass --strict to make off-set classes fail too.
@@ -198,16 +202,27 @@ const classAttrValuesFromTag = (tag) => {
 // It belongs INSIDE the cell: `<td><div class="cell-tags">…</div></td>`. Matching a
 // literal `<td class="cell-tags">` catches both static and JS-template forms; a
 // class assembled from fragments (`'<td class="' + cls + '"'`) can still slip past.
+// The `.cell-chevron` trailing-arrow cell is a navigation affordance and must be
+// right-aligned to the row end — the data-table reference pairs it with `.cell-right`
+// (`<td class="cell-right cell-chevron">`). `.cell-chevron` alone only sets the tint
+// + svg size, no text-align, so the arrow floats at the left of a stretched last
+// column instead of pinning to the row edge. Flag a `<td>`/`<th>` carrying
+// `cell-chevron` without `cell-right`. Same raw-html scan as cell-tags so JS-template
+// rows count. Advisory only — it reads slightly off, it does not break layout.
 const structuralFindingsFromHtml = (html) => {
   const cellTagsOnTableCells = [];
+  const chevronNoRight = [];
   for (const m of html.matchAll(/<(td|th)\b(?:\s[^<>]*)?>/gi)) {
     const tag = m[0];
-    const classValues = classAttrValuesFromTag(tag);
-    if (classValues.some((raw) => raw.split(/\s+/).includes("cell-tags"))) {
+    const classes = classAttrValuesFromTag(tag).flatMap((raw) => raw.split(/\s+/));
+    if (classes.includes("cell-tags")) {
       cellTagsOnTableCells.push(tag.length > 90 ? `${tag.slice(0, 87)}…` : tag);
     }
+    if (classes.includes("cell-chevron") && !classes.includes("cell-right")) {
+      chevronNoRight.push(tag.length > 90 ? `${tag.slice(0, 87)}…` : tag);
+    }
   }
-  return { cellTagsOnTableCells };
+  return { cellTagsOnTableCells, chevronNoRight };
 };
 
 // Spec-internal IDs leaking into rendered UI copy. A prototype projects the spec's
@@ -474,6 +489,8 @@ for (const file of files) {
   console.log(`  structure: ${structureBad === 0 ? "ok" : `${structureBad} issue(s)`}`);
   if (structureBad)
     console.log(`    ✗ .cell-tags is a flex wrapper inside the table cell; do not put it on ${structure.cellTagsOnTableCells.join(", ")}`);
+  if (structure.chevronNoRight.length)
+    console.log(`  ⚠ review: ${structure.chevronNoRight.length} .cell-chevron cell without .cell-right — the trailing nav arrow must pin to the row end; pair them (data-table.md): ${structure.chevronNoRight.join(" · ")}`);
   if (layoutHacks.length)
     console.log(`  ⚠ review: ${layoutHacks.length} inline padding/margin style(s) — prefer a class (.stack--N / .card__content--flush / page-local): ${layoutHacks.join(" · ")}`);
   if (flushNesting.length)

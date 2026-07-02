@@ -80,6 +80,17 @@ content (popup surface)
   control where a quiet menu row belongs. (A standalone `danger` **button** is the
   *alternative* carrier — used **instead of** a menu, not within one.)
 - **min-width is hardcoded** in the source: content `min-w-[240px]`, sub-content `min-w-[160px]`. No sizing token expresses these popup widths. The reference CSS keeps them as raw px and flags a token-change wish here (a `--popup-width-*` / menu-min-width token would close the gap — same wish noted in hover-card.md).
+- **Portalled + `position:fixed`? Make the rows `width:100%`.** The reference skin
+  carries no positioning (see Implementations), so a self-contained artifact that
+  portals the popup to `<body>` and pins it `position:fixed` — the usual way to
+  escape a clipping ancestor like a `table-frame`'s `overflow:clip` — turns the
+  popup into a **shrink-to-fit** box. There, a `<button class="dropdown-menu__item">`
+  (a form control) does **not** stretch to the popup width: it collapses to its
+  content (e.g. ~64px inside a 240px `min-width` menu), so the row's hit target and
+  any trailing `shortcut` (`margin-inline-start:auto`) stop spanning the row. Fix:
+  give the rows `width:100%`. (A normal-flow popup — or the reference's inline
+  definite width — doesn't hit this: block-level items fill it; the `<button>` in a
+  shrink-to-fit box is the exception.)
 - The source's `bg-border` (separator) and `text-muted-foreground` (shortcut) are shadcn aliases; they resolve to `line-default` and `content-tertiary` in this token system.
 - Action `item` uses `text-xs` (12px) while `checkbox-item` / `radio-item` use `text-sm` (13px) — kept faithfully; do not normalize them.
 - The contract documents the static skin only — see Implementations.
