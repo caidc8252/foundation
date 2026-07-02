@@ -154,6 +154,49 @@
       </div>
     </div>
 
+    <!-- ── Section: Footer actions — buttons in the footer-end cluster ── -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Footer actions</h2>
+      <p class="demo-section__desc">
+        The <code>.status-card__footer-end</code> cluster can hold text action
+        buttons instead of an icon button — a <code>.btn</code> group for
+        row-level actions (secondary + primary).
+      </p>
+
+      <div class="card status-card">
+        <div class="card__content">
+          <div class="stack stack--3">
+            <div class="status-card__head">
+              <span class="status-card__media">
+                <span class="object-tile object-tile--md object-tile--neutral" aria-hidden="true">
+                  <span class="object-tile__icon">
+                    <svg data-lucide="database" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>
+                  </span>
+                </span>
+              </span>
+              <div class="status-card__heading">
+                <span class="card__title">Primary database</span>
+                <span class="badge badge--warning">Replica lag 45s</span>
+              </div>
+            </div>
+            <p class="status-card__description">The read replica is falling behind — promote it or investigate the lag.</p>
+          </div>
+        </div>
+        <div class="card__footer">
+          <div class="status-card__footer-start">
+            <button class="switch" role="switch" aria-checked="true" aria-label="Auto-failover enabled">
+              <span class="switch__thumb"></span>
+            </button>
+            <span>Auto-failover</span>
+          </div>
+          <div class="status-card__footer-end">
+            <button class="btn btn--secondary btn--sm">Details</button>
+            <button class="btn btn--primary btn--sm">Promote</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </body>
 </html>
