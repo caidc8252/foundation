@@ -2241,7 +2241,7 @@
       "title": "Status card",
       "summary": "A header-less card — content + footer, no CardHeader — for repeating status lists: a media-led heading (icon + title + status badge) over an optional description, with a control footer.",
       "contract": "composites/status-card.md",
-      "example": null,
+      "example": "composites/status-card.html",
       "classes": [
         ".card__footer",
         ".status-card",
