@@ -1,0 +1,186 @@
+<!--
+  status-card.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the status-card composite in the foundation design system.
+
+  When to use (AI decision guide)
+  ──────────────────────────────────────────────────────────────────────
+  Use status-card for a repeating grid/stack of monitored objects — each
+  card names one thing, shows its current state (badge), an optional
+  description, and a control footer (switch to enable/disable, bell to
+  mute). Composition over .card (header-less: content + footer only).
+  · list-row — for a dense settings/entity LIST inside one card
+  · kv-grid  — for static key:value attribute pairs, not live status
+
+  Covers:
+    - Shape 1: minimal — title + footer switch only, no media/badge/description
+    - Shape 2: full static — media icon, title, error badge, description,
+      footer switch (start) + notification button (end)
+    - Shape 3: interactive — whole card is a stretched link (.card--interactive
+      + .status-card__link), footer controls stay independently clickable
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Status card · foundation composite</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="../primitives/primitives.css">
+  <link rel="stylesheet" href="../release/composites.css">
+  <style>
+    /* Page-local overrides for this demo page */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+    }
+    .demo-page {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ── Section: Minimal — title + footer only ── -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Minimal</h2>
+      <p class="demo-section__desc">
+        Just a title and a footer switch — no media, badge, or description.
+        The smallest valid status-card.
+      </p>
+
+      <div class="card status-card">
+        <div class="card__content">
+          <div class="stack--3">
+            <div class="status-card__head">
+              <div class="status-card__heading"><span class="card__title">Backups</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="card__footer">
+          <div class="status-card__footer-start">
+            <button class="switch" role="switch" aria-checked="true" aria-label="Backups enabled">
+              <span class="switch__thumb"></span>
+            </button>
+            <span>Enabled</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section: Full static — media + badge + description + footer clusters ── -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Full static</h2>
+      <p class="demo-section__desc">
+        A media icon, title, status badge, description, and a two-cluster footer
+        (switch on the left, notification button on the right).
+      </p>
+
+      <div class="card status-card">
+        <div class="card__content">
+          <div class="stack--3">
+            <div class="status-card__head">
+              <span class="status-card__media">
+                <span class="object-tile object-tile--md object-tile--neutral" aria-hidden="true">
+                  <span class="object-tile__icon">
+                    <svg data-lucide="database" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>
+                  </span>
+                </span>
+              </span>
+              <div class="status-card__heading">
+                <span class="card__title">Storage</span>
+                <span class="badge badge--error"><svg data-lucide="triangle-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> 2 critical</span>
+              </div>
+              <a class="status-card__trailing" href="#" aria-label="View Storage details"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="m9 18 6-6-6-6"/></svg></a>
+            </div>
+            <p class="status-card__description">Free space runs low — files, logs, and app cache fill the disk. Warn at 85%, critical at 95%.</p>
+          </div>
+        </div>
+        <div class="card__footer">
+          <div class="status-card__footer-start">
+            <button class="switch" role="switch" aria-checked="true" aria-label="Storage monitoring enabled">
+              <span class="switch__thumb"></span>
+            </button>
+            <span>Enabled</span>
+          </div>
+          <div class="status-card__footer-end">
+            <button class="btn btn--ghost btn--icon" aria-label="3 notifications"><svg data-lucide="bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg><span>3</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Section: Interactive — whole card is a link ── -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Interactive — navigate</h2>
+      <p class="demo-section__desc">
+        <code>.card--interactive</code> on the root plus <code>.status-card__link</code>
+        stretches the title link across the whole card, so clicking anywhere opens the
+        object's detail page — while the footer switch and mute button stay
+        independently clickable above the stretched hit-area.
+      </p>
+
+      <div class="card status-card card--interactive">
+        <div class="card__content">
+          <div class="stack--3">
+            <div class="status-card__head">
+              <span class="status-card__media">
+                <span class="object-tile object-tile--md object-tile--neutral" aria-hidden="true">
+                  <span class="object-tile__icon">
+                    <svg data-lucide="server" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><rect width="20" height="8" x="2" y="2" rx="2" ry="2"/><rect width="20" height="8" x="2" y="14" rx="2" ry="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/></svg>
+                  </span>
+                </span>
+              </span>
+              <div class="status-card__heading">
+                <a class="status-card__link" href="#"><span class="card__title">Compute</span></a>
+                <span class="badge badge--warning">1 warning</span>
+              </div>
+              <span class="status-card__trailing" aria-hidden="true"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="m9 18 6-6-6-6"/></svg></span>
+            </div>
+            <p class="status-card__description">CPU steady, memory climbing on node-3.</p>
+          </div>
+        </div>
+        <div class="card__footer">
+          <div class="status-card__footer-start">
+            <button class="switch" role="switch" aria-checked="true" aria-label="Compute monitoring enabled">
+              <span class="switch__thumb"></span>
+            </button>
+            <span>Enabled</span>
+          </div>
+          <div class="status-card__footer-end">
+            <button class="btn btn--ghost btn--icon" aria-label="Mute Compute alerts"><svg data-lucide="bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
