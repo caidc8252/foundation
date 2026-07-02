@@ -28,7 +28,7 @@ The base month grid — a weekday header over a 6×7 day matrix with month navig
 - **header** — a flex row, `justify-between`: prev nav button · centered month/year caption · next nav button.
 - **month_caption** — `text-md` (14px) semibold (600) `content-primary` label, centered between the nav buttons. (In `dropdown` caption layouts it becomes month/year `<select>`s — `react-day-picker` behavior.)
 - **grid** — a **single** CSS grid, `repeat(7, --cell-size)` columns on a uniform **2px** gap, holding the seven weekday header cells *and* all 42 day cells together (not per-week flex rows).
-- **weekday** — day-of-week abbreviation; tiny (`text-2xs` 11px), semibold (600), letter-spaced, `content-tertiary`.
+- **weekday** — day-of-week abbreviation; tiny (`text-xs` 12px), semibold (600), letter-spaced, `content-tertiary`.
 - **day** — `--cell-size` (32px) tall ghost button, `--cell-radius` (6px) corners, `text-xs` (12px) `tabular-nums` so columns stay aligned.
 - **footer** *(optional)* — a flex row split between a *Clear* and a *Today* link button (`primary-700` text), divided from the grid by a 1px `line-default` top border.
 

@@ -78,7 +78,7 @@ chart-tooltip (floating, dark)        chart-legend item
 - **Container** — `flex aspect-video` region; `text-xs` mono baseline. Gains
   `role="img"` + sr-only title/desc only when `label`/`description` are set.
 - **Legend** — wrapped row, centered, `gap-x-3 gap-y-1.5`; each item = swatch +
-  mono `text-2xs` `content-secondary` label. Swatch is a `dot` (`2.5px` rounded
+  mono `text-xs` `content-secondary` label. Swatch is a `dot` (`2.5px` rounded
   square) or `line` (`0.5×3` bar) tinted with the series color; toggled-off
   items dim to `content-tertiary` / `opacity-60`.
 - **Tooltip** — dark card (`chart-tooltip-bg`/`-fg`), `radius-md`, `shadow-4`,
@@ -87,7 +87,7 @@ chart-tooltip (floating, dark)        chart-legend item
   hairline divider.
 - **Pie callout** — slice → elbow polyline (`startX/Y` → `elbowX/Y` → `endX/Y`,
   round caps) → text block: name (`font-medium`) over value
-  (`content-tertiary tabular-nums`), both mono `text-2xs`.
+  (`content-tertiary tabular-nums`), both mono `text-xs`.
 - **Empty / skeleton** — both fill the `aspect-video` plot box. Empty = icon +
   `text-sm`/medium/`content-primary` title + `content-tertiary` description,
   centered. Skeleton = `radius-md` shimmer block, `role="status"`/`aria-busy`.

@@ -82,7 +82,7 @@ off-scale type/color pairing.
 
 | column | recipe |
 |---|---|
-| **two-line text** (primary + sub, e.g. name + id) | `.cell-2line` (`min-w-0`): main `.cell-2line__main` `text-sm` / `500` / `content-primary` truncate · sub `.cell-2line__sub` `text-2xs` / `content-tertiary` truncate. A leading `object-tile` / logo → `gap-3`. |
+| **two-line text** (primary + sub, e.g. name + id) | `.cell-2line` (`min-w-0`): main `.cell-2line__main` `text-lg` / `500` / `content-primary` truncate · sub `.cell-2line__sub` `text-xs` / `content-tertiary` truncate. A leading `object-tile` / logo → `gap-3`. |
 | **numeric / date / id** | `font-mono` `tabular-nums` `content-secondary`, right-aligned (`.cell-num` + `.cell-right`) so digits line up. |
 | **plain text** | table default size + `content-secondary`. |
 | **tag / multi-badge set** | one wrapping row of `badge`s — `flex flex-wrap gap-1` (`.cell-tags`). |

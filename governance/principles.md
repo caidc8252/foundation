@@ -30,7 +30,7 @@ ramp steps don't.
 
 ## 4. The type scale is closed
 
-Font sizes snap to `--text-{2xs…5xl}`. There is no `text-[15px]`. Same for the
+Font sizes snap to `--text-{xs…5xl}`. There is no `text-[15px]`. Same for the
 control-height (`control-*`), spacing (`cx-*`, `space-*`), radius, and shadow
 ladders. The scales are the design; off-scale values read as accidents.
 

@@ -135,7 +135,7 @@ ${compositesCss}
 html, body { margin: 0; }
 .cust { display: flex; align-items: center; gap: var(--space-3); }
 .cust__name { font-size: var(--text-sm); font-weight: 500; color: var(--color-content-primary); }
-.cust__sub { font-size: var(--text-2xs); color: var(--color-content-tertiary); }
+.cust__sub { font-size: var(--text-xs); color: var(--color-content-tertiary); }
 .tag-row { display: flex; flex-wrap: wrap; gap: var(--space-1); }
 .chev { display: inline-flex; color: var(--color-content-tertiary); }
 .chev svg { width: 16px; height: 16px; }
@@ -453,13 +453,13 @@ h3.group { font-size: var(--text-sm); letter-spacing: 0.02em;
 .swatch .chip { height: 64px; }
 .swatch .meta { padding: var(--space-2) var(--space-3); }
 .swatch .name { font-size: var(--text-sm); font-weight: 550; }
-.swatch .val { font-size: var(--text-2xs); color: var(--color-content-tertiary); font-family: var(--font-mono); word-break: break-all; }
+.swatch .val { font-size: var(--text-xs); color: var(--color-content-tertiary); font-family: var(--font-mono); word-break: break-all; }
 
 /* ramp row */
 .ramp { display: flex; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--color-line-default); margin-bottom: var(--space-4); box-shadow: var(--shadow-1); }
 .ramp__step { flex: 1; min-width: 0; }
 .ramp__step .bar { height: 56px; }
-.ramp__step .lbl { font-size: var(--text-2xs); text-align: center; padding: var(--space-1) 2px; color: var(--color-content-tertiary); font-family: var(--font-mono); }
+.ramp__step .lbl { font-size: var(--text-xs); text-align: center; padding: var(--space-1) 2px; color: var(--color-content-tertiary); font-family: var(--font-mono); }
 
 /* type scale */
 .type-row { display: flex; align-items: baseline; gap: var(--space-5); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-line-subtle); }
@@ -484,7 +484,7 @@ h3.group { font-size: var(--text-sm); letter-spacing: 0.02em;
 .demo .box { width: 72px; height: 56px; background: var(--color-primary-700); }
 .demo.shadow .box { background: var(--color-surface-2); border: 1px solid var(--color-line-subtle); }
 .demo .name { font-size: var(--text-sm); font-weight: 550; }
-.demo .val { font-size: var(--text-2xs); font-family: var(--font-mono); color: var(--color-content-tertiary); word-break: break-all; }
+.demo .val { font-size: var(--text-xs); font-family: var(--font-mono); color: var(--color-content-tertiary); word-break: break-all; }
 .space-row { display: flex; align-items: center; gap: var(--space-4); padding: var(--space-2) 0; border-bottom: 1px solid var(--color-line-subtle); }
 .space-row .tk { width: 120px; flex: none; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-content-secondary); }
 .space-row .bar { height: 14px; background: var(--color-accent-500); border-radius: var(--radius-sm); }
@@ -591,7 +591,7 @@ h3.group { font-size: var(--text-sm); letter-spacing: 0.02em;
   min-width: var(--space-5); height: var(--space-5); padding: 0 4px;
   border: 1.5px solid var(--color-surface-2); border-radius: var(--radius-full);
   background: var(--color-primary-700); color: var(--color-content-on-primary);
-  font-family: var(--font-mono); font-size: var(--text-2xs); line-height: 1;
+  font-family: var(--font-mono); font-size: var(--text-xs); line-height: 1;
   display: flex; align-items: center; justify-content: center; cursor: pointer;
   box-shadow: var(--shadow-2);
 }
@@ -619,9 +619,9 @@ body.anno-on main { cursor: crosshair; }
 .anno-empty { padding: var(--space-5) var(--space-4); text-align: center; color: var(--color-content-tertiary); font-size: var(--text-sm); line-height: 1.5; }
 .anno-row { display: grid; grid-template-columns: auto 1fr auto; gap: var(--space-2); align-items: start; padding: var(--space-2); border-radius: var(--radius-md); cursor: pointer; }
 .anno-row:hover { background: var(--color-surface-hover); }
-.anno-row__n { flex-shrink: 0; width: var(--space-5); height: var(--space-5); border-radius: var(--radius-full); background: var(--color-primary-700); color: var(--color-content-on-primary); font-family: var(--font-mono); font-size: var(--text-2xs); display: flex; align-items: center; justify-content: center; }
+.anno-row__n { flex-shrink: 0; width: var(--space-5); height: var(--space-5); border-radius: var(--radius-full); background: var(--color-primary-700); color: var(--color-content-on-primary); font-family: var(--font-mono); font-size: var(--text-xs); display: flex; align-items: center; justify-content: center; }
 .anno-list__note { font-size: var(--text-xs); color: var(--color-content-primary); line-height: 1.4; white-space: pre-wrap; word-break: break-word; }
-.anno-list__sel { margin-top: 2px; font-family: var(--font-mono); font-size: var(--text-2xs); color: var(--color-content-tertiary); word-break: break-all; }
+.anno-list__sel { margin-top: 2px; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-content-tertiary); word-break: break-all; }
 .anno-foot { display: flex; gap: var(--space-2); padding: var(--space-2) var(--space-3); border-top: 1px solid var(--color-line-subtle); }
 
 #anno-composer {
@@ -631,7 +631,7 @@ body.anno-on main { cursor: crosshair; }
   border-radius: var(--radius-lg); box-shadow: var(--shadow-4); font-family: var(--font-sans);
 }
 #anno-composer[hidden] { display: none; }
-.anno-composer__sel { font-family: var(--font-mono); font-size: var(--text-2xs); color: var(--color-primary-500); word-break: break-all; }
+.anno-composer__sel { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-primary-500); word-break: break-all; }
 #anno-text { min-height: 64px; }
 .anno-composer__row { display: flex; align-items: center; gap: var(--space-2); }
 
@@ -665,7 +665,7 @@ h6.md-h { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 
 
 /* fenced code blocks (ASCII anatomy diagrams) */
 .md-pre { margin: var(--space-3) 0; padding: var(--space-3) var(--space-4); background: var(--color-surface-3); border: 1px solid var(--color-line-subtle); border-radius: var(--radius-md); overflow-x: auto; }
-.md-pre code { font-family: var(--font-mono); font-size: var(--text-2xs); line-height: 1.5; color: var(--color-content-secondary); white-space: pre; background: none; padding: 0; }
+.md-pre code { font-family: var(--font-mono); font-size: var(--text-xs); line-height: 1.5; color: var(--color-content-secondary); white-space: pre; background: none; padding: 0; }
 /* pattern (L3) card — renders the full archetype contract */
 .pattern { border: 1px solid var(--color-line-default); border-radius: var(--radius-lg); background: var(--color-surface-2); padding: var(--space-4) var(--space-6) var(--space-6); margin-bottom: var(--space-5); }
 .pattern .md-h:first-child { margin-top: var(--space-2); }
@@ -1689,7 +1689,7 @@ const PRINCIPLES = [
   ["一切都源自 token", "任何地方都不允许手写颜色、尺寸、圆角、阴影、时长或字体值。一个十六进制色值、rgb()、px 字号或 rounded-[7px] 都算缺陷。"],
   ["单一事实来源，且只存在于一处", "token 值只存在于 foundation/tokens/*.css。任何使用方都不得重新定义。同一个值出现两份拷贝，正是这套 foundation 要杜绝的失败模式。"],
   ["语义命名优先于原始色阶", "优先用 text-content-secondary，而不是 text-…-600；用 bg-success-bg，而不是 bg-…-50。语义命名能在换肤后存活，色阶步则不能。"],
-  ["字号刻度是封闭的", "字号只能落在 --text-{2xs…5xl} 这些刻度上，没有 text-[15px]。控件高度、间距、圆角、阴影阶梯同理 —— 这些刻度本身就是设计。"],
+  ["字号刻度是封闭的", "字号只能落在 --text-{xs…5xl} 这些刻度上，没有 text-[15px]。控件高度、间距、圆角、阴影阶梯同理 —— 这些刻度本身就是设计。"],
   ["契约具有权威性", "组件的变体/尺寸/状态在 primitives/ 与 composites/ 中定义一次。当实现与契约不一致时，是实现错了。"],
   ["单一品牌", "这套 foundation 只编码一个品牌，跨越「原型→生产」边界。它不是通用换肤主题 —— 偏离品牌的工作应当 fork 出自己的 token。"],
 ];
@@ -1741,7 +1741,7 @@ function renderColor(){
 }
 
 function renderType(){
-  const scale = [["text-5xl","5xl"],["text-4xl","4xl"],["text-3xl","3xl"],["text-2xl","2xl"],["text-xl","xl"],["text-lg","lg"],["text-md","md · 基准"],["text-sm","sm"],["text-xs","xs"],["text-2xs","2xs"]];
+  const scale = [["text-5xl","5xl"],["text-4xl","4xl"],["text-3xl","3xl"],["text-2xl","2xl"],["text-xl","xl"],["text-lg","lg"],["text-md","md · 基准"],["text-sm","sm"],["text-xs","xs"]];
   return scale.map(([k,label]) => \`<div class="type-row">
     <div class="tk"><b>\${label}</b><br>--\${k} · \${val(k)}</div>
     <div class="sample" style="font-size:var(--\${k})">设计规范 Design Foundation</div>

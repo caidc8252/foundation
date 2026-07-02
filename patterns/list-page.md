@@ -144,7 +144,7 @@ whether or not a condition band sits above them):
   triggers the row's navigate-to-detail.
 - **Three text-column shapes**, and nothing else (keeps columns scannable):
   1. **Two-line** — primary `text-sm`/medium/`content-primary` over a subline
-     `text-2xs`/`content-tertiary`; may lead with an avatar / initial tile
+     `text-xs`/`content-tertiary`; may lead with an avatar / initial tile
      (`size-8`, `surface-3`, `rounded-lg`).
   2. **Numeric / id / date** — always mono + `tabular-nums`, `content-secondary`
      (the data-table `cell-num`); usually right-aligned so digits line up.

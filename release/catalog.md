@@ -8,7 +8,7 @@
 >
 > Check an artifact against this set: `node scripts/check-artifact.mjs <file.html>`
 
-## L1 · Tokens (175)
+## L1 · Tokens (174)
 
 Inline `tokens.inline.css`, then reference as `var(--name)`. Values live in
 that file / `tokens.json`; these are the legal **names**, grouped by prefix:
@@ -23,7 +23,7 @@ that file / `tokens.json`; these are the legal **names**, grouped by prefix:
 - **shadow** (9) - `--shadow-1` `--shadow-2` `--shadow-3` `--shadow-4` `--shadow-5` `--shadow-cta` `--shadow-focus` `--shadow-row-selected` `--shadow-sticky-col`
 - **space** (12) - `--space-0` `--space-1` `--space-10` `--space-12` `--space-16` `--space-2` `--space-20` `--space-3` `--space-4` `--space-5` `--space-6` `--space-8`
 - **spacing** (8) - `--spacing-control-lg` `--spacing-control-md` `--spacing-control-sm` `--spacing-control-xs` `--spacing-cx-lg` `--spacing-cx-md` `--spacing-cx-sm` `--spacing-stat-card`
-- **text** (10) - `--text-2xl` `--text-2xs` `--text-3xl` `--text-4xl` `--text-5xl` `--text-lg` `--text-md` `--text-sm` `--text-xl` `--text-xs`
+- **text** (9) - `--text-2xl` `--text-3xl` `--text-4xl` `--text-5xl` `--text-lg` `--text-md` `--text-sm` `--text-xl` `--text-xs`
 
 ## L1.5 · Icons (1737, Lucide lucide-static@1.21.0)
 
