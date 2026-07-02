@@ -96,6 +96,11 @@
 
 > **历史提示**：曾经存在的 `composites/schema.json` 已被**删除**。任何步骤都**不要**再去维护它。
 
+**`build/current/` 是 `release/` 的姊妹快照 —— 别搞混。** 两者都由 `pnpm build` 从源生成、都永不手编，定位不同：
+
+- `release/` = **对外发布的闭集契约**（含 `catalog.*` / `tokens.json`），artifact 与 foundation-maintain 消费它。
+- `build/current/`（`tokens.inline.css` / `primitives.css` / `composites.css` / `manifest.json`）= **「当前源码此刻编译成什么」的预览态**：每次 `pnpm build` 刷新、跟着 HEAD 源走、无 catalog，是原型/审查里那个 `current` 版本的底。它被提交进仓库有两个作用——① PR 里能直接看到源码改动**编译出的 CSS diff**（token 源是 Tailwind 风味的 `@theme`，不是能直接读的最终 CSS）；② `check-release` 用它做守卫：clean rebuild 后 `git diff -- release build/current` 必须为空，抓「手编了生成快照」或「改了源忘了 build」。
+
 ### 3.2 三道守卫（每个 PR 前 + CI 都跑）
 
 CI 在 `.github/workflows/checks.yml` 里对 `main` / `develop` 的 push 和所有 PR 跑这三道。
@@ -103,7 +108,7 @@ CI 在 `.github/workflows/checks.yml` 里对 `main` / `develop` 的 push 和所�
 
 | 命令 | 它断言什么 | 它如何抓到漏改 |
 |------|------------|----------------|
-| `node scripts/check-release.mjs` | 重新 build 后 `git diff -- release versions` 为空 | 抓到**手编了 release/** 或**忘了 `pnpm build`**：release 与源不一致即 FAIL |
+| `node scripts/check-release.mjs` | 重新 build 后 `git diff -- release build/current` 为空 | 抓到**手编了 release/ 或 build/current/** 或**忘了 `pnpm build`**：生成快照与源不一致即 FAIL |
 | `node scripts/check-examples.mjs --strict` | 对 `patterns/` · `composites/` · `primitives/` 下每个 `.html` 跑 `check-artifact.mjs --strict` | 抓到 example 用了**闭合集外的 class**、硬编码颜色、未知 token、未知/被篡改的图标。删了某 class 后仍有 example 引用它 → FAIL |
 | `node scripts/check-pattern-router.mjs` | `router.json` ↔ `release/catalog.json` ↔ pattern 契约三方对齐 | 每条 route 的 `pattern` 必须是已知 catalog pattern、`contract` 路径必须等于 catalog 记录、`builderPattern` 对应的 `.html` 必须存在、且 **`route.composites` 的每个名字既要是真实 catalog composite、又要在该 pattern 契约 `.md` 里被提及**；任一不满足 → FAIL |
 
@@ -124,12 +129,13 @@ in-repo example 过了一遍这道关。
 
 ### 3.4 Prototype editor 版本 promote（Agent handoff）
 
-`pnpm prototype:carbon` 的 editor 保存出来的是 `versions/vN/` 快照，不是 governed source。
+可视化 editor 现在住在独立仓库 [`foundation-maintain`](https://github.com/Newland-Payment-Technology-US-Co-Ltd/foundation-maintain)（`pnpm serve`）。它保存出来的是 `versions/vN/` 快照（`pnpm serve` 本地直接生成，或下载 `manifest.json` 后经 `pnpm apply-draft` 落成 `versions/vN`），不是 governed source。
 它会把视觉编辑写进 `versions/vN/manifest.json`：
 
 - `tokenOverrides`：token 值候选改动；
 - `classOverrides`：primitive/composite selector 的声明候选改动；
 - `classOverrideMeta` / `changes`：selector、prop、旧值、新值，以及它属于哪个 primitive/composite。
+- `elementOverrides`：实例级变体/尺寸切换（按 element path 记录 `classSwaps`）。归一化后随 manifest 走完整条链路，但本轮 foundation 侧**只记录、不自动回写页面 HTML**。
 
 **这些 override 是候选事实，不是 foundation 合约。** 尤其是 composite class override：
 如果 `.stat-card` 的背景从 `success` 改到 `error`，但 `composites/stat-card.md`
@@ -464,8 +470,10 @@ composites/
 patterns/
   router.json                   # 意图路由：routes + decisionOrder + aiFlow
   <name>.md / <name>.html       # 契约 + 示例（.html 须含 .app-frame__main）
-release/                           # ★ 全生成，永不手编
+release/                           # ★ 全生成，永不手编：对外发布的闭集契约
   tokens.inline.css · tokens.json · catalog.json · catalog.md
+build/current/                     # ★ 全生成，永不手编：当前源码预览态（HEAD 编译；被 check-release 守）
+  tokens.inline.css · primitives.css · composites.css · manifest.json
 emit/build.mjs                  # ★ THE build（pnpm build）
 scripts/
   check-release.mjs · check-examples.mjs · check-pattern-router.mjs   # 守卫
