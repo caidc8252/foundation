@@ -19,8 +19,8 @@ row into. Named structure, not implementation.
 │ │ Overview   Activity   Orders   Settings                              │  │
 │ └────────────────────────────────────────────────────────────────────────┘  │
 ╞ page-body (gutters + stack) ══════════════════════════════════════════════╡
-│ tabbed → the ACTIVE tab's content (Overview = a KV grid via               │
-│          grid-auto-fit-kv; other tabs hold sections / timeline / empty).  │
+│ tabbed → the ACTIVE tab's content (Overview = a KV grid, label→value      │
+│          left-right; other tabs hold sections / timeline / empty).        │
 │ no tabs → the body's sections stacked directly (Overview KV grid first).  │
 └────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -76,8 +76,10 @@ when this record's job calls for it.
   and each is substantial; otherwise stack labelled sections on one page. A detail
   screen is ONE page with tab state, not one route per tab. When tabs are used,
   they dock in the **`detail-header` band** (below the name), not in `page-body`.
-- **Overview is a key-value grid** via `grid-auto-fit-kv` (no hand-written
-  `repeat(auto-fit,…)`); labels `text-content-tertiary`, values `content-primary`.
+- **Overview is a key-value grid** ([`kv-grid`](../composites/kv-grid.md)):
+  a left-right label → value list, labels `text-content-tertiary`, values
+  `content-primary`. Short values sit beside their label; a long / multi-line
+  value takes `.kv-grid__row--full` to stack across the full width.
 - **A section that lists a collection is a `card` wrapping a `data-table`** —
   the one consistent block for every record-list section / tab (contracts, operators,
   members, devices, …). The shape is fixed:
@@ -134,9 +136,10 @@ when this record's job calls for it.
   deep-link, split it into its own route and **record the reason**. This is the
   one case where a detail "tab" becomes a real route.
 
-**Overview structure** — `overview` = a **main card** (the KV grid, via
-`grid-auto-fit-kv`) **+ an optional right rail**. The rail stacks `stat-card`s
-(key metrics) for order/invoice-style records.
+**Overview structure** — `overview` = a **main card** (the KV grid — a left-right
+label → value list; a long value takes `.kv-grid__row--full` to stack) **+ an
+optional right rail**. The rail stacks `stat-card`s (key metrics) for
+order/invoice-style records.
 
 **Detail head** — the **title/name** is the only required slot. An OPTIONAL
 leading **back button** (ghost icon + a left chevron, `aria-label` required,

@@ -32,8 +32,9 @@
   /* Page-local composition — NOT new design vocabulary. All values are tokens. */
 
   /* Overview = a key-value grid. The real .kv-grid composite in composites.css
-     provides the grid layout, label/value typography, and --full row span.
-     Page-local: only the reveal helper (inline-flex + gap) for the masked field. */
+     provides the layout, label/value typography, and the --inline left-right
+     variant (preferred). Page-local: only the reveal helper (inline-flex + gap)
+     for the masked field. */
   .kv__value--mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
   .kv__value--reveal { display: inline-flex; align-items: center; gap: var(--space-2); }
 
@@ -169,7 +170,8 @@
             <div class="card">
               <div class="card__header"><h2 class="card__title">Overview</h2></div>
               <div class="card__content">
-                <!-- .kv-grid is the real composite from composites.css:1587 -->
+                <!-- .kv-grid is the real composite: left-right label→value,
+                     subgrid-aligned two columns. --full stacks a long value. -->
                 <dl class="kv-grid">
                   <!-- DP5: ID row with copy action — ghost icon btn beside the value -->
                   <div class="kv-grid__row">
@@ -209,8 +211,9 @@
                       <button class="btn btn--ghost btn--xs" type="button">Reveal</button>
                     </dd>
                   </div>
-                  <!-- --full: long values (address, description) span all columns -->
-                  <div class="kv-grid__row kv-grid__row--full">
+                  <!-- Inline: a long value just wraps in its value column; no --full
+                       needed (every inline row already spans both columns). -->
+                  <div class="kv-grid__row">
                     <dt>Billing address</dt>
                     <dd>2200 Mission St, Suite 4, San Francisco, CA 94110</dd>
                   </div>

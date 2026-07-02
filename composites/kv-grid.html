@@ -3,16 +3,18 @@
   =======================================
   When to use (AI decision guide)
   ──────────────────────────────────────────────────────────────────────
-  Use kv-grid for responsive key-value attribute display (label: value
-  pairs). It auto-fits columns to container width.
+  Use kv-grid for key-value attribute display (label: value pairs).
+  Layout is LEFT-RIGHT: label left, value right, subgrid-aligned into two
+  shared columns so short values sit next to their label (no stranding).
+  A long / multi-line value takes --full to stack across the full width.
   · data-table  — for multiple rows of the SAME shape (columns)
   · list-row    — for interactive lists with controls
   · feed-list   — for event / activity feeds
 
   Demonstrates:
     - .kv-grid as a <dl> with .kv-grid__row cells (dt label + dd value)
-    - Container-responsive columns (auto-fit, 16rem cell threshold)
-    - .kv-grid__row--full for full-span values (addresses, notes)
+    - Left-right layout: subgrid-aligned label/value columns
+    - .kv-grid__row--full: stack label over value for long values (address)
     - Empty value: renders em-dash (content-tertiary) per contract
     - Loading state: skeleton--text stands in for values while labels hold
     - Mono values for IDs, amounts (via font-mono tabular-nums class)
@@ -96,9 +98,10 @@
   <div class="example-section">
     <h2>KV grid · customer detail overview</h2>
     <p style="font-size: var(--text-sm); color: var(--color-content-secondary); margin-bottom: var(--space-4);">
-      A <code>.kv-grid</code> (<code>&lt;dl&gt;</code>) with label/value pairs.
-      Column count follows the container width (auto-fit, 16rem cell threshold) —
-      no viewport breakpoints. Wide or empty values are handled by the row.
+      A <code>.kv-grid</code> (<code>&lt;dl&gt;</code>): label left, value right.
+      A subgrid aligns every row's label and value into two shared columns, so
+      short values sit next to their label — no stranding. A long value takes
+      <code>--full</code> to stack across the full width (see Billing address).
     </p>
 
     <div class="demo-card">
@@ -147,7 +150,7 @@
             <dd>Yes</dd>
           </div>
 
-          <!-- Full-span row for a long value -->
+          <!-- Long value: --full breaks the pairing and stacks label over value -->
           <div class="kv-grid__row kv-grid__row--full">
             <dt>Billing address</dt>
             <dd>

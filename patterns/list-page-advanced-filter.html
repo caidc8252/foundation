@@ -67,11 +67,23 @@
     gap: var(--space-2);
   }
   .filter-group__row .input { flex: 1; min-width: 0; }
+  .filter-group__row .date-trigger { flex: 1; min-width: 0; }
   .filter-group__sep {
     font-size: var(--text-xs);
     color: var(--color-content-tertiary);
     white-space: nowrap;
   }
+  /* Date range: the row anchors a single .calendar popover retargeted to the
+     active .date-trigger. Page-local positioning only (matches date-picker.html). */
+  .date-range { position: relative; flex-wrap: wrap; }
+  .date-range__popover {
+    position: absolute;
+    top: calc(100% + var(--space-1));
+    left: 0;
+    z-index: 30;
+    display: none;
+  }
+  .date-range__popover--open { display: block; }
 
   /* ── Checkbox list inside a filter group ── */
   .check-list {
@@ -478,13 +490,40 @@
   <!-- Body — scrollable filter groups -->
   <div class="sheet__body">
 
-    <!-- Registration date range -->
+    <!-- Registration date range — date-picker family (.date-trigger + .calendar),
+         NOT a native date input (browser calendar chrome bypasses the token skin). -->
     <div class="filter-group">
       <div class="filter-group__label">Registration date</div>
-      <div class="filter-group__row">
-        <input class="input" type="date" id="adv-reg-from" aria-label="Registered from">
+      <div class="filter-group__row date-range">
+        <button class="date-trigger" type="button" id="adv-reg-from" data-value="" aria-label="Registered from">
+          <svg class="date-trigger__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span class="date-trigger__value date-trigger__value--placeholder">From</span>
+        </button>
         <span class="filter-group__sep">to</span>
-        <input class="input" type="date" id="adv-reg-to" aria-label="Registered to">
+        <button class="date-trigger" type="button" id="adv-reg-to" data-value="" aria-label="Registered to">
+          <svg class="date-trigger__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span class="date-trigger__value date-trigger__value--placeholder">To</span>
+        </button>
+
+        <!-- Shared calendar popover — retargeted to whichever trigger opened it -->
+        <div class="date-range__popover" id="adv-reg-popover">
+          <div class="calendar">
+            <div class="calendar__header">
+              <button class="calendar__nav-btn" type="button" id="adv-cal-prev" aria-label="Previous month">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m15 18-6-6 6-6"/></svg>
+              </button>
+              <div class="calendar__caption" id="adv-cal-caption">June 2026</div>
+              <button class="calendar__nav-btn" type="button" id="adv-cal-next" aria-label="Next month">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+            </div>
+            <div class="calendar__grid" id="adv-cal-grid"></div>
+            <div class="calendar__footer">
+              <button class="calendar__link" type="button" id="adv-cal-today">Today</button>
+              <button class="calendar__link" type="button" id="adv-cal-clear">Clear</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -728,8 +767,8 @@
   applyBtn.addEventListener('click', function () {
     var newFilters = [];
 
-    var regFrom = document.getElementById('adv-reg-from').value;
-    var regTo   = document.getElementById('adv-reg-to').value;
+    var regFrom = document.getElementById('adv-reg-from').dataset.value;
+    var regTo   = document.getElementById('adv-reg-to').dataset.value;
     if (regFrom || regTo) {
       newFilters.push({ key: 'reg-range', label: 'Registered: ' + (regFrom || '…') + ' → ' + (regTo || '…') });
     }
@@ -760,8 +799,9 @@
   // ── Reset form ────────────────────────────────────────────────
 
   function resetForm() {
-    document.getElementById('adv-reg-from').value = '';
-    document.getElementById('adv-reg-to').value   = '';
+    clearDateTrigger(document.getElementById('adv-reg-from'), 'From');
+    clearDateTrigger(document.getElementById('adv-reg-to'), 'To');
+    closeCalendar();
     document.getElementById('adv-ltv-min').value  = '';
     document.getElementById('adv-ltv-max').value  = '';
     document.querySelectorAll('[name="adv-tag"]').forEach(function (cb) { cb.checked = false; });
@@ -769,6 +809,89 @@
   }
 
   resetBtn.addEventListener('click', resetForm);
+
+  // ── Registration date range: shared .calendar popover over two .date-trigger
+  //    buttons (the date-picker family — never a native date input) ─────────────
+  var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var WEEKDAYS = ['S','M','T','W','T','F','S'];
+  var regPopover = document.getElementById('adv-reg-popover');
+  var calGrid = document.getElementById('adv-cal-grid');
+  var calCaption = document.getElementById('adv-cal-caption');
+  var activeTrigger = null;               // the .date-trigger currently being edited
+  var viewMonth = 5, viewYear = 2026;     // demo epoch (no Date.now dependency in copy)
+
+  function fmtDate(d) {
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+  function setDateTrigger(trigger, date) {
+    trigger.dataset.value = fmtDate(date);
+    var span = trigger.querySelector('.date-trigger__value');
+    span.textContent = fmtDate(date);
+    span.classList.remove('date-trigger__value--placeholder');
+    trigger.classList.add('date-trigger--clearable');
+  }
+  function clearDateTrigger(trigger, placeholder) {
+    trigger.dataset.value = '';
+    var span = trigger.querySelector('.date-trigger__value');
+    span.textContent = placeholder;
+    span.classList.add('date-trigger__value--placeholder');
+    trigger.classList.remove('date-trigger--clearable');
+  }
+  function closeCalendar() {
+    regPopover.classList.remove('date-range__popover--open');
+    regPopover.style.display = 'none';
+    activeTrigger = null;
+  }
+  function openCalendar(trigger) {
+    activeTrigger = trigger;
+    regPopover.style.left = trigger.offsetLeft + 'px';
+    regPopover.style.display = 'block';
+    regPopover.classList.add('date-range__popover--open');
+    renderCalendar();
+  }
+  function renderCalendar() {
+    calCaption.textContent = MONTHS[viewMonth] + ' ' + viewYear;
+    var html = '';
+    for (var w = 0; w < 7; w++) html += '<div class="calendar__weekday">' + WEEKDAYS[w] + '</div>';
+    var firstDow = new Date(viewYear, viewMonth, 1).getDay();
+    var daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+    var totalCells = Math.ceil((firstDow + daysInMonth) / 7) * 7;
+    for (var i = 0; i < totalCells; i++) {
+      var inMonth = i >= firstDow && i < firstDow + daysInMonth;
+      var dayNum = inMonth ? i - firstDow + 1 : '';
+      if (!inMonth) { html += '<div class="calendar__day calendar__day--outside"></div>'; continue; }
+      html += '<button class="calendar__day" type="button" data-day="' + dayNum + '">' + dayNum + '</button>';
+    }
+    calGrid.innerHTML = html;
+    calGrid.querySelectorAll('.calendar__day[data-day]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        if (!activeTrigger) return;
+        setDateTrigger(activeTrigger, new Date(viewYear, viewMonth, Number(btn.getAttribute('data-day'))));
+        closeCalendar();
+      });
+    });
+  }
+  ['adv-reg-from', 'adv-reg-to'].forEach(function (id) {
+    document.getElementById(id).addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (activeTrigger === this) { closeCalendar(); } else { openCalendar(this); }
+    });
+  });
+  document.getElementById('adv-cal-prev').addEventListener('click', function () {
+    viewMonth--; if (viewMonth < 0) { viewMonth = 11; viewYear--; } renderCalendar();
+  });
+  document.getElementById('adv-cal-next').addEventListener('click', function () {
+    viewMonth++; if (viewMonth > 11) { viewMonth = 0; viewYear++; } renderCalendar();
+  });
+  document.getElementById('adv-cal-today').addEventListener('click', function () {
+    if (activeTrigger) { setDateTrigger(activeTrigger, new Date(viewYear, viewMonth, 15)); closeCalendar(); }
+  });
+  document.getElementById('adv-cal-clear').addEventListener('click', function () {
+    if (activeTrigger) { clearDateTrigger(activeTrigger, activeTrigger.id === 'adv-reg-from' ? 'From' : 'To'); closeCalendar(); }
+  });
+  document.addEventListener('click', function (e) {
+    if (activeTrigger && !e.target.closest('.date-range')) closeCalendar();
+  });
 
 })();
 </script>
