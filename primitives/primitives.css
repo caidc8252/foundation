@@ -42,6 +42,7 @@
    or page-glue rule still wins (e.g. .page-header__description's margin-top). */
 :where(h1, h2, h3, h4, h5, h6, p, figure, blockquote, dl, dd, dt, ul, ol) {
   margin: 0;
+  padding: 0;
 }
 
 /* UA body margin — browsers ship an 8px margin on <body>; zero it here so
