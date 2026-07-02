@@ -26,14 +26,6 @@
 
   /* LP4: two-line cell tile wrapper — tile is page-local; text uses .cell-2line composite */
   .cell-lead { display: flex; align-items: center; gap: var(--space-3); }
-  .cell-lead__tile {
-    display: grid; place-items: center; flex-shrink: 0;
-    width: var(--space-8); height: var(--space-8);
-    border-radius: var(--radius-lg);
-    background-color: var(--color-surface-3);
-    color: var(--color-content-secondary);
-    font-size: var(--text-xs); font-weight: 600;
-  }
   .cell-chevron { color: var(--color-content-tertiary); }
   .cell-chevron svg { width: var(--space-4); height: var(--space-4); }
 
@@ -297,7 +289,7 @@
                   <td class="col-select"><input class="checkbox" type="checkbox" aria-label="Select Acme Robotics"></td>
                   <td>
                     <div class="cell-lead">
-                      <span class="cell-lead__tile">AR</span>
+                      <span class="object-tile object-tile--sm object-tile--neutral" aria-hidden="true">AR</span>
                       <span class="cell-2line">
                         <span class="cell-2line__main">Acme Robotics</span>
                         <span class="cell-2line__sub">acme-robotics.example</span>
@@ -316,7 +308,7 @@
                   <td class="col-select"><input class="checkbox" type="checkbox" aria-label="Select Brightleaf Retail"></td>
                   <td>
                     <div class="cell-lead">
-                      <span class="cell-lead__tile">BR</span>
+                      <span class="object-tile object-tile--sm object-tile--neutral" aria-hidden="true">BR</span>
                       <span class="cell-2line">
                         <span class="cell-2line__main">Brightleaf Retail</span>
                         <span class="cell-2line__sub">brightleaf.example</span>
@@ -334,7 +326,7 @@
                   <td class="col-select"><input class="checkbox" type="checkbox" aria-label="Select Northwind Commerce"></td>
                   <td>
                     <div class="cell-lead">
-                      <span class="cell-lead__tile">NC</span>
+                      <span class="object-tile object-tile--sm object-tile--neutral" aria-hidden="true">NC</span>
                       <span class="cell-2line">
                         <span class="cell-2line__main">Northwind Commerce</span>
                         <span class="cell-2line__sub">northwind.example</span>
@@ -352,7 +344,7 @@
                   <td class="col-select"><input class="checkbox" type="checkbox" aria-label="Select Helios Payments"></td>
                   <td>
                     <div class="cell-lead">
-                      <span class="cell-lead__tile">HP</span>
+                      <span class="object-tile object-tile--sm object-tile--neutral" aria-hidden="true">HP</span>
                       <span class="cell-2line">
                         <span class="cell-2line__main">Helios Payments</span>
                         <span class="cell-2line__sub">helios.example</span>
@@ -371,7 +363,7 @@
                   <td class="col-select"><input class="checkbox" type="checkbox" aria-label="Select Vertex Logistics"></td>
                   <td>
                     <div class="cell-lead">
-                      <span class="cell-lead__tile">VL</span>
+                      <span class="object-tile object-tile--sm object-tile--neutral" aria-hidden="true">VL</span>
                       <span class="cell-2line">
                         <span class="cell-2line__main">Vertex Logistics</span>
                         <span class="cell-2line__sub">vertex.example</span>
