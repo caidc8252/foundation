@@ -3,7 +3,7 @@
   ─────────────────────────────────────────────────────────────────────────────
   Companion to ./create-wizard.md (the contract — when the two disagree, the .md wins).
   Copy this file and edit the markup to build a real multi-step create flow:
-  a sticky page-header with a secondary Cancel, a step-indicator rail, the CURRENT
+  a sticky page-header with a ghost Cancel (leading X icon), a step-indicator rail, the CURRENT
   step's form-section card beside a sticky summary rail, and a Back/Continue nav
   below the card. Includes all three interactive steps and the done state.
   Just one step (or two, no branching)? Use the single-step form instead — that is
@@ -99,7 +99,7 @@
            These four slots are what make this a wizard — keep all four. The summary rail and
            the done state below are OPTIONAL and marked removable where they appear. -->
 
-      <!-- [REQUIRED] header: title + a single SECONDARY Cancel (exit without committing).
+      <!-- [REQUIRED] header: title + a single GHOST Cancel (leading X icon; exit without committing).
            No primary here — the commit verb lives in the nav footer. -->
       <header class="page-header page-header--sticky">
         <div class="page-header__bar">
@@ -108,7 +108,10 @@
             <p class="page-header__description">A multi-step create flow — Back never loses what you entered.</p>
           </div>
           <div class="page-header__actions">
-            <button class="btn btn--secondary" type="button">Cancel</button>
+            <button class="btn btn--ghost" type="button">
+              <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+              Cancel
+            </button>
           </div>
         </div>
       </header>

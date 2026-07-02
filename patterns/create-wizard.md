@@ -5,7 +5,7 @@ that have stage dependencies, branching, or a review-before-commit step. Named
 structure, not implementation.
 
 > 📐 **Copyable example** · [`create-wizard.html`](./create-wizard.html) — the full
-> wizard (header with secondary Cancel → step-indicator → current-step form-section cards
+> wizard (header with ghost Cancel → step-indicator → current-step form-section cards
 > beside an optional sticky summary rail → Back/Continue footer → done state as a
 > commented swap), ready to copy and modify. It **links** the reference CSS so it never
 > forks; inline the blocks to ship it as an artifact. All examples: [`index.html`](./index.html).
@@ -14,7 +14,7 @@ structure, not implementation.
 
 ```
 ┌ header ──────────────────────────────────────────────────────┐
-│ title                                              [ Cancel ]  │  ← secondary
+│ title                                            [ ✕ Cancel ]  │  ← ghost
 ├ steps ───────────────────────────────────────────────────────┤
 │ [ ✓ Details ]──[ ② Terms ]──[ ③ Review ]        step-indicator │
 ├ body ─────────────────────────────────┬ summary (optional) ───┤
@@ -44,7 +44,7 @@ summary rail and the done state are **optional**, included per business need.
 
 | slot | required? | include when |
 |---|---|---|
-| **header** | **yes** | always — the page title + a single **secondary** Cancel (exit without committing). No primary lives here; the commit verb is in **nav**. |
+| **header** | **yes** | always — the page title + a single **ghost** Cancel (leading X icon; exit without committing). No primary lives here; the commit verb is in **nav**. |
 | **steps** | **yes** | always — the `step-indicator` rail (done · here · left). Stretches **full-width** inside `page-body`. |
 | **body** | **yes** | always (repeatable) — the current step's **form-section** card(s) (one `Card` per concern) of `Field`s. Full-width; a card may cap its own internal width but the layout column is not capped. |
 | **nav** | **yes** | always — the footer: right-aligned **ghost Back** (hidden on step 1) **+ primary Continue**; the last step's primary is the contextual commit verb. |
@@ -106,7 +106,7 @@ rail; this pattern fixes which appear and how they sequence:
 | Anatomy slot | Composite |
 |---|---|
 | shell (context, **not ported**) | [`app-frame`](../composites/app-frame.md) — the page renders inside `.app-frame__main` |
-| header band (secondary Cancel) | [`page-header`](../composites/page-header.md) |
+| header band (ghost Cancel, leading X icon) | [`page-header`](../composites/page-header.md) |
 | content region (gutters + stack) | [`page-body`](../composites/page-body.md) |
 | steps rail | [`step-indicator`](../composites/step-indicator.md) — wrap the bare `ol` for the card look (`border` `line-default` · `surface-2` · `radius-xl` · `shadow-1` · `px-6 py-4`) |
 | current-step body | [`field`](../primitives/field.md) units inside per-concern [`card`](../primitives/card.md) form-sections |

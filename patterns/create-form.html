@@ -50,8 +50,8 @@
   <div class="app-frame__col">
     <main class="app-frame__main">
       <!--
-        REQUIRED CORE (do not drop): the sticky page-header (title + secondary Cancel +
-        primary Create/Save) AND at least one form-section card of fields below.
+        REQUIRED CORE (do not drop): the sticky page-header (title + ghost Cancel
+        [leading X icon] + primary Create/Save) AND at least one form-section card of fields below.
         Everything marked OPTIONAL is removable per the page's job — copying this
         fully-dressed example does NOT mean keeping every slot.
         See create-form.md "Slots" + governance principle #9 (patterns are frameworks).
@@ -64,11 +64,14 @@
             <p class="page-header__description">A single-step create/edit form — a centered card of fields, actions in the sticky header.</p>
           </div>
           <div class="page-header__actions">
-            <!-- REQUIRED: secondary Cancel + primary Create/Save. The primary verb follows
+            <!-- REQUIRED: ghost Cancel (leading X icon) + primary Create/Save. The primary verb follows
                  the variant: "Create customer" (create) / "Save changes" (edit).
                  A SECONDARY header action beyond Cancel is OPTIONAL — add one only for a
                  genuine page-level secondary verb. -->
-            <button class="btn btn--secondary" type="button">Cancel</button>
+            <button class="btn btn--ghost" type="button">
+              <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+              Cancel
+            </button>
             <button class="btn btn--primary" type="submit" form="create-form">Create customer</button>
           </div>
         </div>
