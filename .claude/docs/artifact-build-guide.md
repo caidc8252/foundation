@@ -140,7 +140,7 @@ artifact 渲染出的一切只能来自这 **4 层闭合集 + 图标**，没有�
 
 - **输入**: 每个 composite 的 `composites/<x>.html`。
 - **动作**: **写任何标记前，先读对应 `.html` 样例**（反幻觉保障）——它演示每个变体/状态在上下文里的确切 DOM。样例顶部的 **「When to use」决策指南**帮你在相近组件间选对，例如：
-  - `data-table.html`：「需要列 / 排序 / 行选择的结构化记录才用 data-table；非表格的设置/成员/导航行用 `list-row`，事件/活动流用 `feed-list`，键值属性用 `kv-grid`」。`kv-grid` 是**左右排布**（标签左、值右、subgrid 对齐两列）；很长/多行的值加 `.kv-grid__row--full` 让它跨整行堆叠。
+  - `data-table.html`：「需要列 / 排序 / 行选择的结构化记录才用 data-table；非表格的设置/成员/导航行用 `list-row`，事件/活动流用 `feed-list`，键值属性用 `kv-grid`」。`kv-grid` 是**左右排布**（标签左、值右、subgrid 对齐两列）；很长/多行的值加 `.kv-grid__row--full` 让它跨整宽（值紧随标签、不受值列对齐约束）。
   - `list-filter.html`：「search + 快捷筛选下拉 + 可见 chips 用 condition-band；筛选维度多 → 走 `list-page-advanced-filter`；只要单字段搜索 → 一个裸 `.search-input` 足矣；详情/创建页不要用 condition-band」。
   - `pagination.html`：「表格永远用 SIMPLE 变体（‹ Prev · 当前页 · Next ›），编号分页只给搜索结果/独立分页器」。
 - **产出**: 每个 composite 用契约的 required/optional 槽 + 样例的确切标记拼好。

@@ -1983,7 +1983,7 @@
       "layer": "composite",
       "name": "kv-grid",
       "title": "Key-value grid · composite",
-      "summary": "The overview block of a detail screen: a record's attributes as label → value pairs, laid out left-right — label left, value right, aligned in two shared columns; a long value takes --full to stack across the full width.",
+      "summary": "The overview block of a detail screen: a record's attributes as label → value pairs, laid out left-right — label left, value right, aligned in two shared columns; a long value takes --full to span the full width.",
       "contract": "composites/kv-grid.md",
       "example": "composites/kv-grid.html",
       "classes": [

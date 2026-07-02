@@ -79,7 +79,7 @@ when this record's job calls for it.
 - **Overview is a key-value grid** ([`kv-grid`](../composites/kv-grid.md)):
   a left-right label → value list, labels `text-content-tertiary`, values
   `content-primary`. Short values sit beside their label; a long / multi-line
-  value takes `.kv-grid__row--full` to stack across the full width.
+  value takes `.kv-grid__row--full` to span the full width.
 - **A section that lists a collection is a `card` wrapping a `data-table`** —
   the one consistent block for every record-list section / tab (contracts, operators,
   members, devices, …). The shape is fixed:
@@ -137,7 +137,7 @@ when this record's job calls for it.
   one case where a detail "tab" becomes a real route.
 
 **Overview structure** — `overview` = a **main card** (the KV grid — a left-right
-label → value list; a long value takes `.kv-grid__row--full` to stack) **+ an
+label → value list; a long value takes `.kv-grid__row--full` to span full width) **+ an
 optional right rail**. The rail stacks `stat-card`s (key metrics) for
 order/invoice-style records.
 

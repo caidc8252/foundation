@@ -1633,8 +1633,9 @@
    value into two shared columns (label track sizes to the widest label, min 6rem
    gutter), so short values sit next to their label instead of stranding across
    an empty column. Labels are the muted axis, values carry the ink. A long /
-   multi-line value takes --full to break the pairing and stack (label over value,
-   full width). This is the single, canonical KV layout — no stacked variant. */
+   multi-line value takes --full to leave the subgrid — a plain full-width row so
+   the value flows beside the label free of the value-column alignment. This is
+   the single, canonical KV layout. */
 
 .kv-grid {
   display: grid;
@@ -1649,11 +1650,11 @@
   align-items: baseline;
   min-width: 0;
 }
-/* Long / multi-line value (address, notes): break out of the two-column pairing
-   and stack label over value across the full width. */
+/* Long / multi-line value (address, notes): leave the two-column subgrid — a
+   plain full-width row so the value flows beside the label, free of the
+   value-column alignment, and can use the full width. */
 .kv-grid__row--full {
   display: flex;
-  flex-direction: column;
   gap: var(--space-1);
 }
 .kv-grid__row dt {
