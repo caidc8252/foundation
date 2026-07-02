@@ -8,6 +8,10 @@
 
      ✗ hardcoded color literals   — a token covers every brand color
      ✗ unknown var(--…) refs      — token name not in the set (typo / invented)
+     ✗ native date/time input     — `<input type="date|time|datetime-local|month|
+                                     week">` renders browser-native chrome that
+                                     ignores the token skin; the date-picker family
+                                     (.date-trigger) is the closed-set control.
      ⚠ classes not in the set     — neither a foundation class nor defined in
                                      this file's own <style> (page-local
                                      composition is allowed; an off-set
@@ -225,6 +229,33 @@ const structuralFindingsFromHtml = (html) => {
   return { cellTagsOnTableCells, chevronNoRight };
 };
 
+// Native rich date/time inputs bypass the foundation picker family. The five
+// sibling pickers (date-picker / date-range-picker / date-time-picker /
+// date-time-range-picker / time-picker) are the closed-set controls for choosing a
+// date or time; a raw `<input type="date">` renders inconsistent browser-native
+// chrome that ignores the token skin and the `.date-trigger` recipe entirely. Every
+// native date/time-chrome input type has a picker home, so this is a closed-set
+// breach — a HARD violation, not a style smell. Scan the RAW html (scripts
+// included) so a JS-templated `<input type="date">` counts too. Only the rich
+// date/time types are flagged — a plain `<input class="input" type="text|search|
+// number|email|…">` is the legitimate foundation input primitive and stays allowed.
+const PICKER_FOR = {
+  date: "date-picker",
+  "datetime-local": "date-time-picker",
+  time: "time-picker",
+  month: "date-picker",
+  week: "date-picker",
+};
+const NATIVE_DATE_INPUT = /<input\b[^>]*\btype\s*=\s*["'](date|datetime-local|time|month|week)["'][^>]*>/gi;
+const nativeDateInputsFromHtml = (html) => {
+  const hits = new Map();
+  for (const m of html.matchAll(NATIVE_DATE_INPUT)) {
+    const type = m[1].toLowerCase();
+    if (!hits.has(type)) hits.set(type, PICKER_FOR[type]);
+  }
+  return [...hits.entries()].map(([type, picker]) => ({ type, picker }));
+};
+
 // Spec-internal IDs leaking into rendered UI copy. A prototype projects the spec's
 // business meaning, not its bookkeeping: rule ids (R-N), state-machine ids (SM-N),
 // process ids (P-N), task ids (TASK-*) are traceability markers — a real product UI
@@ -437,6 +468,11 @@ for (const file of files) {
   // Scans raw `html` (not stripped markup) so JS-templated rows in <script> count too.
   const structure = structuralFindingsFromHtml(html);
 
+  // 6. Native date/time inputs. `<input type="date|time|…">` bypasses the
+  // date-picker family (.date-trigger); a closed-set breach. Scans raw `html` so
+  // JS-templated inputs count too.
+  const nativeDateInputs = nativeDateInputsFromHtml(html);
+
   // Advisory: inline padding/margin layout hacks (never affects exit code).
   const layoutHacks = inlineLayoutHacksFromMarkup(markup);
 
@@ -461,6 +497,7 @@ for (const file of files) {
     hardColors.length +
     icons.unknown.length +
     structure.cellTagsOnTableCells.length +
+    nativeDateInputs.length +
     (strict ? offSetClasses.length + icons.mismatch.length : 0);
   hardTotal += hard;
 
@@ -489,6 +526,9 @@ for (const file of files) {
   console.log(`  structure: ${structureBad === 0 ? "ok" : `${structureBad} issue(s)`}`);
   if (structureBad)
     console.log(`    ✗ .cell-tags is a flex wrapper inside the table cell; do not put it on ${structure.cellTagsOnTableCells.join(", ")}`);
+  console.log(`  date/time inputs: ${nativeDateInputs.length === 0 ? "ok" : `${nativeDateInputs.length} native input(s)`}`);
+  if (nativeDateInputs.length)
+    console.log(`    ✗ native browser date/time chrome bypasses the token skin — use the picker family (.date-trigger): ${nativeDateInputs.map((n) => `type="${n.type}" → ${n.picker}`).join(", ")}`);
   if (structure.chevronNoRight.length)
     console.log(`  ⚠ review: ${structure.chevronNoRight.length} .cell-chevron cell without .cell-right — the trailing nav arrow must pin to the row end; pair them (data-table.md): ${structure.chevronNoRight.join(" · ")}`);
   if (layoutHacks.length)

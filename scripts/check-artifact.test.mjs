@@ -287,3 +287,54 @@ test("check-artifact flags a .theme-toggle in a frameless page, not in a full sh
     rmSync(dir, { recursive: true, force: true });
   }
 });
+
+test("check-artifact rejects native date/time inputs (hard), but not plain text inputs", () => {
+  const dir = mkdtempSync(join(tmpdir(), "foundation-artifact-"));
+  try {
+    // Native rich date/time chrome — a hard violation; must name the picker family.
+    // Covers a static input, a JS-templated one (in <script>), plus month/week.
+    const bad = join(dir, "native-date.html");
+    writeFileSync(
+      bad,
+      `<!doctype html>
+<div>
+  <input class="input input--sm" type="date" aria-label="From date">
+  <input class="input" type="month">
+  <script>el.innerHTML = '<input class="input" type="datetime-local">';</script>
+</div>
+`,
+      "utf8",
+    );
+
+    // Legitimate foundation inputs — plain text/search/number on .input must PASS.
+    const good = join(dir, "text-inputs.html");
+    writeFileSync(
+      good,
+      `<!doctype html>
+<div>
+  <input class="input" type="text" placeholder="Name">
+  <input class="input" type="search" aria-label="Search">
+  <input class="input" type="number">
+</div>
+`,
+      "utf8",
+    );
+
+    const bin = join(root, "scripts", "check-artifact.mjs");
+    const runBad = spawnSync(process.execPath, [bin, bad], { cwd: root, encoding: "utf8" });
+    const runGood = spawnSync(process.execPath, [bin, good], { cwd: root, encoding: "utf8" });
+
+    // Hard violation: non-zero exit, names the offending types + the picker family.
+    assert.notEqual(runBad.status, 0, runBad.stdout);
+    assert.match(runBad.stdout, /native browser date\/time chrome/i);
+    assert.match(runBad.stdout, /date-picker/);
+    assert.match(runBad.stdout, /date-time-picker/);
+    assert.match(runBad.stdout, /\.date-trigger/);
+
+    // Plain text/search/number inputs are the legitimate primitive — must not trip.
+    assert.equal(runGood.status, 0, runGood.stdout);
+    assert.match(runGood.stdout, /date\/time inputs: ok/i);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});

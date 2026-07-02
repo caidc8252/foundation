@@ -166,6 +166,10 @@ artifact 渲染出的一切只能来自这 **4 层闭合集 + 图标**，没有�
 - **输入**: 生成的 artifact + 真实业务内容。
 - **动作**: 替换占位文案、按业务增删 optional 槽（保留 required core）、需要时在产物自己的 `<style>`
   里加**仅由 token 构成**的页面局部布局类（见 §5）。
+- **`description` 槽不推测**（`card` · `drawer` · `modal` · `popover` · `sheet` 这 5 个组件）：
+  这些组件的 `description` 是 optional 槽，生成时**不要凭需求推测/编造**一句支撑文案。
+  判断该槽确实需要出现时，用单个 `-` 占位（保留槽结构、等真人补真实文案），不要自造内容；
+  判断不需要就整段省略该 optional 槽。其余带 description 的组件不受此约束，照常填。
 - **命令**:
   ```bash
   node scripts/check-artifact.mjs --strict artifacts/customers.html
@@ -177,6 +181,7 @@ artifact 渲染出的一切只能来自这 **4 层闭合集 + 图标**，没有�
   | 硬编码颜色字面量（`#hex` / `rgb()` `rgba()` / `hsl()` `hsla()` / `oklch()` `oklab()`） | FAIL | FAIL |
   | 未知 `var(--…)`（不在 catalog tokens，且非页面自定义属性） | FAIL | FAIL |
   | 闭合集外 class（既非 foundation 类，也未在本文件 `<style>` 定义） | WARN | **FAIL** |
+  | 原生日期/时间输入（`<input type="date\|time\|datetime-local\|month\|week">`，绕过 token 皮肤，须用 `.date-trigger` picker 家族） | FAIL | FAIL |
   | 未知 Lucide 图标名（`data-lucide` 不在注册表） | FAIL | FAIL |
   | 被篡改的图标路径（SVG body 与注册表不符） | WARN | **FAIL** |
   | 无 `data-lucide` 的图标形 `<svg>` | WARN | WARN |

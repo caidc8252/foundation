@@ -45,8 +45,10 @@ strict checker.
 After hand edits, run the strict checker again.
 
 It reports usage outside the catalog — hardcoded colors, unknown `var(--…)`
-tokens, and classes that are neither a foundation class nor defined in the file's
-own page-local `<style>`. It can check the shipped self-contained artifact
+tokens, native date/time inputs (`<input type="date|time|datetime-local|month|
+week">`, which render browser-native chrome that bypasses the token skin — use the
+date-picker family / `.date-trigger` instead), and classes that are neither a
+foundation class nor defined in the file's own page-local `<style>`. It can check the shipped self-contained artifact
 directly: when `release/tokens.inline.css`, `primitives/primitives.css`, and
 `release/composites.css` are inlined, those known layer bodies are ignored so
 their token values do not count as hardcoded artifact colors. In default mode,
@@ -72,6 +74,9 @@ The remaining items are an eye/design pass:
       for anything a token covers.
 - [ ] Primitives/composites use the `primitives.css` / `composites.css` classes
       (`.btn`, `.input`, `.data-table`, …), matching the contracts — not hand-rolled one-offs.
+      Dates/times use the picker family (`.date-trigger`), **never** a native
+      `<input type="date|time|datetime-local|month|week">` — the native control
+      renders browser chrome that ignores the token skin (checker flags it hard).
 - [ ] Any visual not expressible from tokens/primitives is raised as a token-change
       proposal (`token-change.md`), not hardcoded.
 - [ ] Dark mode works by toggling `[data-theme="dark"]` — not by editing colors.
