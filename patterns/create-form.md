@@ -49,14 +49,13 @@ the example does **not** mean filling every slot.
 | slot | required? | include when |
 |---|---|---|
 | sticky `page-header` (title) | **yes** | always — names the record being created/edited |
-| header actions: ghost Cancel (leading X icon) + primary Create/Save | **yes** | always — the conventional fill of the sticky header's actions slot (the primary verb follows the variant) |
+| header actions: ghost Cancel (leading X icon) + primary Create/Save | **yes** | always — and the ONLY two header actions; no other buttons belong here. The primary verb follows the variant |
 | ≥1 `form-section` card (header + `Field`s) | **yes** | always — at least one card of fields is the form |
 | header `description` | no | the title alone doesn't make the page's purpose obvious |
 | status `banner` (alert under the header) | no | a record-level status/notice must be surfaced before the fields |
 | file-upload block (`dropzone`, in the body) | no | the form captures a file/attachment — use the [`dropzone`](../primitives/dropzone.md) primitive (`.dropzone` + `.file-list`/`.file-row`) |
 | additional `form-section` cards | no | the form is long enough to split into per-concern cards (Identity, Billing, …) |
 | per-section `description` | no | a section's purpose isn't obvious from its header |
-| secondary header action (beyond Cancel) | no | a genuine page-level secondary verb exists — Cancel is not "secondary" in this sense |
 | preview / summary rail (**full page only**) | no | a long full-page form benefits from a sticky side recap / live preview of what's being entered (a `dl`); a modal form never carries one |
 
 ## Variants
