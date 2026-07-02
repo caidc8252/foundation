@@ -97,12 +97,12 @@
               </span>
               <input class="input" id="search-input" type="search" placeholder="Search customers…" aria-label="Search customers">
             </div>
-            <!-- LP3: select options carry `selected` to match any pre-applied chips -->
+            <!-- LP3: quick-filter dropdowns start unset — no pre-applied filter chips at load -->
             <select class="select" id="qs-status" aria-label="Status">
-              <option value="">All statuses</option><option selected>Active</option><option>Trial</option><option>Suspended</option>
+              <option value="">All statuses</option><option>Active</option><option>Trial</option><option>Suspended</option>
             </select>
             <select class="select" id="qs-region" aria-label="Region">
-              <option value="">All regions</option><option selected>APAC</option><option>EMEA</option><option>Americas</option>
+              <option value="">All regions</option><option>APAC</option><option>EMEA</option><option>Americas</option>
             </select>
             <button class="btn btn--secondary" id="search-btn" type="button">
               <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
@@ -360,11 +360,8 @@
   // LP9: summary bar count reflects the active filter set
   var summaryCount = document.querySelector('.summary-bar__count strong');
 
-  // Initial chips mirror the pre-selected quick-filter dropdowns (LP3: draft = applied at load)
-  var chips = [
-    { key: 'status', label: 'Status: Active' },
-    { key: 'region', label: 'Region: APAC' }
-  ];
+  // No filters applied at load (empty chips); chips get added as the user filters
+  var chips = [];
 
   var X_SVG = '<svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>';
 
