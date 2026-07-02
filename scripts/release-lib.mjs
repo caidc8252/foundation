@@ -36,6 +36,9 @@ export const RELEASE_ROOT = join(ROOT, "release");
 const TOKEN_RE = /^--[-A-Za-z0-9_]+$/;
 const SELECTOR_RE = /^\.[-A-Za-z0-9_]+$/;
 const PROP_RE = /^-?[A-Za-z][-_A-Za-z0-9]*$/;
+const ELEMENT_PATH_RE = /^\d+(\.\d+)*$/;
+const CLASS_TOKEN_RE = /^[-A-Za-z0-9_]+$/;
+const SWAP_GROUPS = new Set(["variant", "size"]);
 
 function cssValue(value) {
   if (typeof value !== "string") throw new Error("CSS value must be a string");
@@ -109,6 +112,26 @@ function normalizeClassOverrideMeta(input = {}) {
     }
   }
   return meta;
+}
+
+export function normalizeElementOverrides(input = {}, ownerClassLookup = () => true) {
+  const out = {};
+  for (const [path, entry] of Object.entries(input || {})) {
+    if (!ELEMENT_PATH_RE.test(path) || !entry || typeof entry !== "object") continue;
+    const swaps = entry.classSwaps;
+    if (!swaps || typeof swaps !== "object") continue;
+    const cleanSwaps = {};
+    for (const [group, swap] of Object.entries(swaps)) {
+      if (!SWAP_GROUPS.has(group) || !swap || typeof swap !== "object") continue;
+      const from = String(swap.from || "").trim();
+      const to = String(swap.to || "").trim();
+      if (!CLASS_TOKEN_RE.test(from) || !CLASS_TOKEN_RE.test(to)) continue;
+      if (!ownerClassLookup(from) || !ownerClassLookup(to)) continue;
+      cleanSwaps[group] = { from, to };
+    }
+    if (Object.keys(cleanSwaps).length) out[path] = { classSwaps: cleanSwaps };
+  }
+  return out;
 }
 
 const REVIEW_SOURCE_FILES = new Set(["composites/composites.css", "primitives/primitives.css"]);
@@ -493,6 +516,7 @@ export function publishSnapshot(payload, options = {}) {
   const classOverrideMeta = mergeClassOverrideMeta(baseManifest.classOverrideMeta || {}, incomingClassOverrideMeta);
   const changes = buildChangeDetails(baseManifest, baseSnapshot, incomingTokens, incomingClassOverrides, incomingClassOverrideMeta);
   const reviewSubject = normalizeReviewSubject(payload.reviewSubject) || normalizeReviewSubject(baseManifest.reviewSubject);
+  const elementOverrides = normalizeElementOverrides(payload.elementOverrides || {}, (cls) => CLASS_TOKEN_RE.test(cls));
   const version = options.version || nextVersionName(versionRoot);
   const publishedAt = payload.publishedAt || new Date().toISOString();
   const outDir = join(versionRoot, version);
@@ -524,7 +548,7 @@ export function publishSnapshot(payload, options = {}) {
       tokens: Object.keys(tokens).length,
       compositeDeclarations: Object.values(classOverrides).reduce((sum, decls) => sum + Object.keys(decls).length, 0),
       selectors: Object.keys(classOverrides).length,
-      elementPaths: Object.keys(payload.elementOverrides || {}).length,
+      elementPaths: Object.keys(elementOverrides).length,
     },
     changedTokens: Object.keys(tokens).sort(),
     reviewSubject,
@@ -532,7 +556,7 @@ export function publishSnapshot(payload, options = {}) {
     classOverrides,
     classOverrideMeta,
     changes,
-    elementOverrides: payload.elementOverrides || {},
+    elementOverrides,
     conflicts: payload.conflicts || [],
     skipped: {
       tokens: skippedTokens,
