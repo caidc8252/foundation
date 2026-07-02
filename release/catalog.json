@@ -762,6 +762,14 @@
     "stat-grid--cols-2",
     "stat-grid--cols-3",
     "stat-grid--cols-4",
+    "status-card",
+    "status-card__description",
+    "status-card__footer-end",
+    "status-card__footer-start",
+    "status-card__head",
+    "status-card__heading",
+    "status-card__media",
+    "status-card__trailing",
     "step",
     "step--active",
     "step--completed",
@@ -2224,6 +2232,25 @@
         ".stat-grid--cols-2",
         ".stat-grid--cols-3",
         ".stat-grid--cols-4"
+      ]
+    },
+    {
+      "layer": "composite",
+      "name": "status-card",
+      "title": "Status card",
+      "summary": "A header-less card — content + footer, no CardHeader — for repeating status lists: a media-led heading (icon + title + status badge) over an optional description, with a control footer.",
+      "contract": "composites/status-card.md",
+      "example": null,
+      "classes": [
+        ".card__footer",
+        ".status-card",
+        ".status-card__description",
+        ".status-card__footer-end",
+        ".status-card__footer-start",
+        ".status-card__head",
+        ".status-card__heading",
+        ".status-card__media",
+        ".status-card__trailing"
       ]
     },
     {

@@ -2455,6 +2455,54 @@
   font-size: var(--text-md);
 }
 
+/* ═══════════════════════════ Status card ═══════════════════════════ */
+/* @component status-card */
+/* A header-less card (content + footer, no card__header) for repeating status
+   lists: a media-led heading (icon + title + status badge), an optional
+   description, and a control footer with left/right clusters. Composition over
+   .card. The whole card can be a single stretched link (navigate or open a
+   modal) while footer controls stay independently clickable. */
+
+.status-card { position: relative; }
+
+.status-card__head {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  column-gap: var(--space-3);
+}
+.status-card__media { flex-shrink: 0; display: inline-flex; }
+.status-card__heading {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.status-card__trailing {
+  justify-self: end;
+  align-self: center;
+  flex-shrink: 0;
+  display: inline-flex;
+  color: var(--color-content-tertiary);
+}
+.status-card__trailing:hover { color: var(--color-content-secondary); }
+.status-card__description {
+  font-size: var(--text-xs);
+  line-height: 1.5;
+  color: var(--color-content-tertiary);
+}
+
+/* Footer as a two-cluster row (start | end). Scoped so it only affects the
+   card__footer inside a status-card. */
+.status-card > .card__footer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.status-card__footer-start { display: flex; align-items: center; gap: var(--space-2); }
+.status-card__footer-end   { display: flex; align-items: center; gap: var(--space-2); margin-left: auto; }
+
 /* Prototype published overrides
    Version: v1
    Source page: foundation-base
