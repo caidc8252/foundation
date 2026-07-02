@@ -7,7 +7,7 @@ A header-less card — content + footer, no `CardHeader` — for repeating statu
 ```
 status-card ( = .card , no .card__header ; add .card--interactive when clickable )
 ├─ .card__content              reused slot — owns padding (card size)
-│   └─ (.stack--3)             vertical rhythm
+│   └─ (.stack.stack--3)       vertical rhythm
 │      ├─ .status-card__head          grid: [ media | heading | trailing ]
 │      │   ├─ .status-card__media      optional · object-tile / logo
 │      │   ├─ .status-card__heading    card__title + status badge (optional)
@@ -56,7 +56,7 @@ No new state class. Status is expressed by the `badge` variant (`--warning` / `-
 
 ## Notes
 
-- `card__content` owns padding; do not pad the root. Wrap the content blocks in `.stack--3` for vertical rhythm.
+- `card__content` owns padding; do not pad the root. Wrap the content blocks in `.stack.stack--3` (base `.stack` supplies `display:flex`; `--3` the gap) for vertical rhythm.
 - Footer left/right split is provided by `__footer-start` / `__footer-end`; future action buttons go in a cluster as a `btn` group — no new slot needed.
 
 ## Implementations
