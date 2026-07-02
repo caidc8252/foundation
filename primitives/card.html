@@ -4,6 +4,7 @@
   Demonstrates the Card primitive in the foundation design system.
   Covers:
     - Static card with title + action + content
+    - Sizes (sm / md / lg): radius + slot padding scale together
     - Collapsible card (open state: chevron down, content visible)
     - Collapsible card (closed state: chevron rotated, content hidden, hairline dropped)
     - Loading skeleton rows filling the content area
@@ -57,8 +58,15 @@
       grid-template-columns: 1fr 1fr;
       gap: var(--space-6);
     }
+    .demo-col3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-6);
+      align-items: start;
+    }
     @media (max-width: 640px) {
       .demo-col2 { grid-template-columns: 1fr; }
+      .demo-col3 { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -98,7 +106,67 @@
     </div>
 
     <!-- ══════════════════════════════════════════════════════════════════
-         Section 2: Collapsible — open vs closed
+         Section 2: Sizes — sm / md / lg
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Card · sizes</h2>
+      <p class="demo-section__desc">
+        <code>size</code> scales radius and slot padding together:
+        <code>.card--sm</code> (8px radius · 12px padding),
+        <code>.card--md</code> <em>(default — 12px · 20px)</em>,
+        <code>.card--lg</code> (16px · 24px). Header keeps its rule; only spacing changes.
+      </p>
+
+      <div class="demo-col3">
+        <div class="card card--sm">
+          <div class="card__header">
+            <h2 class="card__title">Small</h2>
+          </div>
+          <div class="card__content">
+            <p style="margin:0;font-size:var(--text-sm);color:var(--color-content-secondary);">
+              <code>.card--sm</code> — <code>radius-lg</code> · <code>space-3</code>.
+              Dense panels, tight grids, sidebars.
+            </p>
+          </div>
+          <div class="card__footer" style="justify-content:flex-end;">
+            <button class="btn btn--ghost btn--sm" type="button">Action</button>
+          </div>
+        </div>
+
+        <div class="card card--md">
+          <div class="card__header">
+            <h2 class="card__title">Medium</h2>
+          </div>
+          <div class="card__content">
+            <p style="margin:0;font-size:var(--text-sm);color:var(--color-content-secondary);">
+              <code>.card--md</code> — <code>radius-xl</code> · <code>space-5</code>.
+              The default resting card.
+            </p>
+          </div>
+          <div class="card__footer" style="justify-content:flex-end;">
+            <button class="btn btn--ghost btn--sm" type="button">Action</button>
+          </div>
+        </div>
+
+        <div class="card card--lg">
+          <div class="card__header">
+            <h2 class="card__title">Large</h2>
+          </div>
+          <div class="card__content">
+            <p style="margin:0;font-size:var(--text-sm);color:var(--color-content-secondary);">
+              <code>.card--lg</code> — <code>radius-2xl</code> · <code>space-6</code>.
+              Feature panels, hero surfaces.
+            </p>
+          </div>
+          <div class="card__footer" style="justify-content:flex-end;">
+            <button class="btn btn--ghost btn--sm" type="button">Action</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Collapsible — open vs closed
          ════════════════════════════════════════════════════════════════ -->
     <div class="demo-section">
       <h2 class="demo-section__title">Card · collapsible (click to toggle)</h2>
@@ -148,7 +216,7 @@
     </div>
 
     <!-- ══════════════════════════════════════════════════════════════════
-         Section 3: Loading state
+         Section 4: Loading state
          ════════════════════════════════════════════════════════════════ -->
     <div class="demo-section">
       <h2 class="demo-section__title">Card · loading state</h2>
@@ -171,7 +239,7 @@
     </div>
 
     <!-- ══════════════════════════════════════════════════════════════════
-         Section 4: Stacked cards
+         Section 5: Stacked cards
          ════════════════════════════════════════════════════════════════ -->
     <div class="demo-section">
       <h2 class="demo-section__title">Card · stacked in a detail page</h2>
