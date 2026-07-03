@@ -273,6 +273,35 @@ const nativeDateInputsFromHtml = (html) => {
   return [...hits.entries()].map(([type, picker]) => ({ type, picker }));
 };
 
+// Native controls that HAVE a richer foundation equivalent. Unlike the native
+// date/time chrome above (a hard breach — the OS calendar is unskinnable), these
+// CAN be skinned, so reaching for the native element isn't broken — it just
+// bypasses the closed-set component and drifts from the system. A review nudge,
+// never a hard fail.
+//   `<input type="range">` → the slider skin (`.slider` + `.slider__track` /
+//     `.slider__indicator` / `.slider__thumb`). The sanctioned interactive recipe
+//     keeps a native range as a HIDDEN DRIVER wearing class `range-input` (see
+//     primitives/slider.md · Artifact behavior); that one is allowed — so flag a
+//     range ONLY when it is not that driver (a bare range, or one wearing `.slider`
+//     directly, which is the classic "native control in a foundation costume").
+//   `<progress>` / `<meter>` → the progress primitive (`.progress`).
+const NATIVE_SKINNABLE = /<(?:input\b[^>]*\btype\s*=\s*["']range["'][^>]*|progress\b[^>]*|meter\b[^>]*)>/gi;
+const nativeSkinnableFromHtml = (html) => {
+  const hits = new Map(); // native element → foundation replacement
+  for (const m of html.matchAll(NATIVE_SKINNABLE)) {
+    const tag = m[0];
+    if (/^<input/i.test(tag)) {
+      if (/\bclass\s*=\s*["'][^"']*\brange-input\b/i.test(tag)) continue; // sanctioned slider driver
+      hits.set("range", "the slider skin (.slider + .slider__track/__indicator/__thumb)");
+    } else if (/^<progress/i.test(tag)) {
+      hits.set("progress", "the progress primitive (.progress)");
+    } else {
+      hits.set("meter", "the progress primitive (.progress)");
+    }
+  }
+  return [...hits.entries()].map(([el, repl]) => ({ el, repl }));
+};
+
 // Spec-internal IDs leaking into rendered UI copy. A prototype projects the spec's
 // business meaning, not its bookkeeping: rule ids (R-N), state-machine ids (SM-N),
 // process ids (P-N), task ids (TASK-*) are traceability markers — a real product UI
@@ -509,6 +538,10 @@ for (const file of files) {
   // Advisory: app-shell chrome (a .theme-toggle) invented in a frameless page.
   const frameChrome = frameChromeFromMarkup(markupWithScripts);
 
+  // Advisory: a native control used where a foundation component exists (range →
+  // slider, progress/meter → progress). Scans the RAW html so JS-templated ones count.
+  const nativeSkinnable = nativeSkinnableFromHtml(html);
+
   const hard =
     unknownTokens.length +
     hardColors.length +
@@ -558,6 +591,8 @@ for (const file of files) {
     console.log(`  ⚠ review: ${internalIds.length} spec-internal id(s) in rendered copy — R-N/SM-N/P-N/TASK-* are traceability markers, not user-facing text; strip them (put traceability in an HTML comment): ${internalIds.join(", ")}`);
   if (frameChrome.length)
     console.log(`  ⚠ review: app-shell chrome in a frameless page — ${frameChrome.join(", ")} belongs in the full app-frame top bar, not a frameless business page; drop it (dark/light is verified by the visual pass's two renders)`);
+  if (nativeSkinnable.length)
+    console.log(`  ⚠ review: ${nativeSkinnable.length} native control(s) with a foundation equivalent — the native element skips the closed-set component; use it instead: ${nativeSkinnable.map((n) => `<${n.el}> → ${n.repl}`).join(", ")}`);
   const passText = strict
     ? "PASS (strict: no out-of-set tokens, hardcoded colors, or off-set classes)"
     : "PASS (no out-of-set tokens, no hardcoded colors)";

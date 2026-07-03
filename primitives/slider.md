@@ -115,14 +115,21 @@ progressive-enhancement snippet (CSP-safe, no deps). The skin renders without JS
     <div class="slider__indicator"></div>
   </div>
   <div class="slider__thumb"></div>
-  <!-- native range sits on top, full width, opacity:0 or pointer capture -->
-  <input type="range" min="0" max="100" value="30"
+  <!-- the hidden DRIVER: a native range overlaid on the skin, class `range-input`.
+       This is the ONE sanctioned native `<input type="range">` in an artifact — it
+       captures drag/keyboard; the `.slider__*` divs are the visible skin. The
+       checker allows a range wearing `.range-input`; a BARE range, or one wearing
+       `.slider` itself, is flagged toward this recipe. -->
+  <input class="range-input" type="range" min="0" max="100" value="30"
          style="position:absolute;inset:0;width:100%;opacity:0;cursor:pointer;">
 </div>
 ```
-The `.slider__thumb` must be `position:absolute` (or positioned relative to `.slider`) so `left` drives its horizontal position; the track's `overflow:hidden` clips the indicator automatically.
+The `.slider__thumb` must be `position:absolute` (or positioned relative to `.slider`) so `left` drives its horizontal position; the track's `overflow:hidden` clips the indicator automatically. `.range-input` is page-local composition (the primitives.css skin is base-ui-shaped, so a static artifact supplies this overlay + the absolute geometry) — see [`slider.html`](./slider.html) for the copy source.
 
 ## Implementations
 
 - **Next / @cloud/ui** — `import { Slider } from "@cloud/ui"`. base-ui `Slider` under the hood (`Root`/`Control`/`Track`/`Indicator`/`Thumb`); props include `value`/`defaultValue` (array — one entry per thumb), `min`/`max`, orientation via base-ui. API details: the `ui` skill. Do not re-skin via `className`.
-- **Artifact (self-contained HTML)** — use `.slider` on the root with `.slider__track` · `.slider__indicator` · `.slider__thumb` elements, on top of the inlined `release/tokens.inline.css`. Static-skin only: a self-contained artifact cannot reproduce drag/keyboard value mapping — set the indicator width and thumb offset inline to depict a chosen value. Same recipe: `surface-3` rail, `primary-700` fill, `surface-2` thumb with `line-strong` border + `shadow-1`, `primary`/30 ring on interaction.
+- **Artifact (self-contained HTML)** — use `.slider` on the root with `.slider__track` · `.slider__indicator` · `.slider__thumb` elements, on top of the inlined `release/tokens.inline.css`. Two forms:
+  - **Static** — depict a fixed value by setting the indicator width and thumb `left` inline; no driver, no JS.
+  - **Draggable** — overlay the hidden native range driver (`<input class="range-input" type="range">`) inside the `.slider` and sync the skin from its value with the paste-in snippet in *Artifact behavior* above. **Never put `.slider` on the native range itself, and never drop in a bare `<input type="range">`** — the range is the *driver*, the `.slider__*` divs are the *skin* (the checker flags a native range that is not the `.range-input` driver).
+  Same recipe either way: `surface-3` rail, `primary-700` fill, `surface-2` thumb with `line-strong` border + `shadow-1`, `primary`/30 ring on interaction.
