@@ -82,19 +82,34 @@ when this record's job calls for it.
   value takes `.kv-grid__row--full` to span the full width.
 - **A section that lists a collection is a `card` wrapping a `data-table`** —
   the one consistent block for every record-list section / tab (contracts, operators,
-  members, devices, …). The shape is fixed:
-  `card` › `card__header` ( **title** · **at most one**
-  action — the section's add / primary verb ) › a **flush** `card__content`
-  (`.card__content--flush` — never an inline `padding:0` hack) › `data-table`
-  (row actions **always-visible** per [`data-table`](../composites/data-table.md);
-  an `empty-state` in place of rows when the collection is empty). The
-  action lives in the **card header**, *not* a `summary-bar` — the
-  [`summary-bar`](../composites/summary-bar.md) belongs to the list page, not a
-  detail section. Multiple such sections in one tab **stack vertically in a
-  `.stack--5`** (the sibling-card rung, principles §13 — they **never touch / 0-gap**;
-  e.g. Operators = an accounts `card` + a pending-invitations `card`).
-  Don't hand-roll a different card/table shape per tab — every collection section
-  reads the same.
+  members, devices, …). It comes in **two tiers, chosen by collection size**; pick
+  one — never hand-roll a third shape, every collection section reads the same.
+  - **Simple** (small / bounded collection) — the default. The shape is fixed:
+    `card` › `card__header` ( **title** · **at most one** action — the section's
+    add / primary verb ) › a **flush** `card__content` (`.card__content--flush` —
+    never an inline `padding:0` hack) › `data-table` (row actions **always-visible**
+    per [`data-table`](../composites/data-table.md); an `empty-state` in place of
+    rows when empty). The action lives in the **card header**, *not* a `summary-bar`.
+  - **Rich** (a collection large enough to need search / pagination) — the section
+    **mirrors the list-page results region**: an OPTIONAL search
+    [`condition-band`](../composites/list-filter.md) above, then a **header-less**
+    `card` whose `.card__content--flush` frame holds a
+    [`summary-bar`](../composites/summary-bar.md) (count on the left · the section's
+    **single** add / primary verb on the right), the `data-table`, and a
+    [`rich-pagination`](../composites/rich-pagination.md) footer. **This is the ONE
+    place a `summary-bar` appears in a detail page** — it is otherwise a list-page
+    composite. The card carries **no `card__header`**: the count in the summary-bar
+    quantifies the collection, and the tab trigger (or the section's place on the page)
+    already names it.
+  - **Don't repeat the tab / section name in a `card__header`.** When a collection
+    tab's card would title itself the same word as its tab trigger ("Orders" tab →
+    "Orders" card title), that title is pure duplication — drop the header (the rich
+    tier has none; the summary-bar's count carries the quantity). A `card__header`
+    earns its place only when it says something the tab label does *not* (a distinct
+    sub-section title, a description, or the simple tier's one action).
+  Multiple collection sections in one tab **stack vertically in a `.stack--5`** (the
+  sibling-card rung, principles §13 — they **never touch / 0-gap**; e.g. Operators =
+  an accounts `card` + a pending-invitations `card`).
 - **At most one primary action**, rightmost (mirrors `detail-header` /
   `page-header`) — a read-only record may have none, never two; everything else is
   `secondary` / `ghost`.
@@ -165,6 +180,11 @@ status + meta + tab-strip band at the top), [`kv-grid`](../composites/kv-grid.md
 [`page-body`](../composites/page-body.md) (the guttered content region),
 [`stat-card`](../composites/stat-card.md) (headline metrics), and
 [`empty-state`](../composites/empty-state.md) (empty activity / sections).
+For a **rich collection section** (a search/paginated tab), it also reaches for the
+list-page results composites: [`summary-bar`](../composites/summary-bar.md)
+(count + the section's primary), the search
+[`condition-band`](../composites/list-filter.md), and
+[`rich-pagination`](../composites/rich-pagination.md).
 Primitives underneath:
 `Card`, `Badge`, `Tabs`, `Button`, `Separator`, `Avatar`. `@cloud/ui`: `layout/`
 content-header + page-body; an artifact composes the same from `primitives.css` +
