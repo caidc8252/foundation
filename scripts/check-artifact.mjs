@@ -217,9 +217,15 @@ const classAttrValuesFromTag = (tag) => {
 // column instead of pinning to the row edge. Flag a `<td>`/`<th>` carrying
 // `cell-chevron` without `cell-right`. Same raw-html scan as cell-tags so JS-template
 // rows count. Advisory only — it reads slightly off, it does not break layout.
+// The `.row-actions` action cell is the same shape of defect: `.row-actions` only sets
+// `vertical-align: middle` + `white-space: nowrap`, NOT text-align, so an action cluster
+// floats at the left of a stretched last column unless the cell also carries `.cell-right`
+// (data-table.md: "the action <td> is right-aligned to the row edge — add .cell-right").
+// Flag a `<td>`/`<th>` carrying `row-actions` without `cell-right`. Advisory only.
 const structuralFindingsFromHtml = (html) => {
   const cellTagsOnTableCells = [];
   const chevronNoRight = [];
+  const rowActionsNoRight = [];
   for (const m of html.matchAll(/<(td|th)\b(?:\s[^<>]*)?>/gi)) {
     const tag = m[0];
     const classes = classAttrValuesFromTag(tag).flatMap((raw) => raw.split(/\s+/));
@@ -229,8 +235,11 @@ const structuralFindingsFromHtml = (html) => {
     if (classes.includes("cell-chevron") && !classes.includes("cell-right")) {
       chevronNoRight.push(tag.length > 90 ? `${tag.slice(0, 87)}…` : tag);
     }
+    if (classes.includes("row-actions") && !classes.includes("cell-right")) {
+      rowActionsNoRight.push(tag.length > 90 ? `${tag.slice(0, 87)}…` : tag);
+    }
   }
-  return { cellTagsOnTableCells, chevronNoRight };
+  return { cellTagsOnTableCells, chevronNoRight, rowActionsNoRight };
 };
 
 // Native CALENDAR date inputs bypass the foundation picker family. The date
@@ -581,6 +590,8 @@ for (const file of files) {
     console.log(`    ✗ native browser date/time chrome bypasses the token skin — use the picker family (.date-trigger): ${nativeDateInputs.map((n) => `type="${n.type}" → ${n.picker}`).join(", ")}`);
   if (structure.chevronNoRight.length)
     console.log(`  ⚠ review: ${structure.chevronNoRight.length} .cell-chevron cell without .cell-right — the trailing nav arrow must pin to the row end; pair them (data-table.md): ${structure.chevronNoRight.join(" · ")}`);
+  if (structure.rowActionsNoRight.length)
+    console.log(`  ⚠ review: ${structure.rowActionsNoRight.length} .row-actions cell without .cell-right — the action cluster must pin to the row end; add .cell-right and wrap the buttons in .row-actions__inner (data-table.md): ${structure.rowActionsNoRight.join(" · ")}`);
   if (layoutHacks.length)
     console.log(`  ⚠ review: ${layoutHacks.length} inline padding/margin style(s) — prefer a class (.stack--N / .card__content--flush / page-local): ${layoutHacks.join(" · ")}`);
   if (flushNesting.length)
