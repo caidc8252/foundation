@@ -79,7 +79,11 @@ when this record's job calls for it.
 - **Overview is a key-value grid** ([`kv-grid`](../composites/kv-grid.md)):
   a left-right label → value list, labels `text-content-tertiary`, values
   `content-primary`. Short values sit beside their label; a long / multi-line
-  value takes `.kv-grid__row--full` to span the full width.
+  value takes `.kv-grid__row--full` to span the full width. On a **wide overview**
+  the facts may be split across **two or more `.kv-grid` columns side by side** — a
+  layout wrapper holding whole `.kv-grid` dls (never `repeat(auto-fit)` on the rows;
+  see [`kv-grid`](../composites/kv-grid.md)) — so the main fills its width instead
+  of one column trailing empty space; it collapses to one column when narrow.
 - **A section that lists a collection is a `card` wrapping a `data-table`** —
   the one consistent block for every record-list section / tab (contracts, operators,
   members, devices, …). It comes in **two tiers, chosen by collection size**; pick

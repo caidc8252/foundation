@@ -40,8 +40,15 @@ composite gives the pairs their typography and semantics on top of it.
 
 - **Left-right, aligned by subgrid.** Label left, value right; a subgrid pins the
   label and value columns across every row so the whole block reads as one
-  scannable list. This is the only KV layout — there is no stacked/multi-column
-  variant.
+  scannable list. A single grid is always this left-right two-column form — never
+  internally stacked, and never `repeat(auto-fit,…)` on the rows.
+- **Multiple columns on a wide overview.** When a single column would leave short
+  values trailing empty width, the facts MAY be split across **two or more
+  `.kv-grid` columns side by side** — a layout wrapper (`display: grid` of whole
+  `.kv-grid` dls, e.g. `grid-template-columns: repeat(2, minmax(0, 1fr))`), **not**
+  a change to one grid's internal subgrid. Each dl stays this canonical left-right
+  form; the wrapper only places whole grids beside each other and collapses to one
+  column when narrow. Reach for it only when the width genuinely wants filling.
 - **Values left-aligned, never right-aligned.** The value starts at the shared
   value column and stays left-aligned; do not push values to the far edge
   (`space-between` / `text-align: right`) — that strands short values across an

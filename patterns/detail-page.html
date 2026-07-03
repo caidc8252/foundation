@@ -38,6 +38,28 @@
   .kv__value--mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
   .kv__value--reveal { display: inline-flex; align-items: center; gap: var(--space-2); }
 
+  /* Overview layout — full-bleed (fills the page-body width, no max-width cap), split
+     main:rail = 7:3 so the rail carries real weight. Collapses to one column on narrow. */
+  .overview-cols {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 3fr); /* 7:3, full width */
+    gap: var(--space-6);
+    align-items: start;
+  }
+  @media (max-width: 68rem) {
+    .overview-cols { grid-template-columns: minmax(0, 1fr); }
+  }
+  /* KV facts flow into two label→value columns so the main fills its width instead
+     of one column trailing empty value space. Each column is a real .kv-grid dl. */
+  .overview-facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-5) var(--space-8);
+  }
+  @media (max-width: 40rem) {
+    .overview-facts { grid-template-columns: minmax(0, 1fr); }
+  }
+
   /* Meta-row icon sizing (the dot separators come from .detail-header__meta itself). */
   .detail-header__meta svg { width: var(--space-3); height: var(--space-3); vertical-align: -1px; }
   .detail-header__meta .meta-item { display: inline-flex; align-items: center; gap: var(--space-1); }
@@ -163,60 +185,65 @@
              each with <dt> label + <dd> value; --full spans all columns. -->
         <!-- ── Overview tab ── -->
         <section class="tabs__content" role="tabpanel" id="panel-overview" data-panel="overview">
-          <div style="display:grid; grid-template-columns:1fr 240px; gap:var(--space-5); align-items:start;">
+          <div class="overview-cols">
 
             <!-- Main card: KV grid (real composite — dl › .kv-grid__row › dt + dd) -->
             <div class="card">
               <div class="card__header"><h2 class="card__title">Overview</h2></div>
               <div class="card__content">
-                <!-- .kv-grid is the real composite: left-right label→value,
-                     subgrid-aligned two columns. --full stacks a long value. -->
-                <dl class="kv-grid">
-                  <!-- DP5: ID row with copy action — ghost icon btn beside the value -->
-                  <div class="kv-grid__row">
-                    <dt>Account ID</dt>
-                    <dd class="kv__value--reveal">
-                      <span class="kv__value--mono">C-10293</span>
-                      <button class="btn btn--ghost btn--sm btn--icon" type="button" aria-label="Copy account ID">
-                        <svg data-lucide="clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
-                      </button>
-                    </dd>
-                  </div>
-                  <div class="kv-grid__row">
-                    <dt>Plan</dt>
-                    <dd>Enterprise (annual)</dd>
-                  </div>
-                  <div class="kv-grid__row">
-                    <dt>Primary contact</dt>
-                    <dd>Dana Okafor</dd>
-                  </div>
-                  <div class="kv-grid__row">
-                    <dt>Email</dt>
-                    <dd>dana@acme-robotics.example</dd>
-                  </div>
-                  <div class="kv-grid__row">
-                    <dt>Region</dt>
-                    <dd>APAC · Singapore</dd>
-                  </div>
-                  <div class="kv-grid__row">
-                    <dt>Renews</dt>
-                    <dd class="kv__value--mono">Jan 1, 2027</dd>
-                  </div>
-                  <!-- sensitive field: masked by default; reveal is an audited action -->
-                  <div class="kv-grid__row">
-                    <dt>Billing card</dt>
-                    <dd class="kv__value--reveal">
-                      <span class="kv__value--mono">•••• •••• •••• 4242</span>
-                      <button class="btn btn--ghost btn--xs" type="button">Reveal</button>
-                    </dd>
-                  </div>
-                  <!-- Inline: a long value just wraps in its value column; no --full
-                       needed (every inline row already spans both columns). -->
-                  <div class="kv-grid__row">
-                    <dt>Billing address</dt>
-                    <dd>2200 Mission St, Suite 4, San Francisco, CA 94110</dd>
-                  </div>
-                </dl>
+                <!-- Multi-column KV: two .kv-grid dls side by side (.overview-facts).
+                     Each dl is the real composite (subgrid-aligned label→value); the
+                     two columns fill the main width instead of one column trailing a
+                     void. NOTE: this multi-column arrangement is not yet sanctioned by
+                     kv-grid.md — pending contract update if kept. -->
+                <div class="overview-facts">
+                  <dl class="kv-grid">
+                    <!-- DP5: ID row with copy action — ghost icon btn beside the value -->
+                    <div class="kv-grid__row">
+                      <dt>Account ID</dt>
+                      <dd class="kv__value--reveal">
+                        <span class="kv__value--mono">C-10293</span>
+                        <button class="btn btn--ghost btn--sm btn--icon" type="button" aria-label="Copy account ID">
+                          <svg data-lucide="clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+                        </button>
+                      </dd>
+                    </div>
+                    <div class="kv-grid__row">
+                      <dt>Plan</dt>
+                      <dd>Enterprise (annual)</dd>
+                    </div>
+                    <div class="kv-grid__row">
+                      <dt>Primary contact</dt>
+                      <dd>Dana Okafor</dd>
+                    </div>
+                    <div class="kv-grid__row">
+                      <dt>Email</dt>
+                      <dd>dana@acme-robotics.example</dd>
+                    </div>
+                  </dl>
+                  <dl class="kv-grid">
+                    <div class="kv-grid__row">
+                      <dt>Region</dt>
+                      <dd>APAC · Singapore</dd>
+                    </div>
+                    <div class="kv-grid__row">
+                      <dt>Renews</dt>
+                      <dd class="kv__value--mono">Jan 1, 2027</dd>
+                    </div>
+                    <!-- sensitive field: masked by default; reveal is an audited action -->
+                    <div class="kv-grid__row">
+                      <dt>Billing card</dt>
+                      <dd class="kv__value--reveal">
+                        <span class="kv__value--mono">•••• •••• •••• 4242</span>
+                        <button class="btn btn--ghost btn--xs" type="button">Reveal</button>
+                      </dd>
+                    </div>
+                    <div class="kv-grid__row">
+                      <dt>Billing address</dt>
+                      <dd>2200 Mission St, Suite 4, San Francisco, CA 94110</dd>
+                    </div>
+                  </dl>
+                </div>
               </div>
             </div>
 
