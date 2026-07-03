@@ -1,8 +1,12 @@
 # Page header  · composite
 
-The band at the top of a screen: what this page is, plus its actions. Recurs in
-**every** pattern (list / detail / create) — which is exactly why it is a shared
-composite, not duplicated inside each pattern.
+The band at the top of a screen: what this page is, plus its actions. It is the
+**"no back" header kind** — for **top-level pages** (list / dashboard / settings)
+that you land on directly and have no "up" to return to, so they carry **no back
+button**. Its counterpart is [`detail-header`](./detail-header.md), the **"with
+back" header kind** for any page you reach *into* (detail / create / edit /
+wizard). Between the two, every screen's header is covered — which is why each is
+a shared composite, not duplicated inside each pattern.
 
 > **Contract scope.** The cross-consumer design contract: anatomy, the action
 > rule, tokens, states. NOT the React prop types — those live with `@cloud/ui` +
@@ -44,8 +48,10 @@ page's job calls for it — most pages render a subset, not the whole band.
 - Title is `text-2xl` / weight 600 / tracking-tight / `content-primary`.
 - `description` is `text-sm` / `content-tertiary`, one line, capped to a readable
   measure — not a paragraph.
-- **Sticky variant** docks the band under the app header while the page scrolls —
-  use it for single-step create/edit pages where Cancel + Submit must stay reachable.
+- **Sticky variant** (`.page-header--sticky`) docks the band under the app header
+  while the page scrolls — use it on a top-level page whose header actions must
+  stay reachable through a long scroll. (Create / edit / wizard pages are **not**
+  page-header — they use the sticky [`detail-header`](./detail-header.md).)
 
 ## States
 

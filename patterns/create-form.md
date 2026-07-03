@@ -4,15 +4,15 @@
 commit. Named structure, not implementation.
 
 > 📐 **Copyable example** · [`create-form.html`](./create-form.html) — the single-step
-> card form (Field units, grouped into labelled section cards when long, with
-> cancel/submit in the sticky header), ready to copy and modify. It **links** the reference CSS so
+> card form (Field units, grouped into labelled section cards when long, with a
+> back button + the primary in the sticky detail-header), ready to copy and modify. It **links** the reference CSS so
 > it never forks; inline the blocks to ship it as an artifact. All examples: [`index.html`](./index.html).
 
-## Anatomy — single step (modal or page)
+## Anatomy — single step (full page; modal uses `Modal` chrome — see "Carrier")
 
 ```
-┌ header (sticky) ─────────────────────────────────────────┐
-│ title                         [ cancel ] [ create/save ]  │
+┌ detail-header (sticky) ──────────────────────────────────┐
+│ [‹] title                              [ create/save ]    │
 ├ body ────────────────────────────────────────────────────┤
 │ Field: label                                              │
 │        [ input ]                                          │
@@ -21,11 +21,14 @@ commit. Named structure, not implementation.
 └──────────────────────────────────────────────────────────┘
 ```
 
-The page-header sticks to the top of the viewport as the user scrolls through a long
-form. Cancel and the primary action (Create / Save changes) sit in the header's
-actions slot — there is **no separate footer row**.
+The header is the sticky [`detail-header`](../composites/detail-header.md) in its
+**reduced form** (the "with back" header kind): a **back button** (leftmost — exit
+without committing) + the title + the **single primary** action (Create / Save
+changes) in the actions slot — **no logo, meta, chips, or tabs**, and **no Cancel
+button** (the back button is the exit). It sticks to the top of the viewport as the
+user scrolls through a long form; there is **no separate footer row**.
 
-The page-header (with its Cancel + Create/Save actions) and **at least one
+The detail-header (with its back + Create/Save action) and **at least one
 `form-section` card** (*"form-section" 是概念单元——一张 `card` 的 `Field`,非 CSS 类;html 中即 `.card.form-page`*) are the required core. Everything else — a status banner, a
 file-upload block, extra section cards, per-section or page descriptions — is
 **optional**, included only when the page's job calls for it (see the slot table).
@@ -48,8 +51,8 @@ the example does **not** mean filling every slot.
 
 | slot | required? | include when |
 |---|---|---|
-| sticky `page-header` (title) | **yes** | always — names the record being created/edited |
-| header actions: ghost Cancel (leading X icon) + primary Create/Save | **yes** | always — and the ONLY two header actions; no other buttons belong here. The primary verb follows the variant |
+| sticky `detail-header` (back + title) | **yes** | always — the back button (exit without committing) + the title naming the record being created/edited |
+| header action: primary Create/Save | **yes** | always — the ONLY header action (the back button is the exit; there is no Cancel). The primary verb follows the variant |
 | ≥1 `form-section` card (header + `Field`s) | **yes** | always — at least one card of fields is the form |
 | header `description` | no | the title alone doesn't make the page's purpose obvious |
 | status `banner` (alert under the header) | no | a record-level status/notice must be surfaced before the fields |
@@ -70,11 +73,11 @@ The variant drives the primary verb in the (required) header actions slot:
 ## Rules
 
 - **The required core is the sticky header + ≥1 `form-section`.** A valid
-  create/edit form is, at minimum, the sticky `page-header` (title + ghost Cancel
-  [leading X icon] + primary Create/Save) above a single `form-section` card of `Field`s. Banner,
-  file-upload, extra section cards, and descriptions are optional add-ons (slot
-  table above) — present them only when the page's job needs them, never as a
-  default checklist.
+  create/edit form is, at minimum, the sticky `detail-header` (back button + title
+  + primary Create/Save, in the composite's reduced form — no logo/meta/tabs, no
+  Cancel) above a single `form-section` card of `Field`s. Banner, file-upload, extra
+  section cards, and descriptions are optional add-ons (slot table above) — present
+  them only when the page's job needs them, never as a default checklist.
 - **One `Field` unit** = label + control + help/error, vertically stacked. Errors
   attach to the field, in the interface's voice ("Enter a valid email"), not a
   global banner — and explain how to fix.
@@ -95,6 +98,12 @@ The variant drives the primary verb in the (required) header actions slot:
   full page otherwise. The **wizard** escalation (≥3 steps / branching) is
   **create-only**: an **edit never becomes a wizard** — it stays a single surface
   (modal or one page) so the user jumps to a field and saves.
+- **The header depends on the carrier.** A **full-page** form heads with the sticky
+  `detail-header` (back + title + primary) described above — no Cancel. A **modal**
+  form has no page header at all: it uses the `Modal` primitive's own chrome
+  (`.modal__header` + a `.modal__footer` carrying its **ghost Cancel + primary**),
+  which is the dialog convention and is unchanged. "No Cancel" is a rule of the
+  *header band*, not of modal footers.
 - **Optional preview / summary rail (full-page only).** A long full-page form may
   carry a sticky right rail that recaps entered values or previews the result (a
   `dl`; mechanism borrowed from the wizard's summary rail). All-or-nothing across the
@@ -111,9 +120,10 @@ its own. Include it only when the page's job needs it (optional slot above).
 
 ## Building blocks
 
-Composites: [`page-header`](../composites/page-header.md) (the title band) +
+Composites: [`detail-header`](../composites/detail-header.md) (the full-page form's
+"with back" header band, reduced form — back + title + primary) +
 [`page-body`](../composites/page-body.md) (the guttered content region the form
-card sits in).
+card sits in). A modal form uses the `Modal` primitive's chrome instead of a header band.
 
 Primitives: `Field`, `Label`, `Input`/`Textarea`/`Select`/`Checkbox`/`RadioGroup`,
 `Button`, `Modal`/`Sheet`, `Card` (the form card and per-concern section cards),

@@ -12,7 +12,7 @@ row into. Named structure, not implementation.
 ## Anatomy
 
 ```
-┌ detail-header band (full-bleed surface-2, NO breadcrumb) ─────────────────┐
+┌ detail-header band (full-bleed surface-2, sticky, NO breadcrumb) ─────────┐
 │ [‹] 〔logo〕 name 〔status〕〔status〕     [ edit? ] [ ⋯? ] [ primary? ]      │
 │              id · region · created … (meta row)                           │
 │ ┌ tabs — OPTIONAL — line variant, docked on the band's bottom edge ────┐  │
@@ -26,7 +26,8 @@ row into. Named structure, not implementation.
 ```
 
 - **No in-page breadcrumb.** The path lives in the app shell's header, not the
-  page. The page begins with the `detail-header` band.
+  page. The page begins with the sticky `detail-header` band (`.detail-header--sticky`
+  — the band's identity + actions + tabs dock under the app header while the body scrolls).
 - **Tabs are OPTIONAL.** Use them only when sub-views are genuinely independent
   and substantial (the `tabbed` variant); a single-section screen omits them (the
   `overview` variant) and the band is just identity + meta + actions. **When

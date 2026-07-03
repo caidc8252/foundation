@@ -5,15 +5,20 @@
 
   When to use (AI decision guide)
   ──────────────────────────────────────────────────────────────────────
-  Use detail-header for detail / profile / overview pages. It carries the
-  record's identity: title, status badges, metadata, actions, and tabs.
-  · page-header — for list / create / wizard pages (no identity band)
-  · Do NOT use detail-header on list pages or single-step forms.
+  detail-header is the "WITH BACK" header kind — the header for any page you
+  reach INTO: detail / profile / overview pages (full identity: title, status,
+  meta, actions, tabs) AND create / edit / wizard pages (in its REDUCED form —
+  back + title + at most one action, no logo/meta/chips/tabs). The back button
+  is the exit affordance; there is no Cancel button.
+  · page-header — the "NO BACK" header kind, for top-level pages (list / dashboard
+    / settings) with no "up" to return to.
+  · Patterns apply .detail-header--sticky by default (band pins under the app header).
 
   Covers:
     - Default with all anatomy: back · logo · name+status+chips · meta · actions · tabs
     - No tabs (single-section detail page)
     - No logo (records without visual identity)
+    - Reduced form (create/edit/wizard header): back + title + at most one action
     - Loading skeleton (title, badges, meta shimmer; tab labels render immediately)
     - Sticky variant (pins to top of scroll container)
   ──────────────────────────────────────────────────────────────────────
@@ -306,6 +311,37 @@
           <p>The detail header band stays pinned at the top while you scroll.</p>
           <p style="margin-top:var(--space-2);">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
           <p style="margin-top:var(--space-4); font-weight:600; color:var(--color-content-primary);">End of scroll content — the band is still pinned above.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 6: Reduced form — the create / edit / wizard header
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Detail header · reduced form (create / edit / wizard header)</h2>
+      <p class="demo-section__desc">
+        The same composite carries the "with back" header on create / edit / wizard
+        pages: just the back button (exit without committing), the page title, and at
+        most one primary action — no logo, meta, chips, or tabs. A wizard omits even the
+        action (its commit verb lives in the footer nav). Patterns add .detail-header--sticky.
+      </p>
+
+      <div class="detail-header">
+        <div class="detail-header__bar">
+          <button class="btn btn--ghost btn--icon btn--sm detail-header__back" type="button" aria-label="Back to customers">
+            <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+
+          <div class="detail-header__main">
+            <div class="detail-header__title">
+              <span class="detail-header__name">New customer</span>
+            </div>
+          </div>
+
+          <div class="detail-header__actions">
+            <button class="btn btn--primary" type="button">Create customer</button>
+          </div>
         </div>
       </div>
     </div>

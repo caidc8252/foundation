@@ -3,8 +3,9 @@
   ─────────────────────────────────────────────────────────────────────────────
   Companion to ./create-form.md (the contract — when the two disagree, the .md wins).
   Copy this file and edit the markup to build a real single-step create/edit form:
-  a sticky page-header carrying Cancel + Create/Save on the right, a centered card
-  of Field units (no bottom footer). Long forms group their fields into labelled
+  a sticky detail-header (the "with back" header kind) — back button (exit without
+  committing) + title + the single primary Create/Save on the right — over a centered
+  card of Field units (no bottom footer). Long forms group their fields into labelled
   section cards by concern (one Card per concern).
   Need ≥3 steps or branching? Reach for the multi-step wizard instead — that is
   its own pattern now: ./create-wizard.md (./create-wizard.html).
@@ -39,7 +40,7 @@
 
   .form-title { font-size: var(--text-md); font-weight: 600; color: var(--color-content-primary); }
 
-  /* (no form-footer — actions live in the sticky page-header) */
+  /* (no form-footer — the primary lives in the sticky detail-header; exit is the back button) */
 
   .field-check { display: flex; align-items: flex-start; gap: var(--space-2); }
   .field-check__text { font-size: var(--text-sm); color: var(--color-content-primary); }
@@ -50,27 +51,33 @@
   <div class="app-frame__col">
     <main class="app-frame__main">
       <!--
-        REQUIRED CORE (do not drop): the sticky page-header (title + ghost Cancel
-        [leading X icon] + primary Create/Save) AND at least one form-section card of fields below.
-        Everything marked OPTIONAL is removable per the page's job — copying this
-        fully-dressed example does NOT mean keeping every slot.
+        REQUIRED CORE (do not drop): the sticky detail-header (the "with back" header
+        kind — back button + title + the single primary Create/Save) AND at least one
+        form-section card of fields below. The back button is the ONLY exit affordance —
+        there is NO Cancel button. Everything marked OPTIONAL is removable per the page's
+        job — copying this example does NOT mean keeping every slot.
         See create-form.md "Slots" + governance principle #9 (patterns are frameworks).
+        The header reuses the detail-header composite in its reduced form (back + title +
+        one action, NO logo / meta / chips / tabs). See composites/detail-header.md.
       -->
-      <header class="page-header page-header--sticky">
-        <div class="page-header__bar">
-          <div class="page-header__titles">
-            <div class="page-header__heading"><h1 class="page-header__title">New customer</h1></div>
-            <!-- OPTIONAL: header description — drop when the title alone is self-explanatory. -->
-            <p class="page-header__description">A single-step create/edit form — a centered card of fields, actions in the sticky header.</p>
+      <header class="detail-header detail-header--sticky">
+        <div class="detail-header__bar">
+          <!-- REQUIRED: back button (chevron-left) — returns to where the form was reached
+               from, discarding the unsaved draft. This replaces the old ghost Cancel. -->
+          <button class="btn btn--ghost btn--icon btn--sm detail-header__back" type="button" aria-label="Back to customers">
+            <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+
+          <div class="detail-header__main">
+            <div class="detail-header__title">
+              <span class="detail-header__name">New customer</span>
+            </div>
           </div>
-          <div class="page-header__actions">
-            <!-- REQUIRED: ghost Cancel (leading X icon) + primary Create/Save. The primary verb follows
-                 the variant: "Create customer" (create) / "Save changes" (edit).
-                 These are the ONLY header actions — no other buttons belong here. -->
-            <button class="btn btn--ghost" type="button">
-              <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-              Cancel
-            </button>
+
+          <div class="detail-header__actions">
+            <!-- REQUIRED: the single primary Create/Save — the ONLY header action. The verb follows
+                 the variant: "Create customer" (create) / "Save changes" (edit). Exit-without-
+                 committing is the back button (leftmost), never a Cancel button here. -->
             <button class="btn btn--primary" type="submit" form="create-form">Create customer</button>
           </div>
         </div>
