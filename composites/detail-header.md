@@ -51,6 +51,9 @@ exactly this band at the top of its anatomy.
 - **Tabs** — the `tabs` primitive (`--line` variant) docked on the band's bottom
   edge, NOT a second component. Render the strip only when sub-views are
   genuinely independent (see the detail-page pattern's "tabs vs sections" rule).
+  Each trigger is a **label only** — no count / quantity / status `badge` on the
+  tab (a collection's count lives in its panel's `summary-bar`, not on the
+  trigger; see [`tabs`](../primitives/tabs.md)).
 
 ## Rules
 

@@ -46,6 +46,8 @@ Tabs (root, flex column, gap-2)
 
 Trigger is `[ icon? ] label`: inline flex, `gap-2`, icons default `size-4` (16px), `whitespace-nowrap`. In the `line` variant the underline is an `::after` element inset to the label box (`inset-x: px-cx-sm`), `2px` tall, `primary-700`, animating its `scale-x`.
 
+**A trigger carries a label only (optionally a leading icon) — never a count / quantity / status `badge`.** A tab is navigation, not a metric surface: putting a number on it (e.g. `Orders 12`, a drift/attention count) duplicates a quantity that belongs *inside* the panel — where the collection's `summary-bar` count already carries it (see [`detail-page`](../patterns/detail-page.md) · *the count in the summary-bar carries the quantity*). Attention that a panel needs work is surfaced by the panel's own content (an `Alert`, an empty/warning state), not by a badge on the trigger. Keeping triggers label-only also holds every tab at one weight, so the active tab doesn't widen and nudge its neighbours.
+
 ## Accessibility
 
 - Real tab semantics from base-ui (`Tabs.Root` / `.List` / `.Tab` / `.Panel`): roving arrow-key focus along the list, `aria-selected` on the active tab, panel `role="tabpanel"` wired to its tab. Handled by the primitive.
