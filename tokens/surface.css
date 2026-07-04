@@ -13,6 +13,12 @@
   --color-surface-overlay: oklch(15% 0.01 270 / 0.45);
   /* Selected row/item surface. color-mix of vars — adapts to dark mode. */
   --color-state-selected:  color-mix(in oklch, var(--color-primary-50) 70%, var(--color-surface-2) 30%);
+  /* Row hover — a WEAKER wash than surface-hover, so an interactive row's hover
+     stays one step below the hover of a ghost icon button sitting inside it (the
+     button uses full surface-hover); their fills no longer coincide. Lands between
+     surface-hover and surface-3 so a striped even row (surface-3) still darkens on
+     hover. color-mix of vars — adapts to dark mode. */
+  --color-state-row-hover: color-mix(in oklch, var(--color-surface-hover) 75%, var(--color-surface-2) 25%);
 
   /* ─── Content · text-content-{primary|secondary|tertiary|disabled|inverse|on-primary} ─── */
   --color-content-primary:    oklch(18% 0.01  270);

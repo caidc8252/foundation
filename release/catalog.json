@@ -96,6 +96,7 @@
     "color-secondary-500",
     "color-secondary-700",
     "color-secondary-900",
+    "color-state-row-hover",
     "color-state-selected",
     "color-success",
     "color-success-50",
@@ -1869,6 +1870,7 @@
       "contract": "composites/data-table.md",
       "example": "composites/data-table.html",
       "classes": [
+        ".btn--ghost",
         ".card__content--flush",
         ".cell-2line",
         ".cell-2line__main",
@@ -1887,6 +1889,7 @@
         ".data-table--sticky-head",
         ".data-table--striped",
         ".is-clickable",
+        ".list-row",
         ".row-actions",
         ".row-actions__inner",
         ".table-frame",

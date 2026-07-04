@@ -407,7 +407,7 @@
 .data-table tbody tr {
   transition: background-color var(--duration-fast) var(--ease-standard);
 }
-.data-table tbody tr:hover { background-color: var(--color-surface-hover); }
+.data-table tbody tr:hover { background-color: var(--color-state-row-hover); }
 .data-table tbody tr.is-clickable { cursor: pointer; }
 .data-table tbody tr[aria-selected="true"],
 .data-table tbody tr[aria-selected="true"]:hover {
@@ -448,7 +448,17 @@
 
 /* Zebra striping (opt-in). */
 .data-table--striped tbody tr:nth-child(even) { background-color: var(--color-surface-3); }
-.data-table--striped tbody tr:nth-child(even):hover { background-color: var(--color-surface-hover); }
+.data-table--striped tbody tr:nth-child(even):hover { background-color: var(--color-state-row-hover); }
+
+/* Two-tier row hover. An interactive row washes to the WEAKER
+   --color-state-row-hover, so a neutral ghost icon button inside it hovers DEEPER
+   (surface-active) to still read as a live control — a ~3.3 ΔL step, no border
+   (icon buttons stay borderless). A destructive one keeps its own error-bg hover:
+   the red tone already reads against the neutral row wash. Same on a list-row. */
+.data-table .row-actions .btn--ghost:hover:not(:disabled),
+.list-row .btn--ghost:hover:not(:disabled) {
+  background-color: var(--color-surface-active);
+}
 
 /* Selection / action column helpers */
 .data-table .col-select { width: var(--space-12); } /* 48px checkbox column */
@@ -2351,7 +2361,7 @@
   cursor: pointer;
   transition: background-color var(--duration-fast) var(--ease-standard);
 }
-.list-row--interactive:hover { background-color: var(--color-surface-hover); }
+.list-row--interactive:hover { background-color: var(--color-state-row-hover); }
 .list-row--interactive:active { background-color: var(--color-surface-active); }
 .list-row--interactive:focus-visible {
   outline: none;
