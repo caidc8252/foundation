@@ -36,8 +36,9 @@ top of its anatomy; [`create-form`](../patterns/create-form.md) and
 - **Back** — icon-only ghost button (`.btn--ghost` at icon size), first in the
   bar. Returns to the place it was reached from. On a **detail** screen it is
   optional (present when the record was reached from a list); on a **create / edit
-  / wizard** page it is **required** and is the **exit-without-committing**
-  affordance — it replaces the old header Cancel button (there is no Cancel).
+  / wizard** page it is **required** and is an **exit-without-committing**
+  affordance. A **wizard** has no Cancel (back is its sole exit); a single-step
+  **create / edit** page also carries a ghost Cancel beside its primary (see Reduced form).
   Its glyph is the **`chevron-left`** icon (per `primitives/icon.md` — Back =
   `chevron-left`), the same back affordance used across wizards and pagination —
   **not** `arrow-left`. On a wizard, this header back **exits the whole flow**; the
@@ -88,9 +89,10 @@ top of its anatomy; [`create-form`](../patterns/create-form.md) and
   badges; a status *change* is an explicit, confirmed action, not a toggle on the
   chip.
 - **Reduced form (create / edit / wizard header).** The same composite heads
-  create/edit/wizard pages with only its **back + title (+ at most one action)** —
-  **no logo, meta, chips, or tabs**. A single-step create/edit page carries the one
-  primary commit action (Create / Save) in `.detail-header__actions`; a **wizard**
+  create/edit/wizard pages with only its **back + title (+ its commit actions)** —
+  **no logo, meta, chips, or tabs**. A single-step create/edit page carries a
+  **ghost Cancel + the primary commit** (Create / Save) in `.detail-header__actions`
+  (Cancel left, primary right per [`actions.md`](../patterns/actions.md)); a **wizard**
   carries **no** header action at all (its commit verb lives in the footer nav) —
   the header is just back + title. Same classes, same band; the identity slots are
   simply omitted (they are all optional).

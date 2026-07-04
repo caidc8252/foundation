@@ -23,12 +23,12 @@ commit. Named structure, not implementation.
 
 The header is the sticky [`detail-header`](../composites/detail-header.md) in its
 **reduced form** (the "with back" header kind): a **back button** (leftmost — exit
-without committing) + the title + the **single primary** action (Create / Save
-changes) in the actions slot — **no logo, meta, chips, or tabs**, and **no Cancel
-button** (the back button is the exit). It sticks to the top of the viewport as the
+without committing) + the title + a **ghost Cancel and the primary** commit (Create /
+Save changes) in the actions slot (Cancel left, primary right per `actions.md`) —
+**no logo, meta, chips, or tabs**. It sticks to the top of the viewport as the
 user scrolls through a long form; there is **no separate footer row**.
 
-The detail-header (with its back + Create/Save action) and **at least one
+The detail-header (with its back + ghost Cancel + Create/Save action) and **at least one
 `form-section` card** (*"form-section" 是概念单元——一张 `card` 的 `Field`,非 CSS 类;html 中即 `.card.form-page`*) are the required core. Everything else — a status banner, a
 file-upload block, extra section cards, per-section or page descriptions — is
 **optional**, included only when the page's job calls for it (see the slot table).
@@ -52,7 +52,7 @@ the example does **not** mean filling every slot.
 | slot | required? | include when |
 |---|---|---|
 | sticky `detail-header` (back + title) | **yes** | always — the back button (exit without committing) + the title naming the record being created/edited |
-| header action: primary Create/Save | **yes** | always — the ONLY header action (the back button is the exit; there is no Cancel). The primary verb follows the variant |
+| header actions: ghost Cancel + primary Create/Save | **yes** | always — a ghost Cancel (leading `x`) then the primary commit (Cancel left, primary right); the back button is also an exit. The primary verb follows the variant |
 | ≥1 `form-section` card (header + `Field`s) | **yes** | always — at least one card of fields is the form |
 | header `description` | no | the title alone doesn't make the page's purpose obvious |
 | status `banner` (alert under the header) | no | a record-level status/notice must be surfaced before the fields |
@@ -74,8 +74,8 @@ The variant drives the primary verb in the (required) header actions slot:
 
 - **The required core is the sticky header + ≥1 `form-section`.** A valid
   create/edit form is, at minimum, the sticky `detail-header` (back button + title
-  + primary Create/Save, in the composite's reduced form — no logo/meta/tabs, no
-  Cancel) above a single `form-section` card of `Field`s. Banner, file-upload, extra
+  + ghost Cancel + primary Create/Save, in the composite's reduced form — no
+  logo/meta/tabs) above a single `form-section` card of `Field`s. Banner, file-upload, extra
   section cards, and descriptions are optional add-ons (slot table above) — present
   them only when the page's job needs them, never as a default checklist.
 - **One `Field` unit** = label + control + help/error, vertically stacked. Errors
@@ -99,11 +99,11 @@ The variant drives the primary verb in the (required) header actions slot:
   **create-only**: an **edit never becomes a wizard** — it stays a single surface
   (modal or one page) so the user jumps to a field and saves.
 - **The header depends on the carrier.** A **full-page** form heads with the sticky
-  `detail-header` (back + title + primary) described above — no Cancel. A **modal**
+  `detail-header` (back + title + **ghost Cancel + primary**) described above. A **modal**
   form has no page header at all: it uses the `Modal` primitive's own chrome
   (`.modal__header` + a `.modal__footer` carrying its **ghost Cancel + primary**),
-  which is the dialog convention and is unchanged. "No Cancel" is a rule of the
-  *header band*, not of modal footers.
+  which is the dialog convention. Either way the commit sits rightmost with a ghost
+  Cancel to its left (`actions.md` order).
 - **Optional preview / summary rail (full-page only).** A long full-page form may
   carry a sticky right rail that recaps entered values or previews the result (a
   `dl`; mechanism borrowed from the wizard's summary rail). All-or-nothing across the

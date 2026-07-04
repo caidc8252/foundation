@@ -42,9 +42,10 @@ where it lands, and whether it confirms — those are not per-screen choices.
   `card__footer`) uses a `ghost` Cancel. **At most one primary per group.** Source order
   *is* visual order in the row — author the markup in this order; never reorder with CSS.
   This is why a `create-wizard` nav is `ghost Back + primary Continue` and an
-  `AlertDialog` is `ghost Cancel + danger Confirm`. (A `create-form` / `create-wizard`
-  header carries no in-group Cancel at all — its exit is the leftmost `detail-header`
-  back button, outside the actions cluster.) (A trailing destructive
+  `AlertDialog` is `ghost Cancel + danger Confirm`. (A `create-wizard` header carries
+  no in-group Cancel — its exit is the leftmost `detail-header` back button, outside the
+  actions cluster; a single-step `create-form` header carries a `ghost Cancel + primary`
+  in its actions cluster.) (A trailing destructive
   icon — a `ghost-danger` Delete/Terminate after the primary — is the one exception, and
   even then prefer routing it through the `⋯` overflow per **One carrier per row**.)
 - **Danger tone marks destructive verbs.** `danger` / `ghost-danger` skins are for
