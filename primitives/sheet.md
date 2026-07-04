@@ -25,7 +25,7 @@ Unlike the Modal the Sheet has **square corners** (docks flush to the edge, no r
 
 ## States
 
-- **overlay (scrim)** — a fixed full-viewport `black/10` wash behind the panel (see Notes: non-token scrim), with an optional `backdrop-blur` where supported. Fades with the panel (150ms). Clicking it dismisses (impl-gated).
+- **overlay (scrim)** — a fixed full-viewport `surface-overlay` wash behind the panel (the shared scrim token, same as Modal), with an optional `backdrop-blur` where supported. Fades with the panel (150ms). Clicking it dismisses (impl-gated).
 - **open / closed** — enter/exit is a fade (`opacity`) plus a `~40px` translate *from the docked edge* (200ms `ease-in-out`). Keyframes (`data-starting-style` / `data-ending-style`) are impl-owned; this skin paints the resting OPEN panel only.
 - **body overflow** — the panel is `flex-direction: column`; the content region scrolls while header/footer stay put (footer pins to the bottom via `mt-auto`).
 - **close button hover / focus** — inherits the `ghost` `.btn` recipe (hover `surface-hover`; focus-visible `shadow-focus`).
@@ -34,7 +34,7 @@ Unlike the Modal the Sheet has **square corners** (docks flush to the edge, no r
 ## Anatomy
 
 ```
-┌ overlay (black/10 scrim, covers viewport) ────────────┐
+┌ overlay (surface-overlay scrim, covers viewport) ─────┐
 │                          ┌ sheet (docked right) ─────┐ │
 │                          │ ┌ header ───────────[×]─┐ │ │
 │                          │ │ title                 │ │ │
@@ -67,7 +67,7 @@ Unlike the Modal the Sheet has **square corners** (docks flush to the edge, no r
 
 ## Notes
 
-- **Scrim color is a non-token.** The source overlay is `bg-black/10` — a literal black-at-10% wash, not the `surface-overlay` token the Modal uses. The reference CSS keeps fidelity with `color-mix(in oklch, var(--color-content-primary) 10%, transparent)` (theme-aware near-black) rather than hardcoding `rgba`. *Token-change wish:* a dedicated `--color-scrim-light` (or aligning the Sheet onto `surface-overlay`) would remove this near-token.
+- **Scrim uses the shared `surface-overlay` token** (same as Modal / AlertDialog). The source overlay was a lighter `bg-black/10` wash, but the Sheet was **aligned onto the one governed overlay token** so every scrim in the system is consistent and there is no per-component near-token. Trade-off: the dim is slightly darker than the source's `black/10`; this was the deliberate convergence choice (drop the near-token over pixel-fidelity to the source wash).
 - **`backdrop-blur-xs`** on the overlay is a `supports`-gated progressive enhancement with no blur-radius token; expressed with a small literal `blur()` radius (visual-only, degrades gracefully).
 - The source paints on `bg-surface-3` (already semantic) and the title/description use the shadcn aliases `text-foreground` / `text-muted-foreground` — they resolve to `content-primary` / `content-secondary` in this token system (same mapping the modal skin uses).
 - The close button's `top-3 right-3` offset is `space-3` (12px); the header `gap-0.5` (2px) lands on a half-step over the raw `--space` scale, expressed via the same `calc()` half-step convention used elsewhere in this stylesheet.

@@ -3262,16 +3262,16 @@ body { margin: 0; }
    square corners (docks flush to the edge; no drag-to-dismiss). Open/close (fade + ~40px edge
    slide), portalling, focus trap, and Escape/scrim dismissal are React/base-ui
    behaviors — out of scope for this static skin, which paints the resting OPEN
-   panel only; the consumer drives visibility. The scrim is a black/10 wash (not
-   the surface-overlay token) expressed theme-aware via color-mix (see sheet.md
-   notes for the scrim token-change wish). The 60%/75% widths and auto heights
-   are viewport math (conventionally exempt). */
+   panel only; the consumer drives visibility. The scrim uses the shared
+   `--color-surface-overlay` token (same as Modal/AlertDialog) — the source's
+   lighter `bg-black/10` wash was folded onto the one governed overlay token. The
+   60%/75% widths and auto heights are viewport math (conventionally exempt). */
 
 .sheet-overlay {
   position: fixed;
   inset: 0;
   z-index: 50;   /* modal z-layer — z-index is conventionally exempt */
-  background-color: color-mix(in oklch, var(--color-content-primary) 10%, transparent);   /* source bg-black/10 */
+  background-color: var(--color-surface-overlay);   /* shared scrim, aligned with Modal/AlertDialog */
   backdrop-filter: blur(2px);   /* source supports-backdrop-filter:backdrop-blur-xs — progressive enhancement, no token */
   transition: opacity 0.15s;
 }
