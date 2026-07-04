@@ -57,21 +57,23 @@ where it lands, and whether it confirms — those are not per-screen choices.
   to look destructive.
 - **Irreversible actions MUST confirm.** revoke / terminate / delete always go through a
   confirm dialog — never fire silently (see **Confirmation tiers**).
-- **One carrier per row.** A row exposes its verbs as inline **icons** *or* a single
-  **kebab** (`⋯`) menu — never both. Pick icons when there are ≤2 frequent verbs;
-  collapse to a kebab past that.
+- **One carrier per row.** A row exposes its verbs as inline **ghost icon buttons**
+  *or* a single **`⋯` overflow menu** — never both. Pick icons when there are ≤2
+  quick verbs; collapse to the `⋯` overflow menu past that.
 - **A peer action group shares one weight.** Actions of *equal emphasis* sitting
-  together in one row / cluster — a table row's inline verbs, a card-header action set,
-  a section-row group — use **one carrier**: never mix `secondary` with `ghost` for
-  peers (e.g. `Lock` as `secondary` next to `Reset password` as `ghost` is the bug —
-  pick one). A **destructive** verb inline among such peers takes **`ghost-danger`**
+  together in one cluster — a card-header action set, a section-row group, a dialog
+  footer — use **one carrier**: never mix `secondary` with `ghost` for peers (e.g. a
+  `secondary` next to a `ghost` where both should read as one weight — pick one). A
+  **table row's** quick verbs are the icon case of the same rule: all `ghost` icons
+  at one weight, never `secondary` text. A **destructive** verb inline among such
+  peers takes **`ghost-danger`**
   (still red — destructive still *looks* destructive — but low-chrome), **not** the
   solid `danger` fill: solid `danger` is a destructive **primary** (a standalone CTA,
   or the `AlertDialog` **Confirm**), and dropped into a peer row it becomes the group's
   visual anchor — backwards for a destructive verb, and it reads as *taller/heavier*
-  than its outlined neighbours though the box is the same height. (Three inline text
+  than its outlined neighbours though the box is the same height. (Three inline
   verbs like Edit / Suspend / Terminate also trip **One carrier per row** — collapse
-  them to icons or a `⋯` menu.)
+  them to a `⋯` overflow menu.)
 - **A menu row is a menu item, not a button.** Inside a `⋯` / `dropdown-menu`, verbs
   are `.dropdown-menu__item` rows (destructive → the `--destructive` variant,
   `error-strong` text) — **never `.btn`** (`secondary` / `danger` / `ghost`) buttons. The
@@ -88,7 +90,7 @@ where it lands, and whether it confirms — those are not per-screen choices.
   `ghost-danger` for a Delete that opens a `confirm-danger` dialog (the solid
   `danger` fill is the dialog's Confirm, not the inline row trigger) — not a
   `secondary` text button, and not hover-reveal icons. An abstract verb with no
-  conventional glyph (Manage, Assign, Rotate key) routes into the `⋯` menu instead.
+  conventional glyph (Manage, Assign, Rotate key) routes into the `⋯` overflow menu instead.
   On a `data-table` they share the row's **single trailing `.row-actions` cell** with the
   navigate chevron (verbs first, passive chevron last); a quick-op row both acts and
   navigates, so the verbs `event.stopPropagation()` (see [`data-table.md`](../composites/data-table.md)).

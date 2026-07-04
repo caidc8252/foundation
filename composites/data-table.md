@@ -13,17 +13,17 @@ config-driven table — columns + rows — not hand-written cell markup.
 ┌ table-frame ──────────────────────────────────────────────────────┐
 │ ☐ │ Header ▴   Header        Header                               │  ← thead (sticky); trailing col is HEADERLESS
 ├───┼────────────────────────────────────────────────────────────────┤
-│ ☑ │ cell        cell          cell               [🔒] [⋯]  ›    │  ← ONE trailing cell: icon verb(s)/⋯ menu then passive chevron
+│ ☑ │ cell        cell          cell               [🔒] [⋯]  ›    │  ← ONE trailing cell: quick verb(s) / ⋯ overflow menu, then passive chevron
 │ ☐ │ cell        cell          cell                          ›    │  ← nav-only row: the same cell, chevron alone
-│ ☐ │ cell        cell          cell               [🔒] [⋯]       │  ← act-only row: icon verb(s), no chevron
+│ ☐ │ cell        cell          cell               [🔒] [⋯]       │  ← act-only row: quick verb(s), no chevron
 └────────────────────────────────────────────────────────────────────┘
 ```
 
-The **trailing cell** (`.row-actions`) is the row's operations: a single headerless,
-right-aligned cell holding — in source order — any inline verbs, then a **passive
-`.cell-chevron`** (last) when the row navigates. Inline verbs and the chevron
-**coexist in this one cell**; the chevron is a *navigate affordance rendered as an
-icon* — never its own column, never a button.
+The **trailing cell** (`.row-actions`) is the row-tail — the row's operations: a
+single headerless, right-aligned cell holding — in source order — any **quick verbs**,
+then a **passive `.cell-chevron`** (last) when the row navigates. Quick verbs and the
+chevron **coexist in this one cell**; the chevron is a *navigate affordance rendered as
+an icon* — never its own column, never a button.
 
 ## Density
 
@@ -50,13 +50,13 @@ icon* — never its own column, never a button.
   gets `state-selected` background + a 2px primary left bar (`shadow-row-selected`),
   and drives a bulk-action bar (in the summary bar / page header).
 - **One trailing cell carries both the verbs and the chevron.** The row's
-  operations — inline verbs *and* the navigate chevron — live in a **single**
+  operations — quick verbs *and* the navigate chevron — live in a **single**
   `.row-actions` `<td>` at the row end, never in two competing cells. Its `<th>` is
   **headerless** (`aria-hidden="true"`, no label — quick verbs don't earn a column
   title), and the cell is **right-aligned by the class itself** (`.row-actions` bakes
   `text-align:right`; you no longer add `.cell-right`) so the cluster hugs the row
   edge instead of floating at the left of a stretched last column. Inside, a
-  **`.row-actions__inner`** flex wrapper lays out, in source order: any inline verbs,
+  **`.row-actions__inner`** flex wrapper lays out, in source order: any quick verbs,
   then — when the row navigates — a **passive `.cell-chevron` last** (§ Column recipes).
   The wrapper supplies the gap + vertical centering; bare siblings dropped straight
   into the cell butt together with no gap. This holds for the collapsed single `⋯`
@@ -75,8 +75,9 @@ icon* — never its own column, never a button.
   **near-universal** glyph goes inline (Edit `square-pen`, Lock `lock`, Delete
   `trash-2`, Revoke `ban`); an **abstract** verb with no conventional icon
   (Manage, Assign, Rotate key) is **not** given a guessed glyph — it moves into the
-  trailing **`⋯` (`ellipsis`) menu**, where an icon+label row removes the ambiguity.
-  Past ~2 inline icons, collapse to the single `⋯` menu (one carrier per row).
+  trailing **`⋯` overflow menu** (`ellipsis`), where an icon+label row removes the
+  ambiguity. Past ~2 quick verbs, collapse to the single `⋯` overflow menu (one
+  carrier per row).
   (Mirrors [`actions.md`](../patterns/actions.md) and the `list-page` row recipe.)
 - **Numeric / id columns** render mono + tabular (`.cell-num`) and usually
   right-align so digits line up.

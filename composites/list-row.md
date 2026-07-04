@@ -14,7 +14,7 @@ A non-tabular interactive list row — a leading visual, a title line that can c
 │ 〔🔔〕 Two-factor authentication                              [ ●——  On  ]   │  ← trailing control (.switch)
 │        Adds a one-time code at sign-in                                      │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ 〔👤〕 m.ortiz                          Owner                     [ ⋯ ]     │  ← trailing actions (icon verb(s) / ⋯ menu)
+│ 〔👤〕 m.ortiz                          Owner                     [ ⋯ ]     │  ← trailing actions (quick verb(s) / ⋯ overflow menu)
 │        m.ortiz@acme.co · last active 2h ago                                 │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │ 〔📄〕 PILOT  〔badge:7d left〕                          3 fields filled  ›   │  ← --interactive (value + chevron)
@@ -32,9 +32,10 @@ A non-tabular interactive list row — a leading visual, a title line that can c
   sub is a single truncating line — so a list of rows reads at one **uniform
   height** instead of some rows wrapping taller than others.
 - **Trailing** *(optional)* — the right cluster: a control (`.switch` for a
-  preference, an action cluster — icon verbs (`btn--ghost btn--icon-sm` + a
-  conventional glyph, destructive → `ghost-danger`) and/or a `⋯` overflow menu for
-  abstract verbs, never a `secondary` text button), a `__value` (a read-only
+  preference, an action cluster of **quick verbs** — ghost icon buttons
+  (`btn--ghost btn--icon-sm` + a conventional glyph, destructive → `ghost-danger`)
+  and/or a `⋯` overflow menu for abstract verbs, never a `secondary` text button), a
+  `__value` (a read-only
   setting's current value), and/or a `__chevron` when the row navigates.
 
 ## Rules

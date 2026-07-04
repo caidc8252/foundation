@@ -94,10 +94,12 @@ whether or not a condition band sits above them):
   list supports creating a record, omitted for read-only / reference lists. The
   condition band's Search button (when a condition band is present), the
   Advanced filter trigger, and the summary bar's Export are all `secondary`;
-  bulk/row actions are `secondary`, and a destructive one is **`ghost-danger`** (not the
-  solid `danger` fill) so it doesn't out-weigh its `secondary` peers — one weight per
-  action group ([`actions`](./actions.md) · *A peer action group shares one weight*; the
-  solid `danger` is the confirm dialog's Confirm). Advanced is pushed to the far right
+  **bulk** actions (summary bar) are `secondary`, and a destructive one is
+  **`ghost-danger`** (not the solid `danger` fill) so it doesn't out-weigh its
+  `secondary` peers — one weight per action group ([`actions`](./actions.md) ·
+  *A peer action group shares one weight*; the solid `danger` is the confirm dialog's
+  Confirm). **Row-tail** actions are **icon-only** ghost buttons, not `secondary`
+  text (see the row-action recipe below). Advanced is pushed to the far right
   of the toolbar by `condition-band__spacer` — visually separated from the
   primary filter flow, signalling it is the less-common path.
   Icon-only actions are `ghost` / `ghost-danger` only. The Advanced trigger is
@@ -135,13 +137,14 @@ whether or not a condition band sits above them):
   verbs to the list only when a specific requirement emphasizes single-row quick ops
   (e.g. a high-throughput triage queue). They render **always-visible** at the row
   end — the [`data-table`](../composites/data-table.md) default (a table action
-  column is never hover-hidden) — as **`xs` text buttons** (not the icon-only ghost
-  default), composed per
-  [`actions.md`](./actions.md): ≤2 verbs → one inline button each — a `secondary`
-  **Edit** + a `danger` **Delete** — ≥3 → a single `⋯` menu. Non-destructive verbs are
-  `secondary`; **Delete keeps the `danger` variant** and opens a `confirm-danger`
-  dialog. All row buttons are size `xs`; every action `stopPropagation`s so it never
-  triggers the row's navigate-to-detail.
+  column is never hover-hidden) — as **icon-only ghost buttons** (`btn--icon-sm` +
+  a conventional Lucide glyph + `aria-label` + hover `title`), composed per
+  [`actions.md`](./actions.md): ≤2 quick verbs → one ghost icon button each — a
+  `ghost` **Edit** (`square-pen`) + a `ghost-danger` **Delete** (`trash-2`) — ≥3, or
+  any abstract verb with no conventional glyph, → a single `⋯` overflow menu.
+  **Delete stays `ghost-danger`** (still red, low-chrome) and opens a
+  `confirm-danger` dialog. Every action `stopPropagation`s so it never triggers the
+  row's navigate-to-detail.
 - **Three text-column shapes**, and nothing else (keeps columns scannable):
   1. **Two-line** — primary `text-sm`/medium/`content-primary` over a subline
      `text-xs`/`content-tertiary`; may lead with an avatar / initial tile
