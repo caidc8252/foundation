@@ -10,3 +10,4 @@ node_modules/
 # (not consumed by check-artifact or shipped — release/ is the committed contract).
 /build/current/
 scripts/claude-deepseek-session.sh
+.vscode/settings.json
