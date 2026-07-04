@@ -25,7 +25,7 @@ structure, not implementation.
 │ │ … one Card per concern …          │ │  Email     —           │     (dl, em-dash
 │ └───────────────────────────────────┘ │  …                     │      for empty)
 ├ nav ──────────────────────────────────┴────────────────────────┤
-│ [ ◂ Back ]                              [ Continue ▸ / Create ]  │  ← right-aligned
+│     [ ◂ Back ] [ Continue ▸ / Create ]                         │  ← right-aligned
 └─────────────────────────────────────────────────────────────────┘
 
   done ┌ centered success card ───────────┐
