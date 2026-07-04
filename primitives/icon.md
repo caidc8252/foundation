@@ -106,6 +106,14 @@ the destructive-action policy — light confirm (a popover/quick confirm) vs.
 | Loader | `loader-circle` | 加载中 | neutral | — | — | — |
 | Minus | `minus` | 减少 / 移除一项 | neutral | 部分 | Add | — |
 | Shield | `shield` | 安全 / 权限 / 防护 | neutral | — | — | — |
+| Save | `save` | 保存草稿 / 持久化改动 | neutral | — | — | — |
+| Play / Pause | `play` / `pause` | **即时**启动 / 暂停一个任务或媒体（区别于 Suspend/Resume 的**状态翻转**） | neutral | 可逆 | 互配 | — |
+| Redo / Rotate | `rotate-cw` | 重做 / 重试 / 旋转 | neutral | — | — | — |
+| Power | `power` | 开 / 关 / 重启设备 | neutral（关机类 danger） | 可逆 | — | 破坏性方向轻确认 |
+| Sign out | `log-out` | 退出登录 | neutral | — | — | — |
+| Open external | `external-link` | 在**新标签**打开外部链接 | neutral | — | — | — |
+| Help | `circle-question-mark` | 打开帮助 / 说明入口 | neutral | — | — | — |
+| Move / Reorder | `arrow-left` `arrow-right` `arrow-up` `arrow-down` | 方向移动 / 重排 / 趋势 / 翻页 —— **arrow = 移动/方向；chevron = 展开/层级**，别混用 | neutral | — | — | — |
 
 > Two names differ from a common older list: `more-horizontal` and
 > `alert-triangle` were renamed in Lucide — in the pinned set they are
@@ -143,19 +151,84 @@ picking a different glyph for "device". The pin:
   foundation vocabulary. Declare them **once per artifact** — a small type→glyph legend at
   the top of the mock — and reuse; that per-artifact pin is what keeps them stable.
 
-Cross-domain entities recur everywhere; reuse these so they don't drift *between* artifacts:
+These recur across admin portals; reuse the canonical pick so a type doesn't drift
+*between* artifacts. A glyph can also serve an **action** job elsewhere (e.g. `clock` =
+Time/History action *and* a "time" entity) — that's fine; the job is set by context.
 
-| entity | glyph |
+**Entity / object glyphs** — name *what a record is*, leading a title / row / tile / nav item:
+
+| glyph | 用在什么情况（它命名的东西） |
 |---|---|
-| user / person | `user` |
-| company / org | `building-2` |
-| file / document | `file` |
-| email | `mail` |
-| security / permission | `shield` |
-| settings / config | `settings` |
-| notification | `bell` |
-| database / storage | `database` |
-| location / region | `map-pin` |
+| `user` | 一个人 / 账号 |
+| `users` | 一组人 / 团队 / 成员列表 |
+| `user-round` | 平台操作员 / 客服 / 坐席（仅当需与"客户 `user`"区分时） |
+| `building-2` | 公司 / 组织 / 租户 |
+| `file` | 单个文档 / 附件 |
+| `folder` | 文件夹 / 一组条目 |
+| `database` | 数据库 / 数据集 / 存储 |
+| `tag` | 标签 / 分类 / SKU |
+| `ticket` | 工单 / 券 / 票 |
+| `receipt` | 收据 / 交易记录 |
+| `shopping-cart` | 订单 / 购物车 |
+| `package` | 应用包 / 发货包裹 |
+| `gift` | 促销 / 奖励 / 礼包 |
+| `banknote` | 金额 / 支付 / 现金 |
+| `key` | 凭证 / API Key / 密钥 |
+| `mail` | 一封邮件 |
+| `message-square` | 会话 / 评论 / 消息串 |
+| `image` | 图片 / 媒体资源 |
+| `map` / `map-pin` | 地图 / 一个具体位置 |
+| `globe` | 全局 / 区域 / 公开 |
+
+**Device & telemetry glyphs** — the hardware domain (canonical picks for the *recurring*
+ones; a genuinely bespoke type still declares per artifact):
+
+| glyph | 用在什么情况 |
+|---|---|
+| `tablet` | POS 终端 / 平板设备（DEVICES 域的"设备"，含原型 `pos`） |
+| `smartphone` | 手机 / 移动设备 |
+| `monitor` | 显示器 / 屏幕 |
+| `server` | 服务器 / 后端节点 |
+| `cpu` | 处理器 / 算力 |
+| `battery` | 电量 / 电池状态 |
+| `zap` | 供电 / 充电 / 高速 —— ⚠ 闪电用 `zap`，**不是** Lucide 的 `bolt`（那是螺丝） |
+| `wifi` | WiFi 连通性 |
+| `ethernet-port` | 有线 / 以太网连通 |
+| `signal` | 蜂窝信号 |
+| `cloud` | 云端 / 远程 |
+| `volume` | 音量 |
+| `activity` | 实时遥测 / 心跳 / 活动流 |
+| `truck` / `plane` | 陆运·发货 / 空运 |
+
+**App chrome / global-nav glyphs** — the persistent shell: a destination, or a global toggle:
+
+| glyph | 用在什么情况 |
+|---|---|
+| `house` | 首页 / 仪表盘入口（Lucide 用 `house`，不是 `home`） |
+| `grid-3x3` | 网格视图 / 应用宫格 |
+| `bell` | 通知入口 |
+| `settings` | 设置 / 配置 |
+| `shield` | 安全 / 权限中心 |
+| `sun` / `moon` | 浅色 / 深色主题切换 |
+| `accessibility` | 无障碍选项 |
+| `life-buoy` | 帮助 / 支持中心 |
+| `sparkle` / `sparkles` | AI / 智能生成 / 新特性高亮 |
+
+### On the categories — do the four jobs still fit?
+
+Adding the prototype's ~50 glyphs, the four jobs (Action · Status · Identity · Decoration)
+still hold; the additions are almost all **Identity** (they name a type or a destination).
+Two clarifications and two things that are **not** an icon job:
+
+- **Sidebar / section nav icons are Identity** — they name the destination's *type*
+  (Devices → `tablet`, Orders → `shopping-cart`), not an action.
+- **Chrome utilities that toggle are Action** — `sun`/`moon` (theme), `bell` (open
+  notifications) trigger something; they just live permanently in the shell.
+- **`sparkle` / `sparkles` straddle Identity and Decoration** — as an "AI feature" marker
+  it's Identity; as a sprinkle of visual flourish it's Decoration (and then it's optional).
+- **A radio dot is NOT an icon job.** The prototype's `radioOn`/`radioOff` (`circle-dot` /
+  `circle`) are the *selected state of a radio control* — that belongs to the form-control
+  primitive, not this icon vocabulary; don't catalog it as an icon.
 
 ## Anatomy
 
