@@ -18,6 +18,35 @@ tokens, not a class layer — there is no `.icon` class to apply.
 Self-contained artifacts can't reach an icon font, an external sprite, or a CDN
 (CSP blocks them), so **every icon is an inline `<svg>`**, pasted verbatim.
 
+## The four jobs — does this earn an icon?
+
+An icon does **exactly one** of four jobs. If a glyph isn't doing one of these, it is
+decoration-creep — **drop it**. This restraint is what keeps a screen from turning into
+icon soup, and it decides both *whether* an icon belongs and *which* one:
+
+| job | what the icon does | where it lives | which glyph | colour |
+|---|---|---|---|---|
+| **1 · Action** | names a **verb** the user invokes | a button / control | §Conventional action icons | `currentColor`; tone from the host control |
+| **2 · Status** | signals **severity / state** | a message container — alert · toast · callout · timeline node · inline validation — **not a badge** | §Status glyphs | inherits the container's semantic tone |
+| **3 · Identity** | names **what a thing is** (its entity / type) | leading a title / row / tile / nav item, an input affix | one canonical glyph **per type** (§Identity & domain glyphs) | neutral / `currentColor` |
+| **4 · Decoration** | an **empty-state mark** or feature bullet | empty-state · feature list — never load-bearing | pick by meaning, larger size | muted / `currentColor` |
+
+- **Restraint — the default is no icon.** A heading, field label, or plain sentence that
+  already reads clearly does **not** get a leading icon "for balance". Add one only when it
+  does one of the four jobs.
+- **Boundary · status — dot vs icon.** A **compact status label** carries a **dot**, never
+  an icon — that is the badge's rule ([`badge.md`](./badge.md): a status's marker is the
+  dot). Status becomes an **icon** only in a **message container** (alert / toast / callout /
+  timeline) that has the room and where the glyph aids recognition. A chip is too small to
+  earn a glyph; a message earns one. Never both. So `triangle-alert` warns *in an alert*,
+  while a warning *badge* is a `warning` dot — same severity, two carriers, no glyph to drift.
+- **Boundary · action — icon-only vs icon + text.** Go icon-only when the verb is in
+  §Conventional action icons **and** space is tight (a `data-table` row, a toolbar, a `⋯`
+  trigger) **and** the control carries an `aria-label` + hover `title`. Otherwise use
+  icon + text (primary CTAs, less-conventional verbs). An abstract verb with **no**
+  conventional glyph (Manage, Assign, Rotate key) stays text or routes into the `⋯` menu
+  (see [`actions.md`](../patterns/actions.md)).
+
 ## Don't hand-write icons — get them
 
 Two failure modes the tooling exists to prevent: an **invented name** and a
@@ -82,6 +111,51 @@ the destructive-action policy — light confirm (a popover/quick confirm) vs.
 > `alert-triangle` were renamed in Lucide — in the pinned set they are
 > `ellipsis` and `triangle-alert`. The table already uses the valid names; the
 > checker rejects the old aliases.
+
+## Status glyphs
+
+Job 2. When a **message container** (alert · toast · callout · timeline node · inline
+validation) leads with a severity glyph, use **one glyph per severity** — the same across
+every container, so severity reads identically everywhere:
+
+| severity | glyph |
+|---|---|
+| success | `circle-check` |
+| warning | `triangle-alert` |
+| error | `circle-x` |
+| info | `info` |
+
+The glyph inherits the container's tone (via `.alert__icon` etc.) — never colour the SVG.
+A **badge does not use these** — a compact status label carries a **dot** (`badge.md`).
+Same severity, two carriers: `triangle-alert` in an alert, a `warning` **dot** in a badge.
+
+## Identity & domain glyphs
+
+Job 3. An identity glyph names **what a thing is** — its entity type. Unlike actions and
+status, entity types are **open-ended** (device, firmware, merchant, order…), so no global
+table can enumerate them — and that open set is exactly where icons drift, each author
+picking a different glyph for "device". The pin:
+
+- **One canonical glyph per entity type, declared once and reused.** Choose it with
+  `icon.mjs search <entity>`, favour the obvious Lucide name, and use the *same* glyph
+  everywhere that type appears — never vary it row to row or screen to screen.
+- **Domain-specific types** (device, terminal, firmware, SIM, merchant…) are **not** in the
+  foundation vocabulary. Declare them **once per artifact** — a small type→glyph legend at
+  the top of the mock — and reuse; that per-artifact pin is what keeps them stable.
+
+Cross-domain entities recur everywhere; reuse these so they don't drift *between* artifacts:
+
+| entity | glyph |
+|---|---|
+| user / person | `user` |
+| company / org | `building-2` |
+| file / document | `file` |
+| email | `mail` |
+| security / permission | `shield` |
+| settings / config | `settings` |
+| notification | `bell` |
+| database / storage | `database` |
+| location / region | `map-pin` |
 
 ## Anatomy
 
