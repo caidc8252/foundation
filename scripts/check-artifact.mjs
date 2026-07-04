@@ -41,9 +41,10 @@
                                      an `.app-frame--frameless` page; invented chrome a
                                      frameless business page has no bar to host.
                                      Advisory only — never affects the exit code.
-     ⚠ cell-chevron w/o cell-right — a `.cell-chevron` trailing-arrow cell missing
-                                     `.cell-right`, so the nav arrow floats mid-column
-                                     instead of pinning to the row end (data-table.md).
+     ⚠ cell-chevron as its own cell — a `.cell-chevron` on a `<td>`/`<th>`; the chevron
+                                     is no longer a standalone cell. It belongs inside the
+                                     row's single trailing `.row-actions` cell, last child
+                                     of `.row-actions__inner`, after any verbs (data-table.md).
                                      Advisory only — never affects the exit code.
 
    The two ✗ categories are hard violations (non-zero exit). Classes are
@@ -210,36 +211,28 @@ const classAttrValuesFromTag = (tag) => {
 // It belongs INSIDE the cell: `<td><div class="cell-tags">…</div></td>`. Matching a
 // literal `<td class="cell-tags">` catches both static and JS-template forms; a
 // class assembled from fragments (`'<td class="' + cls + '"'`) can still slip past.
-// The `.cell-chevron` trailing-arrow cell is a navigation affordance and must be
-// right-aligned to the row end — the data-table reference pairs it with `.cell-right`
-// (`<td class="cell-right cell-chevron">`). `.cell-chevron` alone only sets the tint
-// + svg size, no text-align, so the arrow floats at the left of a stretched last
-// column instead of pinning to the row edge. Flag a `<td>`/`<th>` carrying
-// `cell-chevron` without `cell-right`. Same raw-html scan as cell-tags so JS-template
-// rows count. Advisory only — it reads slightly off, it does not break layout.
-// The `.row-actions` action cell is the same shape of defect: `.row-actions` only sets
-// `vertical-align: middle` + `white-space: nowrap`, NOT text-align, so an action cluster
-// floats at the left of a stretched last column unless the cell also carries `.cell-right`
-// (data-table.md: "the action <td> is right-aligned to the row edge — add .cell-right").
-// Flag a `<td>`/`<th>` carrying `row-actions` without `cell-right`. Advisory only.
+// The trailing chevron is NOT its own cell. A data-table row has ONE trailing
+// operations cell (`.row-actions`, self-right-aligned) that holds any inline verbs
+// then a passive `.cell-chevron` glyph (a `<span>`) as its last child — so a row can
+// both act and navigate from one cell (data-table.md). The pre-merge pattern put the
+// chevron in its own `<td class="cell-right cell-chevron">` beside a separate action
+// cell; flag any `<td>`/`<th>` still carrying `cell-chevron` — it must move inside
+// `.row-actions__inner`. Same raw-html scan as cell-tags so JS-template rows count.
+// Advisory only — it reads slightly off / splits the trailing column, not a hard break.
 const structuralFindingsFromHtml = (html) => {
   const cellTagsOnTableCells = [];
-  const chevronNoRight = [];
-  const rowActionsNoRight = [];
+  const chevronAsCell = [];
   for (const m of html.matchAll(/<(td|th)\b(?:\s[^<>]*)?>/gi)) {
     const tag = m[0];
     const classes = classAttrValuesFromTag(tag).flatMap((raw) => raw.split(/\s+/));
     if (classes.includes("cell-tags")) {
       cellTagsOnTableCells.push(tag.length > 90 ? `${tag.slice(0, 87)}…` : tag);
     }
-    if (classes.includes("cell-chevron") && !classes.includes("cell-right")) {
-      chevronNoRight.push(tag.length > 90 ? `${tag.slice(0, 87)}…` : tag);
-    }
-    if (classes.includes("row-actions") && !classes.includes("cell-right")) {
-      rowActionsNoRight.push(tag.length > 90 ? `${tag.slice(0, 87)}…` : tag);
+    if (classes.includes("cell-chevron")) {
+      chevronAsCell.push(tag.length > 90 ? `${tag.slice(0, 87)}…` : tag);
     }
   }
-  return { cellTagsOnTableCells, chevronNoRight, rowActionsNoRight };
+  return { cellTagsOnTableCells, chevronAsCell };
 };
 
 // Native CALENDAR date inputs bypass the foundation picker family. The date
@@ -588,10 +581,8 @@ for (const file of files) {
   console.log(`  date/time inputs: ${nativeDateInputs.length === 0 ? "ok" : `${nativeDateInputs.length} native input(s)`}`);
   if (nativeDateInputs.length)
     console.log(`    ✗ native browser date/time chrome bypasses the token skin — use the picker family (.date-trigger): ${nativeDateInputs.map((n) => `type="${n.type}" → ${n.picker}`).join(", ")}`);
-  if (structure.chevronNoRight.length)
-    console.log(`  ⚠ review: ${structure.chevronNoRight.length} .cell-chevron cell without .cell-right — the trailing nav arrow must pin to the row end; pair them (data-table.md): ${structure.chevronNoRight.join(" · ")}`);
-  if (structure.rowActionsNoRight.length)
-    console.log(`  ⚠ review: ${structure.rowActionsNoRight.length} .row-actions cell without .cell-right — the action cluster must pin to the row end; add .cell-right and wrap the buttons in .row-actions__inner (data-table.md): ${structure.rowActionsNoRight.join(" · ")}`);
+  if (structure.chevronAsCell.length)
+    console.log(`  ⚠ review: ${structure.chevronAsCell.length} .cell-chevron on a table cell — the chevron is no longer its own cell; move it inside the trailing .row-actions cell as the last child of .row-actions__inner, verbs first (data-table.md): ${structure.chevronAsCell.join(" · ")}`);
   if (layoutHacks.length)
     console.log(`  ⚠ review: ${layoutHacks.length} inline padding/margin style(s) — prefer a class (.stack--N / .card__content--flush / page-local): ${layoutHacks.join(" · ")}`);
   if (flushNesting.length)
