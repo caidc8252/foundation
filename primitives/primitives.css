@@ -867,7 +867,9 @@ body { margin: 0; }
   flex-shrink: 0;
   width: var(--space-4);
   height: var(--space-4);
-  margin-top: var(--space-1);
+  /* No top nudge: the 16px glyph's top aligns to the title's line-box top, which reads
+     optically centred on the title — for a title-only alert AND a title+description one.
+     (The old space-1 nudge pushed a title-only alert's icon ~4px low.) */
   color: currentColor;
 }
 
