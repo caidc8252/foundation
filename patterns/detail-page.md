@@ -80,7 +80,7 @@ when this record's job calls for it.
 - **Overview is a key-value grid** ([`kv-grid`](../composites/kv-grid.md)):
   a left-right label → value list, labels `text-content-tertiary`, values
   `content-primary`. Short values sit beside their label; a long / multi-line
-  value takes `.kv-grid__row--full` to span the full width. On a **wide overview**
+  value simply wraps inside its value column. On a **wide overview**
   the facts may be split across **two or more `.kv-grid` columns side by side** — a
   layout wrapper holding whole `.kv-grid` dls (never `repeat(auto-fit)` on the rows;
   see [`kv-grid`](../composites/kv-grid.md)) — so the main fills its width instead
@@ -157,7 +157,7 @@ when this record's job calls for it.
   one case where a detail "tab" becomes a real route.
 
 **Overview structure** — `overview` = a **main card** (the KV grid — a left-right
-label → value list; a long value takes `.kv-grid__row--full` to span full width) **+ an
+label → value list; a long value wraps inside its value column) **+ an
 optional right rail**. The rail stacks `stat-card`s (key metrics) for
 order/invoice-style records.
 

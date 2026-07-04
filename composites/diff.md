@@ -46,9 +46,14 @@ block layout (in a confirm modal)            inline layout (in a row / feed)
 
 ## States
 
-- **add** — old side em-dash, new side the value.
-- **remove** — old side the value (struck), new side em-dash.
+- **add** — old side an em-dash, new side the value.
+- **remove** — old side the value (struck), new side an em-dash.
 - **modify** — both sides populated (the common case).
+
+The em-dash side is **`.diff__value--empty`** — it is *nothing there*, so it drops the old
+column's strike-through and the new column's success ink and renders as a plain muted
+em-dash. Do **not** put a bare `.diff__value` (it would inherit the struck/highlighted
+styling of its column) or an inline colour override on the placeholder.
 
 ## Implementations
 
@@ -57,4 +62,5 @@ block layout (in a confirm modal)            inline layout (in a row / feed)
   shared shape. See the `ui` skill.
 - **Artifact** — `.diff` (block) → `.diff__col` `.diff__col--old` / `.diff__arrow` /
   `.diff__col` `.diff__col--new`, each column an optional `.diff__label` over a
-  `.diff__value`; `.diff--inline` collapses to a single mono line. In `composites.css`.
+  `.diff__value` (an empty side is `.diff__value--empty`); `.diff--inline` collapses to a
+  single mono line. In `composites.css`.

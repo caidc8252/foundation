@@ -2,7 +2,7 @@
 
 The **overview** block of a detail screen: a record's attributes as
 label → value pairs, laid out **left-right** — label left, value right, aligned
-in two shared columns; a long value takes `--full` to span the full width. This
+in two shared columns; a long value just wraps inside its value column. This
 is the "Overview (KV grid)" the
 [detail-page pattern](../patterns/detail-page.md) mandates — the pattern already
 forbids a hand-written `repeat(auto-fit,…)` and names the column behavior; this
@@ -21,8 +21,8 @@ composite gives the pairs their typography and semantics on top of it.
 │ STATUS      Active                                                         │
 │ CREATED     Mar 4, 2026                                                    │
 │ OWNER       a.lee@acme.co                                                  │
-│ BILLING ADDRESS  (── --full: value flows beside the label, full width ──)  │
-│                  2200 Mission St, Suite 4, San Francisco, CA 94110         │
+│ BILLING ADDRESS  2200 Mission St, Suite 4,                                 │
+│                  San Francisco, CA 94110  (── long value wraps in column ──)│
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -32,9 +32,9 @@ composite gives the pairs their typography and semantics on top of it.
   empty column. This is the single, canonical KV layout.
 - **Label** — `dt`, `text-xs`, **UPPERCASE** (`text-transform: uppercase`), `tracking-overline` (letter-spacing ~0.06 em), `content-tertiary`, weight 500. This casing is mandatory — never title-case or sentence-case labels. Both wizard summary rails and detail-screen overview grids must match.
 - **Value** — `dd`, `text-sm`, `content-primary`; ids/tokens render mono; a short
-  value stays beside its label, a long one wraps in the value column. Mark a long
-  / multi-line field `--full` to leave the subgrid so the value flows beside the
-  label across the full width (addresses, notes).
+  value stays beside its label, a long / multi-line one (addresses, notes) simply
+  wraps inside its value column (`overflow-wrap: break-word`), staying aligned with
+  every other row.
 
 ## Rules
 
@@ -53,11 +53,10 @@ composite gives the pairs their typography and semantics on top of it.
   value column and stays left-aligned; do not push values to the far edge
   (`space-between` / `text-align: right`) — that strands short values across an
   empty column, the exact failure this layout avoids.
-- **Long values take `--full`.** A value too long for one line (address, notes)
-  uses `.kv-grid__row--full` to leave the two-column subgrid — a plain full-width
-  row where the value flows beside the label, free of the value-column alignment.
-  Reach for it only when the value genuinely needs the room — everyday values stay
-  in the two-column pairing.
+- **Long values wrap in place.** A value too long for one line (address, notes)
+  just wraps inside its value column (`dd` breaks on overflow); the row stays in
+  the two-column subgrid like every other, aligned with its neighbours. There is
+  no full-width escape hatch — one code path for every row.
 - Labels are the muted axis, values carry the ink — labels `content-tertiary`,
   values `content-primary` (the detail-page contract).
 - **Sensitive values render masked** by default; reveal is an audited action
@@ -67,8 +66,8 @@ composite gives the pairs their typography and semantics on top of it.
 
 - **Empty value** — render an em-dash (`content-tertiary`), never a blank cell.
 - **Loading** — a `skeleton--text` stands in for each value while the label holds.
-- **Full-span** — `.kv-grid__row--full` for addresses, descriptions, or any value
-  too long for one column.
+- **Long value** — an address / description / any value too long for one line
+  wraps inside its value column; no special row class.
 
 ## Implementations
 
@@ -76,6 +75,6 @@ composite gives the pairs their typography and semantics on top of it.
   pairs, labels `content-tertiary` / values `content-primary` (see the
   detail-page pattern + the `ui` skill). This contract names the pair recipe.
 - **Artifact** — `.kv-grid` (a `<dl>`) → `.kv-grid__row` each holding a `dt`
-  (label) + `dd` (value), laid out left-right (subgrid-aligned two columns). Mark
-  a long / multi-line row `.kv-grid__row--full` to span the full width.
+  (label) + `dd` (value), laid out left-right (subgrid-aligned two columns). A
+  long / multi-line value wraps inside its value column — no special row class.
   In `composites.css`.

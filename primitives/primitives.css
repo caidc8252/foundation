@@ -396,6 +396,11 @@ body { margin: 0; }
   box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-error) 20%, transparent);
 }
 .select--sm { height: var(--spacing-control-sm); }
+/* Inside a form field a select FILLS the field, like .input / .textarea — the
+   bare .select stays width:fit-content for compact toolbar / filter use. Without
+   this a native <select>'s shrink-to-fit width leaves it short of the full-width
+   inputs beside it (the classic "select doesn't stretch" raggedness). */
+.field .select { width: 100%; }
 
 /* ═══════════════════════════════ Checkbox ═══════════════════════════════ */
 /* @component checkbox */

@@ -44,9 +44,9 @@ where order is recency, not a connected sequence, and rows can carry actions.
   `line-subtle` rule, last row drops it. Don't box each row.
 - **Tone lives on the icon only** — the row body stays neutral; the icon tile
   carries the success/warning/info hue. (Same tone tokens as `timeline`.)
-- **Actions are per-row and secondary** — Approve/Deny etc. are `secondary` /
-  `ghost` / `danger` buttons in the row, never a bare primary; a single
-  destructive action uses the `danger` recipe.
+- **Actions are per-row and secondary** — Approve/Deny etc. are `secondary`
+  buttons in the row, never a bare primary; a single destructive action uses the
+  `danger` recipe.
 - For a **connected, dated** sequence (an audit trail, a record's history) use
   `timeline` instead; reach for `feed-list` when rows are independent and
   actionable.

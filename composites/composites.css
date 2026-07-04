@@ -307,11 +307,19 @@
   box-shadow: none;
 }
 
-/* Horizontal scroll lives on the table's own region; the page never scrolls.
-   overflow-y: clip — CSS spec: overflow-x:auto alone computes overflow-y to auto,
-   making this a vertical scroll container and trapping position:sticky on thead th.
-   clip clips without creating a scroll container, so sticky propagates up to
-   app-frame__main (the true scroll root), same rationale as table-frame--flush. */
+/* The table's own horizontal-scroll region — wide tables scroll here. overflow-y: clip
+   keeps vertical overflow from becoming a scroll container (CSS spec: overflow-x:auto
+   alone would compute overflow-y to auto).
+
+   ⚠ STICKY-HEAD — the trap this comment kept getting wrong: overflow-x:auto STILL makes
+   this a scroll container, and a `.data-table--sticky-head` thead sticks to the NEAREST
+   scroll container — i.e. to THIS element, not to any ancestor above it. So a sticky thead
+   docks correctly ONLY when `.table-scroll` is itself the scroll root (give it a
+   `max-height`). If the scroll root is an OUTER ancestor (the page's `.app-frame__main`, or
+   a constrained frame) and the thead must tile under an outer `.summary-bar--sticky`, the
+   thead sticks to table-scroll and SCROLLS AWAY — you must drop the horizontal scroll here
+   (`overflow-x: clip`) so it sticks to that outer root instead. h-scroll XOR outer-root
+   sticky-head: you cannot have both. See data-table.md / summary-bar.md §Sticky. */
 .table-scroll { width: 100%; overflow-x: auto; overflow-y: clip; }
 
 .data-table {
@@ -1656,9 +1664,8 @@
    value into two shared columns (label track sizes to the widest label, min 6rem
    gutter), so short values sit next to their label instead of stranding across
    an empty column. Labels are the muted axis, values carry the ink. A long /
-   multi-line value takes --full to leave the subgrid — a plain full-width row so
-   the value flows beside the label free of the value-column alignment. This is
-   the single, canonical KV layout. */
+   multi-line value just wraps inside its value column (dd breaks on overflow) —
+   there is no full-width escape hatch. This is the single, canonical KV layout. */
 
 .kv-grid {
   display: grid;
@@ -1672,13 +1679,6 @@
   grid-column: 1 / -1;
   align-items: baseline;
   min-width: 0;
-}
-/* Long / multi-line value (address, notes): leave the two-column subgrid — a
-   plain full-width row so the value flows beside the label, free of the
-   value-column alignment, and can use the full width. */
-.kv-grid__row--full {
-  display: flex;
-  gap: var(--space-1);
 }
 .kv-grid__row dt {
   font-size: var(--text-xs);
@@ -1948,6 +1948,15 @@
   text-decoration: line-through;
 }
 .diff__col--new .diff__value { color: var(--color-success-strong); }
+/* Empty side placeholder — add: old is an em-dash · remove: new is an em-dash.
+   It is "nothing here", so it must NOT inherit the old side's strike-through or the
+   new side's success ink; just a muted em-dash. Beats the col rules by source order
+   (same specificity) — keep it after them. */
+.diff__col--old .diff__value--empty,
+.diff__col--new .diff__value--empty {
+  color: var(--color-content-tertiary);
+  text-decoration: none;
+}
 .diff__arrow {
   display: grid;
   place-items: center;
@@ -2358,6 +2367,21 @@
    Wrap a real <button>/<a> for keyboard access; cursor-pointer alone is not
    interactive (same rule as product-card / option-card). */
 .list-row--interactive {
+  /* The interactive row is a real <button>/<a> (for keyboard access). Normalize
+     the native control here so it just works with no per-row inline reset:
+     width:100% defeats a <button>'s shrink-to-fit width (the row would otherwise
+     collapse to its content instead of filling), and font/color/text-align/
+     appearance inherit the row's type instead of the button chrome. The bottom
+     hairline from .list-row is preserved — only the other native borders reset. */
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  background: none;
+  border-top: 0;
+  border-inline: 0;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
   cursor: pointer;
   transition: background-color var(--duration-fast) var(--ease-standard);
 }

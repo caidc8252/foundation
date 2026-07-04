@@ -200,8 +200,11 @@
       var cycleChk = document.getElementById('chk-inter-2');
       // 0 = unchecked, 1 = checked, 2 = indeterminate
       var cycleState = 0;
-      cycleChk.addEventListener('click', function (e) {
-        e.preventDefault();
+      // NOTE: do NOT preventDefault here. A canceled checkbox click restores
+      // checked/indeterminate to their pre-click values AFTER the handler runs,
+      // which would clobber the state we set below. Letting the click through
+      // means our explicit assignments stick.
+      cycleChk.addEventListener('click', function () {
         cycleState = (cycleState + 1) % 3;
         if (cycleState === 0) {
           cycleChk.checked = false;
@@ -239,10 +242,12 @@
         }
       }
 
-      selectAll.addEventListener('click', function (e) {
-        e.preventDefault();
-        var allChecked = items.every(function (i) { return i.checked; });
-        items.forEach(function (i) { i.checked = !allChecked; });
+      // Use the native toggle via 'change' (NOT click+preventDefault). A canceled
+      // checkbox click restores checked/indeterminate to their pre-click values
+      // after the handler, clobbering anything we set — so let it toggle natively
+      // and read selectAll.checked as the source of truth.
+      selectAll.addEventListener('change', function () {
+        items.forEach(function (i) { i.checked = selectAll.checked; });
         updateSelectAll();
       });
 

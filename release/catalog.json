@@ -446,6 +446,7 @@
     "diff__col--old",
     "diff__label",
     "diff__value",
+    "diff__value--empty",
     "drawer",
     "drawer--bottom",
     "drawer--left",
@@ -549,7 +550,6 @@
     "is-clickable",
     "kv-grid",
     "kv-grid__row",
-    "kv-grid__row--full",
     "label",
     "label--disabled",
     "list-row",
@@ -1606,6 +1606,7 @@
       "contract": "primitives/select.md",
       "example": "primitives/select.html",
       "classes": [
+        ".field",
         ".select",
         ".select--sm"
       ]
@@ -1938,7 +1939,8 @@
         ".diff__col--new",
         ".diff__col--old",
         ".diff__label",
-        ".diff__value"
+        ".diff__value",
+        ".diff__value--empty"
       ]
     },
     {
@@ -1986,13 +1988,12 @@
       "layer": "composite",
       "name": "kv-grid",
       "title": "Key-value grid · composite",
-      "summary": "The overview block of a detail screen: a record's attributes as label → value pairs, laid out left-right — label left, value right, aligned in two shared columns; a long value takes --full to span the full width.",
+      "summary": "The overview block of a detail screen: a record's attributes as label → value pairs, laid out left-right — label left, value right, aligned in two shared columns; a long value just wraps inside its value column.",
       "contract": "composites/kv-grid.md",
       "example": "composites/kv-grid.html",
       "classes": [
         ".kv-grid",
-        ".kv-grid__row",
-        ".kv-grid__row--full"
+        ".kv-grid__row"
       ]
     },
     {
