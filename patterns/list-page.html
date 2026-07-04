@@ -117,7 +117,10 @@
         <div class="card__content card__content--flush">
         <div class="table-frame table-frame--flush">
 
-          <!-- summary bar (sticky) — count appends "matching filters" when any filter is applied -->
+          <!-- summary bar — count appends "matching filters" when any filter is applied.
+               NOTE: not sticky yet. Making it (+ the header) sticky needs the table-scroll
+               h-scroll clipped so both dock to app-frame__main — deferred, see data-table.md
+               §Sticky-head trap + build-guide §6. -->
           <div class="summary-bar">
             <div class="summary-bar__count"><strong>1,248</strong> customers <span id="filter-suffix"></span></div>
             <div class="summary-bar__actions">
@@ -129,7 +132,7 @@
             </div>
           </div>
 
-          <!-- table (sticky header docks under the summary bar) -->
+          <!-- table — plain header for now (sticky-head deferred; see the summary-bar note above) -->
           <div class="table-scroll">
             <table class="data-table">
               <thead>

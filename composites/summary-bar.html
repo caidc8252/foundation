@@ -65,6 +65,12 @@
     .sticky-demo .data-table--sticky-head thead th {
       top: var(--space-12); /* 48px = summary-bar height */
     }
+    /* The scroll root here is the outer .table-frame (max-height + overflow-y:auto).
+       .table-scroll's overflow-x:auto makes IT a nested scroll container, which traps
+       the sticky thead to itself — so the thead scrolls away and rows slide straight
+       under the bar. Clip it here so BOTH the summary-bar and the thead stick to the one
+       frame. (This demo table isn't wide, so no horizontal scroll is lost.) */
+    .sticky-demo .table-scroll { overflow-x: clip; }
   </style>
 </head>
 <body>

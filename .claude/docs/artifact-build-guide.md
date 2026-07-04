@@ -140,7 +140,7 @@ artifact 渲染出的一切只能来自这 **4 层闭合集 + 图标**，没有�
 
 - **输入**: 每个 composite 的 `composites/<x>.html`。
 - **动作**: **写任何标记前，先读对应 `.html` 样例**（反幻觉保障）——它演示每个变体/状态在上下文里的确切 DOM。样例顶部的 **「When to use」决策指南**帮你在相近组件间选对，例如：
-  - `data-table.html`：「需要列 / 排序 / 行选择的结构化记录才用 data-table；非表格的设置/成员/导航行用 `list-row`，事件/活动流用 `feed-list`，键值属性用 `kv-grid`」。`kv-grid` 是**左右排布**（标签左、值右、subgrid 对齐两列）；很长/多行的值加 `.kv-grid__row--full` 让它跨整宽（值紧随标签、不受值列对齐约束）。
+  - `data-table.html`：「需要列 / 排序 / 行选择的结构化记录才用 data-table；非表格的设置/成员/导航行用 `list-row`，事件/活动流用 `feed-list`，键值属性用 `kv-grid`」。`kv-grid` 是**左右排布**（标签左、值右、subgrid 对齐两列）；很长/多行的值直接在值列里换行（无需特殊行类）。
   - `list-filter.html`：「search + 快捷筛选下拉 + 可见 chips 用 condition-band；筛选维度多 → 走 `list-page-advanced-filter`；只要单字段搜索 → 一个裸 `.search-input` 足矣；详情/创建页不要用 condition-band」。
   - `pagination.html`：「表格永远用 SIMPLE 变体（‹ Prev · 当前页 · Next ›），编号分页只给搜索结果/独立分页器」。
 - **产出**: 每个 composite 用契约的 required/optional 槽 + 样例的确切标记拼好。
@@ -293,10 +293,17 @@ node scripts/check-artifact.mjs --strict artifacts/customers.html
 唯一仍需理解的一点，且**只在你自己改写 shell、剥掉 app-frame 包裹、或叠自己的滚动容器时**才相关：
 
 - **Sticky 需要一个滚动根。** `--sticky-head` / `summary-bar--sticky` / `page-header--sticky`
-  贴的是最近的滚动祖先；若没有 `app-frame__main` 这样的 `overflow-y:auto` 根（`.table-scroll` 只横向滚），
+  贴的是最近的滚动祖先；若没有 `app-frame__main` 这样的 `overflow-y:auto` 根，
   原本「让头部贴在 sticky 条下方」的 `top:` 偏移会留出空带或盖住首行。这是 sticky 的固有性质 ——
   滚动祖先由你改 shell 时控制，代码无法静态替你保证，所以只能靠默认结构兜住。
   修法：保持 sticky `top: 0`（或去掉 `--sticky*` 修饰），或自己包一个 `overflow-y:auto` 滚动根。
+- **陷阱 · `.table-scroll` 会偷走 thead 的吸顶（这条反复被搞错）。** 别被「`.table-scroll` 只横向滚」骗了：
+  `overflow-x:auto` 让它成为**滚动容器**，`--sticky-head` 的 thead 于是贴在**它**身上、而非外层滚动根。
+  两种正确搭法**只能二选一**：**(a)** 让 `.table-scroll` 自己当滚动根（给它 `max-height`），thead 吸它
+  （此时没有外层 summary-bar 一起吸顶）；或 **(b)** thead 要贴在外层 `.summary-bar--sticky` 下、共用外层
+  滚动根时，`.table-scroll` 必须**去掉横向滚**（`overflow-x: clip`），thead 才吸外层根。
+  **横向滚 XOR 外层根吸顶头 —— 不可兼得。** 搞错 → thead 贴 table-scroll、随内容滚走、行滑到条下。
+  回归测：`node scripts/visual/sticky-check.mjs <page>`（class 检查看不见这类布局 bug，只有真滚动才现形）。
 
 修法属页面局部组合（一个包裹），仍在闭合集内。**暗模式只用 `[data-theme="dark"]` 切换 —— 永不改色值。**
 

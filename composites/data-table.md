@@ -87,6 +87,16 @@ an icon* — never its own column, never a button.
   That scroll root is `.app-frame__main` in the shell; a **frameless** page must
   give its own `overflow-y:auto` root or drop `--sticky-head` + the `top:` offset
   (see `.claude/docs/artifact-build-guide.md` §6 "frameless shell 的 sticky 滚动根").
+- **The sticky-head trap — one scroll root, nothing scrollable in between.** A thead
+  sticks to its **nearest scroll container**, and `.table-scroll` (`overflow-x:auto`)
+  **is** one. So `--sticky-head` docks correctly only in one of two setups: **(a)**
+  `.table-scroll` is *itself* the scroll root — give it a `max-height`; the thead sticks
+  to it (no outer summary-bar tiling); or **(b)** the thead must tile under an outer
+  `.summary-bar--sticky` sharing an outer root (page / constrained frame) — then
+  `.table-scroll` must **drop its horizontal scroll** (`overflow-x: clip`) so the thead
+  sticks to that outer root, not to table-scroll. **h-scroll XOR outer-root sticky-head —
+  you can't have both.** Get it wrong and the thead sticks to `.table-scroll`, scrolls
+  away, and rows slide under the bar. Regression: `node scripts/visual/sticky-check.mjs <page>`.
 - **Pagination is `simple`** — the list/table footer shows `‹ Prev · current page
   · Next ›` only (no numbered jump, no ellipsis); it is `RichPagination`, which is
   always simple. The total lives in its range summary. See `pagination.md`.

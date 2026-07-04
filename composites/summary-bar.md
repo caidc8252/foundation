@@ -33,7 +33,14 @@ the list-level actions (Export, bulk ops). Mirrors @cloud/ui
   **bulk-action set** (selection count + bulk verbs) replaces the idle actions.
 - **Sticky contract** — when sticky, the host frame must use `overflow: clip`
   (`.table-frame--flush`), not the default `hidden`, or the sticky bar is trapped
-  and scrolls away with the body.
+  and scrolls away with the body. **And for the table's `--sticky-head` thead to tile
+  *under* the bar, nothing scroll-container-y may sit between the thead and the shared
+  scroll root** — `.table-scroll`'s `overflow-x:auto` is one, so it steals the thead's
+  stickiness (the thead docks to `.table-scroll` and scrolls away, and rows slide under
+  the bar). When bar + thead tile to an outer root, clip the table's h-scroll
+  (`.table-scroll { overflow-x: clip }`); h-scroll and an outer-root sticky-head are
+  mutually exclusive. See [`data-table.md`](./data-table.md) §Sticky-head trap;
+  regression `scripts/visual/sticky-check.mjs`.
 
 ## Implementations
 
