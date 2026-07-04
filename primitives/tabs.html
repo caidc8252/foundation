@@ -200,71 +200,7 @@
       </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════════════════════════
-         Section 2: Default (pill) variant
-         ════════════════════════════════════════════════════════════════ -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">Tabs · default (pill) variant</h2>
-      <p class="demo-section__desc">
-        The <code>.tabs__list--default</code> variant: pill tabs inside a tinted tray.
-        The active tab lifts with <code>bg-surface-2</code> and <code>shadow-1</code>.
-      </p>
 
-      <div class="tabs" id="tabs-pill">
-        <div class="tabs__list tabs__list--default" role="tablist">
-          <button class="tabs__trigger tabs__trigger--active" role="tab" aria-selected="true" aria-controls="pill-panel-1" tabindex="0">Billing</button>
-          <button class="tabs__trigger" role="tab" aria-selected="false" aria-controls="pill-panel-2" tabindex="-1">Team</button>
-          <button class="tabs__trigger" role="tab" aria-selected="false" aria-controls="pill-panel-3" tabindex="-1">Security</button>
-          <button class="tabs__trigger" role="tab" aria-selected="false" aria-controls="pill-panel-4" tabindex="-1">Integrations</button>
-        </div>
-        <div class="tabs__content" id="pill-panel-1" role="tabpanel">
-          <p><strong>Billing</strong> — Manage your subscription plan, payment methods, and invoices.</p>
-        </div>
-        <div class="tabs__content" id="pill-panel-2" role="tabpanel" hidden>
-          <p><strong>Team</strong> — Invite team members, manage roles, and control access permissions.</p>
-        </div>
-        <div class="tabs__content" id="pill-panel-3" role="tabpanel" hidden>
-          <p><strong>Security</strong> — Configure password policies, two-factor authentication, and API keys.</p>
-        </div>
-        <div class="tabs__content" id="pill-panel-4" role="tabpanel" hidden>
-          <p><strong>Integrations</strong> — Connect external services and configure webhook endpoints.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════════════════════════════════════════════════════════════════
-         Section 3: Tabs in a card
-         ════════════════════════════════════════════════════════════════ -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">Tabs · in a card</h2>
-      <p class="demo-section__desc">
-        Tabs used inside a card layout for in-page section switching.
-      </p>
-
-      <div class="card">
-        <div class="card__header" style="padding-bottom:0;">
-          <h2 class="card__title">Project settings</h2>
-        </div>
-        <div class="card__content">
-          <div class="tabs" id="tabs-card-line">
-            <div class="tabs__list tabs__list--line" role="tablist">
-              <button class="tabs__trigger tabs__trigger--active" role="tab" aria-selected="true" aria-controls="card-panel-1" tabindex="0">General</button>
-              <button class="tabs__trigger" role="tab" aria-selected="false" aria-controls="card-panel-2" tabindex="-1">Environment</button>
-              <button class="tabs__trigger" role="tab" aria-selected="false" aria-controls="card-panel-3" tabindex="-1">Deploy</button>
-            </div>
-            <div class="tabs__content" id="card-panel-1" role="tabpanel">
-              <p>General settings including project name, description, and default branch.</p>
-            </div>
-            <div class="tabs__content" id="card-panel-2" role="tabpanel" hidden>
-              <p>Environment variables and configuration for development, staging, and production.</p>
-            </div>
-            <div class="tabs__content" id="card-panel-3" role="tabpanel" hidden>
-              <p>Deployment settings including build commands, output directory, and auto-deploy branches.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
 
   </div>
   <script>
