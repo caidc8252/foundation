@@ -2685,6 +2685,7 @@ body { margin: 0; }
 .input-otp__group {
   display: inline-flex;
   align-items: center;
+  gap: var(--space-2);   /* 8px — separate the slots */
   border-radius: var(--radius-md);
 }
 /* Unified error treatment: any aria-invalid slot inside the group draws one
