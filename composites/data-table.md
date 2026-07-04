@@ -13,9 +13,9 @@ config-driven table — columns + rows — not hand-written cell markup.
 ┌ table-frame ──────────────────────────────────────────────────────┐
 │ ☐ │ Header ▴   Header        Header                               │  ← thead (sticky); trailing col is HEADERLESS
 ├───┼────────────────────────────────────────────────────────────────┤
-│ ☑ │ cell        cell          cell               [ Lock ]   ›    │  ← ONE trailing cell: verb(s) then passive chevron
+│ ☑ │ cell        cell          cell               [🔒] [⋯]  ›    │  ← ONE trailing cell: icon verb(s)/⋯ menu then passive chevron
 │ ☐ │ cell        cell          cell                          ›    │  ← nav-only row: the same cell, chevron alone
-│ ☐ │ cell        cell          cell               [ Lock ]        │  ← act-only row: verb(s), no chevron
+│ ☐ │ cell        cell          cell               [🔒] [⋯]       │  ← act-only row: icon verb(s), no chevron
 └────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -67,12 +67,16 @@ icon* — never its own column, never a button.
   in place, so its verbs are never hidden behind hover. **Hover-reveal is not a table
   behavior**: it belongs to an info-first **list** (a self-authored `list-item` whose
   actions stay out of the way until hover), not a `data-table`.
-- **Row-action variant: a text verb is `secondary`, never bare `ghost`.** An
-  always-visible row action must read as a button at rest, so a **text** row verb is
-  a `secondary` `sm` button — a **destructive** one (delete / terminate / revoke) is
-  `danger` and confirms. Reserve `ghost` / `ghost-danger` for **icon-only** row
-  actions. A `ghost` *text* verb reads as a link, not a control — don't use it for
-  row actions. Past ~2 verbs, collapse to a single `⋯` menu (one carrier per row).
+- **Row-action variant: quick verbs are icon-only, never a `secondary` text button.**
+  An always-visible row action is a **ghost icon button** (`btn--ghost btn--icon-sm`)
+  carrying a conventional Lucide glyph (from `icon.md`'s action table) plus an
+  `aria-label` and a hover `title` — a **destructive** one (delete / terminate /
+  revoke) is `ghost-danger` (still red) and confirms. Only a verb with a
+  **near-universal** glyph goes inline (Edit `square-pen`, Lock `lock`, Delete
+  `trash-2`, Revoke `ban`); an **abstract** verb with no conventional icon
+  (Manage, Assign, Rotate key) is **not** given a guessed glyph — it moves into the
+  trailing **`⋯` (`ellipsis`) menu**, where an icon+label row removes the ambiguity.
+  Past ~2 inline icons, collapse to the single `⋯` menu (one carrier per row).
   (Mirrors [`actions.md`](../patterns/actions.md) and the `list-page` row recipe.)
 - **Numeric / id columns** render mono + tabular (`.cell-num`) and usually
   right-align so digits line up.
