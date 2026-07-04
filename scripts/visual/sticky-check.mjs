@@ -25,9 +25,12 @@ for (const path of pages) {
   const r = await p.evaluate((TOL) => {
     const sb = document.querySelector('.summary-bar--sticky');
     if (!sb) return { skip: 'no .summary-bar--sticky on this page' };
-    const th = (sb.closest('*') && document.querySelector('.data-table--sticky-head thead th'))
+    const th = document.querySelector('.data-table--sticky-head thead th')
       || document.querySelector('thead th');
     if (!th) return { skip: 'no sticky thead' };
+    // Optional top layer: a sticky page-header the bar must tile UNDER (the
+    // sticky stack is page-header → summary-bar → thead, each docking below the last).
+    const ph = document.querySelector('.page-header--sticky');
     // scroll root = nearest ancestor of the bar that actually scrolls vertically
     let root = sb.parentElement;
     while (root && root !== document.body) {
@@ -36,25 +39,31 @@ for (const path of pages) {
       root = root.parentElement;
     }
     const scrolls = root && root !== document.body;
-    const before = { sb: sb.getBoundingClientRect().top, th: th.getBoundingClientRect().top };
     const amt = 220;
     if (scrolls) root.scrollTop = amt; else window.scrollTo(0, amt);
     // force reflow
     void document.body.offsetHeight;
-    const rootTop = scrolls ? root.getBoundingClientRect().top : 0;
-    const sbBottom = sb.getBoundingClientRect().bottom;
+    const rootTop = scrolls ? Math.round(root.getBoundingClientRect().top) : 0;
+    const phRect = ph ? ph.getBoundingClientRect() : null;
     const res = {
       scrollRoot: scrolls ? (root.className || root.tagName) : 'window',
       scrolled: scrolls ? root.scrollTop : window.scrollY,
-      rootTop: Math.round(rootTop),
+      rootTop,
+      hasStickyHeader: !!ph,
+      phTop: ph ? Math.round(phRect.top) : null,
+      phBottom: ph ? Math.round(phRect.bottom) : null,
       sbTop: Math.round(sb.getBoundingClientRect().top),
+      sbBottom: Math.round(sb.getBoundingClientRect().bottom),
       theadTop: Math.round(th.getBoundingClientRect().top),
-      sbBottom: Math.round(sbBottom),
     };
-    // pass = bar stuck at root top AND thead docked just under the bar (not scrolled away)
-    res.barStuck = Math.abs(res.sbTop - res.rootTop) <= TOL;
+    // Each layer docks flush below the one above: page-header at the root top,
+    // the bar just under the page-header (or the root top if there is no sticky
+    // header), and the thead just under the bar.
+    const barDockTarget = ph ? res.phBottom : res.rootTop;
+    res.headerStuck = ph ? Math.abs(res.phTop - res.rootTop) <= TOL : true;
+    res.barStuck = Math.abs(res.sbTop - barDockTarget) <= TOL;
     res.theadDocked = Math.abs(res.theadTop - res.sbBottom) <= TOL;
-    res.pass = res.barStuck && res.theadDocked;
+    res.pass = res.headerStuck && res.barStuck && res.theadDocked;
     return res;
   }, TOL);
 
@@ -63,9 +72,11 @@ for (const path of pages) {
   if (r.skip) { console.log(`—  ${path}: ${r.skip}`); continue; }
   const tag = r.pass ? '✓ PASS' : '✗ FAIL';
   console.log(`${tag}  ${path}  [scroll root: ${r.scrollRoot}, scrolled ${r.scrolled}px]`);
-  console.log(`      bar stuck at top: ${r.barStuck ? 'yes' : 'NO'} (bar=${r.sbTop} root=${r.rootTop})`);
+  if (r.hasStickyHeader)
+    console.log(`      page-header stuck at top: ${r.headerStuck ? 'yes' : 'NO'} (header=${r.phTop} root=${r.rootTop})`);
+  console.log(`      bar docked ${r.hasStickyHeader ? 'under page-header' : 'at top'}: ${r.barStuck ? 'yes' : 'NO'} (bar=${r.sbTop} target=${r.hasStickyHeader ? r.phBottom : r.rootTop})`);
   console.log(`      thead docked under bar: ${r.theadDocked ? 'yes' : 'NO'} (thead=${r.theadTop} bar-bottom=${r.sbBottom})`);
-  if (!r.pass) { console.log(`      → the sticky thead scrolled away — nested scroll container between it and the root.`); failed++; }
+  if (!r.pass) { console.log(`      → the sticky stack broke — a nested scroll container stole a layer, or an offset (--lp-header-h) is wrong.`); failed++; }
 }
 
 await browser.close();

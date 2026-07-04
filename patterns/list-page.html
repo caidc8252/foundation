@@ -38,6 +38,30 @@
      not a button. It lives as the last child of .row-actions__inner (see composites.css). */
   .cell-chevron { display: inline-flex; align-items: center; color: var(--color-content-tertiary); }
   .cell-chevron svg { width: var(--space-4); height: var(--space-4); }
+
+  /* ── Sticky stack: page-header → summary-bar → table head ──
+     All three dock to the scroll root (app-frame__main), stacked in document
+     order. Each layer's top offset = the total height of the sticky layers ABOVE
+     it, so they tile flush with no gap or overlap:
+        • page-header  → top: 0                  (.page-header--sticky, in markup)
+        • summary-bar  → top: page-header height
+        • thead th     → top: page-header + summary-bar height
+     The condition band is NOT in the stack — it scrolls away under the header.
+     page-header height is CONTENT-DRIVEN (title + optional description + padding),
+     so there is no clean token for it. → MEASURE your page's rendered .page-header
+     and set --lp-header-h to that px value. Here it is 81px (title + one-line
+     description at 1280w); if you change the header (drop the description, wrap the
+     title, add/remove actions) you MUST re-measure and update it. The summary bar's
+     own height IS a token (48px = --space-12).
+     Also load-bearing: .table-scroll drops its h-scroll (overflow-x: clip) so the
+     thead sticks to the outer root, not to .table-scroll (the sticky-head trap; see
+     composites/data-table.md §Sticky-head trap + build-guide §6). h-scroll XOR
+     outer-root sticky-head — can't have both; this 7-column list is narrow enough
+     to forgo it. Regression: `node scripts/visual/sticky-check.mjs patterns/list-page.html`. */
+  :root { --lp-header-h: 81px; } /* MEASURE per page — = rendered .page-header height */
+  .table-scroll { overflow-x: clip; }
+  .summary-bar--sticky { top: var(--lp-header-h); }
+  .data-table--sticky-head thead th { top: calc(var(--lp-header-h) + var(--space-12)); }
 </style>
 <body>
 
@@ -55,8 +79,10 @@
             metric strip, row peek-drawer, the summary bar's Export.
       -->
 
-      <!-- ■ REQUIRED CORE — page-header (full-bleed, OUTSIDE page-body). Title required; primary action optional. -->
-      <header class="page-header">
+      <!-- ■ REQUIRED CORE — page-header (full-bleed, OUTSIDE page-body). Title required; primary action optional.
+           STICKY: top of the sticky stack (page-header → summary-bar → table head); docks at the
+           scroll-root top (top:0). Its height feeds --lp-header-h above (measure per page). -->
+      <header class="page-header page-header--sticky">
         <div class="page-header__bar">
           <div class="page-header__titles">
             <div class="page-header__heading">
@@ -111,17 +137,22 @@
         </div>
         <!-- /OPTIONAL condition band -->
 
-        <!-- ■ REQUIRED CORE — results card = .card > .card__content--flush > table-frame
-             (the count bar, table, and pagination are the results block's required internals; keep all three). -->
-        <div class="card">
-        <div class="card__content card__content--flush">
+        <!-- ■ REQUIRED CORE — results card = a bare `table-frame table-frame--flush`
+             (per list-page.md §Sticky model + anatomy: the list card IS the table-frame,
+             NOT a .card wrapper). --flush = overflow:clip: it rounds corners WITHOUT becoming
+             a scroll container, so the sticky summary bar + sticky-head dock to the page's
+             scroll root (app-frame__main) instead of being trapped inside. A wrapping .card
+             would re-introduce the trap (.card is overflow:hidden = a scroll container).
+             The count bar, table, and pagination are the results block's required internals — keep all three. -->
         <div class="table-frame table-frame--flush">
 
           <!-- summary bar — count appends "matching filters" when any filter is applied.
-               NOTE: not sticky yet. Making it (+ the header) sticky needs the table-scroll
-               h-scroll clipped so both dock to app-frame__main — deferred, see data-table.md
-               §Sticky-head trap + build-guide §6. -->
-          <div class="summary-bar">
+               STICKY: the middle layer of the stack — docks just below the sticky page-header
+               (top = --lp-header-h; see the page-local sticky rules above), with the sticky-head
+               thead docking below it in turn. Works only because .table-scroll's h-scroll is
+               clipped — otherwise the thead would stick to .table-scroll and scroll away (the
+               sticky-head trap; data-table.md §Sticky-head trap). -->
+          <div class="summary-bar summary-bar--sticky">
             <div class="summary-bar__count"><strong>1,248</strong> customers <span id="filter-suffix"></span></div>
             <div class="summary-bar__actions">
               <!-- Business-driven slot: list-level secondary actions, included only per need.
@@ -132,9 +163,10 @@
             </div>
           </div>
 
-          <!-- table — plain header for now (sticky-head deferred; see the summary-bar note above) -->
+          <!-- table — sticky column header (--sticky-head); its th top offset (= bar height)
+               and the required .table-scroll overflow-x:clip are set in the page-local rules above. -->
           <div class="table-scroll">
-            <table class="data-table">
+            <table class="data-table data-table--sticky-head">
               <thead>
                 <tr>
                   <th>Customer</th>
@@ -265,6 +297,98 @@
                   <td class="cell-num cell-right">$71,005</td>
                   <td class="row-actions"><div class="row-actions__inner"><span class="cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span></div></td>
                 </tr>
+                <!-- Additional rows — same cell recipes; enough to overflow the scroll root
+                     so the sticky bar + header actually engage (and the page claims 1–25). -->
+                <tr class="is-clickable">
+                  <td><div class="cell-lead"><span class="object-tile object-tile--sm object-tile--neutral" aria-hidden="true">CS</span><span class="cell-2line"><span class="cell-2line__main">Cobalt Studios</span><span class="cell-2line__sub">cobalt.example</span></span></div></td>
+                  <td><span class="badge badge--success"><span class="badge__dot"></span>Active</span></td>
+                  <td class="cell-num">Mar 8, 2026</td>
+                  <td>Berlin</td>
+                  <td><span class="badge badge--neutral">SMB</span></td>
+                  <td class="cell-num cell-right">$12,480</td>
+                  <td class="row-actions"><div class="row-actions__inner"><span class="cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span></div></td>
+                </tr>
+                <tr class="is-clickable">
+                  <td><div class="cell-lead"><span class="object-tile object-tile--sm object-tile--neutral" aria-hidden="true">MH</span><span class="cell-2line"><span class="cell-2line__main">Meridian Health</span><span class="cell-2line__sub">meridian.example</span></span></div></td>
+                  <td><span class="badge badge--success"><span class="badge__dot"></span>Active</span></td>
+                  <td class="cell-num">Mar 3, 2026</td>
+                  <td>Toronto</td>
+                  <td><span class="badge badge--neutral">Enterprise</span></td>
+                  <td class="cell-num cell-right">$95,300</td>
+                  <td class="row-actions"><div class="row-actions__inner"><span class="cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span></div></td>
+                </tr>
+                <tr class="is-clickable">
+                  <td><div class="cell-lead"><span class="object-tile object-tile--sm object-tile--neutral" aria-hidden="true">FA</span><span class="cell-2line"><span class="cell-2line__main">Fjord Analytics</span><span class="cell-2line__sub">fjord.example</span></span></div></td>
+                  <td><span class="badge badge--warning"><span class="badge__dot"></span>Trial</span></td>
+                  <td class="cell-num">Feb 27, 2026</td>
+                  <td>Oslo</td>
+                  <td><span class="badge badge--neutral">SMB</span></td>
+                  <td class="cell-num cell-right">$1,940</td>
+                  <td class="row-actions"><div class="row-actions__inner"><span class="cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span></div></td>
+                </tr>
+                <tr class="is-clickable">
+                  <td><div class="cell-lead"><span class="object-tile object-tile--sm object-tile--neutral" aria-hidden="true">IB</span><span class="cell-2line"><span class="cell-2line__main">Ironwood Bank</span><span class="cell-2line__sub">ironwood.example</span></span></div></td>
+                  <td><span class="badge badge--success"><span class="badge__dot"></span>Active</span></td>
+                  <td class="cell-num">Feb 19, 2026</td>
+                  <td>Zurich</td>
+                  <td><span class="badge badge--neutral">Enterprise</span></td>
+                  <td class="cell-num cell-right">$210,750</td>
+                  <td class="row-actions"><div class="row-actions__inner"><span class="cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span></div></td>
+                </tr>
+                <tr class="is-clickable">
+                  <td><div class="cell-lead"><span class="object-tile object-tile--sm object-tile--neutral" aria-hidden="true">PD</span><span class="cell-2line"><span class="cell-2line__main">Palette Design Co</span><span class="cell-2line__sub">palette.example</span></span></div></td>
+                  <td><span class="badge badge--error"><span class="badge__dot"></span>Suspended</span></td>
+                  <td class="cell-num">Feb 11, 2026</td>
+                  <td class="cell-empty">—</td>
+                  <td><span class="badge badge--neutral">Startup</span></td>
+                  <td class="cell-num cell-right">$0</td>
+                  <td class="row-actions"><div class="row-actions__inner"><span class="cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span></div></td>
+                </tr>
+                <tr class="is-clickable">
+                  <td><div class="cell-lead"><span class="object-tile object-tile--sm object-tile--neutral" aria-hidden="true">SE</span><span class="cell-2line"><span class="cell-2line__main">Solstice Energy</span><span class="cell-2line__sub">solstice.example</span></span></div></td>
+                  <td><span class="badge badge--success"><span class="badge__dot"></span>Active</span></td>
+                  <td class="cell-num">Feb 4, 2026</td>
+                  <td>Denver</td>
+                  <td><span class="badge badge--neutral">Enterprise</span></td>
+                  <td class="cell-num cell-right">$58,900</td>
+                  <td class="row-actions"><div class="row-actions__inner"><span class="cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span></div></td>
+                </tr>
+                <tr class="is-clickable">
+                  <td><div class="cell-lead"><span class="object-tile object-tile--sm object-tile--neutral" aria-hidden="true">TF</span><span class="cell-2line"><span class="cell-2line__main">Tidewater Foods</span><span class="cell-2line__sub">tidewater.example</span></span></div></td>
+                  <td><span class="badge badge--warning"><span class="badge__dot"></span>Trial</span></td>
+                  <td class="cell-num">Jan 28, 2026</td>
+                  <td>Lisbon</td>
+                  <td><span class="badge badge--neutral">SMB</span></td>
+                  <td class="cell-num cell-right">$2,610</td>
+                  <td class="row-actions"><div class="row-actions__inner"><span class="cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span></div></td>
+                </tr>
+                <tr class="is-clickable">
+                  <td><div class="cell-lead"><span class="object-tile object-tile--sm object-tile--neutral" aria-hidden="true">US</span><span class="cell-2line"><span class="cell-2line__main">Umbra Security</span><span class="cell-2line__sub">umbra.example</span></span></div></td>
+                  <td><span class="badge badge--success"><span class="badge__dot"></span>Active</span></td>
+                  <td class="cell-num">Jan 20, 2026</td>
+                  <td>Tel Aviv</td>
+                  <td><span class="badge badge--neutral">Enterprise</span></td>
+                  <td class="cell-num cell-right">$84,120</td>
+                  <td class="row-actions"><div class="row-actions__inner"><span class="cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span></div></td>
+                </tr>
+                <tr class="is-clickable">
+                  <td><div class="cell-lead"><span class="object-tile object-tile--sm object-tile--neutral" aria-hidden="true">WC</span><span class="cell-2line"><span class="cell-2line__main">Wren &amp; Co</span><span class="cell-2line__sub">wren.example</span></span></div></td>
+                  <td><span class="badge badge--success"><span class="badge__dot"></span>Active</span></td>
+                  <td class="cell-num">Jan 12, 2026</td>
+                  <td>Dublin</td>
+                  <td><span class="badge badge--neutral">SMB</span></td>
+                  <td class="cell-num cell-right">$9,050</td>
+                  <td class="row-actions"><div class="row-actions__inner"><span class="cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span></div></td>
+                </tr>
+                <tr class="is-clickable">
+                  <td><div class="cell-lead"><span class="object-tile object-tile--sm object-tile--neutral" aria-hidden="true">ZM</span><span class="cell-2line"><span class="cell-2line__main">Zephyr Mobility</span><span class="cell-2line__sub">zephyr.example</span></span></div></td>
+                  <td><span class="badge badge--warning"><span class="badge__dot"></span>Trial</span></td>
+                  <td class="cell-num">Jan 5, 2026</td>
+                  <td>Bangalore</td>
+                  <td><span class="badge badge--neutral">Startup</span></td>
+                  <td class="cell-num cell-right">$760</td>
+                  <td class="row-actions"><div class="row-actions__inner"><span class="cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span></div></td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -282,13 +406,11 @@
               <span class="rich-pagination__summary">Showing 1–25 of <strong>1,248</strong></span>
             </div>
             <nav class="pagination" aria-label="Pagination">
-              <button class="pagination__page" type="button" disabled>
+              <button class="pagination__page" type="button" disabled aria-label="Previous page">
                 <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                Prev
               </button>
               <span class="pagination__current" aria-current="page">1</span>
-              <button class="pagination__page" type="button">
-                Next
+              <button class="pagination__page" type="button" aria-label="Next page">
                 <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
               </button>
             </nav>
@@ -339,9 +461,7 @@
             <div class="empty-state__action"><button class="btn btn--secondary" type="button">Retry</button></div>
           </div>
           -->
-        </div><!-- /table-frame -->
-        </div><!-- /card__content--flush -->
-        </div><!-- /card -->
+        </div><!-- /table-frame (results card) -->
         <!-- /REQUIRED CORE results card -->
       </div>
 

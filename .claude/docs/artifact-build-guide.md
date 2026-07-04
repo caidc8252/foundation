@@ -236,8 +236,12 @@ required core = `page-header` + results card；本例需要筛选与分页，保
 | `empty-state` | 替代行渲染：nothing-yet 引导主动作；no-results-for-filters 给「clear filters」 |
 | `skeleton` | loading 时填满表框 |
 
-> sticky 细节：summary 条 sticky，sticky-head 的 `th` 顶偏移 = summary 条高度（`--space-12`，48px），
-> 两者在同一滚动根内贴合 —— 这正是 `data-table.md` 与 `list-page.md` 的承重决策。
+> sticky 细节（三层栈：page-header → summary-bar → 表头，同一滚动根内依次贴合）：
+> 每层 `top` = 其上方所有 sticky 层高度之和。`page-header--sticky` 贴 `top:0`；summary 条贴
+> `top: var(--lp-header-h)`；sticky-head 的 `th` 贴 `calc(var(--lp-header-h) + var(--space-12))`。
+> summary 条自身高是 token（48px = `--space-12`），但 page-header 高是内容驱动、无干净 token ——
+> 每页用局部 `:root { --lp-header-h: <实测 px> }` 设定，改动 header 内容需重测。condition band 不在栈内，
+> 滚走。承重决策见 `list-page.md` §Sticky model（回归测 `scripts/visual/sticky-check.mjs`）。
 
 **⑥ 取图标。** 例：主动作 "New customer" 的加号
 

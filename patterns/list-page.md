@@ -9,8 +9,9 @@ example (the style template — see the `ui` skill).
 
 > 📐 **Copyable examples**
 > - [`list-page.html`](./list-page.html) — the `simple` variant: full anatomy assembled
->   from composites (shell → header → condition band → list card with sticky summary bar,
->   sticky-head table, rich pagination; empty/loading swap snippets included).
+>   from composites (shell → header → condition band → list card; the sticky stack is
+>   page-header → summary bar → sticky-head table, plus rich pagination; empty/loading
+>   swap snippets included).
 > - [`list-page-advanced-filter.html`](./list-page-advanced-filter.html) — the
 >   `advanced-filter` variant: adds an Advanced (secondary) trigger that opens a
 >   right-side drawer sheet; fully interactive (Apply → chips, chip ✕, Clear all, Escape/overlay dismiss).
@@ -25,7 +26,7 @@ carry. Only two are the required core (marked `■`); the rest are optional
 them. See "Required core / optional slots" below for the exact split.
 
 ```
-┌ ■ page-header (full-bleed) ──────────────────────────────────┐
+┌ ■ page-header (full-bleed) ──────────────────────────── ◄ stick┐
 │ Title  [count?]                  [secondary?]  [ primary? ]  │
 │ [description?]                                               │
 ╞ page-body (gutters + stack) ═════════════════════════════════╡
@@ -72,18 +73,29 @@ a table — is still a complete, correct list page.
 
 ## Sticky model (the load-bearing decision)
 
-The condition band (when present) **scrolls away** — it is non-sticky. What
-stays docked at the scroll-root top is the results card's **summary bar** plus
-the **table column header** (these belong to the required core, so they dock
-whether or not a condition band sits above them):
+Three layers stay docked at the scroll-root top, stacked in document order —
+**page-header → summary bar → table column header**. The condition band (when
+present) is **not** in the stack: it scrolls away under the sticky page-header.
+Each layer's top offset is the **total height of the sticky layers above it**, so
+the three tile flush with no gap or overlap:
 
+- The **page-header** is `--sticky` (`top: 0`) — it is the top of the stack.
+- The **summary bar** is `--sticky`; its top offset is the **page-header's
+  height**. The **table** uses a `--sticky-head` whose top offset is the
+  **page-header + summary bar** height. The summary bar's own height is a token
+  (`LIST_SUMMARY_BAR_HEIGHT = 48 = --space-12`); the page-header's height is
+  **content-driven** (title + optional description + padding) with **no clean
+  token** — so a page carrying a sticky header sets a page-local
+  `--lp-header-h` equal to its **measured** page-header height and derives the two
+  offsets from it (`summary-bar top: var(--lp-header-h)`; `thead top:
+  calc(var(--lp-header-h) + var(--space-12))`). Re-measure whenever the header
+  content changes (drop the description, wrap the title, add/remove actions).
 - The list card is a `table-frame` in its **`--flush`** form (`overflow: clip`,
   not the default `hidden`) — flush still rounds the corners but does **not**
-  establish a scroll container, so the sticky summary bar and header dock to the
-  page instead of being trapped inside the card.
-- The summary bar is sticky; the table uses a sticky header whose top offset is
-  the summary bar's height (`LIST_SUMMARY_BAR_HEIGHT = 48 = --space-12`) so the
-  two tile flush with no gap or overlap.
+  establish a scroll container, so the sticky bar and header dock to the page
+  instead of being trapped inside the card. A wrapping `.card` (which is
+  `overflow: hidden` = a scroll container) would re-introduce that trap, so the
+  results card **is** the bare `table-frame --flush`, never a `.card` around it.
 - The card adds **no padding** — summary bar, table, and pagination each own
   their own, and butt against the frame edges.
 
