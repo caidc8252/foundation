@@ -581,5 +581,52 @@
     </div>
 
   </div>
+
+  <script>
+    (function () {
+      // Row-selection wiring for any data-table that has a header "select all"
+      // checkbox. Mirrors the checkbox "select all" pattern: drive the header via
+      // the native `change` event, NOT click + preventDefault — a canceled
+      // checkbox click restores checked/indeterminate to their pre-click values
+      // AFTER the handler runs, which would clobber whatever state we set. The
+      // header shows a check when every selectable row is checked and a dash
+      // (indeterminate) when only some are; disabled rows never participate.
+      document.querySelectorAll('table.data-table').forEach(function (table) {
+        var head = table.querySelector('thead .col-select input[type="checkbox"]');
+        if (!head) return; // this table has no selection column
+
+        var rows = Array.prototype.slice
+          .call(table.querySelectorAll('tbody .col-select input[type="checkbox"]'))
+          .filter(function (cb) { return !cb.disabled; });
+        if (!rows.length) return;
+
+        // Keep the row's visual selection (tr[aria-selected]) in step with its box.
+        function syncRow(cb) {
+          var tr = cb.closest('tr');
+          if (tr) tr.setAttribute('aria-selected', cb.checked ? 'true' : 'false');
+        }
+
+        // Reflect the rows back onto the header: all → check, some → dash, none → empty.
+        function updateHeader() {
+          var checked = rows.filter(function (cb) { return cb.checked; }).length;
+          head.checked = checked === rows.length;
+          head.indeterminate = checked > 0 && checked < rows.length;
+        }
+
+        head.addEventListener('change', function () {
+          rows.forEach(function (cb) { cb.checked = head.checked; syncRow(cb); });
+          updateHeader();
+        });
+
+        rows.forEach(function (cb) {
+          cb.addEventListener('change', function () { syncRow(cb); updateHeader(); });
+        });
+
+        // Initialize from the markup's starting checkedness.
+        rows.forEach(syncRow);
+        updateHeader();
+      });
+    })();
+  </script>
 </body>
 </html>
