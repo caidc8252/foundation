@@ -70,10 +70,11 @@
   <div class="app-frame__col">
     <main class="app-frame__main">
 
-      <!-- detail-header BAND (full-bleed) — back · logo · name+status+meta · actions,
+      <!-- detail-header BAND (full-bleed, sticky) — back · logo · name+status+meta · actions,
            with the tab strip docked on the band's BOTTOM edge (below the name).
-           NO breadcrumb here: the path lives in the app shell, not the page. -->
-      <header class="detail-header">
+           --sticky pins the band (identity + actions + tabs) under the app header while
+           the body scrolls. NO breadcrumb here: the path lives in the app shell, not the page. -->
+      <header class="detail-header detail-header--sticky">
         <div class="detail-header__bar">
           <!-- OPTIONAL — back button (icon-only ghost, first in the bar). Delete this
                whole <button> if there is no list to return to; the app shell then

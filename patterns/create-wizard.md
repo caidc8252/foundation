@@ -5,16 +5,17 @@ that have stage dependencies, branching, or a review-before-commit step. Named
 structure, not implementation.
 
 > 📐 **Copyable example** · [`create-wizard.html`](./create-wizard.html) — the full
-> wizard (header with ghost Cancel → step-indicator → current-step form-section cards
-> beside an optional sticky summary rail → Back/Continue footer → done state as a
-> commented swap), ready to copy and modify. It **links** the reference CSS so it never
-> forks; inline the blocks to ship it as an artifact. All examples: [`index.html`](./index.html).
+> wizard (sticky detail-header with a back button that exits the flow → step-indicator →
+> current-step form-section cards beside an optional sticky summary rail → Back/Continue
+> footer → done state as a commented swap), ready to copy and modify. It **links** the
+> reference CSS so it never forks; inline the blocks to ship it as an artifact. All
+> examples: [`index.html`](./index.html).
 
 ## Anatomy
 
 ```
-┌ header ──────────────────────────────────────────────────────┐
-│ title                                            [ ✕ Cancel ]  │  ← ghost
+┌ detail-header (sticky) ──────────────────────────────────────┐
+│ [‹] title                                                     │  ← back = exit flow
 ├ steps ───────────────────────────────────────────────────────┤
 │ [ ✓ Details ]──[ ② Terms ]──[ ③ Review ]        step-indicator │
 ├ body ─────────────────────────────────┬ summary (optional) ───┤
@@ -24,7 +25,7 @@ structure, not implementation.
 │ │ … one Card per concern …          │ │  Email     —           │     (dl, em-dash
 │ └───────────────────────────────────┘ │  …                     │      for empty)
 ├ nav ──────────────────────────────────┴────────────────────────┤
-│ [ ◂ Back ]                              [ Continue ▸ / Create ]  │  ← right-aligned
+│     [ ◂ Back ] [ Continue ▸ / Create ]                         │  ← right-aligned
 └─────────────────────────────────────────────────────────────────┘
 
   done ┌ centered success card ───────────┐
@@ -44,7 +45,7 @@ summary rail and the done state are **optional**, included per business need.
 
 | slot | required? | include when |
 |---|---|---|
-| **header** | **yes** | always — the page title + a single **ghost** Cancel (leading X icon; exit without committing). No primary lives here; the commit verb is in **nav**. |
+| **header** | **yes** | always — the sticky [`detail-header`](../composites/detail-header.md) in reduced form: a **back button** (chevron-left) + the page title, nothing else. The back **exits the whole flow** without committing (it replaces the old ghost Cancel). **No primary** lives here; the commit verb is in **nav**. |
 | **steps** | **yes** | always — the `step-indicator` rail (done · here · left). Stretches **full-width** inside `page-body`. |
 | **body** | **yes** | always (repeatable) — the current step's **form-section** card(s) (one `Card` per concern) of `Field`s. Full-width; a card may cap its own internal width but the layout column is not capped. |
 | **nav** | **yes** | always — the footer: right-aligned **ghost Back** (hidden on step 1) **+ primary Continue**; the last step's primary is the contextual commit verb. |
@@ -58,10 +59,16 @@ summary rail and the done state are **optional**, included per business need.
   reflects the path actually taken.
 - **A `Review` step precedes commit** — the user sees everything before it's
   written. Commit happens from Review (or the last data step), never silently mid-flow.
-- **Never lose entered data on Back.** Back is non-destructive — it returns to a
-  prior step with its fields intact. Back is **hidden on step 1** (not merely
-  disabled — the slot is empty and the Continue button stays right-aligned alone),
-  and visible from step 2 onward.
+- **Two backs, and they never collide.** The **header** back (icon-only, top-left,
+  in the `detail-header`) **exits the whole wizard** without committing — it is the
+  cancel affordance. The **footer** "Back" (labelled, in the nav) goes to the
+  **previous step**. They are distinguished by position + form, and because the
+  footer Back is **hidden on step 1** (next rule), step 1 shows only the header
+  back — so the two are never both "a back" in the same place at the same time.
+- **Never lose entered data on Back.** The footer Back is non-destructive — it
+  returns to a prior step with its fields intact. It is **hidden on step 1** (not
+  merely disabled — the slot is empty and the Continue button stays right-aligned
+  alone), and visible from step 2 onward.
   - **Footer is right-aligned, not split.** Back + Continue ride the **same right
     edge** (`justify-content: flex-end`; Back is a ghost just left of Continue) —
     **never push Back to the far left** with `margin-inline-start/right: auto` or
@@ -106,7 +113,7 @@ rail; this pattern fixes which appear and how they sequence:
 | Anatomy slot | Composite |
 |---|---|
 | shell (context, **not ported**) | [`app-frame`](../composites/app-frame.md) — the page renders inside `.app-frame__main` |
-| header band (ghost Cancel, leading X icon) | [`page-header`](../composites/page-header.md) |
+| header band (sticky, back = exit; no Cancel, no primary) | [`detail-header`](../composites/detail-header.md) (reduced form: back + title) |
 | content region (gutters + stack) | [`page-body`](../composites/page-body.md) |
 | steps rail | [`step-indicator`](../composites/step-indicator.md) — wrap the bare `ol` for the card look (`border` `line-default` · `surface-2` · `radius-xl` · `shadow-1` · `px-6 py-4`) |
 | current-step body | [`field`](../primitives/field.md) units inside per-concern [`card`](../primitives/card.md) form-sections |

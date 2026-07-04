@@ -3,9 +3,11 @@
   ─────────────────────────────────────────────────────────────────────────────
   Companion to ./create-wizard.md (the contract — when the two disagree, the .md wins).
   Copy this file and edit the markup to build a real multi-step create flow:
-  a sticky page-header with a ghost Cancel (leading X icon), a step-indicator rail, the CURRENT
-  step's form-section card beside a sticky summary rail, and a Back/Continue nav
-  below the card. Includes all three interactive steps and the done state.
+  a sticky detail-header (the "with back" header kind — back button that exits the whole
+  wizard; NO header primary), a step-indicator rail, the CURRENT step's form-section card
+  beside a sticky summary rail, and a Back/Continue nav below the card. The footer's own
+  "Back" (previous step) is hidden on step 1, so it never collides with the header's exit
+  back. Includes all interactive steps and the done state.
   Just one step (or two, no branching)? Use the single-step form instead — that is
   its own pattern: ./create-form.md (./create-form.html).
 
@@ -109,19 +111,21 @@
            These four slots are what make this a wizard — keep all four. The summary rail and
            the done state below are OPTIONAL and marked removable where they appear. -->
 
-      <!-- [REQUIRED] header: title + a single GHOST Cancel (leading X icon; exit without committing).
-           No primary here — the commit verb lives in the nav footer. -->
-      <header class="page-header page-header--sticky">
-        <div class="page-header__bar">
-          <div class="page-header__titles">
-            <div class="page-header__heading"><h1 class="page-header__title">New customer</h1></div>
-            <p class="page-header__description">A multi-step create flow — Back never loses what you entered.</p>
-          </div>
-          <div class="page-header__actions">
-            <button class="btn btn--ghost" type="button">
-              <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-              Cancel
-            </button>
+      <!-- [REQUIRED] header: back button (exit the whole wizard without committing) + title.
+           NO header primary — the commit verb lives in the nav footer. This reuses the
+           detail-header composite in its reduced form (back + title, NO logo/meta/chips/tabs;
+           see composites/detail-header.md). The header back = EXIT; the footer's "Back" (below)
+           = previous step and is hidden on step 1, so the two never collide. -->
+      <header class="detail-header detail-header--sticky">
+        <div class="detail-header__bar">
+          <button class="btn btn--ghost btn--icon btn--sm detail-header__back" type="button" aria-label="Exit — back to customers">
+            <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+
+          <div class="detail-header__main">
+            <div class="detail-header__title">
+              <span class="detail-header__name">New customer</span>
+            </div>
           </div>
         </div>
       </header>

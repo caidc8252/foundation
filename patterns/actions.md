@@ -41,8 +41,11 @@ where it lands, and whether it confirms — those are not per-screen choices.
   Cancel; a dialog / confirm surface or a card footer (`Modal` · `AlertDialog` · `Sheet` ·
   `card__footer`) uses a `ghost` Cancel. **At most one primary per group.** Source order
   *is* visual order in the row — author the markup in this order; never reorder with CSS.
-  This is why `create-form` reads `[ Cancel ] [ Create ]`, a `create-wizard` nav is
-  `ghost Back + primary Continue`, and an `AlertDialog` is `ghost Cancel + danger Confirm`. (A trailing destructive
+  This is why a `create-wizard` nav is `ghost Back + primary Continue` and an
+  `AlertDialog` is `ghost Cancel + danger Confirm`. (A `create-wizard` header carries
+  no in-group Cancel — its exit is the leftmost `detail-header` back button, outside the
+  actions cluster; a single-step `create-form` header carries a `ghost Cancel + primary`
+  in its actions cluster.) (A trailing destructive
   icon — a `ghost-danger` Delete/Terminate after the primary — is the one exception, and
   even then prefer routing it through the `⋯` overflow per **One carrier per row**.)
 - **Danger tone marks destructive verbs.** `danger` / `ghost-danger` skins are for
@@ -80,10 +83,13 @@ where it lands, and whether it confirms — those are not per-screen choices.
   land on the **detail head** ([`detail-page`](./detail-page.md)), and multi-row ops on
   the list **summary bar** (`batch-action`). Put verbs on a **list row** only when a
   requirement emphasizes single-row quick ops; when present they are
-  **always-visible `xs` buttons** (the `list-page` override) — `secondary` for the
+  **always-visible `sm` buttons** (the `list-page` override) — `secondary` for the
   action, `ghost-danger` for a Delete that opens a `confirm-danger` dialog (low-chrome
   to match its `secondary` peers per **A peer action group shares one weight**; the solid
   `danger` fill is the dialog's Confirm, not the inline row trigger) — not hover-reveal icons.
+  On a `data-table` they share the row's **single trailing `.row-actions` cell** with the
+  navigate chevron (verbs first, passive chevron last); a quick-op row both acts and
+  navigates, so the verbs `event.stopPropagation()` (see [`data-table.md`](../composites/data-table.md)).
 - **Every icon-only control needs a name.** An `aria-label` (and/or a tooltip) on every
   icon-only button — the single exception being a **passive trailing row chevron**, which
   is decorative (the row itself is the click target) and is `aria-hidden`.

@@ -15,11 +15,13 @@
   Sections
   ─────────────────────────────────────────────────────────────────────
   1. Action table  — selection column + row-actions. Every row has
-     inline verbs (Edit / Delete / More). No navigation chevron.
-     Shows all three sort-icon states across columns.
+     inline verbs (Edit / Delete / More) in the trailing cell, act-in-place
+     (no navigation). Shows all three sort-icon states across columns.
 
-  2. Navigation table — rows are navigation targets. Trailing chevron
-     only; no selection column, no row-action buttons.
+  2. Navigation table — rows navigate (whole row is the click target). Every
+     row's trailing `.row-actions` cell carries a passive chevron; a row may
+     ALSO carry a quick verb before it (row 1 = Lock + chevron in one cell).
+     No selection column.
 
   3. Compact density  — tighter padding, no selection, no sticky.
 
@@ -43,7 +45,7 @@
       font-family: var(--font-sans);
     }
     .demo-page {
-      max-width: 1200px;
+      max-width: 1600px;
       margin: 0 auto;
       padding: var(--space-6);
       display: flex;
@@ -76,8 +78,8 @@
     <!--
       ══════════════════════════════════════════════════════════════════
       §1  ACTION TABLE
-          Pattern: rows have inline verbs → selection column + row-actions.
-          Never mix with navigation rows (no cell-chevron here).
+          Pattern: rows act in place → selection column + row-actions.
+          These rows don't navigate, so their trailing cell has no chevron.
 
           Sort-icon three-state demo across columns:
             Name   → ascending  active  (chevron-up,        primary-tinted)
@@ -129,7 +131,7 @@
                 <th scope="col" style="width:120px">Status</th>
                 <th scope="col" style="width:100px">Region</th>
                 <th scope="col" style="width:100px" class="cell-right">Amount</th>
-                <th scope="col" style="width:110px" class="cell-right"></th>
+                <th scope="col" style="width:110px" class="cell-right" aria-hidden="true"></th>
               </tr>
             </thead>
             <tbody>
@@ -157,7 +159,7 @@
                 <td class="cell-num cell-right">$12,450</td>
                 <td class="row-actions">
                   <div class="row-actions__inner">
-                    <button class="btn btn--secondary btn--xs">Edit</button>
+                    <button class="btn btn--secondary btn--sm">Edit</button>
                     <button class="btn btn--ghost btn--icon-sm" aria-label="More actions">
                       <svg data-lucide="ellipsis" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
                     </button>
@@ -189,7 +191,7 @@
                 <td class="cell-num cell-right">$3,200</td>
                 <td class="row-actions">
                   <div class="row-actions__inner">
-                    <button class="btn btn--secondary btn--xs">Edit</button>
+                    <button class="btn btn--secondary btn--sm">Edit</button>
                     <button class="btn btn--ghost-danger btn--icon-sm" aria-label="Delete">
                       <svg data-lucide="trash-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                     </button>
@@ -223,7 +225,7 @@
                 <td class="cell-num cell-right"><span class="cell-empty">&mdash;</span></td>
                 <td class="row-actions">
                   <div class="row-actions__inner">
-                    <button class="btn btn--secondary btn--xs">Edit</button>
+                    <button class="btn btn--secondary btn--sm">Edit</button>
                     <button class="btn btn--ghost btn--icon-sm" aria-label="More actions">
                       <svg data-lucide="ellipsis" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
                     </button>
@@ -254,7 +256,7 @@
                 <td class="cell-num cell-right">$0</td>
                 <td class="row-actions">
                   <div class="row-actions__inner">
-                    <button class="btn btn--secondary btn--xs" disabled>Edit</button>
+                    <button class="btn btn--secondary btn--sm" disabled>Edit</button>
                   </div>
                 </td>
               </tr>
@@ -283,7 +285,7 @@
                 <td class="cell-num cell-right">$15,200</td>
                 <td class="row-actions">
                   <div class="row-actions__inner">
-                    <button class="btn btn--secondary btn--xs">Edit</button>
+                    <button class="btn btn--secondary btn--sm">Edit</button>
                     <button class="btn btn--ghost-danger btn--icon-sm" aria-label="Delete">
                       <svg data-lucide="trash-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                     </button>
@@ -299,19 +301,23 @@
     <!--
       ══════════════════════════════════════════════════════════════════
       §2  NAVIGATION TABLE
-          Pattern: each row is a navigation target → trailing chevron.
-          No selection column. No row-action buttons.
-          The entire row is the click target (is-clickable).
+          Pattern: each row navigates → one trailing `.row-actions` cell
+          ending in a passive chevron. A row may also carry a quick verb
+          before the chevron in that SAME cell (row 1). No selection column.
+          The entire row is the click target (is-clickable); inline verbs
+          stopPropagation so a verb click doesn't also navigate.
 
           Sort-icon demo: Name = descending active (chevron-down).
       ══════════════════════════════════════════════════════════════════
     -->
     <div class="demo-section">
-      <h2 class="demo-section__title">Navigation table · trailing chevron · no selection · no row-actions</h2>
+      <h2 class="demo-section__title">Navigation table · one trailing cell: quick verb(s) + passive chevron</h2>
       <p class="demo-section__desc">
         Use when clicking a row navigates to a detail page. The whole row is the
-        click target — no inline buttons. No checkbox column. Sort header shows
-        descending active state (chevron-down) on Name.
+        click target; the trailing <code>.row-actions</code> cell ends in a passive
+        chevron, and a row may carry a quick verb before it (row 1 = Lock) — verbs
+        stopPropagation. No checkbox column. Sort header shows descending active
+        state (chevron-down) on Name.
       </p>
 
       <div class="table-frame">
@@ -336,8 +342,8 @@
                 <!-- not sortable -->
                 <th scope="col" style="width:120px">Status</th>
                 <th scope="col" style="width:100px" class="cell-right">Amount</th>
-                <!-- chevron column — no label -->
-                <th scope="col" style="width:40px"></th>
+                <!-- trailing operations column — HEADERLESS (quick verbs + chevron) -->
+                <th scope="col" style="width:130px" aria-hidden="true"></th>
               </tr>
             </thead>
             <tbody>
@@ -355,8 +361,14 @@
                   </div>
                 </td>
                 <td class="cell-num cell-right">$8,700</td>
-                <td class="cell-chevron">
-                  <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                <!-- row ACTS and NAVIGATES: quick verb, then passive chevron, in ONE trailing cell -->
+                <td class="row-actions">
+                  <div class="row-actions__inner">
+                    <button class="btn btn--secondary btn--sm" type="button" onclick="event.stopPropagation();" aria-label="Lock Aisha Patel">Lock</button>
+                    <span class="cell-chevron">
+                      <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                    </span>
+                  </div>
                 </td>
               </tr>
               <tr class="is-clickable">
@@ -374,8 +386,13 @@
                   </div>
                 </td>
                 <td class="cell-num cell-right">$21,000</td>
-                <td class="cell-chevron">
-                  <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                <!-- nav-only row: the SAME trailing cell, chevron alone -->
+                <td class="row-actions">
+                  <div class="row-actions__inner">
+                    <span class="cell-chevron">
+                      <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                    </span>
+                  </div>
                 </td>
               </tr>
               <tr class="is-clickable">
@@ -392,8 +409,12 @@
                   </div>
                 </td>
                 <td class="cell-num cell-right"><span class="cell-empty">&mdash;</span></td>
-                <td class="cell-chevron">
-                  <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                <td class="row-actions">
+                  <div class="row-actions__inner">
+                    <span class="cell-chevron">
+                      <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                    </span>
+                  </div>
                 </td>
               </tr>
               <tr class="is-clickable">
@@ -410,8 +431,12 @@
                   </div>
                 </td>
                 <td class="cell-num cell-right">$0</td>
-                <td class="cell-chevron">
-                  <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                <td class="row-actions">
+                  <div class="row-actions__inner">
+                    <span class="cell-chevron">
+                      <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                    </span>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -459,7 +484,7 @@
                 <td class="cell-num cell-right">$5,400</td>
                 <td class="row-actions">
                   <div class="row-actions__inner">
-                    <button class="btn btn--secondary btn--xs">Edit</button>
+                    <button class="btn btn--secondary btn--sm">Edit</button>
                   </div>
                 </td>
               </tr>
@@ -475,7 +500,7 @@
                 <td class="cell-num cell-right">$1,200</td>
                 <td class="row-actions">
                   <div class="row-actions__inner">
-                    <button class="btn btn--secondary btn--xs">Edit</button>
+                    <button class="btn btn--secondary btn--sm">Edit</button>
                   </div>
                 </td>
               </tr>
@@ -491,7 +516,7 @@
                 <td class="cell-num cell-right"><span class="cell-empty">&mdash;</span></td>
                 <td class="row-actions">
                   <div class="row-actions__inner">
-                    <button class="btn btn--secondary btn--xs">Edit</button>
+                    <button class="btn btn--secondary btn--sm">Edit</button>
                   </div>
                 </td>
               </tr>

@@ -34,8 +34,9 @@
      family; the tile is the object-tile primitive (--sm --neutral). */
   .cell-lead { display: flex; align-items: center; gap: var(--space-3); }
 
-  /* Passive trailing chevron — the row IS the click target; no inline buttons at rest. */
-  .cell-chevron { color: var(--color-content-tertiary); }
+  /* Passive trailing chevron — the row IS the click target; the chevron is an icon,
+     not a button. It lives as the last child of .row-actions__inner (see composites.css). */
+  .cell-chevron { display: inline-flex; align-items: center; color: var(--color-content-tertiary); }
   .cell-chevron svg { width: var(--space-4); height: var(--space-4); }
 </style>
 <body>
@@ -161,12 +162,18 @@
                      bulk ops, so it carries NO checkbox column.
                      LP8 — OPTIONAL: inline row-actions (uncomment only for high-throughput
                      triage queues where single-row quick ops justify diverging from
-                     "list navigates" default):
+                     "list navigates" default). Quick verbs share the SAME trailing
+                     .row-actions cell as the chevron (verbs first, passive chevron last),
+                     replacing the chevron-only cell below — a row both acts AND navigates:
                      <td class="row-actions">
-                       <button class="btn btn--secondary btn--xs" type="button" onclick="event.stopPropagation()">Edit</button>
-                       <button class="btn btn--danger btn--xs" type="button" onclick="event.stopPropagation()">Delete</button>
+                       <div class="row-actions__inner">
+                         <button class="btn btn--secondary btn--sm" type="button" onclick="event.stopPropagation()">Edit</button>
+                         <button class="btn btn--ghost-danger btn--sm" type="button" onclick="event.stopPropagation()">Delete</button>
+                         <span class="cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+                       </div>
                      </td>
-                     (≥3 verbs → replace with a single ⋯ kebab xs btn opening a dropdown-menu) -->
+                     (≥3 verbs → collapse the verbs to a single ⋯ kebab sm btn opening a
+                     dropdown-menu, still before the chevron) -->
                 <tr class="is-clickable">
                   <td>
                     <!-- LP4: two-line cell uses composite cell-2line family; tile is page-local -->
@@ -184,7 +191,7 @@
                   <!-- LP6: category column uses badge--neutral (no dot), never tonal -->
                   <td><span class="badge badge--neutral">Enterprise</span></td>
                   <td class="cell-num cell-right">$48,200</td>
-                  <td class="cell-right cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
+                  <td class="row-actions"><div class="row-actions__inner"><span class="cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span></div></td>
                 </tr>
                 <tr class="is-clickable">
                   <td>
@@ -201,7 +208,7 @@
                   <td>Auckland</td>
                   <td><span class="badge badge--neutral">SMB</span></td>
                   <td class="cell-num cell-right">$3,120</td>
-                  <td class="cell-right cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
+                  <td class="row-actions"><div class="row-actions__inner"><span class="cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span></div></td>
                 </tr>
                 <tr class="is-clickable">
                   <td>
@@ -218,7 +225,7 @@
                   <td>Sydney</td>
                   <td><span class="badge badge--neutral">Enterprise</span></td>
                   <td class="cell-num cell-right">$129,540</td>
-                  <td class="cell-right cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
+                  <td class="row-actions"><div class="row-actions__inner"><span class="cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span></div></td>
                 </tr>
                 <tr class="is-clickable">
                   <td>
@@ -236,7 +243,7 @@
                   <td class="cell-empty">—</td>
                   <td><span class="badge badge--neutral">Startup</span></td>
                   <td class="cell-num cell-right">$0</td>
-                  <td class="cell-right cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
+                  <td class="row-actions"><div class="row-actions__inner"><span class="cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span></div></td>
                 </tr>
                 <tr class="is-clickable">
                   <td>
@@ -253,7 +260,7 @@
                   <td>Tokyo</td>
                   <td><span class="badge badge--neutral">Enterprise</span></td>
                   <td class="cell-num cell-right">$71,005</td>
-                  <td class="cell-right cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></td>
+                  <td class="row-actions"><div class="row-actions__inner"><span class="cell-chevron"><svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span></div></td>
                 </tr>
               </tbody>
             </table>

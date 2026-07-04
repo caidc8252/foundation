@@ -3,12 +3,18 @@
 The header **band** of a detail screen: an entity's identity (logo / name /
 status), its metadata, its actions, and the tab strip that switches its
 sub-views — all on one full-bleed surface that docks flush under the app header.
-The detail-page counterpart to `page-header`: where `page-header` titles a *list*
-("Customers · 1,248"), `detail-header` titles *one record* ("Acme Corp ·
-ACTIVE"). It recurs on **every** detail screen — customer, order, app, firmware,
-factory image, device, ticket — which is why it is a shared composite, not
-duplicated per page. The [detail-page pattern](../patterns/detail-page.md) draws
-exactly this band at the top of its anatomy.
+
+`detail-header` is the **"with back" header kind** — the header for any page you
+reach *into*. Its counterpart is `page-header`, the **"no back" header kind** for
+top-level pages (list / dashboard / settings) that have no "up" to return to.
+Where `page-header` titles a *list* ("Customers · 1,248"), `detail-header` titles
+*one record* ("Acme Corp · ACTIVE") **and** heads any create / edit / wizard page
+(see "Reduced form" below). It recurs on **every** detail screen — customer,
+order, app, firmware, factory image, device, ticket — and on every create/edit
+flow, which is why it is a shared composite, not duplicated per page. The
+[detail-page pattern](../patterns/detail-page.md) draws exactly this band at the
+top of its anatomy; [`create-form`](../patterns/create-form.md) and
+[`create-wizard`](../patterns/create-wizard.md) draw its reduced form.
 
 > **Contract scope.** The cross-consumer design contract: anatomy, the action
 > rule, the tab-strip reuse, tokens, states. NOT the React prop types — those
@@ -27,10 +33,17 @@ exactly this band at the top of its anatomy.
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-- **Back** — optional icon-only ghost button (`.btn--ghost` at icon size),
-  first in the bar. Returns to the list it was reached from. Its glyph is the
-  **`chevron-left`** icon (per `primitives/icon.md` — Back = `chevron-left`), the
-  same back affordance used across wizards and pagination — **not** `arrow-left`.
+- **Back** — icon-only ghost button (`.btn--ghost` at icon size), first in the
+  bar. Returns to the place it was reached from. On a **detail** screen it is
+  optional (present when the record was reached from a list); on a **create / edit
+  / wizard** page it is **required** and is an **exit-without-committing**
+  affordance. A **wizard** has no Cancel (back is its sole exit); a single-step
+  **create / edit** page also carries a ghost Cancel beside its primary (see Reduced form).
+  Its glyph is the **`chevron-left`** icon (per `primitives/icon.md` — Back =
+  `chevron-left`), the same back affordance used across wizards and pagination —
+  **not** `arrow-left`. On a wizard, this header back **exits the whole flow**; the
+  footer nav's own "Back" (previous step) is a separate, labelled control that is
+  hidden on step 1, so the two never collide.
 - **Vertical alignment** — the bar's row is **vertically centered**
   (`align-items: center`): back button, logo, the identity block, and the action
   cluster all share one vertical center. The back button is **not** nudged to the
@@ -75,6 +88,17 @@ exactly this band at the top of its anatomy.
 - **Status is shown, not edited here.** Multi-axis status renders as separate
   badges; a status *change* is an explicit, confirmed action, not a toggle on the
   chip.
+- **Reduced form (create / edit / wizard header).** The same composite heads
+  create/edit/wizard pages with only its **back + title (+ its commit actions)** —
+  **no logo, meta, chips, or tabs**. A single-step create/edit page carries a
+  **ghost Cancel + the primary commit** (Create / Save) in `.detail-header__actions`
+  (Cancel left, primary right per [`actions.md`](../patterns/actions.md)); a **wizard**
+  carries **no** header action at all (its commit verb lives in the footer nav) —
+  the header is just back + title. Same classes, same band; the identity slots are
+  simply omitted (they are all optional).
+- The band is **sticky by default in patterns** — apply `.detail-header--sticky`
+  so the identity + actions (+ tabs) dock under the app header while the body
+  scrolls. detail-page, create-form, and create-wizard all use `--sticky`.
 - The band is **full-bleed** — it draws its bottom hairline edge-to-edge and
   breaks out of `page-body`'s gutters, exactly like `page-header`. Tab *content*
   below gets its own page padding.

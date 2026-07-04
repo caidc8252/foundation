@@ -58,7 +58,7 @@ Container-level:
 
 ```
 .input-otp                      container — flex row, gap, dims when disabled
-  .input-otp__group             a run of adjacent slots, rounded as a unit
+  .input-otp__group             a run of slots, each its own rounded box, spaced by a gap; error ring wraps the run
     .input-otp__slot            one character cell (40×48)
       char                      typed character (content-primary, mono)
       .input-otp__caret         fake blinking caret (active empty slot only)

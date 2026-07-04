@@ -2685,6 +2685,7 @@ body { margin: 0; }
 .input-otp__group {
   display: inline-flex;
   align-items: center;
+  gap: var(--space-2);   /* 8px — separate the slots */
   border-radius: var(--radius-md);
 }
 /* Unified error treatment: any aria-invalid slot inside the group draws one
@@ -4041,7 +4042,7 @@ body { margin: 0; }
   transition: background-color 0.12s, border-color 0.12s, color 0.12s, box-shadow 0.12s;
   outline: none;
 }
-.toggle-group__item:hover:not(:disabled) { background-color: var(--color-surface-hover); }
+.toggle-group__item:hover:not(:disabled):not([aria-pressed="true"]) { background-color: var(--color-surface-hover); }
 .toggle-group__item[aria-pressed="true"] { background-color: var(--color-surface-active); }
 .toggle-group__item:focus-visible { box-shadow: var(--shadow-focus); }
 .toggle-group__item:disabled,
@@ -4084,7 +4085,7 @@ body { margin: 0; }
   background-color: transparent;
   color: var(--color-content-secondary);
 }
-.toggle-group--segmented .toggle-group__item:hover:not(:disabled) {
+.toggle-group--segmented .toggle-group__item:hover:not(:disabled):not([aria-pressed="true"]) {
   background-color: transparent;
   color: var(--color-content-primary);
 }
@@ -4106,7 +4107,7 @@ body { margin: 0; }
   font-size: var(--text-xs);
   font-weight: 400;
 }
-.toggle-group--cloud .toggle-group__item:hover:not(:disabled) {
+.toggle-group--cloud .toggle-group__item:hover:not(:disabled):not([aria-pressed="true"]) {
   background-color: var(--color-surface-2);
   border-color: var(--color-line-strong);
 }

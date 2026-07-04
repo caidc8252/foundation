@@ -10,13 +10,20 @@ config-driven table — columns + rows — not hand-written cell markup.
 ## Anatomy
 
 ```
-┌ table-frame ─────────────────────────────────────────────────┐
-│ ☐ │ Header ▴   Header        Header            〔row actions〕│  ← thead (sticky)
-├───┼───────────────────────────────────────────────────────────┤
-│ ☑ │ cell        cell          cell                       ⋯ ✎  │  ← selected row
-│ ☐ │ cell        cell          cell                            │
-└───────────────────────────────────────────────────────────────┘
+┌ table-frame ──────────────────────────────────────────────────────┐
+│ ☐ │ Header ▴   Header        Header                               │  ← thead (sticky); trailing col is HEADERLESS
+├───┼────────────────────────────────────────────────────────────────┤
+│ ☑ │ cell        cell          cell               [ Lock ]   ›    │  ← ONE trailing cell: verb(s) then passive chevron
+│ ☐ │ cell        cell          cell                          ›    │  ← nav-only row: the same cell, chevron alone
+│ ☐ │ cell        cell          cell               [ Lock ]        │  ← act-only row: verb(s), no chevron
+└────────────────────────────────────────────────────────────────────┘
 ```
+
+The **trailing cell** (`.row-actions`) is the row's operations: a single headerless,
+right-aligned cell holding — in source order — any inline verbs, then a **passive
+`.cell-chevron`** (last) when the row navigates. Inline verbs and the chevron
+**coexist in this one cell**; the chevron is a *navigate affordance rendered as an
+icon* — never its own column, never a button.
 
 ## Density
 
@@ -42,21 +49,27 @@ config-driven table — columns + rows — not hand-written cell markup.
   has **no checkbox column** (never a default). When present, the selected row
   gets `state-selected` background + a 2px primary left bar (`shadow-row-selected`),
   and drives a bulk-action bar (in the summary bar / page header).
-- **Row actions** sit at the row end and are **always visible** — a table with an
-  action column is operated in place, so its verbs are never hidden behind hover.
-  **Hover-reveal is not a table behavior**: it belongs to an info-first **list** (a
-  self-authored `list-item` whose actions stay out of the way until hover), not a
-  `data-table` action column. (A list whose rows are primarily a **navigation**
-  target carries no action column at all — just a trailing chevron; the row click
-  navigates — see `list-page`.) The action `<td>` is **right-aligned to the row
-  edge** (add `.cell-right`) so its verbs sit at the row end, not the left of a
-  stretched last column; the buttons live in a **`.row-actions__inner`** flex
-  wrapper that supplies their gap + vertical centering — bare button siblings
-  dropped straight into the cell butt together with no gap. This holds for the
-  collapsed single `⋯` carrier too.
+- **One trailing cell carries both the verbs and the chevron.** The row's
+  operations — inline verbs *and* the navigate chevron — live in a **single**
+  `.row-actions` `<td>` at the row end, never in two competing cells. Its `<th>` is
+  **headerless** (`aria-hidden="true"`, no label — quick verbs don't earn a column
+  title), and the cell is **right-aligned by the class itself** (`.row-actions` bakes
+  `text-align:right`; you no longer add `.cell-right`) so the cluster hugs the row
+  edge instead of floating at the left of a stretched last column. Inside, a
+  **`.row-actions__inner`** flex wrapper lays out, in source order: any inline verbs,
+  then — when the row navigates — a **passive `.cell-chevron` last** (§ Column recipes).
+  The wrapper supplies the gap + vertical centering; bare siblings dropped straight
+  into the cell butt together with no gap. This holds for the collapsed single `⋯`
+  carrier too. A **nav-only** row uses the same cell with just the chevron inside; an
+  **act-only** row omits the chevron. Never give the chevron its own cell beside the
+  verbs, and never split a navigating-with-quick-ops row into two trailing cells.
+- **Row actions are always visible** — a table with a trailing action cell is operated
+  in place, so its verbs are never hidden behind hover. **Hover-reveal is not a table
+  behavior**: it belongs to an info-first **list** (a self-authored `list-item` whose
+  actions stay out of the way until hover), not a `data-table`.
 - **Row-action variant: a text verb is `secondary`, never bare `ghost`.** An
   always-visible row action must read as a button at rest, so a **text** row verb is
-  a `secondary` `xs` button — a **destructive** one (delete / terminate / revoke) is
+  a `secondary` `sm` button — a **destructive** one (delete / terminate / revoke) is
   `danger` and confirms. Reserve `ghost` / `ghost-danger` for **icon-only** row
   actions. A `ghost` *text* verb reads as a link, not a control — don't use it for
   row actions. Past ~2 verbs, collapse to a single `⋯` menu (one carrier per row).
@@ -86,7 +99,7 @@ off-scale type/color pairing.
 | **numeric / date / id** | `font-mono` `tabular-nums` `content-secondary`, right-aligned (`.cell-num` + `.cell-right`) so digits line up. |
 | **plain text** | table default size + `content-secondary`. |
 | **tag / multi-badge set** | one wrapping row of `badge`s — `flex flex-wrap gap-1` (`.cell-tags`). |
-| **trailing arrow** (row is a navigation target) | right-aligned passive `ChevronRight` in `content-tertiary` — the cell carries **both `.cell-right .cell-chevron`** (`.cell-chevron` sets only the tint + arrow size; the right-alignment is `.cell-right`, so the arrow pins to the row edge instead of floating at the left of a stretched last column). The **whole row** is the click target — no inline buttons. If the row needs inline actions, drop the arrow and use a row-action column instead. |
+| **trailing chevron** (row navigates) | a passive `ChevronRight` in `content-tertiary`, `aria-hidden`, that lives **inside the trailing `.row-actions` cell as the last child of `.row-actions__inner`** — never its own `<td>`. `.cell-chevron` sets only the tint + arrow size; the right-alignment comes from `.row-actions`. The **whole row** is the click target (the chevron is not a button). Inline verbs may sit to its left in the same cell — a row can act *and* navigate; when it does, the verbs `event.stopPropagation()` so a verb click doesn't also fire the row's navigate. |
 
 - **Empty value** — render an em-dash `—` in `content-tertiary` (`.cell-empty`), never a blank cell.
 - A stable new column type (progress, risk level…) is a shared column component, not a per-page restyle — propose it rather than hand-rolling cell markup.
@@ -98,9 +111,10 @@ off-scale type/color pairing.
   `rowState`. Prefer the typed config over manual `<table>`. `ui` skill → data-display.
 - **Artifact** — `.table-frame` › `.table-scroll` › `table.data-table` with
   `--compact`/`--spacious`, `--sticky-head`, `--sticky-col`, `--striped`; cells
-  `.cell-num`/`.cell-right`/`.cell-2line`/`.cell-tags`/`.cell-chevron`/`.cell-empty`,
-  `.row-actions` (right-align with `.cell-right`; wrap its buttons in
-  `.row-actions__inner`), `.col-select`. In `composites.css`.
+  `.cell-num`/`.cell-right`/`.cell-2line`/`.cell-tags`/`.cell-empty`,
+  `.row-actions` (the single headerless trailing cell; self-right-aligns — no
+  `.cell-right` needed — and wraps its verbs **and** a trailing passive
+  `.cell-chevron` in `.row-actions__inner`), `.col-select`. In `composites.css`.
   `--sticky-head` th carry their own opaque `surface-3` background (a pinned th
   detaches from the thead's, so rows would otherwise bleed through); when paired
   with a sticky summary bar, give the th a `top` equal to the bar's height

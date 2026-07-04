@@ -88,7 +88,7 @@
       "exampleRequests": ["请帮我做一个注册界面", "Create a user registration page", "做一个新增客户表单", "Build an edit profile form"],
       "defaultTitle": "Create record",
       "outputNameHints": ["register", "signup", "create", "new-record", "edit"],
-      "composites": ["page-header", "page-body"],
+      "composites": ["detail-header", "page-body"],
       "clarifyIf": [
         "The request mentions registration but also says onboarding, review, approval, or multiple stages."
       ]
@@ -112,7 +112,7 @@
       "exampleRequests": ["做一个企业入驻向导", "Create a multi-step onboarding flow", "做一个带复核步骤的新增流程"],
       "defaultTitle": "Create record",
       "outputNameHints": ["wizard", "onboarding", "setup"],
-      "composites": ["page-header", "page-body", "step-indicator"],
+      "composites": ["detail-header", "page-body", "step-indicator"],
       "clarifyIf": [
         "The request says onboarding but only lists a few fields and no stages."
       ]
