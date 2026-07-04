@@ -14,16 +14,52 @@ Color is driven entirely by **`tone`** — there is no `variant` prop. Each tone
 | `error` | bg `error-bg` · text `error-strong` · border `error`/25 |
 | `info` | bg `info-bg` · text `info-strong` · border `info`/25 |
 
-## Shapes
+## The three signals
 
-| shape | result |
-|---|---|
-| `pill` *(default)* | radius `radius-full`, sans text |
-| `tag` | radius `radius-sm`, monospace text (`font-mono`) |
+Beyond **colour**, a badge has two more independent choices — its **shape** and its
+**leading adornment**. Each answers one question about the *value*, so the badge's form
+follows from the data, not taste:
+
+| signal | the question it answers | choices |
+|---|---|---|
+| **tone** (colour) | *what does it mean?* (semantic) | 5 tones · §Tones |
+| **shape** | *is it a verbatim machine token?* | `pill` vs `tag` · §Shape |
+| **leading adornment** | *a live state, a recognizable type, or neither?* | `dot` / `icon` / none · §Leading adornment |
+
+## Shape — is it a literal token?
+
+| shape | use for | result |
+|---|---|---|
+| `pill` *(default)* | a **word** read as language — a status or a category | radius `radius-full`, sans |
+| `tag` | a **verbatim machine token** you'd copy / compare char-by-char — an id, SN, version (`v5.2.14`), hash | radius `radius-sm`, monospace (`font-mono`) |
+
+The box corners **and** the monospace are two cues for the **same** signal ("this is a
+literal token"); they always travel together — there is no boxy-sans or round-mono badge.
+
+## Leading adornment — dot · icon · none
+
+The slot before the label holds **at most one** of: a status **dot**, an **icon**, or
+nothing. The dot and the icon answer *different* questions, so pick by the badge's job:
+
+| the badge's job | leading slot | why |
+|---|---|---|
+| a **live state** — Active, Pending, Failed, Offline, Locked, Draft | **`.badge__dot`** | the dot is an abstract *liveness* marker: it means "this is a state" and nothing more — colour + word carry the meaning. A **neutral** live state (Offline, Draft) takes the dot too; the dot marks **liveness, not colour**. |
+| a **recognizable type / identity** where a glyph names the kind faster than the word — a visibility lock, an integration mark, a channel type | a leading **icon** (12px) | the icon *carries meaning* — it identifies the kind. Opt-in and rare: use only when the glyph adds recognition the word is slower at. |
+| a plain **category / tier / token** — Enterprise, Merchant, `v5.2.14` | **nothing** | the word (or the mono tag) is enough |
+
+- **The one ban — never put an icon on a status.** A ⚠ before "Failed" or a ✓ before
+  "Active" is redundant with the tone + word, and it forces a per-status glyph choice
+  (⚠ triangle vs ⚠ circle …) that drifts. A status's marker is the **dot**, always.
+  The dot's whole advantage is that it needs **no glyph decision** — that is exactly
+  what keeps statuses deterministic.
+- **dot ≠ icon.** A **dot** is meaningless by design (pure liveness); an **icon** is
+  meaningful by design (identity). If the adornment would carry meaning, it's an icon
+  (and then it is naming a *type*, not a status). If it only says "this is live", it's a
+  dot. **Never both** in one badge.
 
 ## Sizes
 
-No size prop — fixed height `h-5` (20px), `text-xs`, `font-medium`, `px-2`. Inline SVG icons are clamped to `size-3` (12px); padding tightens on the icon side via `has-data-[icon=inline-start]:pl-1.5` / `has-data-[icon=inline-end]:pr-1.5` when an icon adornment is present.
+No size prop — fixed height `h-5` (20px), `text-xs`, `font-medium`, `px-2`. The leading `.badge__dot` is 6px; a leading **identity icon** (§Leading adornment) is clamped to `size-3` (12px), and padding tightens on the icon side via `has-data-[icon=inline-start]:pl-1.5` / `has-data-[icon=inline-end]:pr-1.5`.
 
 ## States
 
@@ -33,12 +69,13 @@ No size prop — fixed height `h-5` (20px), `text-xs`, `font-medium`, `px-2`. In
 
 ## Anatomy
 
-`[ dot? ] [ icon? ] children` — `dot` prefixes a 6px status dot in the current text color (`bg-current`), so it matches the tone and stays a shade darker than the badge bg. Icons are inline SVG slots clamped to 12px.
+`[ dot | icon ]? children` — the leading slot carries **either** a status `dot` (a 6px `bg-current` dot — pure liveness) **or** an identity `icon` (12px inline SVG — carries meaning), **never both**, or nothing at all (§Leading adornment). The dot follows the text colour, so it matches the tone and reads a shade darker than the bg.
 
 ```
-┌──────────────────────────────────┐
-│ [●?] [icon?] label text         │   ← .badge + .badge--<tone>
-└──────────────────────────────────┘
+● Active        ← dot   : a live state (liveness marker; no meaning of its own)
+[icon] Private  ← icon  : a recognizable type (the glyph identifies the kind)
+Enterprise      ← none  : a plain category / label
+v5.2.14         ← tag   : a verbatim token (mono, boxy; no dot, no icon)
 ```
 
 ## Accessibility
@@ -50,7 +87,8 @@ No size prop — fixed height `h-5` (20px), `text-xs`, `font-medium`, `px-2`. In
 
 - **Use `tone` for color — there is no `variant`.** The previous `variant` axis (`default`/`secondary`/`destructive`/`outline`/`ghost`/`link`) was removed in DS 2.0, and the compat stubs have now been dropped from the stylesheet too — the skin is tone-only. Migrating old usage: `secondary`→`neutral`, `destructive`→`error`; `default`/`outline`/`ghost`/`link` have no tonal equivalent, so pick the tone that matches the status/category the badge conveys (or `neutral` for a plain label).
 - **Semantic `tone` is for status / severity only.** Informational / category / plain-display fields (plan tier, type, category, a bare label) use `tone="neutral"` — never borrow a semantic tone (or a categorical color) to tint or distinguish a non-status field. (See `principles.md` §10.)
-- `shape="tag"` switches to monospace + `radius-sm` — intended for code-like tokens/IDs, not prose labels.
+- **Form follows the value, not taste** (§The three signals): colour = *what it means*, shape = *is it a literal token?* (`tag`), leading adornment = *live state* (`dot`) / *recognizable type* (`icon`) / *plain* (none). Answer the three from the data and the badge is fully specified.
+- `shape="tag"` switches to monospace + `radius-sm` — code-like tokens/IDs only, never prose labels, and it never carries a dot or an icon.
 
 ## Implementations
 
