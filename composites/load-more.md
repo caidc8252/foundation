@@ -12,25 +12,43 @@ table's own `onReachEnd` instead.
 
 ## Anatomy
 
+**The default is the button alone.** Reach for the minimal form first — a centered
+load-more button under the list, nothing else. The summary and progress are optional
+zones you add only when they earn their place (§Rules).
+
 ```
+minimal (default) — just the action slot:
+┌ load-more ──────────────── (top hairline) ────────────────┐
+│                 [  Load more  ]    ← secondary/lg button   │
+└────────────────────────────────────────────────────────────┘
+
+with the optional zones (summary above, progress below):
 ┌ load-more ──────────────── (top hairline) ────────────────┐
 │              Showing 50 of 1,248          (summary?)       │
-│                 [  Load more  ]    ← secondary/lg button   │
+│                 [  Load more  ]                            │
 │              ▰▰▰▰▰▰▰▱▱▱▱▱▱▱▱▱             (progress?)       │
 └────────────────────────────────────────────────────────────┘
 
-  done state — the button slot is replaced by the end marker:
+done state — the action slot is replaced by the end marker:
 ┌ load-more ──────────────── (top hairline) ────────────────┐
-│              Showing 1,248 of 1,248       (summary?)       │
 │              You've reached the end       ← end marker     │
-│              ▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰             (progress?)       │
 └────────────────────────────────────────────────────────────┘
 ```
 
 A centered vertical stack (gap `space-3`) with a top hairline (`line-default`)
-separating it from the list above, and `px-4` / `py-5` padding. Three optional
-zones top-to-bottom: **summary**, the **action slot** (button OR end marker —
-never both), **progress**.
+separating it from the list above, and `px-4` / `py-5` padding. One required zone —
+the **action slot** (button OR end marker — never both) — plus two optional zones
+around it: **summary** (above), **progress** (below).
+
+## Rules
+
+- **Default to the button alone.** The minimal form (just the action slot) is the
+  preferred load-more; add a zone only when it earns its place. Don't add an empty or
+  guessed zone for symmetry — a bare button is the norm, not a stripped-down exception.
+- **Summary** — add only when the total is **knowable and useful** ("Showing N of TOTAL").
+  Skip it when the total is unknown/expensive to count, or the count doesn't help the user.
+- **Progress** — add only when there is a **bounded total** worth tracking. Skip it for
+  open-ended / infinite feeds where "how far along" is meaningless.
 
 ## States
 
