@@ -322,9 +322,10 @@
       <h2 class="demo-section__title">Detail header · reduced form (create / edit / wizard header)</h2>
       <p class="demo-section__desc">
         The same composite carries the "with back" header on create / edit / wizard
-        pages: just the back button (exit without committing), the page title, and at
-        most one primary action — no logo, meta, chips, or tabs. A wizard omits even the
-        action (its commit verb lives in the footer nav). Patterns add .detail-header--sticky.
+        pages: the back button (exit without committing), the page title, and — on a
+        single-step create / edit — a ghost Cancel + the primary commit (Cancel left,
+        primary right; no logo, meta, chips, or tabs). A wizard omits header actions
+        entirely (its commit verb lives in the footer nav). Patterns add .detail-header--sticky.
       </p>
 
       <div class="detail-header">
@@ -340,6 +341,10 @@
           </div>
 
           <div class="detail-header__actions">
+            <button class="btn btn--ghost" type="button">
+              <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+              Cancel
+            </button>
             <button class="btn btn--primary" type="button">Create customer</button>
           </div>
         </div>
