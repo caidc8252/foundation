@@ -515,16 +515,16 @@ h3.group { font-size: var(--text-sm); letter-spacing: 0.02em;
 .cx-demo__body { padding: var(--space-5); background: var(--color-surface-1); }
 .cx-demo__body--center { display: flex; justify-content: center; }
 
-/* stage: contains position:fixed overlays (modal/sheet/drawer) inside the demo */
+/* stage: contains position:fixed overlays (modal/sheet) inside the demo */
 .cx-stage {
   position: relative; overflow: hidden; min-height: 260px;
   border-radius: var(--radius-lg); border: 1px solid var(--color-line-subtle);
   background: var(--color-surface-1);
 }
 .cx-stage .modal-overlay, .cx-stage .alert-dialog-overlay,
-.cx-stage .sheet-overlay, .cx-stage .drawer-overlay,
+.cx-stage .sheet-overlay,
 .cx-stage .modal, .cx-stage .alert-dialog,
-.cx-stage .sheet, .cx-stage .drawer { position: absolute; }
+.cx-stage .sheet { position: absolute; }
 
 /* click-to-inspect: a floating readout of an element's resolved style values */
 /* hover outline marks exactly the element a click will inspect */
@@ -1099,7 +1099,7 @@ h6.md-h { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 
         </div>
       </div>
 
-      <h3 class="group">侧拉面板 / 抽屉 · sheet · drawer</h3>
+      <h3 class="group">侧拉面板 · sheet</h3>
       <div class="cx-demo">
         <div class="cx-demo__head"><div class="cx-demo__name">Sheet <code>.sheet-overlay / .sheet--right</code></div></div>
         <div class="cx-demo__body" style="padding:0">
@@ -1109,19 +1109,6 @@ h6.md-h { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 
               <div class="sheet__header"><div class="sheet__title">筛选</div><div class="sheet__description">设置列表筛选条件。</div></div>
               <button class="btn btn--ghost btn--icon btn--sm sheet__close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
               <div class="sheet__footer"><button class="btn btn--primary">应用</button><button class="btn btn--ghost">重置</button></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="cx-demo">
-        <div class="cx-demo__head"><div class="cx-demo__name">Drawer <code>.drawer-overlay / .drawer--bottom</code></div></div>
-        <div class="cx-demo__body" style="padding:0">
-          <div class="cx-stage">
-            <div class="drawer-overlay"></div>
-            <div class="drawer drawer--bottom">
-              <div class="drawer__handle"></div>
-              <div class="drawer__header"><div class="drawer__title">分享到</div><div class="drawer__description">选择一个目标。</div></div>
-              <div class="drawer__footer"><button class="btn btn--primary">确认</button></div>
             </div>
           </div>
         </div>
@@ -2041,7 +2028,7 @@ const MD_MAP = {
   Collapsible: ["collapsible"], Carousel: ["carousel"], ColorTile: ["color-tile"],
   InitialsTile: ["initials-tile"], InputOTP: ["input-otp"], Calendar: ["calendar"],
   DatePicker: ["date-picker", "date-range-picker", "time-picker", "date-time-picker", "date-time-range-picker"],
-  Modal: ["modal"], AlertDialog: ["alert-dialog"], Sheet: ["sheet"], Drawer: ["drawer"],
+  Modal: ["modal"], AlertDialog: ["alert-dialog"], Sheet: ["sheet"],
   Popover: ["popover"], HoverCard: ["hover-card"], DropdownMenu: ["dropdown-menu"],
   ContextMenu: ["context-menu"], Menubar: ["menubar"], NavigationMenu: ["navigation-menu"],
   Command: ["command"], Combobox: ["combobox"], Toast: ["toast"],

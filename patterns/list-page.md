@@ -202,9 +202,8 @@ list below restates the optional slots with the extra detail each needs.
   [`list-filter`](../composites/list-filter.md) family's advanced trigger + sheet).
   The inline toolbar keeps only the common filters; everything still reflects into
   the same applied-filter chips. The sheet is a **[`sheet`](../primitives/sheet.md)**
-  primitive (`.sheet` / `.sheet--right` / `.sheet__header` / `.sheet__footer`);
-  the [`drawer`](../primitives/drawer.md) primitive (`.drawer` / `.drawer--right`)
-  is an equivalent alternative — both are governed. The copyable example
+  primitive (`.sheet` / `.sheet--right` / `.sheet__header` / `.sheet__footer`).
+  The copyable example
   (`list-page-advanced-filter.html`) uses `.sheet--right` for its panel.
 - **`queue`** — a row of **status-segment tabs** above the list (All / Pending /
   Approved …) whose selection drives the applied filter. These segment tabs are
@@ -221,7 +220,7 @@ list below restates the optional slots with the extra detail each needs.
 - **metric-strip** — a top row of KPIs (a horizontal `stat-grid` of `stat-card`s)
   above the condition band, summarizing the collection. Horizontal here, distinct
   from a detail page's vertical stat rail.
-- **row → detail peek** — clicking a row may open a side **drawer / sheet**
+- **row → detail peek** — clicking a row may open a side **sheet**
   quick-detail (overview + a KV subset) instead of navigating away; the full
   detail page stays the deep-link target for the record.
 

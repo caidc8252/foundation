@@ -166,7 +166,7 @@ artifact 渲染出的一切只能来自这 **4 层闭合集 + 图标**，没有�
 - **输入**: 生成的 artifact + 真实业务内容。
 - **动作**: 替换占位文案、按业务增删 optional 槽（保留 required core）、需要时在产物自己的 `<style>`
   里加**仅由 token 构成**的页面局部布局类（见 §5）。
-- **`description` 槽不推测**（`card` · `drawer` · `modal` · `popover` · `sheet` 这 5 个组件）：
+- **`description` 槽不推测**（`card` · `modal` · `popover` · `sheet` 这 4 个组件）：
   这些组件的 `description` 是 optional 槽，生成时**不要凭需求推测/编造**一句支撑文案。
   判断该槽确实需要出现时，用单个 `-` 占位（保留槽结构、等真人补真实文案），不要自造内容；
   判断不需要就整段省略该 optional 槽。其余带 description 的组件不受此约束，照常填。

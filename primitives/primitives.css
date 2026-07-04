@@ -2193,122 +2193,6 @@ body { margin: 0; }
   font-size: var(--text-xs);
 }
 
-/* ═══════════════════════════════ Drawer ═══════════════════════════════ */
-/* @component drawer */
-/* Edge-docked panel over a dimmed scrim (vaul). Open/close lifecycle, the
-   edge slide, drag-to-dismiss + snap points, focus trap, scroll lock, and
-   portalling are vaul (React) behaviors — out of scope for this static skin.
-   The reference layer paints the resting OPEN drawer (scrim + panel + slots);
-   the consumer drives visibility. The 80vh height cap and the min(560px, 90vw)
-   side width (readable 560px cap) are viewport math, conventionally exempt. The scrim is a literal
-   black/10 in the source, not the surface-overlay token Modal uses — kept
-   theme-aware via color-mix here (see drawer.md notes: token-change wish). */
-
-/* Scrim — fixed full-viewport wash behind the panel; light blur where supported. */
-.drawer-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 50;   /* modal z-layer — above sticky page chrome (z-index 10); z-index conventionally exempt */
-  background-color: color-mix(in oklch, var(--color-content-primary) 10%, transparent);
-}
-@supports (backdrop-filter: blur(2px)) {
-  .drawer-overlay { backdrop-filter: blur(2px); }   /* source backdrop-blur-xs; no blur token */
-}
-
-/* Panel — docked surface, column stack; direction modifier sets the edge. */
-.drawer {
-  position: fixed;
-  z-index: 50;   /* modal z-layer — panel is a fixed sibling of its overlay; z-index conventionally exempt */
-  display: flex;
-  flex-direction: column;
-  height: auto;
-  border: 0 solid var(--color-line-default);   /* direction modifier lights the docked edge */
-  background-color: var(--color-surface-2);
-  color: var(--color-content-primary);
-  font-family: var(--font-sans);
-  font-size: var(--text-md);
-  box-shadow: var(--shadow-1);
-}
-
-/* Drawer · directions — inset, size axis, rounded corners, docked-edge border. */
-.drawer--bottom {
-  inset-inline: 0;
-  bottom: 0;
-  margin-top: calc(var(--space-20) + var(--space-4));          /* 96px — source mt-24 breathing gap */
-  max-height: 80vh;
-  border-top-left-radius: var(--radius-xl);
-  border-top-right-radius: var(--radius-xl);
-  border-top-width: 1px;
-}
-.drawer--top {
-  inset-inline: 0;
-  top: 0;
-  margin-bottom: calc(var(--space-20) + var(--space-4));       /* 96px — source mb-24 */
-  max-height: 80vh;
-  border-bottom-left-radius: var(--radius-xl);
-  border-bottom-right-radius: var(--radius-xl);
-  border-bottom-width: 1px;
-}
-.drawer--left {
-  inset-block: 0;
-  left: 0;
-  width: min(560px, 90vw);              /* DS 2.0: readable side cap (≤560px, else 90vw) */
-  border-top-right-radius: var(--radius-xl);
-  border-bottom-right-radius: var(--radius-xl);
-  border-right-width: 1px;
-}
-.drawer--right {
-  inset-block: 0;
-  right: 0;
-  width: min(560px, 90vw);              /* DS 2.0: readable side cap (≤560px, else 90vw) */
-  border-top-left-radius: var(--radius-xl);
-  border-bottom-left-radius: var(--radius-xl);
-  border-left-width: 1px;
-}
-
-/* Drag handle — grab bar near the top; shown only for the bottom sheet. */
-.drawer__handle {
-  flex-shrink: 0;
-  width: var(--spacing-control-md);     /* 36px — source w-9 */
-  height: var(--space-1);               /* 4px — source h-1 */
-  margin-inline: auto;
-  margin-top: var(--space-3);
-  border-radius: var(--radius-full);
-  background-color: var(--color-line-strong);
-}
-
-/* Header — title/description stack. Centered for bottom/top sheets; start-aligned for sides. */
-.drawer__header {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--space-1) / 2);        /* 2px — source gap-0.5, half-step over the raw scale */
-  padding-inline: var(--space-5);
-  padding-block: calc(var(--space-3) + var(--space-1) / 2);   /* 14px — source py-3.5 */
-}
-.drawer--bottom .drawer__header,
-.drawer--top .drawer__header {
-  text-align: center;
-}
-
-.drawer__title {
-  font-size: var(--text-md);
-  font-weight: 600;
-  color: var(--color-content-primary);
-}
-.drawer__description {
-  font-size: var(--text-md);
-  color: var(--color-content-secondary);
-}
-
-/* Footer — action shelf pushed to the panel bottom; stacks .btn actions. */
-.drawer__footer {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  margin-top: auto;
-  padding: var(--space-4);
-}
-
 /* ═══════════════════════════════ Dropdown Menu ═══════════════════════════════ */
 /* @component dropdown-menu */
 /* Triggered overlay of grouped actions (base-ui Menu). Triggering, portalling,
@@ -3373,10 +3257,9 @@ body { margin: 0; }
 
 /* ═══════════════════════════════ Sheet ═══════════════════════════════ */
 /* @component sheet */
-/* Edge-docked side panel over a dimmed scrim (base-ui Dialog). The base-ui
-   counterpart to the vaul Drawer — same overlay-and-panel shape, docked to
-   right (default) / left / top / bottom, but with a built-in close button and
-   square corners (docks flush to the edge). Open/close (fade + ~40px edge
+/* Edge-docked side panel over a dimmed scrim (base-ui Dialog), docked to
+   right (default) / left / top / bottom, with a built-in close button and
+   square corners (docks flush to the edge; no drag-to-dismiss). Open/close (fade + ~40px edge
    slide), portalling, focus trap, and Escape/scrim dismissal are React/base-ui
    behaviors — out of scope for this static skin, which paints the resting OPEN
    panel only; the consumer drives visibility. The scrim is a black/10 wash (not

@@ -1,6 +1,6 @@
 # Sheet
 
-An edge-docked side panel that slides in over a dimmed scrim. The base-ui `Dialog` counterpart to the `vaul`-driven Drawer — same overlay-and-panel shape, docked to right (default), left, top, or bottom — for filters, detail/inspector views, and form drawers that don't need drag-to-dismiss.
+An edge-docked side panel that slides in over a dimmed scrim (base-ui `Dialog`), docked to right (default), left, top, or bottom — for filters, detail/inspector views, and form panels. Dismissal is the close button, scrim click, or Escape (no drag-to-dismiss).
 
 > **Contract scope.** This file is the cross-consumer *design contract*: the
 > side vocabulary, the token recipe, states, anatomy, a11y. It is the authority
@@ -21,7 +21,7 @@ The single variant axis is **side** (`data-side`) — which edge the panel docks
 | `top` | notification / command sheet from the top | `inset-x-0 top-0` · full-width · `height: auto` · bottom border `line-default` |
 | `bottom` | bottom-sheet / mobile action surface | `inset-x-0 bottom-0` · full-width · `height: auto` · top border `line-default` |
 
-Unlike Modal/Drawer the Sheet has **square corners** (docks flush to the edge, no rounded inner corner) and **no drag handle** — dismissal is the close button, scrim click, or Escape (impl-owned). The side widths (`min(560px, 90vw)`, a readable 560px cap) and `height: auto` are viewport math — conventionally exempt, no token expresses them.
+Unlike the Modal the Sheet has **square corners** (docks flush to the edge, no rounded inner corner) and **no drag handle** — dismissal is the close button, scrim click, or Escape (impl-owned). The side widths (`min(560px, 90vw)`, a readable 560px cap) and `height: auto` are viewport math — conventionally exempt, no token expresses them.
 
 ## States
 
@@ -67,14 +67,14 @@ Unlike Modal/Drawer the Sheet has **square corners** (docks flush to the edge, n
 
 ## Notes
 
-- **Scrim color is a non-token.** The source overlay is `bg-black/10` — a literal black-at-10% wash, not the `surface-overlay` token the Modal uses. The reference CSS keeps fidelity with `color-mix(in oklch, var(--color-content-primary) 10%, transparent)` (theme-aware near-black) rather than hardcoding `rgba`. *Token-change wish:* a dedicated `--color-scrim-light` (or aligning Sheet/Drawer onto `surface-overlay`) would remove this near-token. Same gap noted in `drawer.md`.
+- **Scrim color is a non-token.** The source overlay is `bg-black/10` — a literal black-at-10% wash, not the `surface-overlay` token the Modal uses. The reference CSS keeps fidelity with `color-mix(in oklch, var(--color-content-primary) 10%, transparent)` (theme-aware near-black) rather than hardcoding `rgba`. *Token-change wish:* a dedicated `--color-scrim-light` (or aligning the Sheet onto `surface-overlay`) would remove this near-token.
 - **`backdrop-blur-xs`** on the overlay is a `supports`-gated progressive enhancement with no blur-radius token; expressed with a small literal `blur()` radius (visual-only, degrades gracefully).
-- The source paints on `bg-surface-3` (already semantic) and the title/description use the shadcn aliases `text-foreground` / `text-muted-foreground` — they resolve to `content-primary` / `content-secondary` in this token system (same mapping the modal/drawer skins use).
+- The source paints on `bg-surface-3` (already semantic) and the title/description use the shadcn aliases `text-foreground` / `text-muted-foreground` — they resolve to `content-primary` / `content-secondary` in this token system (same mapping the modal skin uses).
 - The close button's `top-3 right-3` offset is `space-3` (12px); the header `gap-0.5` (2px) lands on a half-step over the raw `--space` scale, expressed via the same `calc()` half-step convention used elsewhere in this stylesheet.
 - The `~40px` open/close translate (`translate-*-[2.5rem]`) is animation distance, owned by the React enter/exit and out of scope for this static skin.
 - Open/close animation, portalling, focus trap, and dismissal gating are **behavior owned by the React implementation** (base-ui `Dialog`); the reference CSS expresses the static OPEN skin only.
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Sheet, SheetTrigger, SheetClose, SheetPortal, SheetOverlay, SheetContent, SheetHeader, SheetFooter, SheetTitle, SheetDescription } from "@cloud/ui"`. **Behavior owned by the base-ui `Dialog` React implementation** (open/close, edge slide, focus trap, portalling, Escape/scrim dismissal); pass `side` (`right` default) for the docked edge and `showCloseButton` to toggle the × . Prop/API details: the `ui` skill. Do not re-skin via `className`; the reference CSS expresses the static skin only. For a centered task dialog use `Modal`; for a drag-to-dismiss mobile sheet use `Drawer`.
+- **Next / @cloud/ui** — `import { Sheet, SheetTrigger, SheetClose, SheetPortal, SheetOverlay, SheetContent, SheetHeader, SheetFooter, SheetTitle, SheetDescription } from "@cloud/ui"`. **Behavior owned by the base-ui `Dialog` React implementation** (open/close, edge slide, focus trap, portalling, Escape/scrim dismissal); pass `side` (`right` default) for the docked edge and `showCloseButton` to toggle the × . Prop/API details: the `ui` skill. Do not re-skin via `className`; the reference CSS expresses the static skin only. For a centered task dialog use `Modal`.
 - **Artifact (self-contained HTML)** — use `.sheet-overlay` wrapping `.sheet` (+ `.sheet--right` / `--left` / `--top` / `--bottom`) with `.sheet__header` › `.sheet__title` + `.sheet__description`, the close as a `.btn .btn--ghost .btn--icon .btn--sm .sheet__close`, and `.sheet__footer` (holding `.btn` actions), on top of the inlined `release/tokens.inline.css`. The reference CSS paints the resting OPEN panel; the consumer drives visibility and the slide is out of scope. Same surface recipe and side vocabulary as the source.
