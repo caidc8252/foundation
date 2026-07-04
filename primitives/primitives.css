@@ -663,9 +663,13 @@ body { margin: 0; }
   color: var(--color-content-tertiary);
 }
 /* CardAction — header-right action slot (matches @cloud/ui CardAction:
-   col-start-2 row-span-2 row-start-1 self-center justify-self-end).
-   Spans both header rows so the action vertically centers against the
-   full title + description block, not just the title row alone. */
+   col-start-2 justify-self-end). ALWAYS vertically centered against the
+   header content block, whether or not a CardDescription is present:
+   • + description → span both rows and self-center, so the action centers
+     against the full title + description block.
+   • title-only  → sit in row 1 only (NOT span 2). Spanning a phantom second
+     row would drop the action's center below the title's; header centers the
+     lone title row, and the action centers in that same track → they line up. */
 .card__action {
   grid-column: 2;
   grid-row: 1 / span 2;
@@ -676,6 +680,8 @@ body { margin: 0; }
   gap: var(--space-2);
   flex-shrink: 0;
 }
+.card__header:not(:has(.card__description)) { align-items: center; }
+.card__header:not(:has(.card__description)) .card__action { grid-row: 1; }
 /* Card — collapsible variant. The header becomes a full-width <button> toggle
    with a trailing chevron. Set data-open="false" on .card to collapse. */
 .card--collapsible > .card__header { cursor: pointer; }

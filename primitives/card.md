@@ -12,7 +12,7 @@ A Card is a **slot composition**, not a single element. The root sets the frame;
 | `CardHeader` | bottom rule `line-subtle` · denser vertical padding than content |
 | `CardTitle` | `text-md` `font-semibold` `content-primary` (drops to `text-sm` at `size=sm`) |
 | `CardDescription` | `text-xs` `content-tertiary` |
-| `CardAction` | header-right action slot, vertically centered against the title block |
+| `CardAction` | header-right action slot, always vertically centered against the header content block (title, or title + description) |
 | `CardContent` | size-based slot padding only |
 | `CardFooter` | top rule `line-subtle` + size-based slot padding |
 
@@ -75,7 +75,9 @@ Card (card--collapsible)
 - Because slot padding is a `group-data` variant class, a consumer's plain `p-0` can't override it (tailwind-merge won't dedupe across variants). Use the slot's `flush` prop for full-bleed content (tables, row lists) — rows then own their padding.
 - **Table or row-list in a card → flush the content slot.** A `data-table` / row-list inside `CardContent` must use `flush` (artifact: add `.card__content--flush` to the `.card__content` holding it) so the slot drops its padding and the table sits flush to the card edges, aligned with the header rule — the table frame and rows own their spacing. A non-flush `card__content` double-pads the table and misaligns its edges. (Mechanism is the **card's**, not the table's; `.table-frame--flush` is a separate data-table concern — corner clipping / sticky — not this.)
 - **Stacked sub-sections inside a card** (header ↔ alert ↔ body, or several blocks in one `card__content`) take the in-card rung — wrap them in a `.stack--3` (12px, the spacing ladder in principles §13). They never sit at 0-gap.
-- `CardAction` is vertically centered against the title block (team spec), not top-aligned like shadcn.
+- `CardAction` is **always vertically centered** against the header content block (team spec), not top-aligned like shadcn — this holds whether the header is title-only or title + description. (A title-only header keeps the action in the single title row rather than spanning a phantom second row, so its center lines up with the title's.)
+- **`CardAction` button recipe.** The header action is a real, emphasized button — **`btn--secondary`** by default, or **`btn--primary`** when it is the card's primary call-to-action — at **`btn--md`** (the default control size), and **always carrying a leading icon** (`data-lucide` glyph + label, or icon-only via `btn--icon`). It is **never** a `btn--ghost`/`btn--xs` text-only affordance: the header action must read as an actual control, not a link. (Low-emphasis "view more" links belong in `CardFooter`, not the header.)
+- **`CardFooter` button size tracks the card size.** A footer action matches the root `size` — `card--sm → btn--sm`, `card--md → btn--md`, `card--lg → btn--lg` — so the control scales with the card's radius/padding rung rather than sitting at a fixed height. (The default `md` card therefore takes a `btn--md` footer action, per principle §15.)
 
 ## Implementations
 

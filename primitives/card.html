@@ -3,12 +3,9 @@
   ──────────────────────────────────────────────────────────────────────
   Demonstrates the Card primitive in the foundation design system.
   Covers:
-    - Static card with title + action + content
+    - Static card with title + action + content (action centered against the header block)
     - Sizes (sm / md / lg): radius + slot padding scale together
-    - Collapsible card (open state: chevron down, content visible)
-    - Collapsible card (closed state: chevron rotated, content hidden, hairline dropped)
     - Loading skeleton rows filling the content area
-    - Stacked cards in a detail page layout
   ──────────────────────────────────────────────────────────────────────
 -->
 <!DOCTYPE html>
@@ -23,17 +20,18 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 840px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -80,14 +78,17 @@
       <h2 class="demo-section__title">Card · static</h2>
       <p class="demo-section__desc">
         A plain content panel: <code>.card</code> with <code>.card__header</code> (title +
-        optional action) and <code>.card__content</code>.
+        optional action) and <code>.card__content</code>. The action is always
+        vertically centered against the header block — whether it's
+        <strong>title-only</strong> or <strong>title + description</strong>.
       </p>
 
+      <!-- Title-only header + action → both centered on one line -->
       <div class="card">
         <div class="card__header">
           <h2 class="card__title">Billing details</h2>
           <div class="card__action">
-            <button class="btn btn--ghost btn--sm" type="button">
+            <button class="btn btn--secondary btn--md" type="button">
               <svg data-lucide="square-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
               Edit
             </button>
@@ -103,6 +104,26 @@
           </dl>
         </div>
       </div>
+
+      <!-- Header with a description + action → action centers against the title+description block -->
+      <div class="card">
+        <div class="card__header">
+          <h2 class="card__title">API keys</h2>
+          <p class="card__description">Rotate or revoke the keys your services use to authenticate.</p>
+          <div class="card__action">
+            <button class="btn btn--primary btn--md" type="button">
+              <svg data-lucide="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+              New key
+            </button>
+          </div>
+        </div>
+        <div class="card__content">
+          <dl class="kv-grid">
+            <div class="kv-grid__row"><dt>Production</dt><dd style="font-family:var(--font-mono);">sk_live_••••4242</dd></div>
+            <div class="kv-grid__row"><dt>Staging</dt><dd style="font-family:var(--font-mono);">sk_test_••••8817</dd></div>
+          </dl>
+        </div>
+      </div>
     </div>
 
     <!-- ══════════════════════════════════════════════════════════════════
@@ -114,7 +135,8 @@
         <code>size</code> scales radius and slot padding together:
         <code>.card--sm</code> (8px radius · 12px padding),
         <code>.card--md</code> <em>(default — 12px · 20px)</em>,
-        <code>.card--lg</code> (16px · 24px). Header keeps its rule; only spacing changes.
+        <code>.card--lg</code> (16px · 24px). The footer action tracks the card size —
+        <code>sm → btn--sm</code>, <code>md → btn--md</code>, <code>lg → btn--lg</code>.
       </p>
 
       <div class="demo-col3">
@@ -144,7 +166,7 @@
             </p>
           </div>
           <div class="card__footer" style="justify-content:flex-end;">
-            <button class="btn btn--ghost btn--sm" type="button">Action</button>
+            <button class="btn btn--ghost btn--md" type="button">Action</button>
           </div>
         </div>
 
@@ -159,64 +181,14 @@
             </p>
           </div>
           <div class="card__footer" style="justify-content:flex-end;">
-            <button class="btn btn--ghost btn--sm" type="button">Action</button>
+            <button class="btn btn--ghost btn--lg" type="button">Action</button>
           </div>
         </div>
       </div>
     </div>
 
     <!-- ══════════════════════════════════════════════════════════════════
-         Section 3: Collapsible — open vs closed
-         ════════════════════════════════════════════════════════════════ -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">Card · collapsible (click to toggle)</h2>
-      <p class="demo-section__desc">
-        Add <code>.card--collapsible</code> on the root. The header becomes a
-        <code>&lt;button&gt;</code> toggle. Open: chevron down, content visible.
-        Closed (<code>data-open="false"</code>): content hidden, chevron rotated −90°.
-      </p>
-
-      <div class="demo-col2">
-        <div>
-          <div class="card card--collapsible">
-            <div class="card__header">
-              <button class="card__toggle" type="button" aria-expanded="true" aria-controls="c2-open">
-                <h2 class="card__title">Advanced configuration</h2>
-                <span class="card__chevron" aria-hidden="true">
-                  <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                </span>
-              </button>
-            </div>
-            <div class="card__content" id="c2-open">
-              <dl class="kv-grid">
-                <div class="kv-grid__row"><dt>API endpoint</dt><dd style="font-family:var(--font-mono);">https://api.acme.com/v3</dd></div>
-                <div class="kv-grid__row"><dt>Webhook URL</dt><dd style="font-family:var(--font-mono);">https://hooks.acme.com/events</dd></div>
-                <div class="kv-grid__row"><dt>Rate limit</dt><dd>10,000 req/hour</dd></div>
-              </dl>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <div class="card card--collapsible" data-open="false">
-            <div class="card__header">
-              <button class="card__toggle" type="button" aria-expanded="false" aria-controls="c2-closed">
-                <h2 class="card__title">Audit log</h2>
-                <span class="card__chevron" aria-hidden="true">
-                  <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                </span>
-              </button>
-            </div>
-            <div class="card__content" id="c2-closed">
-              <p style="font-size:var(--text-sm);color:var(--color-content-secondary);">This content is hidden when collapsed.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════════════════════════════════════════════════════════════════
-         Section 4: Loading state
+         Section 3: Loading state
          ════════════════════════════════════════════════════════════════ -->
     <div class="demo-section">
       <h2 class="demo-section__title">Card · loading state</h2>
@@ -238,87 +210,6 @@
       </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════════════════════════
-         Section 5: Stacked cards
-         ════════════════════════════════════════════════════════════════ -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">Card · stacked in a detail page</h2>
-      <p class="demo-section__desc">
-        Multiple cards stacked in a <code>.page-body</code>. Mix of static and collapsible.
-      </p>
-
-      <div class="page-body" style="background:transparent;padding:0;">
-        <div class="card">
-          <div class="card__header">
-            <h2 class="card__title">Overview</h2>
-            <div class="card__action">
-              <button class="btn btn--ghost btn--sm" type="button">Manage</button>
-            </div>
-          </div>
-          <div class="card__content">
-            <dl class="kv-grid">
-              <div class="kv-grid__row"><dt>Account ID</dt><dd style="font-family:var(--font-mono);">ACC-001</dd></div>
-              <div class="kv-grid__row"><dt>Created</dt><dd>Jan 15, 2025</dd></div>
-              <div class="kv-grid__row"><dt>Region</dt><dd>US-East</dd></div>
-              <div class="kv-grid__row"><dt>Status</dt><dd><span class="badge badge--success"><span class="badge__dot"></span>Active</span></dd></div>
-            </dl>
-          </div>
-        </div>
-
-        <div class="card card--collapsible">
-          <div class="card__header">
-            <button class="card__toggle" type="button" aria-expanded="true" aria-controls="c4-team">
-              <h2 class="card__title">Team members</h2>
-              <span class="card__chevron" aria-hidden="true">
-                <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-              </span>
-            </button>
-          </div>
-          <div class="card__content" id="c4-team">
-            <dl class="kv-grid">
-              <div class="kv-grid__row"><dt>alice@acme.com</dt><dd><span class="badge badge--neutral">Admin</span></dd></div>
-              <div class="kv-grid__row"><dt>bob@acme.com</dt><dd><span class="badge badge--neutral">Member</span></dd></div>
-              <div class="kv-grid__row"><dt>carol@acme.com</dt><dd><span class="badge badge--neutral">Member</span></dd></div>
-            </dl>
-          </div>
-        </div>
-
-        <div class="card card--collapsible" data-open="false">
-          <div class="card__header">
-            <button class="card__toggle" type="button" aria-expanded="false" aria-controls="c4-security">
-              <h2 class="card__title">Security settings</h2>
-              <span class="card__chevron" aria-hidden="true">
-                <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-              </span>
-            </button>
-          </div>
-          <div class="card__content" id="c4-security">
-            <p style="font-size:var(--text-sm);color:var(--color-content-secondary);">MFA, API keys, and IP whitelist settings.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
   </div>
-
-  <script>
-    (function () {
-      var toggles = document.querySelectorAll('.card__toggle');
-      toggles.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          var card = btn.closest('.card');
-          if (!card) return;
-          var open = card.getAttribute('data-open') === 'false';
-          if (open) {
-            card.removeAttribute('data-open');
-            btn.setAttribute('aria-expanded', 'true');
-          } else {
-            card.setAttribute('data-open', 'false');
-            btn.setAttribute('aria-expanded', 'false');
-          }
-        });
-      });
-    })();
-  </script>
 </body>
 </html>
