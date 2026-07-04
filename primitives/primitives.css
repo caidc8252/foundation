@@ -830,12 +830,7 @@ body { margin: 0; }
   font-family: var(--font-sans);
 }
 
-/* Alert · tones */
-.alert--default {
-  background-color: var(--color-surface-2);
-  border-color: var(--color-line-default);
-  color: var(--color-content-primary);
-}
+/* Alert · tones — every alert carries a semantic tone (no neutral/un-toned box) */
 .alert--info {
   background-color: var(--color-info-bg);
   border-color: color-mix(in oklch, var(--color-info) 25%, transparent);

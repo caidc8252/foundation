@@ -3,7 +3,7 @@
   ──────────────────────────────────────────────────────────────────────
   Demonstrates the Alert primitive in the foundation design system.
   Covers:
-    - All 5 tones: default, info, success, warning, error
+    - All 4 tones: info, success, warning, error
     - With and without icon
     - With description and action slot
   ──────────────────────────────────────────────────────────────────────
@@ -20,18 +20,21 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
-      background-color: var(--color-surface-1);
+      background-color: var(--color-surface-3);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 840px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
     }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
+    }
+    /* Live-demo helper — page-local, NOT design vocabulary. */
+    .is-dismissed { display: none !important; }
     .demo-section {
       display: flex;
       flex-direction: column;
@@ -73,14 +76,6 @@
         <code>.alert--with-icon</code> for two-column grid layout.
         Each alert has an icon, title, optional description, and optional action.
       </p>
-
-      <div class="alert alert--with-icon" role="alert">
-        <svg data-lucide="info" class="alert__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-        <div>
-          <div class="alert__title">Default alert</div>
-          <p class="alert__description">A neutral contextual note with no semantic status.</p>
-        </div>
-      </div>
 
       <div class="alert alert--info alert--with-icon" role="alert">
         <svg data-lucide="info" class="alert__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
@@ -134,11 +129,6 @@
         flow — no leading icon, just the title and description.
       </p>
 
-      <div class="alert" role="alert">
-        <div class="alert__title">Default — no icon</div>
-        <p class="alert__description">A plain alert without a leading icon.</p>
-      </div>
-
       <div class="alert alert--info" role="alert">
         <div class="alert__title">Info — no icon</div>
         <p class="alert__description">Informational message without a glyph.</p>
@@ -190,5 +180,27 @@
     </div>
 
   </div>
+  <script>
+    // An alert carries ONE pinned affordance (alert.md: "Retry" OR "Dismiss").
+    // So only alerts that DON'T already have an action get a dismiss (×) button;
+    // alerts with an existing action (Retry / Extend / …) keep that as their one
+    // affordance. Clicking × removes the alert.
+    (function () {
+      var X = '<svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>';
+      document.querySelectorAll('.alert').forEach(function (alert) {
+        if (alert.querySelector('.alert__action')) return; // already has its one affordance
+        var slot = document.createElement('div');
+        slot.className = 'alert__action';
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn btn--ghost btn--xs btn--icon';
+        btn.setAttribute('aria-label', 'Dismiss');
+        btn.innerHTML = X;
+        slot.appendChild(btn);
+        alert.appendChild(slot);
+        btn.addEventListener('click', function () { alert.classList.add('is-dismissed'); });
+      });
+    })();
+  </script>
 </body>
 </html>

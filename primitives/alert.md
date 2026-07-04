@@ -11,11 +11,10 @@ An inline, in-flow status message box. Highlights feedback (a result, a warning,
 
 ## Variants
 
-Alert is colored by **tone** (semantic status), not by visual form — there is one form (a tonal filled box) and the `variant` prop selects the status hue. Each tone uses the matching semantic `*-bg` surface, a hairline border mixed from the base semantic color at 25% opacity, and `*-strong` text (which the leading icon inherits).
+Alert is colored by **tone** (semantic status), not by visual form — there is one form (a tonal filled box) and the `variant` prop selects the status hue. Each tone uses the matching semantic `*-bg` surface, a hairline border mixed from the base semantic color at 25% opacity, and `*-strong` text (which the leading icon inherits). **Every alert carries a semantic tone — there is no neutral/un-toned variant; if a note has no status, it isn't an Alert.**
 
 | variant | use | token recipe |
 |---|---|---|
-| `default` *(default)* | neutral contextual note, no status hue | bg `surface-2` · border `line-default` · text `content-primary` |
 | `info` | informational heads-up | bg `info-bg` · border `info`/25 · text + icon `info-strong` |
 | `success` | a completed / healthy result | bg `success-bg` · border `success`/25 · text + icon `success-strong` |
 | `warning` | a caution that needs attention but isn't a failure | bg `warning-bg` · border `warning`/25 · text + icon `warning-strong` |

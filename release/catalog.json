@@ -187,7 +187,6 @@
     "accordion__label",
     "accordion__trigger",
     "alert",
-    "alert--default",
     "alert--error",
     "alert--info",
     "alert--success",
@@ -900,7 +899,6 @@
       "example": "primitives/alert.html",
       "classes": [
         ".alert",
-        ".alert--default",
         ".alert--error",
         ".alert--info",
         ".alert--success",
