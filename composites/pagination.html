@@ -6,22 +6,22 @@
   When to use (AI decision guide)
   ──────────────────────────────────────────────────────────────────────
   Use pagination for page-based navigation below tables and lists.
-  Tables ALWAYS use the SIMPLE variant (prev · current display · next).
-  Numbered pages are for search results / standalone pagers only.
+  It is a NUMBERED nav — ‹ Prev · 1 2 3 … n · Next › — with ellipsis collapse
+  and an OPTIONAL « first / last » quick-jump. Same shape standalone and in a
+  table/list footer (via rich-pagination). Prev/Next-only (no numbers) is the
+  cursor-pagination shape, for opaque-cursor / unknown-total data.
   · load-more — for append-on-click feeds / grids (not tables)
   · rich-pagination — for the full footer bar with rows-per-page selector
 
-  Covers:
-    - SIMPLE variant:  ‹ Prev · current page (display) · Next ›
-      This is the ONLY variant used in tables/lists — no numbered jumps.
-    - NUMBERED variant: ‹ Prev · 1 2 3 … 9 · Next ›
-      For non-table contexts only (e.g. search results, standalone pagers).
-    - Disabled states: prev/next disabled at page boundaries (opacity-50,
-      cursor-not-allowed) — they stay visible so nothing reflows.
-    - Current page display: non-interactive, weight 500, tabular-nums
-      (the rows-per-page select + range summary live in rich-pagination, the footer)
-    - Ellipsis collapse: first/last/current ± neighbors, ellipsis for gaps
-    - aria-current="page" marker on the active numbered button
+  Two live examples — ONE footer each. A real page shows a single pager, so the
+  demo doesn't stack states; walk the pages to see every state. Both are the
+  NUMBERED pager (‹ Prev · 1 2 3 … 9 · Next ›); the only difference is the
+  « first / last » quick-jump:
+    - numbered pages, no first/last — right-aligned in the footer.
+    - numbered pages + « first / last » quick-jump (data-firstlast) for large sets.
+  Idle page = ghost; current = soft primary-50/primary-700 fill + aria-current="page";
+  ellipsis collapses long ranges; boundary Prev/Next (and first/last) disable
+  (opacity-50, cursor-not-allowed) but stay visible so nothing reflows.
   ──────────────────────────────────────────────────────────────────────
 -->
 <!DOCTYPE html>
@@ -37,17 +37,18 @@
     /* Page-local overrides for this demo page */
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -88,187 +89,133 @@
       width: 100%;
       border-collapse: collapse;
     }
+    /* Footer that right-aligns the pagination nav — its real placement (the nav
+       is the RIGHT side of a table/list footer; see rich-pagination). */
+    .demo-card__footer {
+      display: flex;
+      justify-content: flex-end;
+      padding: var(--space-3) var(--space-4);
+      border-top: 1px solid var(--color-line-subtle);
+    }
   </style>
 </head>
 <body>
   <div class="demo-page">
 
-    <!-- ── Section: Simple pagination (tables/lists) ── -->
+    <!-- ── Section: Numbered pager — Prev · pages · Next (no first/last) ── -->
     <div class="demo-section">
-      <h2 class="demo-section__title">SIMPLE pagination · table/list footer</h2>
+      <h2 class="demo-section__title">Pagination · numbered pages (no first / last)</h2>
       <p class="demo-section__desc">
-        The only pagination variant for tables and lists. Shows
-        <code>&lsaquo; Prev</code> · current page (display only, not a jump)
-        · <code>Next &rsaquo;</code>. The current page is non-interactive,
-        weight 500, tabular-nums. Prev/Next disable at ends but stay visible.
+        The numbered pager: <code>&lsaquo; Prev</code> · numbered page buttons with
+        ellipsis collapse · <code>Next &rsaquo;</code>. Idle = ghost, current = soft
+        primary-50/primary-700 fill + <code>aria-current="page"</code>. Right-aligned in the
+        footer; live — walk the pages to watch the ellipsis window recompute and Prev/Next
+        disable at the ends (opacity-50, not-allowed) while staying visible.
       </p>
 
-      <!-- Simulated table card with simple pagination footer -->
       <div class="demo-card">
         <div class="demo-card__body">
-          <em>Table content would appear here</em>
+          <em>Paged content would appear here</em>
         </div>
-        <nav class="pagination" aria-label="Pagination">
-            <button class="pagination__page" disabled aria-label="Previous page">
-              <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-            </button>
-            <span class="pagination__current" aria-current="page">1</span>
-            <button class="pagination__page" aria-label="Next page">
-              <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-            </button>
-        </nav>
+        <div class="demo-card__footer">
+          <nav class="pagination" aria-label="Pagination" data-pager="numbered" data-total="12" data-page="1"></nav>
+        </div>
       </div>
     </div>
 
-    <!-- ── Section: Simple pagination — mid-page (all buttons enabled) ── -->
+    <!-- ── Section: Numbered pager WITH first/last quick-jump (the only difference) ── -->
     <div class="demo-section">
-      <h2 class="demo-section__title">SIMPLE pagination · mid-page (all enabled)</h2>
+      <h2 class="demo-section__title">Pagination · with first / last quick-jump</h2>
       <p class="demo-section__desc">
-        When not at the first or last page, both Prev and Next are enabled.
-        The current page number is always displayed as centered text.
+        The same numbered pager plus <strong>&laquo; first / last &raquo;</strong>
+        quick-jump chevrons (<code>data-firstlast</code>) — the <strong>only</strong>
+        difference from the pager above. Useful for large sets where jumping straight to the
+        ends matters; they disable at the boundaries too.
       </p>
 
       <div class="demo-card">
         <div class="demo-card__body">
-          <em>Table content would appear here</em>
+          <em>Search results would appear here</em>
         </div>
-        <nav class="pagination" aria-label="Pagination">
-            <button class="pagination__page" aria-label="Previous page">
-              <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-            </button>
-            <span class="pagination__current" aria-current="page">5</span>
-            <button class="pagination__page" aria-label="Next page">
-              <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-            </button>
-        </nav>
-      </div>
-    </div>
-
-    <!-- ── Section: Simple pagination — last page (Next disabled) ── -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">SIMPLE pagination · last page (next disabled)</h2>
-      <p class="demo-section__desc">
-        At the last page, Next is disabled (opacity-50, cursor-not-allowed)
-        but remains visible — nothing reflows. The total is communicated
-        via the range summary, not page numbers.
-      </p>
-
-      <div class="demo-card">
-        <div class="demo-card__body">
-          <em>Table content would appear here</em>
+        <div class="demo-card__footer">
+          <nav class="pagination" aria-label="Pagination" data-pager="numbered" data-firstlast data-total="25" data-page="1"></nav>
         </div>
-        <nav class="pagination" aria-label="Pagination">
-            <button class="pagination__page" aria-label="Previous page">
-              <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-            </button>
-            <span class="pagination__current" aria-current="page">25</span>
-            <button class="pagination__page" disabled aria-label="Next page">
-              <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-            </button>
-        </nav>
-      </div>
-    </div>
-
-    <!-- ── Section: Numbered pagination (non-table only) ── -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">NUMBERED pagination · non-table contexts only</h2>
-      <p class="demo-section__desc">
-        Page buttons reuse the button recipe: idle = ghost, current =
-        soft primary-50/primary-700 fill + aria-current="page". Ellipsis
-        collapses large page ranges. <strong>Do not use this variant in a
-        list/table footer</strong> — it's for standalone search results,
-        blog archives, etc.
-      </p>
-
-      <div class="demo-card">
-        <div class="demo-card__body">
-          <em>Non-table content (e.g. search results) would appear here</em>
-        </div>
-        <nav class="pagination" aria-label="Pagination">
-            <button class="pagination__page" disabled aria-label="Previous page">
-              <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-            </button>
-            <button class="pagination__page" aria-current="page">1</button>
-            <button class="pagination__page">2</button>
-            <button class="pagination__page">3</button>
-            <button class="pagination__page">4</button>
-            <button class="pagination__page">5</button>
-            <span class="pagination__ellipsis">&hellip;</span>
-            <button class="pagination__page">25</button>
-            <button class="pagination__page" aria-label="Next page">
-              <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-            </button>
-        </nav>
-      </div>
-    </div>
-
-    <!-- ── Section: Numbered pagination — mid page ── -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">NUMBERED · mid-page with ellipsis on both sides</h2>
-      <p class="demo-section__desc">
-        When the active page is somewhere in the middle, ellipsis appears
-        on both sides: first · ellipsis · neighbors · current · neighbors ·
-        ellipsis · last.
-      </p>
-
-      <div class="demo-card">
-        <div class="demo-card__body">
-          <em>Non-table content would appear here</em>
-        </div>
-        <nav class="pagination" aria-label="Pagination">
-            <button class="pagination__page" aria-label="Previous page">
-              <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-            </button>
-            <button class="pagination__page">1</button>
-            <span class="pagination__ellipsis">&hellip;</span>
-            <button class="pagination__page">7</button>
-            <button class="pagination__page">8</button>
-            <button class="pagination__page" aria-current="page">9</button>
-            <button class="pagination__page">10</button>
-            <button class="pagination__page">11</button>
-            <span class="pagination__ellipsis">&hellip;</span>
-            <button class="pagination__page">25</button>
-            <button class="pagination__page" aria-label="Next page">
-              <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-            </button>
-        </nav>
-      </div>
-    </div>
-
-    <!-- ── Section: Numbered with first/last page buttons ── -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">NUMBERED · with first &amp; last quick-jump buttons</h2>
-      <p class="demo-section__desc">
-        Optional <code>showFirstLast</code>: chevrons with a bar jump to
-        page 1 / last. Same button recipe; they also disable at boundaries.
-      </p>
-
-      <div class="demo-card">
-        <div class="demo-card__body">
-          <em>Non-table content would appear here</em>
-        </div>
-        <nav class="pagination" aria-label="Pagination with first/last">
-            <button class="pagination__page" disabled aria-label="First page">
-              <svg data-lucide="chevrons-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m11 17-5-5 5-5"/><path d="m18 17-5-5 5-5"/></svg>
-            </button>
-            <button class="pagination__page" disabled aria-label="Previous page">
-              <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-            </button>
-            <button class="pagination__page" aria-current="page">1</button>
-            <button class="pagination__page">2</button>
-            <button class="pagination__page">3</button>
-            <span class="pagination__ellipsis">&hellip;</span>
-            <button class="pagination__page">25</button>
-            <button class="pagination__page" aria-label="Next page">
-              <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-            </button>
-            <button class="pagination__page" aria-label="Last page">
-              <svg data-lucide="chevrons-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 17 5-5-5-5"/><path d="m13 17 5-5-5-5"/></svg>
-            </button>
-        </nav>
       </div>
     </div>
 
   </div>
+  <script>
+    // Live pagers — each nav[data-pager] renders from (data-page, data-total) and
+    // re-renders on click. Numbered pagers recompute the ellipsis window so the
+    // shown pages, aria-current, and boundary-disabled state always stay honest.
+    (function () {
+      var ICON = {
+        first: '<svg data-lucide="chevrons-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m11 17-5-5 5-5"/><path d="m18 17-5-5 5-5"/></svg>',
+        prev: '<svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>',
+        next: '<svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>',
+        last: '<svg data-lucide="chevrons-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 17 5-5-5-5"/><path d="m13 17 5-5-5-5"/></svg>'
+      };
+
+      function navBtn(icon, label, disabled) {
+        return '<button class="pagination__page" aria-label="' + label + '"' + (disabled ? ' disabled' : '') + '>' + icon + '</button>';
+      }
+
+      // first · … · current±1 · … · last
+      function windowPages(current, total) {
+        var pages = [], lo = Math.max(2, current - 1), hi = Math.min(total - 1, current + 1);
+        pages.push(1);
+        if (lo > 2) pages.push('gap');
+        for (var p = lo; p <= hi; p++) pages.push(p);
+        if (hi < total - 1) pages.push('gap');
+        if (total > 1) pages.push(total);
+        return pages;
+      }
+
+      function render(nav) {
+        var total = +nav.getAttribute('data-total');
+        var page = +nav.getAttribute('data-page');
+        if (nav.getAttribute('data-pager') === 'simple') {
+          nav.innerHTML =
+            navBtn(ICON.prev, 'Previous page', page <= 1) +
+            '<span class="pagination__current" aria-current="page">' + page + '</span>' +
+            navBtn(ICON.next, 'Next page', page >= total);
+          return;
+        }
+        var fl = nav.hasAttribute('data-firstlast');
+        var html = '';
+        if (fl) html += navBtn(ICON.first, 'First page', page <= 1);
+        html += navBtn(ICON.prev, 'Previous page', page <= 1);
+        windowPages(page, total).forEach(function (p) {
+          if (p === 'gap') { html += '<span class="pagination__ellipsis">&hellip;</span>'; return; }
+          html += '<button class="pagination__page"' + (p === page ? ' aria-current="page"' : '') +
+            ' data-page="' + p + '">' + p + '</button>';
+        });
+        html += navBtn(ICON.next, 'Next page', page >= total);
+        if (fl) html += navBtn(ICON.last, 'Last page', page >= total);
+        nav.innerHTML = html;
+      }
+
+      document.querySelectorAll('nav.pagination[data-pager]').forEach(function (nav) {
+        render(nav);
+        nav.addEventListener('click', function (e) {
+          var btn = e.target.closest('button');
+          if (!btn || btn.disabled) return;
+          var total = +nav.getAttribute('data-total');
+          var page = +nav.getAttribute('data-page');
+          var label = btn.getAttribute('aria-label');
+          var next = page;
+          if (label === 'Previous page') next = page - 1;
+          else if (label === 'Next page') next = page + 1;
+          else if (label === 'First page') next = 1;
+          else if (label === 'Last page') next = total;
+          else if (btn.hasAttribute('data-page')) next = +btn.getAttribute('data-page');
+          next = Math.min(total, Math.max(1, next));
+          if (next === page) return;
+          nav.setAttribute('data-page', next);
+          render(nav);
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

@@ -41,8 +41,9 @@ In short: capitalized `Showing`, an en-dash `–` (`&ndash;`) in `X–Y` with no
 spaces, the lowercase word ` of `, comma-grouped thousands, the whole span `tabular-nums`,
 and — matching the `<b>` in the message — **only the total wrapped in `<strong>`**
 (`content-primary`, weight 600); `Showing`, the `X–Y` range, and `of` stay
-`content-secondary`. Do **not** bold `X` or `Y`. The navigation's current page is shown
-as the bare page number — never paired with the total as `X / Y`.
+`content-secondary`. Do **not** bold `X` or `Y`. The navigation shows numbered page
+buttons (`‹ Prev · 1 2 3 … n · Next ›`); the active page is the highlighted button
+(`aria-current="page"`), not a separate display.
 
 ## Accessibility
 

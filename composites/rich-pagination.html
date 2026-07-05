@@ -5,23 +5,22 @@
 
   When to use (AI decision guide)
   ──────────────────────────────────────────────────────────────────────
-  Use rich-pagination for the full table footer: rows-per-page selector +
-  range summary on the left, pagination nav on the right.
-  · pagination — for the nav portion alone (prev · current · next)
+  Use rich-pagination for the full table/list footer: rows-per-page selector
+  + range summary on the left, numbered pagination nav on the right.
+  · pagination — for the nav portion alone (Prev · pages · Next)
   · load-more  — for append-on-click feeds (not tables)
-  · Tables should use the simple navigation, never numbered page buttons
 
-  Covers:
-    - Full bar: rows-per-page selector + "Showing X–Y of Z" range summary
-      on the left, SIMPLE pagination nav on the right
-    - Rows-per-page is a native <select class="select select--sm">
+  ONE live example — a real page has a single table footer, so the demo shows
+  one (in its real placement) rather than stacking states. Walk the pages or
+  change rows-per-page to see every state:
+    - Full bar: rows-per-page selector + "Showing X–Y of Z" range summary on
+      the LEFT, numbered pagination nav on the RIGHT
+    - Rows-per-page is a native <select class="select select--sm"> (optional)
     - Range summary uses tabular-nums; matching @cloud/ui, ONLY the total is
-      bolded content-primary — "Showing", the from–to range, and "of" stay
-      content-secondary
-    - / disabled at page boundaries
-    - The simple nav (prev · current page display · next) — NOT numbered
-    - Accessibility: <label> for the rows-per-page select (.sr-only),
-      nav has aria-label
+      bolded content-primary — "Showing", the range, and "of" stay secondary
+    - Numbered nav: Prev · 1 2 3 … n · Next (ellipsis collapse, aria-current);
+      Prev/Next disable at page boundaries
+    - Accessibility: <label> for the rows-per-page select, nav has aria-label
   ──────────────────────────────────────────────────────────────────────
 -->
 <!DOCTYPE html>
@@ -37,17 +36,18 @@
     /* Page-local overrides for this demo page */
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -67,25 +67,8 @@
       color: var(--color-content-tertiary);
       margin: 0;
     }
-    .demo-card {
-      border: 1px solid var(--color-line-default);
-      border-radius: var(--radius-xl);
-      background-color: var(--color-surface-2);
-      box-shadow: var(--shadow-1);
-      overflow: clip;
-    }
-    .demo-card__body {
-      padding: var(--space-6);
-      min-height: 100px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--color-content-tertiary);
-      font-size: var(--text-sm);
-    }
-    /* Rich pagination lives inside the card, below the body, sitting flush
-       in its own section. The composite.css's .rich-pagination handles the
-       layout; we just need a separator so the contents are visible. */
+    /* Rich pagination sits flush at the bottom of the table frame; the composite's
+       .rich-pagination owns the layout — we only add a separator hairline. */
     .rich-pagination {
       border-top: 1px solid var(--color-line-default);
     }
@@ -94,153 +77,16 @@
 <body>
   <div class="demo-page">
 
-    <!-- ── Section: Full rich pagination ── -->
+    <!-- ── The full list/table footer, in its real placement (live) ── -->
     <div class="demo-section">
-      <h2 class="demo-section__title">Rich pagination · full bar (rows-per-page + summary + nav)</h2>
+      <h2 class="demo-section__title">Rich pagination · the full list / table footer</h2>
       <p class="demo-section__desc">
-        The complete list/table footer: rows-per-page selector + range summary
-        on the left, simple pagination on the right. The rows-per-page selector
-        is optional (omit it for fixed-page-size lists). The summary uses
-        tabular-nums so figures don't
-        reflow on update. <strong>Always uses SIMPLE nav</strong> (no numbered
-        page buttons) — this is the only allowed pagination in a table/list footer.
-      </p>
-
-      <div class="demo-card">
-        <div class="demo-card__body">
-          <em>Table content would appear here</em>
-        </div>
-
-        <!-- rich-pagination bar -->
-        <div class="rich-pagination">
-          <div class="rich-pagination__left">
-            <!-- Rows-per-page selector -->
-            <div class="rich-pagination__rows">
-              Rows
-              <select id="rpp-full" class="select select--sm" aria-label="Rows per page">
-                <option value="10">10</option>
-                <option value="25" selected>25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-              </select>
-            </div>
-            <!-- Range summary -->
-            <span class="rich-pagination__summary">
-              Showing 1&ndash;25 of <strong>1,248</strong>
-            </span>
-          </div>
-
-          <!-- Simple pagination nav (right slot) -->
-          <nav class="pagination" aria-label="Pagination">
-              <button class="pagination__page" disabled aria-label="Previous page">
-                <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-                
-              </button>
-              <span class="pagination__current" aria-current="page">1</span>
-              <button class="pagination__page" aria-label="Next page">
-                
-                <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-              </button>
-          </nav>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── Section: Rich pagination mid-page ── -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">Rich pagination · mid-page</h2>
-      <p class="demo-section__desc">
-        Mid-page state: both  and  are enabled. The rows-per-page
-        selector is set to 10, showing a smaller range in the summary.
-      </p>
-
-      <div class="demo-card">
-        <div class="demo-card__body">
-          <em>Table content would appear here</em>
-        </div>
-
-        <div class="rich-pagination">
-          <div class="rich-pagination__left">
-            <div class="rich-pagination__rows">
-              Rows
-              <select id="rpp-mid" class="select select--sm" aria-label="Rows per page">
-                <option value="10" selected>10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-              </select>
-            </div>
-            <span class="rich-pagination__summary">
-              Showing 21&ndash;30 of <strong>1,248</strong>
-            </span>
-          </div>
-
-          <nav class="pagination" aria-label="Pagination">
-              <button class="pagination__page" aria-label="Previous page">
-                <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-                
-              </button>
-              <span class="pagination__current" aria-current="page">3</span>
-              <button class="pagination__page" aria-label="Next page">
-                
-                <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-              </button>
-          </nav>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── Section: Rich pagination last page ── -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">Rich pagination · last page ( disabled)</h2>
-      <p class="demo-section__desc">
-        On the last page,  is disabled but remains visible — nothing
-        reflows layout. The range summary shows the final slice and the total.
-      </p>
-
-      <div class="demo-card">
-        <div class="demo-card__body">
-          <em>Table content would appear here</em>
-        </div>
-
-        <div class="rich-pagination">
-          <div class="rich-pagination__left">
-            <div class="rich-pagination__rows">
-              Rows
-              <select id="rpp-last" class="select select--sm" aria-label="Rows per page">
-                <option value="10">10</option>
-                <option value="25" selected>25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-              </select>
-            </div>
-            <span class="rich-pagination__summary">
-              Showing 1,226&ndash;1,248 of <strong>1,248</strong>
-            </span>
-          </div>
-
-          <nav class="pagination" aria-label="Pagination">
-              <button class="pagination__page" aria-label="Previous page">
-                <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-                
-              </button>
-              <span class="pagination__current" aria-current="page">50</span>
-              <button class="pagination__page" disabled aria-label="Next page">
-                
-                <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-              </button>
-          </nav>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── Section: Rich pagination within a flush table frame ── -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">Rich pagination · inside a flush table frame</h2>
-      <p class="demo-section__desc">
-        The realistic placement: rich-pagination sits at the bottom of a
-        <code>.table-frame--flush</code> card, directly below the table,
-        separated by the frame's border and the pagination's own chrome.
+        The complete footer, flush at the bottom of a <code>.table-frame--flush</code>
+        directly below the table: rows-per-page selector + range summary on the
+        <strong>left</strong>, the numbered pagination nav on the <strong>right</strong>
+        (Prev · 1 2 3 … n · Next). It's live: walk the pages or change rows-per-page, and
+        the summary, the active page, and boundary-disabled Prev/Next all re-derive. The
+        rows-per-page selector is optional (omit it for fixed-page-size lists).
       </p>
 
       <div class="table-frame--flush" style="border:1px solid var(--color-line-default);border-radius:var(--radius-xl);background-color:var(--color-surface-2);box-shadow:var(--shadow-1);overflow:clip">
@@ -248,37 +94,107 @@
         <div style="padding:var(--space-5);color:var(--color-content-tertiary);font-size:var(--text-sm);text-align:center;border-bottom:1px solid var(--color-line-subtle)">
           <em>Table with 1,248 results (not rendered — see data-table.html)</em>
         </div>
+
         <!-- rich-pagination embedded flush inside the frame -->
-        <div class="rich-pagination">
+        <div class="rich-pagination" data-total="1248" data-page="1">
           <div class="rich-pagination__left">
+            <!-- Rows-per-page selector (optional) -->
             <div class="rich-pagination__rows">
               Rows
-              <select id="rpp-flush" class="select select--sm" aria-label="Rows per page">
+              <select id="rpp" class="select select--sm" aria-label="Rows per page">
                 <option value="10">10</option>
                 <option value="25" selected>25</option>
                 <option value="50">50</option>
                 <option value="100">100</option>
               </select>
             </div>
+            <!-- Range summary — only the total is bolded -->
             <span class="rich-pagination__summary">
               Showing 1&ndash;25 of <strong>1,248</strong>
             </span>
           </div>
-          <nav class="pagination" aria-label="Pagination">
-              <button class="pagination__page" disabled aria-label="Previous page">
-                <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-                
-              </button>
-              <span class="pagination__current" aria-current="page">1</span>
-              <button class="pagination__page" aria-label="Next page">
-                
-                <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-              </button>
-          </nav>
+
+          <!-- Numbered pagination nav (right slot) — rendered live by the script -->
+          <nav class="pagination" aria-label="Pagination"></nav>
         </div>
       </div>
     </div>
 
   </div>
+  <script>
+    // The rich-pagination bar is live: the numbered nav walks the pages, the
+    // rows-per-page select resizes the window (and returns to page 1), and the range
+    // summary + active page + boundary-disabled Prev/Next re-derive from
+    // (total, pageSize, page) so the figures stay honest.
+    (function () {
+      var fmt = function (n) { return n.toLocaleString('en-US'); };
+      var ICON = {
+        prev: '<svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>',
+        next: '<svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>'
+      };
+
+      function navBtn(icon, label, disabled) {
+        return '<button class="pagination__page" aria-label="' + label + '"' + (disabled ? ' disabled' : '') + '>' + icon + '</button>';
+      }
+
+      // first · … · current±1 · … · last
+      function windowPages(current, total) {
+        var pages = [], lo = Math.max(2, current - 1), hi = Math.min(total - 1, current + 1);
+        pages.push(1);
+        if (lo > 2) pages.push('gap');
+        for (var p = lo; p <= hi; p++) pages.push(p);
+        if (hi < total - 1) pages.push('gap');
+        if (total > 1) pages.push(total);
+        return pages;
+      }
+
+      document.querySelectorAll('.rich-pagination').forEach(function (bar) {
+        var total = +bar.getAttribute('data-total');
+        var select = bar.querySelector('.select');
+        var summary = bar.querySelector('.rich-pagination__summary');
+        var nav = bar.querySelector('.pagination');
+        var size = function () { return +select.value; };
+        var pageCount = function () { return Math.max(1, Math.ceil(total / size())); };
+
+        function render() {
+          var pc = pageCount();
+          var page = Math.min(pc, Math.max(1, +bar.getAttribute('data-page')));
+          bar.setAttribute('data-page', page);
+          var from = total === 0 ? 0 : (page - 1) * size() + 1;
+          var to = Math.min(page * size(), total);
+          summary.innerHTML = 'Showing ' + fmt(from) + '&ndash;' + fmt(to) + ' of <strong>' + fmt(total) + '</strong>';
+          var html = navBtn(ICON.prev, 'Previous page', page <= 1);
+          windowPages(page, pc).forEach(function (p) {
+            if (p === 'gap') { html += '<span class="pagination__ellipsis">&hellip;</span>'; return; }
+            html += '<button class="pagination__page"' + (p === page ? ' aria-current="page"' : '') +
+              ' data-page="' + p + '">' + p + '</button>';
+          });
+          html += navBtn(ICON.next, 'Next page', page >= pc);
+          nav.innerHTML = html;
+        }
+
+        nav.addEventListener('click', function (e) {
+          var btn = e.target.closest('button');
+          if (!btn || btn.disabled) return;
+          var pc = pageCount();
+          var page = +bar.getAttribute('data-page');
+          var label = btn.getAttribute('aria-label');
+          var next = page;
+          if (label === 'Previous page') next = page - 1;
+          else if (label === 'Next page') next = page + 1;
+          else if (btn.hasAttribute('data-page')) next = +btn.getAttribute('data-page');
+          next = Math.min(pc, Math.max(1, next));
+          if (next === page) return;
+          bar.setAttribute('data-page', next);
+          render();
+        });
+        select.addEventListener('change', function () {
+          bar.setAttribute('data-page', 1);
+          render();
+        });
+        render();
+      });
+    })();
+  </script>
 </body>
 </html>

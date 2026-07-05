@@ -89,6 +89,10 @@
   /* list-row quick-ops stage: space-between layout. */
   .action-stage--row { justify-content: space-between; }
   .action-btn-group { display: flex; gap: var(--space-2); }
+
+  /* Live-demo helpers — page-local, NOT design vocabulary. */
+  .is-hidden { display: none !important; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 <body>
 
@@ -127,8 +131,8 @@
                 <!-- carrier B: danger text button — same dialog, parallel variant -->
                 <button class="btn btn--danger" type="button">Delete</button>
                 <p class="action-note action-note--inline">or a danger text button — same dialog</p>
-                <!-- opened surface, rendered INLINE (real one portals over .alert-dialog-overlay) -->
-                <div class="alert-dialog action-inline-dialog" role="alertdialog" aria-modal="true">
+                <!-- the surface it opens, rendered INLINE (real one portals over .alert-dialog-overlay); closed until a carrier opens it -->
+                <div class="alert-dialog action-inline-dialog is-hidden" role="alertdialog" aria-modal="true">
                   <div class="alert-dialog__header">
                     <h2 class="alert-dialog__title">Delete Acme Robotics?</h2>
                     <p class="alert-dialog__description">This permanently removes the customer and its order history. This action cannot be undone.</p>
@@ -213,12 +217,12 @@
             <div class="card__content">
               <div class="action-stage action-stage--surface">
                 <!-- carrier: the closed trigger (shown above its opened popup for the demo) -->
-                <button class="combobox__trigger action-inline-combo" type="button" aria-haspopup="listbox" aria-expanded="true">
+                <button class="combobox__trigger action-inline-combo" type="button" aria-haspopup="listbox" aria-expanded="false">
                   <span class="combobox__value combobox__value--placeholder">Assign owner…</span>
                   <svg data-lucide="chevron-down" class="combobox__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                 </button>
-                <!-- opened surface, rendered INLINE (real one portals beneath the trigger) -->
-                <div class="combobox__content action-inline-combo">
+                <!-- the popup it opens, rendered INLINE (real one portals beneath the trigger); closed until the trigger opens it -->
+                <div class="combobox__content action-inline-combo is-hidden">
                   <div class="combobox__search">
                     <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
                     <input class="combobox__input" type="text" placeholder="Search owners…" aria-label="Search owners">
@@ -298,11 +302,11 @@
             <div class="card__content">
               <div class="action-stage action-stage--surface action-stage--col">
                 <!-- trigger: ghost icon + ellipsis-vertical -->
-                <button class="btn btn--ghost btn--icon" type="button" aria-label="Row actions" aria-haspopup="menu" aria-expanded="true">
+                <button class="btn btn--ghost btn--icon" type="button" aria-label="Row actions" aria-haspopup="menu" aria-expanded="false">
                   <svg data-lucide="ellipsis-vertical" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
                 </button>
-                <!-- opened menu, rendered INLINE (real one portals beneath trigger) -->
-                <div class="dropdown-menu action-inline-menu" role="menu">
+                <!-- the menu it opens, rendered INLINE (real one portals beneath trigger); closed until the trigger opens it -->
+                <div class="dropdown-menu action-inline-menu is-hidden" role="menu">
                   <div class="dropdown-menu__item" role="menuitem">
                     <svg data-lucide="square-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
                     Edit
@@ -317,6 +321,7 @@
                   </div>
                 </div>
               </div>
+              <p class="action-note">The gallery flows this menu inline; in production it <strong>portals</strong> to the body and positions beneath the trigger. That matters because a kebab lives in a table row — inside <code>.table-scroll</code>. Portaling escapes that overflow; an <em>inline</em> floating menu anchored inside a <code>.table-scroll</code> / <code>.scroll-area</code> / <code>overflow:auto</code> card is clipped flat at the box's edge (<strong>principle 17</strong>). Lift it out of the overflow ancestor, or use a <code>fixed</code> surface.</p>
             </div>
           </section>
 
@@ -330,8 +335,8 @@
               <div class="action-stage action-stage--surface action-stage--col">
                 <!-- trigger: danger button -->
                 <button class="btn btn--danger" type="button">Reject</button>
-                <!-- hardened modal rendered INLINE; real one portals over .modal-overlay -->
-                <div class="modal action-inline-modal" role="dialog" aria-modal="true">
+                <!-- the hardened modal it opens, rendered INLINE (real one portals over .modal-overlay); closed until the trigger opens it -->
+                <div class="modal action-inline-modal is-hidden" role="dialog" aria-modal="true">
                   <div class="modal__header">
                     <div class="modal__heading">
                       <h2 class="modal__title">Reject application?</h2>
@@ -377,4 +382,120 @@
     </main>
   </div>
 </div>
+<script>
+  // Make every action carrier live while keeping the gallery's "show every state
+  // at once" property: opened surfaces stay visible by default; triggers toggle
+  // them, selections/edits commit, copy hits the clipboard.
+  (function () {
+    var CHECK = '<svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+    var SPIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;animation:spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>';
+    var SURF = '.alert-dialog, .combobox__content, .dropdown-menu, .modal';
+
+    // Carrier ↔ inline surface: trigger toggles, the surface's own controls dismiss.
+    document.querySelectorAll('.card').forEach(function (card) {
+      var surface = card.querySelector(SURF);
+      if (!surface) return;
+      var triggers = Array.prototype.filter.call(
+        card.querySelectorAll('.action-stage button, .action-stage .combobox__trigger'),
+        function (b) { return !surface.contains(b); }
+      );
+      function setOpen(open) {
+        surface.classList.toggle('is-hidden', !open);
+        triggers.forEach(function (t) { t.setAttribute('aria-expanded', String(open)); });
+      }
+      triggers.forEach(function (t) {
+        t.addEventListener('click', function () { setOpen(surface.classList.contains('is-hidden')); });
+      });
+      surface.querySelectorAll('.alert-dialog__footer button, .modal__footer button, .dropdown-menu__item')
+        .forEach(function (d) { d.addEventListener('click', function () { setOpen(false); }); });
+    });
+
+    // picker: select an owner; filter the list from the search box.
+    (function () {
+      var combo = document.querySelector('.combobox__content');
+      if (!combo) return;
+      var trigger = document.querySelector('.combobox__trigger');
+      var triggerVal = trigger && trigger.querySelector('.combobox__value');
+      combo.querySelectorAll('.combobox__item').forEach(function (item) {
+        item.addEventListener('click', function () {
+          combo.querySelectorAll('.combobox__item').forEach(function (i) {
+            i.classList.remove('combobox__item--selected', 'combobox__item--highlighted');
+            i.setAttribute('aria-selected', 'false');
+            var ind = i.querySelector('.combobox__item-indicator');
+            if (ind) ind.remove();
+          });
+          item.classList.add('combobox__item--selected');
+          item.setAttribute('aria-selected', 'true');
+          var ind = document.createElement('span');
+          ind.className = 'combobox__item-indicator';
+          ind.innerHTML = CHECK;
+          item.appendChild(ind);
+          if (triggerVal) {
+            triggerVal.textContent = item.textContent.trim();
+            triggerVal.classList.remove('combobox__value--placeholder');
+          }
+          // production combobox: picking a value commits and closes the popup.
+          combo.classList.add('is-hidden');
+          if (trigger) trigger.setAttribute('aria-expanded', 'false');
+        });
+      });
+      var search = combo.querySelector('.combobox__input');
+      if (search) search.addEventListener('input', function () {
+        var q = search.value.trim().toLowerCase();
+        combo.querySelectorAll('.combobox__item').forEach(function (i) {
+          i.style.display = i.textContent.trim().toLowerCase().indexOf(q) === -1 ? 'none' : '';
+        });
+      });
+    })();
+
+    // copy: real clipboard write + a transient check glyph.
+    document.querySelectorAll('.btn[aria-label^="Copy"]').forEach(function (btn) {
+      var mono = btn.parentElement.querySelector('.action-value--mono');
+      var original = btn.innerHTML, label = btn.getAttribute('aria-label');
+      btn.addEventListener('click', function () {
+        var text = mono ? mono.textContent.trim() : '';
+        if (navigator.clipboard) navigator.clipboard.writeText(text).catch(function () {});
+        btn.innerHTML = CHECK;
+        btn.setAttribute('aria-label', 'Copied');
+        setTimeout(function () { btn.innerHTML = original; btn.setAttribute('aria-label', label); }, 1200);
+      });
+    });
+
+    // inline-edit: pencil loads the value into the field; Save commits it; Cancel restores.
+    (function () {
+      var stage = document.querySelector('.action-states');
+      if (!stage) return;
+      var card = stage.closest('.card');
+      var value = card.querySelector('.action-value');
+      var input = card.querySelector('.action-edit-row .input');
+      var byText = function (t) {
+        return Array.prototype.find.call(card.querySelectorAll('button'), function (b) {
+          return b.textContent.trim() === t;
+        });
+      };
+      var pencil = card.querySelector('.btn--icon[aria-label^="Edit"]');
+      var save = byText('Save'), cancel = byText('Cancel');
+      if (pencil) pencil.addEventListener('click', function () { input.value = value.textContent.trim(); input.focus(); input.select(); });
+      if (save) save.addEventListener('click', function () { if (input.value.trim()) value.textContent = input.value.trim(); });
+      if (cancel) cancel.addEventListener('click', function () { input.value = value.textContent.trim(); });
+    })();
+
+    // safe direct verbs run a brief async round-trip (spinner → done → idle).
+    ['Export', 'Assign', 'Activate'].forEach(function (verb) {
+      Array.prototype.forEach.call(document.querySelectorAll('.btn'), function (btn) {
+        if (btn.textContent.trim() !== verb) return;
+        btn.addEventListener('click', function () {
+          if (btn.disabled) return;
+          var original = btn.innerHTML;
+          btn.disabled = true;
+          btn.innerHTML = SPIN + verb;
+          setTimeout(function () {
+            btn.innerHTML = CHECK + verb;
+            setTimeout(function () { btn.innerHTML = original; btn.disabled = false; }, 900);
+          }, 900);
+        });
+      });
+    })();
+  })();
+</script>
 </body>

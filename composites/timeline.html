@@ -34,10 +34,14 @@
 <style>
 
   /* Page-local composition — arranges demo sections side by side. */
-  .demo-page { padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-8); }
+  body { margin: 0; background-color: var(--color-surface-1); font-family: var(--font-sans); color: var(--color-content-primary); }
+  .demo-page { padding: var(--space-6) var(--space-8); display: flex; flex-direction: column; gap: var(--space-8); }
+  @media (max-width: 640px) { .demo-page { padding: var(--space-5) var(--space-4); } }
   .demo-section__title { font-size: var(--text-lg); font-weight: 600; color: var(--color-content-primary); margin-bottom: var(--space-4); }
   .demo-section__desc { font-size: var(--text-sm); color: var(--color-content-tertiary); margin-bottom: var(--space-4); }
-  .demo-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); }
+  /* Stack the two cards vertically, capped to the same 42rem measure as the
+     single-card sections above, so every section reads at one width. */
+  .demo-row { display: flex; flex-direction: column; gap: var(--space-6); max-width: 42rem; }
 
   .card {
     border: 1px solid var(--color-line-default);
@@ -59,7 +63,9 @@
   .card__header-meta { font-size: var(--text-xs); color: var(--color-content-tertiary); }
   .card__content { padding: var(--space-5); }
 
-  @media (max-width: 700px) { .demo-row { grid-template-columns: 1fr; } }
+  /* Sections 1–2 read as a single event narrative; cap the measure so the
+     description lines stay comfortable rather than spanning the full page. */
+  .demo-narrow { max-width: 42rem; }
 </style>
 
 <body class="demo-page">
@@ -71,7 +77,7 @@
     <h2 class="demo-section__title">Default timeline</h2>
     <p class="demo-section__desc">Time-right layout (<code>stacked=false</code>), default density. Demonstrates all 6 tones with dot markers (neutral, primary, success, warning, error, info).</p>
 
-    <div class="card">
+    <div class="card demo-narrow">
       <div class="card__header">
         <span class="card__header-title">Deployment history</span>
         <span class="card__header-meta">6 events</span>
@@ -199,7 +205,7 @@
     <h2 class="demo-section__title">Timeline with icon markers</h2>
     <p class="demo-section__desc">Using <code>timeline__marker--icon</code> — tinted 24px circles with an inner glyph instead of a ring-dot. Same 6 tones.</p>
 
-    <div class="card">
+    <div class="card demo-narrow">
       <div class="card__header">
         <span class="card__header-title">Audit trail — Account #A-45219</span>
         <span class="card__header-meta">Last 6 entries</span>

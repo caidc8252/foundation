@@ -4,7 +4,51 @@ The rules that hold in **both** consumers — the Next.js app (`@cloud/ui`) and
 artifact-design prototypes. Consumer-specific *enforcement* (which tool catches
 a violation) is in `enforcement.md`; this file is the law itself.
 
+## How to read this file
+
+Every rule opens with a one-line **invariant** tagged `**Tier** · consumer · caught-by`:
+
+- **Tier.** `Law` — violate = fail, a hard gate. `Default` — the resting choice;
+  deviate only for a stated reason the task forces. `Boundary` — defines what is in
+  scope / what is *not* a defect; it draws a line, it is not a pass/fail gate.
+- **Consumer.** `both` · `artifact` (bites self-contained HTML) · `next` (`@cloud/ui`).
+- **Caught by.** `mechanical` (eslint / `check-artifact` — fails the build) · `review`
+  (a review-gate eye) · `advisory` (`check-artifact` best-effort ⚠). The authoritative
+  mechanism lives in `enforcement.md`, not here — this file states the law, not the catch.
+
+The invariant is the scannable law; the prose, tables, and code beneath it are the
+load-bearing exposition — read them before applying. Rules are referenced by number
+(`principle 14`); the split rules keep their number with an `a`/`b` suffix (`9a`, `11b`).
+
+## Index
+
+| # | Rule | Tier | Consumer | Caught by |
+|---|---|---|---|---|
+| 1 | Everything derives from tokens | Law | both | mechanical |
+| 2 | Tokens are the single source of truth | Law | both | mechanical |
+| 3 | Semantic names over raw ramps | Default | both | review |
+| 4 | The type scale is closed | Law | both | mechanical |
+| 5 | The component contract is authoritative | Law | both | review |
+| 6 | `page-body` children are full-width | Law | both | review |
+| 7 | Four layers · what crosses the boundary | Boundary | both | — |
+| 8 | Same-brand scope | Boundary | both | — |
+| 9a | Patterns are frameworks — required core | Boundary | both | review |
+| 9b | At most one primary action | Law | both | review |
+| 10 | Semantic color has a scope | Law | both | review |
+| 11a | Weight is a closed set | Law | both | review |
+| 11b | Data-readable text uses mono | Default | both | review |
+| 12 | Rows align on a shared baseline | Law | both | review |
+| 13 | Spacing rhythm — the nesting ladder | Law | both | review |
+| 14 | Filtering commits on an explicit action | Law | both | review + advisory |
+| 15 | Default to the `md` size | Default | both | review |
+| 16 | A committed state outranks hover | Law | artifact | review |
+| 17 | No floating popup in an overflow ancestor | Law | artifact | review |
+
 ## 1. Everything derives from tokens
+
+> **Law** · both · mechanical — no raw color, size, radius, shadow, duration, or font
+> value is ever hand-written anywhere; every such value is a token (or, on Next, a
+> token-generated utility). Violate = fail.
 
 No raw color, size, radius, shadow, duration, or font value may be hand-written
 anywhere. Use a token (`var(--color-…)`, `var(--radius-…)`, …) or — on the Next
@@ -16,12 +60,20 @@ side — a utility generated from a token (`bg-primary`, `text-content-secondary
 
 ## 2. Tokens are the single source of truth — and they live in one place
 
+> **Law** · both · mechanical — token *values* exist only in `foundation/tokens/*.css`;
+> neither consumer redefines them. Two copies of a value is the failure this foundation
+> exists to prevent.
+
 Token VALUES exist only in `foundation/tokens/*.css`. Neither consumer redefines
 them. The Next app imports the `@theme` source; artifacts inline the emitted
 `release/tokens.inline.css`. Two copies of a value is the failure mode this whole
 foundation exists to prevent.
 
 ## 3. Semantic names over raw ramps
+
+> **Default** · both · review — reach for the semantic token, not the ramp step it
+> points at; semantic names survive a re-theme. A raw ramp step is a review nudge, not
+> a build failure.
 
 Reach for the semantic token, not the ramp step it points at:
 `text-content-secondary` not `text-…-600`; `bg-success-bg` not `bg-…-50`;
@@ -30,11 +82,18 @@ ramp steps don't.
 
 ## 4. The type scale is closed
 
+> **Law** · both · mechanical — font size, spacing, radius, shadow, and control-height
+> snap to their closed ladders; there is no off-scale value (`text-[15px]`). Violate = fail.
+
 Font sizes snap to `--text-{xs…5xl}`. There is no `text-[15px]`. Same for the
 control-height (`control-*`), spacing (`cx-*`, `space-*`), radius, and shadow
 ladders. The scales are the design; off-scale values read as accidents.
 
 ## 5. The component contract is authoritative — atoms and composites alike
+
+> **Law** · both · review — a component's variants/sizes/states/anatomy live once in
+> its contract; when an implementation diverges, the implementation is the bug. Don't
+> re-skin to fake a variant — propose it to the contract first.
 
 A component's variants/sizes/states/anatomy are defined once: primitives in
 `foundation/primitives/<name>.md`, composites in `foundation/composites/<name>.md`.
@@ -54,6 +113,10 @@ granularity to the wrong layer and forfeits the pattern's ordering guarantee.
 
 ## 6. `page-body` children are full-width by default
 
+> **Law** · both · review — never wrap a layout-structural slot inside `page-body` in a
+> `max-width` + `margin-inline:auto` centering wrapper; width is the shell's job. (An
+> individual content element may still cap its *own* width.)
+
 The `page-body` composite provides gutters and vertical stack spacing; it does
 **not** constrain or center the page's content column — that is the app shell's
 job. Every direct child of `page-body` (step indicator, table card, columns row,
@@ -69,6 +132,11 @@ nav row, overview grid, …) fills the full available width the shell allows.
   where the shell already controls the content width.
 
 ## 7. The four layers, and what crosses the consumer boundary
+
+> **Boundary** · both — below tokens, consumers share *contracts*, never *code*; and the
+> downstream interaction/a11y layer (focus rings, ARIA wiring, disabled-hover guards,
+> reduced-motion) is the `@cloud/ui` consumer's job — its absence from an artifact skin
+> is **not** a defect.
 
 | Layer | Shared substance (in foundation) | Stays consumer-specific |
 |---|---|---|
@@ -103,13 +171,23 @@ state* is a real gap; a missing *interaction-polish behaviour* is not.
 
 ## 8. Same-brand scope
 
+> **Boundary** · both — this foundation encodes ONE brand; sharing tokens across
+> prototype→production is correct because both sides are the same product. Off-brand
+> work forks its own tokens, it does not consume these.
+
 This foundation encodes ONE brand (the product design system). Sharing tokens
 across the prototype→production boundary is correct precisely because both sides
 are the same product. It is **not** a generic theme for off-brand work — an
 artifact that wants a deliberately different identity should not consume these
 tokens; it forks its own. (See the project decision: same-brand pipeline.)
 
-## 9. Patterns are frameworks — a minimal required core, everything else optional
+## 9. Patterns are frameworks
+
+### 9a. A minimal required core, everything else optional
+
+> **Boundary** · both · review — a pattern guarantees *structure and ordering* (which
+> slots exist, in what sequence), never that every slot is filled; each declares a
+> minimal required core, the rest optional. A populated example is not a checklist.
 
 A pattern (L3) is a **framework**, not a filled-in page. It guarantees *structure
 and ordering* — which slots exist and in what sequence — never that every slot is
@@ -131,10 +209,21 @@ included only when this page's job calls for it.
 - **A populated example is not a checklist.** Each `*.html` example shows one
   fully-dressed instance; copying it does not mean keeping every slot. Optional
   slots are marked removable in the example and listed as optional in the contract.
-- **At most one primary action — never a required one** (see `page-header` /
-  `detail-header`). A read-only page may have none.
+
+### 9b. At most one primary action — never a required one
+
+> **Law** · both · review — a screen carries at most one primary action, and never a
+> *required* one; a read-only page may have none.
+
+**At most one primary action — never a required one** (see `page-header` /
+`detail-header`). A read-only page may have none.
 
 ## 10. Semantic color has a scope
+
+> **Law** · both · review — status colors ride only status carriers (badge / inline
+> validation / alert), never a page or card background wash; a badge's semantic tone
+> encodes only status/severity; `accent-*` is data-viz / AI-marker only; no gradients
+> on application screens.
 
 Color carries meaning here; spend it on meaning, not decoration.
 
@@ -155,13 +244,29 @@ Color carries meaning here; spend it on meaning, not decoration.
 
 Beyond the closed scale (principle 4), weight and family carry rules too:
 
-- Weight is limited to `400` / `500` / `600`. `700` is rare emphasis; `300` /
-  `800` / `900` are off-system.
-- **Data-readable text** — identifiers, timestamps, amounts, counts, versions —
-  uses `font-mono` + `tabular-nums` so digits align and codes read unambiguously.
-  Prose and labels use the sans family.
+### 11a. Weight is a closed set
+
+> **Law** · both · review — weight is limited to `400` / `500` / `600`; `700` is rare
+> emphasis, `300` / `800` / `900` are off-system.
+
+Weight is limited to `400` / `500` / `600`. `700` is rare emphasis; `300` /
+`800` / `900` are off-system.
+
+### 11b. Data-readable text uses `font-mono` + `tabular-nums`
+
+> **Default** · both · review — data-readable text (identifiers, timestamps, amounts,
+> counts, versions) uses `font-mono` + `tabular-nums` so digits align; prose and labels
+> use the sans family.
+
+**Data-readable text** — identifiers, timestamps, amounts, counts, versions —
+uses `font-mono` + `tabular-nums` so digits align and codes read unambiguously.
+Prose and labels use the sans family.
 
 ## 12. Rows align on a shared baseline
+
+> **Law** · both · review — within a row, the leading label/title and the trailing
+> actions sit on one horizontal centerline. (Exception: genuinely multi-line leading
+> content aligns the actions to its *first* line.)
 
 Within a row — a table row, list item, header band, detail-head — the leading
 label/title and the trailing actions sit on one horizontal centerline. Exception:
@@ -169,6 +274,10 @@ when the leading content is genuinely multi-line (title + sub-line + meta), the
 trailing actions align to the **first** line, not the block center.
 
 ## 13. Spacing rhythm — the nesting ladder
+
+> **Law** · both · review — block-to-block spacing comes only from `--space-*` steps
+> chosen by nesting tightness; never an arbitrary value, never `p-0` / `m-0` to fake
+> spacing, and never a 0-gap stack — two stacked blocks never touch.
 
 Block-to-block spacing is part of the design, not a per-page guess. Page-level
 rhythm and slot padding are **provided** — `page-body` stacks its direct children,
@@ -201,6 +310,11 @@ modifier, e.g. `.card__content--flush`).
 
 ## 14. Filtering commits on an explicit action — never on change
 
+> **Law** · both · review + advisory — editing a filter builds a *draft*; the query
+> commits only on an explicit action (the Search button or Enter). Search-on-change /
+> filter-on-select is a defect. (Trimming an already-applied query — chip ✕ / Clear all
+> — re-runs immediately.)
+
 Wherever the **list-filter family** (search input · quick filters · advanced) appears
 — a list page, a table **inside a detail-page tab**, a picker, any filtered collection
 — editing a filter only builds a **draft**. Typing in the search field or changing a
@@ -224,3 +338,95 @@ and a draft update (allowed) reads the same as a query run (a defect). `check-ar
 emits a **best-effort advisory** flagging the obvious on-change wiring, but the
 authoritative catch is the review-gate item in `enforcement.md`; on the `@cloud/ui`
 side it is an ESLint target.
+
+## 15. Default to the `md` / default size
+
+> **Default** · both · review — when a primitive ships a size scale, reach for `md`
+> first; pick a non-default size only for a stated reason the layout forces.
+
+When a primitive ships a size scale (`xs` · `sm` · `md` · `lg`, or a `size` prop),
+reach for **`md` — the default — first**. It is the resting size the components are
+tuned around; a page built from `md` controls reads as one coherent system. Pick a
+non-default size only for a **stated reason the layout forces**, not by habit:
+
+- **Smaller (`sm`/`xs`)** — genuinely dense surfaces where `md` would not fit or would
+  break the rhythm: a toolbar of inline row actions, chips, a compact table's in-cell
+  controls. Density must be a real constraint, not a default reflex.
+- **Larger (`lg`)** — a deliberately prominent moment: a hero CTA, an empty-state's
+  primary action, a marketing panel.
+
+Absent such a reason, `md` wins. Reserving the small sizes for real density keeps them
+meaningful and stops pages from drifting into an arbitrary mix of control heights. (This
+is why, e.g., `CardAction` is specified at `btn--md` — see `primitives/card.md`.)
+
+## 16. A committed state outranks hover
+
+> **Law** · artifact · review — a committed visual state (selected / checked / pressed /
+> current item / a calendar's selected or in-range day) is never repainted by `:hover`;
+> every hover that paints must exclude the committed state(s) via `:not(...)`.
+
+A **committed** visual state — selected, checked, pressed, the active/current item,
+a calendar's selected day or in-range track — **must not be repainted by `:hover`**.
+Hover is transient affordance for an *un-chosen* element; the moment an element is
+chosen, hover feedback yields to the chosen fill. Pointing at your current selection
+must never make it look un-selected.
+
+This is defeated silently by **specificity**, not by intent: `.x:hover` is `(0,2,0)`
+while `.x--selected` is `(0,1,0)`, so an unguarded hover **wins** even when the selected
+rule is written later. The fix is mechanical and mandatory — **every hover that paints a
+background/foreground must exclude the committed state(s)** on that element:
+
+```css
+/* WRONG — hover washes out the selection */
+.tab:hover            { background: var(--color-surface-hover); }
+.tab--active          { background: var(--color-primary-50); }   /* loses on hover */
+
+/* RIGHT — hover is guarded; the committed state survives */
+.tab:hover:not(.tab--active) { background: var(--color-surface-hover); }
+.tab--active                 { background: var(--color-primary-50); }
+```
+
+- Guard against **all** committed variants on the element, not just the obvious one — a
+  calendar day has `--selected` *and* `--range-start/--range-end/--range-middle`; missing
+  one leaks (this rule's origin). A menu row chosen by `aria-current`/`aria-selected`/
+  `[aria-pressed="true"]` guards on the attribute.
+- Do **not** rely on source order to win — reordering rules would silently re-break it.
+  The `:not(...)` guard is the invariant; source order is not.
+- This holds for **local state styling an artifact adds**, too, not only foundation CSS:
+  any hover you author over a selectable thing carries the same guard.
+
+Enforcement: a review-gate item in `enforcement.md`; the foundation's own components all
+carry the guard (`stat-card`, `option-card`, `tabs`, `list-row`, `data-table`, calendar,
+`nav-menu`, `app-frame`, `pagination`).
+
+## 17. A floating popup nested in an overflow ancestor is clipped
+
+> **Law** · artifact · review — never nest an inline, absolutely-positioned popup inside
+> a scroll/overflow ancestor; it is clipped flat at that box's edge. Lift it to a
+> non-clipping ancestor, or use a `fixed` surface (modal / sheet).
+
+An inline, absolutely-positioned popup — a `dropdown-menu`, `popover`, `select`/`combobox`
+listbox, `context-menu`, `tooltip`, `hover-card`, or any `.x__content` anchored to its
+trigger — **is clipped by the nearest ancestor that scrolls or hides overflow**
+(`.scroll-area__viewport`, `.table-scroll`, a `card`/panel with `overflow: auto|hidden|scroll`).
+`overflow` establishes a clip rect; an `absolute` descendant cannot paint outside it, so the
+part of the popup that extends past the container's edge is silently cut off.
+
+This bites artifacts specifically. The React components **portal** their popup to the body and
+position it with a floating strategy, so it is not a DOM descendant of the overflow container
+and is never clipped. The static HTML skins place the popup **inline** as a descendant of the
+trigger — correct for a normal flow, wrong the moment that trigger sits inside an overflow box.
+
+The rule when authoring a self-contained artifact:
+
+- Do **not** nest an inline popup inside an overflow container. Lift the popup out to a
+  non-clipping ancestor (or the `page-body` root) and position it there, **or**
+- reach for a `position: fixed` surface (a `modal` / `sheet`), which is positioned against the
+  viewport and escapes ancestor `overflow` (as long as no ancestor creates a fixed-containing
+  block via `transform` / `filter` / `will-change`).
+- Height/scroll needs alone never justify wrapping a trigger's region in `overflow: auto` if a
+  popup opens from it — constrain the scroll to the parts that don't host popups.
+
+Failure mode to recognise: the popup opens but only its top slice is visible, cut flat at the
+container's edge — not a positioning bug, a clip. Verified empirically (a dropdown lost 116px,
+a popover 76px, below a 140px `scroll-area`; a `fixed` modal from the same spot was unclipped).

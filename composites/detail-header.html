@@ -15,7 +15,8 @@
   · Patterns apply .detail-header--sticky by default (band pins under the app header).
 
   Covers:
-    - Default with all anatomy: back · logo · name+status+chips · meta · actions · tabs
+    - Default with all anatomy: back · logo · name+status+chips · meta · actions (Edit + primary) · tabs
+    - Actions collapsed behind ⋯ (overflow-only cluster — read-only / manage records)
     - No tabs (single-section detail page)
     - No logo (records without visual identity)
     - Reduced form (create/edit/wizard header): back + title + at most one action
@@ -35,17 +36,18 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -78,6 +80,15 @@
       font-size: var(--text-sm);
       color: var(--color-content-tertiary);
     }
+    /* Live-demo helpers — page-local, NOT design vocabulary. */
+    .is-hidden { display: none !important; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    /* Overflow (⋯) menu anchored under its trigger for the demo. */
+    .demo-menu {
+      position: absolute;
+      top: calc(100% + var(--space-1));
+      right: 0;
+    }
   </style>
 </head>
 <body>
@@ -90,9 +101,10 @@
       <h2 class="demo-section__title">Detail header · default (with tabs)</h2>
       <p class="demo-section__desc">
         Full anatomy: back button, logo, name with status badges and category chips on the
-        title line, meta row with dot-separated facts and a copy affordance, action cluster
-        (primary rightmost, surplus verbs behind ⋯), and the tab strip docked on the band's
-        bottom edge.
+        title line, meta row with dot-separated facts and a copy affordance, a two-verb
+        action cluster (secondary Edit + primary rightmost), and the tab strip docked on the
+        band's bottom edge. Most detail pages look like this — the ⋯ overflow only appears
+        once surplus or destructive verbs pile up (next).
       </p>
 
       <div class="detail-header">
@@ -130,21 +142,84 @@
               <svg data-lucide="square-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
               Edit
             </button>
-            <div style="position:relative; display:inline-block;">
-              <button class="btn btn--ghost btn--icon" type="button" aria-label="More actions" aria-haspopup="true" aria-expanded="false">
-                <svg data-lucide="ellipsis" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
-              </button>
-            </div>
             <button class="btn btn--primary" type="button">New order</button>
           </div>
         </div>
 
         <div class="detail-header__tabs">
           <div class="tabs__list tabs__list--line" role="tablist" aria-label="Customer detail sections">
-            <button class="tabs__trigger tabs__trigger--active" type="button" role="tab" aria-selected="true"  aria-controls="demo1-overview">Overview</button>
-            <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false" aria-controls="demo1-activity">Activity</button>
-            <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false" aria-controls="demo1-orders">Orders</button>
-            <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false" aria-controls="demo1-settings">Settings</button>
+            <button class="tabs__trigger tabs__trigger--active" type="button" role="tab" aria-selected="true">Overview</button>
+            <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false">Activity</button>
+            <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false">Orders</button>
+            <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false">Settings</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1b: Actions collapsed behind ⋯ (overflow-only cluster)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Detail header · actions behind ⋯ (overflow only)</h2>
+      <p class="demo-section__desc">
+        When a record has no prominent primary and its verbs are all secondary or
+        destructive, the whole cluster collapses to a single ⋯ menu — nothing sits in
+        the band, every action lives in the dropdown. Reach for this on read-only or
+        manage-only records. Render ⋯ only when there's something to put in it — never
+        an empty overflow.
+      </p>
+
+      <div class="detail-header">
+        <div class="detail-header__bar">
+          <button class="btn btn--ghost btn--icon btn--sm detail-header__back" type="button" aria-label="Back to customers">
+            <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+
+          <span class="detail-header__logo">N</span>
+
+          <div class="detail-header__main">
+            <div class="detail-header__title">
+              <span class="detail-header__name">Northwind Traders</span>
+              <span class="badge badge--neutral"><span class="badge__dot" aria-hidden="true"></span>Read-only</span>
+              <span class="detail-header__chips">
+                <span class="badge badge--neutral">Enterprise</span>
+              </span>
+            </div>
+            <div class="detail-header__meta">
+              <span style="font-family:var(--font-mono);">#C-20481</span>
+              <span>Customer since 2019</span>
+              <span>London · EMEA</span>
+            </div>
+          </div>
+
+          <div class="detail-header__actions">
+            <div style="position:relative; display:inline-block;">
+              <button class="btn btn--ghost btn--icon" type="button" aria-label="More actions" aria-haspopup="menu" aria-expanded="false">
+                <svg data-lucide="ellipsis" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+              </button>
+              <!-- Overflow menu — closed by default; the ⋯ trigger toggles it. -->
+              <div class="dropdown-menu demo-menu is-hidden" role="menu">
+                <div class="dropdown-menu__item" role="menuitem">
+                  <svg data-lucide="copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                  Copy link
+                </div>
+                <div class="dropdown-menu__item" role="menuitem">
+                  <svg data-lucide="download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>
+                  Export orders
+                </div>
+                <div class="dropdown-menu__item dropdown-menu__item--destructive" role="menuitem">Archive customer</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-header__tabs">
+          <div class="tabs__list tabs__list--line" role="tablist" aria-label="Customer detail sections">
+            <button class="tabs__trigger tabs__trigger--active" type="button" role="tab" aria-selected="true">Overview</button>
+            <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false">Activity</button>
+            <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false">Orders</button>
           </div>
         </div>
       </div>
@@ -352,5 +427,71 @@
     </div>
 
   </div>
+  <script>
+    // Make each detail-header instance live: the tab strip switches the active tab, the
+    // ⋯ overflow menu opens/closes, copy hits the clipboard, and primary/commit
+    // verbs run a brief async round-trip — modelling production, no faked states.
+    (function () {
+      var SPIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:var(--space-4);height:var(--space-4);animation:spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>';
+
+      // Tabs: activate the clicked trigger and sync aria-selected across the strip.
+      document.querySelectorAll('.tabs__list[role="tablist"]').forEach(function (list) {
+        var triggers = list.querySelectorAll('.tabs__trigger');
+        triggers.forEach(function (trigger) {
+          trigger.addEventListener('click', function () {
+            triggers.forEach(function (t) {
+              var on = t === trigger;
+              t.classList.toggle('tabs__trigger--active', on);
+              t.setAttribute('aria-selected', String(on));
+            });
+          });
+        });
+      });
+
+      // Overflow (⋯) menu: closed by default; trigger toggles; item / outside / Esc close.
+      document.querySelectorAll('.detail-header__actions [aria-haspopup="menu"]').forEach(function (trigger) {
+        var wrap = trigger.parentElement;
+        var menu = wrap.querySelector('.dropdown-menu');
+        if (!menu) return;
+        function setOpen(open) {
+          menu.classList.toggle('is-hidden', !open);
+          trigger.setAttribute('aria-expanded', String(open));
+        }
+        trigger.addEventListener('click', function (e) {
+          e.stopPropagation();
+          setOpen(menu.classList.contains('is-hidden'));
+        });
+        menu.querySelectorAll('.dropdown-menu__item').forEach(function (item) {
+          item.addEventListener('click', function () { setOpen(false); });
+        });
+        document.addEventListener('click', function (e) { if (!wrap.contains(e.target)) setOpen(false); });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setOpen(false); });
+      });
+
+      // Copy affordance: real clipboard write of the row's mono id + a transient label.
+      document.querySelectorAll('.btn[aria-label^="Copy"]').forEach(function (btn) {
+        var meta = btn.closest('.detail-header__meta');
+        var mono = meta && meta.querySelector('[style*="font-mono"]');
+        var label = btn.getAttribute('aria-label');
+        btn.addEventListener('click', function () {
+          var text = mono ? mono.textContent.trim() : '';
+          if (navigator.clipboard) navigator.clipboard.writeText(text).catch(function () {});
+          btn.setAttribute('aria-label', 'Copied');
+          setTimeout(function () { btn.setAttribute('aria-label', label); }, 1200);
+        });
+      });
+
+      // Primary / commit verbs: a brief spinner → idle round-trip so the button responds.
+      document.querySelectorAll('.detail-header__actions .btn--primary').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          if (btn.disabled) return;
+          var original = btn.innerHTML, verb = btn.textContent.trim();
+          btn.disabled = true;
+          btn.innerHTML = SPIN + ' ' + verb;
+          setTimeout(function () { btn.innerHTML = original; btn.disabled = false; }, 900);
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

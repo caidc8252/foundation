@@ -13,15 +13,14 @@
   · timeline   — for chronological history with markers
   · kv-grid    — for static key:value attribute pairs
 
-  Covers:
-    - Settings rows with switch controls (leading icon, title + badge,
-      sub-line, trailing .switch)
-    - Member / entity rows with action buttons (leading avatar or icon,
-      title + badge, sub-line, trailing .btn cluster)
-    - Interactive navigation rows (leading icon, title + badge, sub-line,
-      trailing .list-row__value + chevron)
-    - States: selected, disabled, empty
-    - Text-only rows (no leading icon, no trailing — just identity text)
+  Covers (each section demonstrates one list-row STYLE variant; the scenario
+  in each is only an illustrative example, not the point):
+    - with a switch control (leading icon · title + sub · trailing .switch)
+    - with a trailing action cluster (avatar/icon · badges · .btn cluster)
+    - interactive (.list-row--interactive · .list-row__value + chevron)
+    - selected state (.list-row--selected + aria-current)
+    - disabled state (.list-row--disabled · dim + not-allowed cursor)
+    - loading (.skeleton-row placeholders)
   ──────────────────────────────────────────────────────────────────────
 -->
 <!DOCTYPE html>
@@ -37,17 +36,18 @@
     /* Page-local overrides for this demo page */
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -67,6 +67,13 @@
       color: var(--color-content-tertiary);
       margin: 0;
     }
+    /* Live-demo helpers — page-local, NOT design vocabulary. */
+    .is-hidden { display: none !important; }
+    /* The ⋯ overflow menu is FIXED-positioned (placed from the trigger's rect in JS)
+       so it escapes the card's overflow:hidden instead of being clipped — the same
+       "portalled + fixed" mode the dropdown-menu contract describes. The vertical
+       gap under the trigger stays a token via margin. */
+    .demo-menu { position: fixed; margin-top: var(--space-1); }
   </style>
 </head>
 <body>
@@ -74,11 +81,11 @@
 
     <!-- ── Section: Settings rows (switch controls) ── -->
     <div class="demo-section">
-      <h2 class="demo-section__title">Settings &amp; preferences</h2>
+      <h2 class="demo-section__title">list-row · with a switch control</h2>
       <p class="demo-section__desc">
-        Rows with a leading icon, a title line, an optional sub-line, and a trailing
-        <code>.switch</code> control. Each row is one preference — hairline-separated
-        inside a <code>card</code>.
+        Anatomy: leading <code>.list-row__icon</code> · <code>.list-row__main</code>
+        (title + optional <code>.list-row__sub</code>) · trailing <code>.switch</code>,
+        hairline-separated inside a <code>card</code>. Shown here as security settings.
       </p>
 
       <div class="card">
@@ -175,11 +182,12 @@
 
     <!-- ── Section: Member / entity rows (action buttons) ── -->
     <div class="demo-section">
-      <h2 class="demo-section__title">Members &amp; entities</h2>
+      <h2 class="demo-section__title">list-row · with a trailing action cluster</h2>
       <p class="demo-section__desc">
-        Rows with a leading avatar or icon, a title line that carries inline
-        <code>.badge</code>s, a sub-line with handle / meta, and a trailing
-        <code>.btn</code> cluster.
+        Leading <code>.avatar</code> or <code>.list-row__icon</code> ·
+        <code>.list-row__main</code> with inline <code>.badge</code>s and a handle/meta
+        sub-line · trailing <code>.btn</code> cluster (ghost-icon ⋯ overflow, and a
+        <code>ghost-danger</code> Revoke). Shown here as team members and an app entity.
       </p>
 
       <div class="card">
@@ -274,11 +282,11 @@
 
     <!-- ── Section: Interactive navigation rows ── -->
     <div class="demo-section">
-      <h2 class="demo-section__title">Interactive navigation rows</h2>
+      <h2 class="demo-section__title">list-row · interactive (value + chevron)</h2>
       <p class="demo-section__desc">
-        Whole-row click targets with <code>.list-row--interactive</code>, a trailing
-        <code>.list-row__value</code>, and a <code>.list-row__chevron</code>. Use
-        for drill-in lists like connected services, contracts, or sessions.
+        <code>.list-row--interactive</code> turns the whole row into a click target; the
+        trailing <code>.list-row__value</code> + <code>.list-row__chevron</code> signal
+        drill-in. Shown here as connected services.
       </p>
 
       <div class="card">
@@ -369,10 +377,11 @@
 
     <!-- ── Section: Contracts / sessions (selected + interactive) ── -->
     <div class="demo-section">
-      <h2 class="demo-section__title">Master/detail — with selected row</h2>
+      <h2 class="demo-section__title">list-row · selected state</h2>
       <p class="demo-section__desc">
-        An interactive list where one row carries <code>.list-row--selected</code> — the
-        open item in a split-pane or drill-in. Clicking a row opens its detail on the right.
+        One interactive row carries <code>.list-row--selected</code> (with
+        <code>aria-current</code>) — a committed state that outranks hover, so the open
+        item stays highlighted. Shown here as the active session in a master/detail list.
       </p>
 
       <div class="card">
@@ -460,10 +469,11 @@
 
     <!-- ── Section: Disabled row ── -->
     <div class="demo-section">
-      <h2 class="demo-section__title">Disabled rows</h2>
+      <h2 class="demo-section__title">list-row · disabled state</h2>
       <p class="demo-section__desc">
-        A <code>.list-row--disabled</code> row dims to 0.5 opacity and drops pointer
-        events — for settings not yet available or entities that can't be acted on.
+        <code>.list-row--disabled</code> dims the row to 0.5 and shows a
+        <code>not-allowed</code> cursor (child controls made non-interactive) — like every
+        other disabled control. Shown here as an expired contract that can't be acted on.
       </p>
 
       <div class="card">
@@ -526,45 +536,12 @@
       </div>
     </div>
 
-    <!-- ── Section: Empty state ── -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">Empty state</h2>
-      <p class="demo-section__desc">
-        When there are no rows to show, render an <code>empty-state</code> inside the
-        card — never a blank frame.
-      </p>
-
-      <div class="card">
-        <div class="card__header">
-          <h3 style="font-size:var(--text-sm);font-weight:600;margin:0">Connected services</h3>
-        </div>
-        <div class="card__content">
-          <div class="empty-state">
-            <div class="empty-state__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-                <line x1="8" y1="21" x2="16" y2="21"/>
-                <line x1="12" y1="17" x2="12" y2="21"/>
-              </svg>
-            </div>
-            <div class="empty-state__title">No connected services</div>
-            <p class="empty-state__description">
-              Connect a service to pull data into your workspace. Supported services
-              include GitHub, Datadog, and Slack.
-            </p>
-            <div class="empty-state__action">
-              <button class="btn btn--primary btn--sm">Connect a service</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- ── Section: Skeleton loading ── -->
     <div class="demo-section">
-      <h2 class="demo-section__title">Loading (skeleton rows)</h2>
+      <h2 class="demo-section__title">list-row · loading (skeleton rows)</h2>
       <p class="demo-section__desc">
-        While data loads, render <code>.skeleton-row</code>s inside the frame.
+        While data loads, render <code>.skeleton-row</code>s in the same frame — matching
+        the row rhythm so nothing jumps when real rows arrive.
       </p>
 
       <div class="card">
@@ -603,5 +580,97 @@
     </div>
 
   </div>
+  <script>
+    // Make each list-row instance live: switches toggle their real ARIA state,
+    // interactive rows single-select within their group (list-row--selected + aria-current),
+    // the ⋯ trigger opens a dropdown-menu, and Revoke confirms inline. No faked states.
+    (function () {
+      var MENU =
+        '<div class="dropdown-menu demo-menu is-hidden" role="menu">' +
+          '<div class="dropdown-menu__item" role="menuitem"><svg data-lucide="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>View</div>' +
+          '<div class="dropdown-menu__item" role="menuitem"><svg data-lucide="square-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>Rename</div>' +
+          '<div class="dropdown-menu__item dropdown-menu__item--destructive" role="menuitem"><svg data-lucide="trash-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Remove</div>' +
+        '</div>';
+
+      // Switches: clicking flips aria-checked (skip disabled ones).
+      document.querySelectorAll('.switch[role="switch"]').forEach(function (sw) {
+        if (sw.getAttribute('aria-disabled') === 'true') return;
+        sw.addEventListener('click', function () {
+          sw.setAttribute('aria-checked', sw.getAttribute('aria-checked') === 'true' ? 'false' : 'true');
+        });
+      });
+
+      // Interactive rows: single-select within their .list-rows group.
+      document.querySelectorAll('.list-rows').forEach(function (group) {
+        var rows = group.querySelectorAll('.list-row--interactive');
+        rows.forEach(function (row) {
+          row.addEventListener('click', function () {
+            rows.forEach(function (r) {
+              var on = r === row;
+              r.classList.toggle('list-row--selected', on);
+              if (on) r.setAttribute('aria-current', 'true'); else r.removeAttribute('aria-current');
+            });
+          });
+        });
+      });
+
+      // ⋯ overflow menus: closed by default; the trigger toggles its own menu and
+      // closes any other that was open. Fixed-positioned from the trigger's rect so
+      // it escapes the card clip. Item / outside click / Esc / scroll all close.
+      var menus = [];
+      function closeAll(except) {
+        menus.forEach(function (m) { if (m.menu !== except) m.setOpen(false); });
+      }
+      document.querySelectorAll('.btn[aria-label="More actions"]').forEach(function (trigger) {
+        var trailing = trigger.closest('.list-row__trailing');
+        if (!trailing) return;
+        trailing.insertAdjacentHTML('beforeend', MENU);
+        var menu = trailing.querySelector('.demo-menu');
+        trigger.setAttribute('aria-haspopup', 'menu');
+        trigger.setAttribute('aria-expanded', 'false');
+        function place() {
+          var r = trigger.getBoundingClientRect();
+          menu.style.top = r.bottom + 'px';
+          // Right-align to the trigger. Use clientWidth (excludes the scrollbar) —
+          // window.innerWidth includes it, which would nudge a fixed menu left.
+          menu.style.right = (document.documentElement.clientWidth - r.right) + 'px';
+        }
+        function setOpen(open) {
+          if (open) { closeAll(menu); place(); }   // only one menu open at a time
+          menu.classList.toggle('is-hidden', !open);
+          trigger.setAttribute('aria-expanded', String(open));
+        }
+        menus.push({ menu: menu, setOpen: setOpen });
+        trigger.addEventListener('click', function (e) {
+          e.stopPropagation();
+          setOpen(menu.classList.contains('is-hidden'));
+        });
+        menu.querySelectorAll('.dropdown-menu__item').forEach(function (item) {
+          item.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (item.classList.contains('dropdown-menu__item--destructive')) trailing.closest('.list-row').remove();
+            else setOpen(false);
+          });
+        });
+      });
+      // Outside click / Esc close every menu. The trigger's stopPropagation is why a
+      // per-trigger outside-listener couldn't close its neighbours — close them here.
+      document.addEventListener('click', function () { closeAll(null); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeAll(null); });
+      // A fixed menu can't follow the row on scroll — close it so it never floats detached.
+      window.addEventListener('scroll', function () { closeAll(null); }, true);
+
+      // Revoke: confirm inline — flip the row's status badge to Revoked and disable the verb.
+      document.querySelectorAll('.btn[aria-label="Revoke"]').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (btn.disabled) return;
+          var badge = btn.closest('.list-row').querySelector('.list-row__title .badge');
+          if (badge) { badge.className = 'badge badge--error'; badge.innerHTML = '<span class="badge__dot" aria-hidden="true"></span>Revoked'; }
+          btn.disabled = true;
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

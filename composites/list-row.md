@@ -75,8 +75,11 @@ A non-tabular interactive list row — a leading visual, a title line that can c
   primary left bar (`--shadow-row-selected`, the same recipe as a selected
   `data-table` row) — the open item in a single-select master/detail list. It
   outranks hover so the selection never disappears when the row is hovered.
-- **disabled** — `--disabled` dims the row to 0.5 and drops pointer events (a
-  setting that isn't available yet).
+- **disabled** — `--disabled` dims the row to 0.5 and shows a `not-allowed` cursor
+  (as every other disabled control does), making child controls non-interactive
+  (`pointer-events: none`) rather than swallowing pointer events on the row itself; an
+  interactive row (`<button>`) also carries the native `disabled` attribute. Used for a
+  setting that isn't available yet.
 - **empty** — render an `empty-state` in place of rows, never a blank frame.
 - **loading** — `skeleton-row`s inside the frame.
 

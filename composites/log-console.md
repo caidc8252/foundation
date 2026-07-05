@@ -21,7 +21,7 @@ A structured **logcat** viewer — a toolbar (level filter · text filter · dow
 ```
 
 - `.log-console` — bordered surface, flex column.
-- `.log-console__toolbar` — `.log-console__levels` (V/D/I/W/E/F toggles) + a reused `.search-input` + a `.log-console__download` button (reuses `.btn`).
+- `.log-console__toolbar` — a multi-select `.toggle-group` (V/D/I/W/E/F level toggles) + a reused `.search-input` + a `.log-console__download` button (reuses `.btn`).
 - `.log-console__viewport` — the scrolling row region (`max-block-size` default; override per use).
 - `.log-console__row` — one line: a fixed 5-column grid (`time · pid · level · tag · msg`) so columns align down the list. Level modifier `--v/--d/--i/--w/--e/--f`. Optional `--expandable` / `--expanded` + a `.log-console__detail` (full message / stack).
 - `.log-console__empty` — shown when nothing matches the filter.
@@ -48,7 +48,7 @@ Muted for the noise (V/D/I); status-coloured for what you scan for (W/E/F), whic
 
 Presentation only; the consumer wires:
 
-- **level toggles** — show/hide rows by level (`--active` marks an on level).
+- **level toggles** — show/hide rows by level; a multi-select `.toggle-group` where `aria-pressed="true"` marks an on level.
 - **text filter** — substring match over tag + message.
 - **expand** — toggle `--expanded` on a `--expandable` row.
 - **download** — export the (filtered) lines as text.
@@ -63,4 +63,4 @@ Presentation only; the consumer wires:
 
 ## Implementations
 
-- **Artifact (self-contained HTML)** — `.log-console` › `.log-console__toolbar` (`.log-console__levels` of `.log-console__level-toggle`, a `.search-input`, a `.btn…log-console__download`) › `.log-console__viewport` of `.log-console__row.--<level>` (each `.log-console__time/__pid/__level/__tag/__msg`, optional `.log-console__detail`). Classes in `composites.css`, over primitives + the inlined tokens.
+- **Artifact (self-contained HTML)** — `.log-console` › `.log-console__toolbar` (a `.toggle-group.toggle-group--outline` of `.toggle-group__item` level toggles, a `.search-input`, a `.btn…log-console__download`) › `.log-console__viewport` of `.log-console__row.--<level>` (each `.log-console__time/__pid/__level/__tag/__msg`, optional `.log-console__detail`). Classes in `composites.css`, over primitives + the inlined tokens.

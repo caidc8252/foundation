@@ -4,6 +4,46 @@ The design law (`principles.md`) is shared. How a violation gets *caught*
 differs by consumer — one has a compiler-grade lint, the other has a checklist.
 This file is the pointer map.
 
+## Principle → catch map
+
+Each law in `principles.md` carries a `caught-by` tag; this table is where that tag
+becomes concrete — the actual mechanism, per consumer. Read it two ways: **top-down**
+(what enforces principle N) and as a **hole-finder** — a `Law` whose only guard on both
+sides is `review` is a law an eye alone holds (expected for visual/behavioural rules; a
+red flag for anything mechanically checkable). `—` marks a **Boundary** (not a gate — it
+draws a scope line / says what is *not* a defect); `n/a` marks an axis that consumer
+cannot hit. Tiers: **Law** (violate = fail) · **Default** (deviate with a reason) ·
+**Boundary** (scope line).
+
+| # | Tier | Next (`@cloud/ui`) | Artifact (self-contained HTML) |
+|---|---|---|---|
+| 1 | Law | eslint: no-arbitrary-values · no-CSS-in-JS | `check-artifact`: hardcoded-colors · unknown-token |
+| 2 | Law | imports the `@theme` source (no redefine) | `check-artifact`: unknown-token · checklist: no stale inline snapshot |
+| 3 | Default | review | review |
+| 4 | Law | eslint: no-arbitrary-values | `check-artifact`: unknown-token · review: off-scale `px` |
+| 5 | Law | eslint: no-native-form-controls · primitive-API guards | `check-artifact`: off-set classes (`--strict`) · checklist: use the classes, not hand-rolled |
+| 6 | Law | review | checklist: frameless full-width (no `max-width` lock) |
+| 7 | Boundary | — (defines what is *not* a defect: downstream a11y) | — (audits must not flag downstream a11y) |
+| 8 | Boundary | — | — |
+| 9a | Boundary | `check:patterns` (route.composites documented) | `check:patterns` · review: required-core vs optional |
+| 9b | Law | review (`page-header` / `detail-header`) | review |
+| 10 | Law | review | `check-artifact`: hardcoded-colors (literals only) · review: semantic-tone misuse |
+| 11a | Law | review | review |
+| 11b | Default | review | review |
+| 12 | Law | review | review |
+| 13 | Law | review | `check-artifact` ⚠: inline padding/margin · review: 0-gap stack |
+| 14 | Law | eslint: filter-on-change | `check-artifact` ⚠ (best-effort) · review-gate (authoritative) |
+| 15 | Default | review | review |
+| 16 | Law | n/a (components portal / RSC — no authoring hazard) | review: the `:not()` specificity guard |
+| 17 | Law | n/a (components portal the popup) | review: open each popup in an overflow region |
+
+Beyond the numbered laws, `check-artifact` also runs **closed-set and component-contract
+checks** not tied to a single principle — native date/time inputs, Lucide icon names &
+paths, table-cell structure (`.cell-tags` / `.cell-chevron`), the field hint/error
+mutual-exclusion gate + `.label`-outside-Field advisory, spec-internal ids in copy,
+frameless app-shell chrome, native-skinnable controls. These back the closed set
+(`AGENTS.md` · `catalog.md`) and individual contracts, not one law.
+
 ## Next.js app (`@cloud/ui` consumer)
 
 Enforced mechanically by ESLint in the app repo (`eslint.nextkit.mjs`). Relevant
@@ -69,6 +109,31 @@ The remaining items are an eye/design pass:
       (⚠) when a search/filter target is wired to an `input`/`change` listener, but it
       misses generically-named wiring and can't confirm intent — so read the filter
       wiring by hand. This is the failure mode missed most under **detail-page tabs**.
+- [ ] **A committed state is never repainted by hover** (principle 16): any
+      `:hover` you author over a selectable element (selected / checked / pressed /
+      `aria-current` / a calendar day or range) must exclude that committed state
+      via `:not(...)`. `.x:hover` (0,2,0) out-specifies `.x--selected` (0,1,0), so an
+      unguarded hover silently washes out the selection regardless of source order.
+      The static checker cannot see rendered specificity — verify the guard by hand
+      wherever local CSS hovers a selectable thing.
+- [ ] **No floating popup is nested inside an overflow container** (principle 17):
+      an inline `dropdown-menu` / `popover` / `select`·`combobox` list / `tooltip` /
+      `hover-card` opened from inside a `.scroll-area__viewport`, `.table-scroll`, or an
+      `overflow:auto|hidden` card is clipped flat at that box's edge. Lift the popup to a
+      non-clipping ancestor, or use a `fixed` surface (`modal`/`sheet`). The static checker
+      can't see the clip — verify by opening each popup that lives in an overflow region.
+- [ ] **Form fields use the `Field` primitive; hint and error never show together**
+      (principle 5 · `primitives/field.md` · `patterns/create-form.md`): a stacked
+      label→control→caption row is a `.field` (`.label` + control + one of
+      `.field__hint` / `.field__error`), not a hand-rolled label+control. `check-artifact`
+      **hard-fails** a `.field` whose at-rest markup shows a **visible hint AND a visible
+      error** at once (they are mutually exclusive — the invalid swap hides one, by
+      convention `.is-hidden`), and emits a **best-effort advisory** when a `for=`-wired
+      `.label` sits outside any `.field` (the hand-rolled-row escape; a `aria-label`-only
+      toolbar control never trips it). The static checker sees only **static markup** — a
+      field whose validation is **wired in JS** (hint↔error swap, `aria-invalid` flip) is
+      the ungoverned DOM layer it can't judge, so verify that behavior by hand against the
+      `primitives/field.html` reference model (also ported into `patterns/create-form.html`).
 - [ ] Inlined the current `release/tokens.inline.css`; no stale snapshot.
 - [ ] Every color/size/radius/shadow is `var(--token-…)` — zero hex/px literals
       for anything a token covers.

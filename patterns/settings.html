@@ -29,6 +29,10 @@
 
   /* Page-local composition — NOT new design vocabulary. All values are tokens. */
 
+  /* Nav clicks jump within the scroll root (.app-frame__main); animate the jump so
+     it reads as a scroll, which the scroll-spy then tracks to move the highlight. */
+  .app-frame__main { scroll-behavior: smooth; }
+
   /* Two-column settings layout: a fixed-narrow nav rail beside the content column.
      --settings-header-h ≈ the sticky page-header's height; the nav docks BELOW it. */
   .settings-layout { --settings-header-h: 6rem; display: grid; grid-template-columns: 13rem minmax(0, 1fr); gap: var(--space-6); align-items: start; }
@@ -52,6 +56,9 @@
 
   /* The content column is a vertical stack of setting-group cards. */
   .settings-content { display: flex; flex-direction: column; gap: var(--space-6); }
+  /* Anchor jumps (and the scroll-spy that tracks them) land the group BELOW the
+     sticky page-header, not hidden under it. Matches the nav's sticky top. */
+  .settings-content > .card { scroll-margin-top: calc(var(--settings-header-h) + var(--space-4)); }
 
   /* A setting row: text on the left, control on the right, hairline between rows. */
   .setting-row {
@@ -126,7 +133,8 @@
 
           <!-- OPTIONAL: section nav (anchor rail) — include with ~3+ groups; a single-group
                screen drops it and lets the content column go full width. Scroll-jumps to a
-               group and highlights the one in view (host wires the scroll-spy). -->
+               group and highlights the one in view — the scroll-spy that moves the
+               --active link is wired by the inline script at the end of <body>. -->
           <nav class="settings-nav" aria-label="Settings sections">
             <p class="settings-nav__eyebrow">On this page</p>
             <a class="settings-nav__link settings-nav__link--active" href="#general">General</a>
@@ -365,4 +373,68 @@
     </main>
   </div>
 </div>
+
+<script>
+  /* Section nav = a scroll-spy anchor rail (not tabs). Clicking a link jumps to
+     its group; as you scroll, the link for the group currently under the sticky
+     header stays highlighted. Scroll root is .app-frame__main (app-frame binds
+     the viewport height + overflow), so the spy listens there, not on window. */
+  (function () {
+    var scroller = document.querySelector('.app-frame__main');
+    var nav = document.querySelector('.settings-nav');
+    if (!scroller || !nav) return;
+
+    var links = [].slice.call(nav.querySelectorAll('.settings-nav__link'));
+    var sections = links
+      .map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); })
+      .filter(Boolean);
+    if (!sections.length) return;
+
+    function setActive(id) {
+      links.forEach(function (a) {
+        a.classList.toggle('settings-nav__link--active', a.getAttribute('href').slice(1) === id);
+      });
+    }
+
+    /* The spy line sits at the nav's own sticky top — the SAME offset the groups'
+       scroll-margin-top uses, so a group jumped-to lands exactly on it (not just
+       below it, which would keep the previous link lit). */
+    function currentId() {
+      /* At the very bottom the last group can be too short to reach the line —
+         force it so the final link still highlights on a free scroll to the end. */
+      if (scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 2) {
+        return sections[sections.length - 1].id;
+      }
+      var line = scroller.getBoundingClientRect().top + (parseFloat(getComputedStyle(nav).top) || 0) + 4;
+      var current = sections[0];
+      sections.forEach(function (s) {
+        if (s.getBoundingClientRect().top <= line) current = s;
+      });
+      return current.id;
+    }
+
+    /* A click is authoritative: highlight it now and HOLD through the smooth
+       scroll, so the spy can't snap to a neighbour when the target is too short
+       to reach the line (e.g. the second-to-last group bottoming out the scroll). */
+    var holdUntil = 0;
+    links.forEach(function (a) {
+      a.addEventListener('click', function () {
+        setActive(a.getAttribute('href').slice(1));
+        holdUntil = performance.now() + 700;
+      });
+    });
+
+    var ticking = false;
+    scroller.addEventListener('scroll', function () {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () {
+        if (performance.now() >= holdUntil) setActive(currentId());
+        ticking = false;
+      });
+    }, { passive: true });
+
+    setActive(currentId()); // initial state, overriding the markup's default
+  })();
+</script>
 </body>

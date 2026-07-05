@@ -36,12 +36,14 @@
   <style>
     /* --- Page-local overrides --- */
     body {
+      margin: 0;
       font-family: var(--font-sans);
       background-color: var(--color-surface-1);
       color: var(--color-content-primary);
-      padding: var(--space-6);
-      max-width: 800px;
-      margin: 0 auto;
+      padding: var(--space-6) var(--space-8);
+    }
+    @media (max-width: 640px) {
+      body { padding: var(--space-5) var(--space-4); }
     }
 
     .demo-section {

@@ -10,6 +10,40 @@ fetching.
 > *types* and the `items`-shortcut shape live with `@cloud/ui` + the `ui` skill;
 > the contract wins. An implementation that diverges is the bug.
 
+## Choosing a form
+
+Timeline has four independent axes — **marker** (`dot` / `icon`), **density**
+(`default` / `compact`), **layout** (time-right / `stacked`), **tone** (6). Mixing
+them freely yields dozens of permutations, so **pick the nearest canonical recipe
+below — don't improvise a new combination.**
+
+| requirement | marker | density | layout | canonical example |
+|---|---|---|---|---|
+| **System / release history** — homogeneous events separated by status, relative time | `dot` | default | time-right | Deployment history |
+| **Entity audit trail** — the *kind* of event is the point; the glyph names the action | `icon` | default | time-right | Account audit trail |
+| **Dense access / security log** — many short title-only rows, scanned by clock time | `dot` | compact | time-right | Dense audit log |
+| **Document / collaboration activity** — time · actor as a meta row, narrow / side-by-side panels | `icon` | stacked | default | Document activity |
+
+Per-axis rules (consult only when no recipe fits):
+
+- **marker** — `dot` when events differ only by status (deploy / health / alert…);
+  `icon` when the event *type* differs and a glyph should identify it at a glance.
+  **Never mix `dot` and `icon` within one timeline.**
+- **density** — `default` when each row carries a description worth reading;
+  `compact` for title-only audit logs scanned rather than read.
+- **layout** — time-right when the column is wide and timestamps are short
+  (relative, or `14:30`); `stacked` for narrow / sidebar / side-by-side columns,
+  or when time and actor should read as one meta line. A long absolute timestamp
+  (`2026-06-28 14:30 UTC`) that would crowd the title row is a signal to stack.
+- **tone** — status vocabulary shared with Badge: `success` = done / approved,
+  `warning` = attention (non-blocking), `error` = failed / rejected, `info` =
+  in-progress / pending, `primary` (accent) = highlighted / current, `neutral` =
+  routine / informational. **One tone per event**; never color for decoration.
+
+Anti-patterns: mixing `dot` and `icon`; packing descriptions into `compact`
+(it's for scanning); painting every event `primary`/`success` (tone stops
+signaling status); leaving a long absolute timestamp in time-right layout.
+
 ## Modes (two combinable root axes)
 
 | axis | values | effect |

@@ -19,7 +19,7 @@ All three share the same layout recipe — they are aliases for the same visual 
 ## States
 
 - **default** — flex row, `gap: space-2`, `cursor: pointer`.
-- **disabled** (`data-disabled="true"`) — `opacity: 0.5`, `cursor: not-allowed`, `pointer-events: none`. Set on the wrapper and let the inner control's `:disabled` state render naturally.
+- **disabled** (`data-disabled="true"`) — `opacity: 0.5` + `cursor: not-allowed` on the wrapper, with `pointer-events: none` on its **children** (not the wrapper — that would swallow the not-allowed cursor). Set on the wrapper and let the inner control's `:disabled` state render naturally.
 
 ## Sizes
 

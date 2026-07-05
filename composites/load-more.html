@@ -42,8 +42,6 @@
       background-color: var(--color-surface-1);
       color: var(--color-content-primary);
       padding: var(--space-6);
-      max-width: 700px;
-      margin: 0 auto;
     }
 
     .demo-section {
@@ -368,5 +366,60 @@
   <!-- bottom spacer -->
   <div style="height: var(--space-12);"></div>
 
+  <script>
+    // Make every enabled "Load more" append the next page: click → brief loading spinner
+    // → rows appended to the list above, summary + progress advanced, until the count is
+    // exhausted, when the button is replaced by the end marker. The disabled loading
+    // (Example 2) and done (Examples 3, 5) blocks stay as static state references.
+    (function () {
+      function rowHtml(name, status) {
+        return '<div class="demo-list-item"><span class="demo-list-item__name">' + name +
+          '</span><span class="demo-list-item__status">' + status + '</span></div>';
+      }
+      document.querySelectorAll('.load-more').forEach(function (lm) {
+        var btn = lm.querySelector('.btn');
+        if (!btn || btn.disabled) return;                 // skip static loading / done states
+        var list = lm.previousElementSibling;
+        while (list && !list.classList.contains('demo-list')) list = list.previousElementSibling;
+        var summary = lm.querySelector('.load-more__summary');
+        var bar = lm.querySelector('.progress');
+        var indicator = lm.querySelector('.progress__indicator');
+        var shown, total;
+        if (bar) { shown = +bar.getAttribute('aria-valuenow'); total = +bar.getAttribute('aria-valuemax'); }
+        else { shown = list ? list.querySelectorAll('.demo-list-item').length : 0; total = shown + 6; }
+        var PAGE = 3;
+        var original = btn.innerHTML;
+
+        function paint() {
+          if (summary) summary.textContent = 'Showing ' + shown.toLocaleString() + ' of ' + total.toLocaleString();
+          if (indicator) indicator.style.width = Math.round(shown / total * 100) + '%';
+          if (bar) bar.setAttribute('aria-valuenow', String(shown));
+        }
+
+        btn.addEventListener('click', function () {
+          if (btn.disabled) return;
+          btn.disabled = true;
+          btn.innerHTML = '<span class="spinner-inline"></span> Loading…';
+          setTimeout(function () {
+            var n = Math.min(PAGE, total - shown);
+            for (var i = 0; i < n; i++) {
+              shown++;
+              if (list) list.insertAdjacentHTML('beforeend', rowHtml('Item #' + shown, 'loaded'));
+            }
+            paint();
+            if (shown >= total) {
+              var end = document.createElement('div');
+              end.className = 'load-more__end';
+              end.textContent = "You've reached the end";
+              btn.replaceWith(end);
+            } else {
+              btn.innerHTML = original;
+              btn.disabled = false;
+            }
+          }, 700);
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

@@ -50,7 +50,7 @@ them. See "Required core / optional slots" below for the exact split.
 ## Required core / optional slots
 
 A list page is a **framework**, not a filled-in screen (governance principle
-[#9 — *Patterns are frameworks*](../governance/principles.md#9-patterns-are-frameworks--a-minimal-required-core-everything-else-optional)):
+[#9 — *Patterns are frameworks*](../governance/principles.md#9-patterns-are-frameworks)):
 it guarantees the structure and ordering above, never that every band is
 present. The split below is authoritative — this contract declares it; treat it
 as the source of truth, don't re-derive it elsewhere. Only the **header** and the **results card** are the minimal
@@ -251,7 +251,7 @@ own contract — this pattern only fixes which appear and in what order:
 | list card | a [`data-table`](../composites/data-table.md) `table-frame --flush` wrapping the next three |
 | summary bar (sticky) | [`summary-bar`](../composites/summary-bar.md) |
 | table (sticky header) | [`data-table`](../composites/data-table.md) (sort · selection · row-open · sticky header) |
-| pagination (rich footer) | [`pagination`](../composites/pagination.md) — `RichPagination`: rows-per-page + range summary + **simple** prev/next nav (current page only, no jump — the table constraint) |
+| pagination (rich footer) | [`pagination`](../composites/pagination.md) — `RichPagination`: rows-per-page + range summary + **numbered** nav (‹ Prev · 1 2 3 … n · Next ›) on the right |
 | empty / loading | [`empty-state`](../composites/empty-state.md) · [`skeleton`](../composites/skeleton.md) |
 
 Those composites in turn lean on primitives (`Button`, `Input`, `Badge`,

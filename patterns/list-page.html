@@ -146,20 +146,24 @@
              The count bar, table, and pagination are the results block's required internals — keep all three. -->
         <div class="table-frame table-frame--flush">
 
-          <!-- summary bar — count appends "matching filters" when any filter is applied.
+          <!-- summary bar — the count reports the current total only (it updates when a
+               filter changes the result set, but carries no sort/filter descriptor).
                STICKY: the middle layer of the stack — docks just below the sticky page-header
                (top = --lp-header-h; see the page-local sticky rules above), with the sticky-head
                thead docking below it in turn. Works only because .table-scroll's h-scroll is
                clipped — otherwise the thead would stick to .table-scroll and scroll away (the
                sticky-head trap; data-table.md §Sticky-head trap). -->
           <div class="summary-bar summary-bar--sticky">
-            <div class="summary-bar__count"><strong>1,248</strong> customers <span id="filter-suffix"></span></div>
+            <div class="summary-bar__count"><strong>1,248</strong> customers</div>
             <div class="summary-bar__actions">
               <!-- Business-driven slot: list-level secondary actions, included only per need.
                    Export is the common one — delete it if the filtered result needs no export.
                    There is NO default "Columns"/column-manager action (the system has no such
                    composite); add a list-level verb here only when this list actually needs it. -->
-              <button class="btn btn--secondary btn--sm" type="button">Export</button>
+              <button class="btn btn--secondary btn--sm" type="button">
+                <svg data-lucide="download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>
+                Export
+              </button>
             </div>
           </div>
 
@@ -478,8 +482,7 @@
   var qsRegion     = document.getElementById('qs-region');
   var appliedRow   = document.getElementById('applied-filters');
   var clearAllBtn  = document.getElementById('clear-all-btn');
-  var filterSuffix = document.getElementById('filter-suffix');
-  // LP9: summary bar count reflects the active filter set
+  // LP9: summary bar count reflects the active filter set (count number only)
   var summaryCount = document.querySelector('.summary-bar__count strong');
 
   // No filters applied at load (empty chips); chips get added as the user filters
@@ -495,7 +498,6 @@
 
     if (chips.length === 0) {
       appliedRow.style.display = 'none';
-      filterSuffix.textContent = '';
       // LP9: no filters → show full count
       if (summaryCount) summaryCount.textContent = '1,248';
       return;
@@ -529,7 +531,6 @@
     });
 
     appliedRow.style.display = '';
-    filterSuffix.textContent = '· matching filters';
     // LP9: filtered → update the summary count (placeholder count for demo)
     var filteredCount = '5';
     if (summaryCount) summaryCount.textContent = filteredCount;

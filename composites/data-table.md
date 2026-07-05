@@ -40,7 +40,8 @@ an icon* — never its own column, never a button.
 
 - **Framed appearance** — wrap in `.table-frame` (rounded-xl + `line-default`
   border + `surface-2` + `shadow-1`, corners clipped). Header is `surface-3`,
-  `text-xs` / weight 500 / UPPERCASE / `tracking-overline` / `content-tertiary`.
+  `text-xs` / weight 500 / UPPERCASE / `wide` tracking (0.04em, **not** the 0.06em
+  overline tracking) / `content-tertiary`.
 - **Sort** is tri-state per column: unsorted → asc → desc → unsorted. The active
   column shows a primary-tinted chevron; sortable-but-inactive reveals a dim
   chevron on hover.
@@ -97,9 +98,10 @@ an icon* — never its own column, never a button.
   sticks to that outer root, not to table-scroll. **h-scroll XOR outer-root sticky-head —
   you can't have both.** Get it wrong and the thead sticks to `.table-scroll`, scrolls
   away, and rows slide under the bar. Regression: `node scripts/visual/sticky-check.mjs <page>`.
-- **Pagination is `simple`** — the list/table footer shows `‹ Prev · current page
-  · Next ›` only (no numbered jump, no ellipsis); it is `RichPagination`, which is
-  always simple. The total lives in its range summary. See `pagination.md`.
+- **Pagination is the numbered `RichPagination` footer** — `‹ Prev · 1 2 3 … n · Next ›`
+  on the right, with the rows-per-page select + range summary on the left. The total
+  lives in the range summary. (Opaque-cursor data uses a Prev/Next-only cursor pager.)
+  See `pagination.md`.
 - **Empty / loading** are not the table's job to invent — render `empty-state`
   in place of rows, or a `skeleton` table while loading.
 

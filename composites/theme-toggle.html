@@ -43,9 +43,10 @@
       font-family: var(--font-sans);
       background-color: var(--color-surface-1);
       color: var(--color-content-primary);
-      padding: var(--space-6);
-      max-width: 800px;
-      margin: 0 auto;
+      padding: var(--space-6) var(--space-8);
+    }
+    @media (max-width: 640px) {
+      body { padding: var(--space-5) var(--space-4); }
     }
 
     .demo-section {
@@ -165,7 +166,7 @@
     <div class="demo-header__spacer"></div>
 
     <!-- Theme toggle — moon (shown in light mode: tap → go dark) -->
-    <button type="button" class="btn btn--ghost btn--icon theme-toggle" aria-label="Switch to dark mode">
+    <button type="button" class="btn btn--ghost btn--icon theme-toggle" aria-label="Switch to dark mode" aria-pressed="false" data-live-indicator>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
       </svg>
@@ -310,5 +311,52 @@
   <!-- bottom spacer -->
   <div style="height: var(--space-12);"></div>
 
+  <script>
+    // Real theme flip: every theme-toggle in the ROOT theme scope switches
+    // [data-theme] on <html>, so the whole page visibly re-renders light↔dark and
+    // the choice persists across reloads (localStorage). The header toggle is the
+    // live indicator — it swaps its moon/sun glyph and aria to the resolved theme.
+    // The labelled moon-vs-sun cards and the focus demo stay in place as glyph
+    // skins (their glyph is fixed by the label); the §5 card sits in its own nested
+    // [data-theme="dark"] preview scope, so it is left out of the root flip.
+    (function () {
+      var MOON = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+      var SUN =
+        '<circle cx="12" cy="12" r="5"></circle>' +
+        '<line x1="12" y1="1" x2="12" y2="3"></line>' +
+        '<line x1="12" y1="21" x2="12" y2="23"></line>' +
+        '<line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>' +
+        '<line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>' +
+        '<line x1="1" y1="12" x2="3" y2="12"></line>' +
+        '<line x1="21" y1="12" x2="23" y2="12"></line>' +
+        '<line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>' +
+        '<line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+      var KEY = 'foundation-theme';
+      var root = document.documentElement;
+      var toggles = Array.prototype.filter.call(
+        document.querySelectorAll('.theme-toggle'),
+        function (b) { return b.closest('[data-theme]') === root; }
+      );
+      function apply(theme) {
+        root.setAttribute('data-theme', theme);
+        var dark = theme === 'dark';
+        document.querySelectorAll('.theme-toggle[data-live-indicator]').forEach(function (btn) {
+          var svg = btn.querySelector('svg');
+          if (svg) svg.innerHTML = dark ? SUN : MOON;
+          btn.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+          btn.setAttribute('aria-pressed', String(dark));
+        });
+        try { localStorage.setItem(KEY, theme); } catch (e) {}
+      }
+      var saved;
+      try { saved = localStorage.getItem(KEY); } catch (e) {}
+      apply(saved || root.getAttribute('data-theme') || 'light');
+      toggles.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          apply(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

@@ -266,13 +266,16 @@
                STICKY: middle layer of the stack — docks just below the sticky page-header
                (top = --lp-header-h), with the sticky-head thead docking below it in turn. -->
           <div class="summary-bar summary-bar--sticky">
-            <div class="summary-bar__count"><strong id="result-count">1,248</strong> customers <span id="filter-suffix"></span></div>
+            <div class="summary-bar__count"><strong id="result-count">1,248</strong> customers</div>
             <!-- LP2: idle actions (no rows selected) -->
             <div class="summary-bar__actions" id="summary-idle">
               <!-- Business-driven slot: list-level secondary actions, included only per need.
                    Export is the common one — delete it if the filtered result needs no export.
                    No default "Columns"/column-manager action exists in the system. -->
-              <button class="btn btn--secondary btn--sm" type="button">Export</button>
+              <button class="btn btn--secondary btn--sm" type="button">
+                <svg data-lucide="download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>
+                Export
+              </button>
             </div>
             <!-- LP2: bulk actions replace idle when ≥1 row is selected (hidden until then) -->
             <div class="summary-bar__actions" id="summary-bulk" style="display:none">
@@ -720,8 +723,7 @@
   var applyBtn     = document.getElementById('adv-apply');
   var appliedRow   = document.getElementById('applied-filters');
   var clearAllBtn  = document.getElementById('clear-all-btn');
-  var suffix       = document.getElementById('filter-suffix');
-  // LP9: summary bar count reflects the active filter set
+  // LP9: summary bar count reflects the active filter set (count number only)
   var summaryCount = document.getElementById('result-count');
   // LP2: bulk bar elements
   var summaryIdle  = document.getElementById('summary-idle');
@@ -817,7 +819,6 @@
 
     if (activeFilters.length === 0) {
       appliedRow.style.display = 'none';
-      suffix.textContent = '';
       // LP9: no filters → show full count
       if (summaryCount) summaryCount.textContent = '1,248';
       return;
@@ -851,7 +852,6 @@
     });
 
     appliedRow.style.display = '';
-    suffix.textContent = '· matching filters';
     // LP9: filtered → update the summary count (demo placeholder)
     var filteredCount = '5';
     if (summaryCount) summaryCount.textContent = filteredCount;

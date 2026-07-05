@@ -9,27 +9,40 @@
   Use list-filter (condition-band) when a list page needs search + quick
   filter dropdowns + visible applied chips. Every filter change commits
   on the Search button click, not on change.
-  · For lists with many filter dimensions → use list-page-advanced-filter
-    pattern (filter sheet)
+  · For lists with many filter dimensions → keep the primary quick filter
+    inline and move the rest into the Advanced filter sheet (the
+    list-page-advanced-filter pattern)
   · For simple single-field search → a bare .search-input is sufficient
   · Do NOT use condition-band on detail or create pages
 
+  This file is a COMPLETE, LIVE demo — every band starts EMPTY (no
+  pre-selected filters, no pre-rendered chips) and you build the query up
+  from nothing, exactly as a user would. There are no faked/pre-seeded
+  states: chips only exist once you actually Search / Apply.
+
+  The two configurations it contrasts (Sections 1 & 2):
+    - WITHOUT Advanced: few dimensions → every quick filter fits inline in
+      the toolbar; NO Advanced trigger, NO spacer. Reach for this first.
+    - WITH Advanced: many dimensions → the primary quick filter stays inline
+      and the rest live in a real sheet opened by the funnel trigger, which
+      the condition-band__spacer pushes to the toolbar's right edge. The
+      sheet's Apply projects its criteria into chips; Reset clears it.
+
   Covers:
-    - Condition band (toolbar + applied-filters rows)
-    - Search input with leading magnifier icon via .search-input__icon
-      wrapper (NEVER drop a bare <svg> into .search-input)
-    - Quick filters as <select> dropdowns
-    - Search button (positioned WITH the filters, not at the far end) —
-      carries a LEADING MAGNIFIER (data-lucide="search"), the same glyph as the
-      search-input icon. It is NOT a funnel; the funnel belongs to the Advanced
-      trigger only. Matches patterns/list-page.html's Search button.
-    - condition-band__spacer pushing Advanced/secondary trigger right
-    - Applied-filters row: label + filter-chips (pill-shaped, tonal
-      primary, control-xs) + inline "clear all" ghost button
-    - Filter-chip remove button (ghost hit-target, X icon)
-    - Applied-filters renders nothing when empty (shown as hidden)
-    - Empty state: no applied filters
-    - Multiple active chips demonstrating different filter types
+    - Section 1 — without Advanced: search + two inline quick filters →
+      Search commits them to chips (start empty; build from nothing)
+    - Section 2 — with Advanced: inline Status + a WORKING Advanced sheet
+      (Region · Priority · Plan) → Apply projects criteria into chips
+    - Empty applied-filters renders nothing at all (not an empty bar) — the
+      default starting state of every band
+    - Search input with leading magnifier via .search-input__icon WRAPPER
+      (NEVER drop a bare <svg> into .search-input)
+    - Search button carries a LEADING MAGNIFIER (data-lucide="search"), the
+      same glyph as the search-input icon — NOT a funnel. The funnel
+      (data-lucide="funnel") belongs to the Advanced trigger only.
+    - Applied-filters chips (tonal primary, control-xs) + inline ghost
+      "clear all"; commit-on-Search (principle 14); chip ✕ / clear all
+      re-run immediately.
   ──────────────────────────────────────────────────────────────────────
 -->
 <!DOCTYPE html>
@@ -45,17 +58,18 @@
     /* Page-local overrides for this demo page */
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -104,20 +118,83 @@
       padding-bottom: var(--space-3);
       border-bottom: 1px solid var(--color-line-subtle);
     }
+
+    /* ── Advanced filter sheet — page-local layout only (the .sheet /
+         .sheet-overlay / .sheet__* skins are foundation primitives).
+         Mirrors patterns/list-page-advanced-filter.html. ── */
+    .sheet__body {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--space-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5);
+    }
+    .filter-group { display: flex; flex-direction: column; gap: var(--space-3); }
+    .filter-group__label {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--color-content-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .filter-group__row { display: flex; align-items: center; gap: var(--space-2); }
+    .filter-group__row .select { flex: 1; min-width: 0; }
+    .check-list { display: flex; flex-direction: column; gap: var(--space-2); }
+    .check-list__item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-sm);
+      color: var(--color-content-primary);
+      cursor: pointer;
+      user-select: none;
+    }
+    /* Filter-sheet header/footer overrides (row layout + hairlines) */
+    .filter-sheet__header {
+      flex-direction: row;
+      align-items: center;
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .filter-sheet__icon {
+      flex-shrink: 0;
+      width: var(--space-4);
+      height: var(--space-4);
+      color: var(--color-primary-700);
+      margin-right: var(--space-2);
+    }
+    .filter-sheet__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: calc(var(--space-1) / 2); }
+    .filter-sheet__text .sheet__description { font-size: var(--text-xs); color: var(--color-content-tertiary); }
+    .filter-sheet__footer {
+      flex-direction: row;
+      justify-content: flex-end;
+      border-top: 1px solid var(--color-line-subtle);
+    }
+    /* Overlay + panel hide/show — hidden until the Advanced trigger opens them */
+    .sheet-overlay, .sheet { display: none; }
+    .sheet-overlay.is-open { display: block; }
+    .sheet.is-open { display: flex; }
+    body.sheet-open { overflow: hidden; }
   </style>
 </head>
 <body>
   <div class="demo-page">
 
-    <!-- ── Section: Full condition band with applied filters ── -->
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: WITHOUT Advanced — every dimension fits inline
+         Few filter dimensions → all quick filters live in the toolbar and
+         there is NO Advanced trigger (and no spacer). Canonical order:
+         search → quick filters → Search button, hugging the left. Starts
+         EMPTY: pick filters, click Search, watch chips appear from nothing.
+         ════════════════════════════════════════════════════════════════ -->
     <div class="demo-section">
-      <h2 class="demo-section__title">List filter · full condition band with active chips</h2>
+      <h2 class="demo-section__title">List filter · without Advanced (all dimensions inline)</h2>
       <p class="demo-section__desc">
-        Complete filtering apparatus: search input, quick-filter dropdown,
-        Search button, Advanced trigger (pushed right by spacer), and an
-        applied-filters row with chips + clear all. Chips are tonal primary
-        (primary-50 bg, primary-700 text), pill-shaped, control-xs height.
-        The ✕ remove button is a tiny ghost hit-target.
+        The default. When a list has only a handful of dimensions, every quick filter
+        fits in the toolbar — <strong>no Advanced trigger, no spacer</strong>. It starts
+        empty (no chips — an empty applied-filters row renders nothing). Type a term or
+        pick Status / Region, then click <strong>Search</strong> to commit (principle 14 —
+        nothing filters on change). Each committed criterion becomes a removable chip.
       </p>
 
       <div class="demo-card">
@@ -133,126 +210,59 @@
                 <input class="input" type="search" placeholder="Search by name, email, ID…" aria-label="Search">
               </div>
 
-              <!-- Quick filter dropdown -->
+              <!-- Both quick filters fit inline — nothing overflows, so no Advanced.
+                   Default to "All …" (unselected) — the band starts with no query. -->
               <select class="select" aria-label="Status filter">
                 <option value="">All statuses</option>
                 <option value="active">Active</option>
                 <option value="pending">Pending</option>
                 <option value="inactive">Inactive</option>
               </select>
-
-              <!-- Search button — sits WITH the filters, not at the far end.
-                   Carries the leading magnifier (data-lucide="search"), same glyph as
-                   the search-input icon — NOT a funnel (that's the Advanced trigger). -->
-              <button class="btn btn--secondary">
-                <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
-                Search
-              </button>
-
-              <!-- Spacer pushes Advanced to the right -->
-              <span class="condition-band__spacer"></span>
-
-              <!-- Advanced trigger (secondary) -->
-              <button class="btn btn--secondary">
-                <svg data-lucide="funnel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"/></svg>
-                Advanced
-              </button>
-            </div>
-
-            <!-- Applied-filters row: label + chips + clear all -->
-            <div class="applied-filters">
-              <span class="applied-filters__label">Filters:</span>
-
-              <!-- Chip: Status: Active -->
-              <span class="filter-chip">
-                Status: Active
-                <button class="filter-chip__remove" aria-label="Remove filter: Status: Active">
-                  <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                </button>
-              </span>
-
-              <!-- Chip: Region: APAC -->
-              <span class="filter-chip">
-                Region: APAC
-                <button class="filter-chip__remove" aria-label="Remove filter: Region: APAC">
-                  <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                </button>
-              </span>
-
-              <!-- Chip: Created after -->
-              <span class="filter-chip">
-                Created: After Jan 1, 2026
-                <button class="filter-chip__remove" aria-label="Remove filter: Created: After Jan 1, 2026">
-                  <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                </button>
-              </span>
-
-              <!-- Clear all — ghost xs button, flows inline after chips -->
-              <button class="btn btn--ghost btn--xs">clear all</button>
-            </div>
-          </div>
-        </div>
-        <div class="demo-card__body">
-          <em>Table results would appear below the filter band</em>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── Section: Draft state (no applied filters) ── -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">List filter · draft state (no applied filters)</h2>
-      <p class="demo-section__desc">
-        Search field has typed text but nothing has been submitted yet.
-        No chips are shown — the Search button commits the draft. The
-        applied-filters row renders nothing when empty (display:none).
-      </p>
-
-      <div class="demo-card">
-        <div class="list-card__filter-area">
-          <div class="condition-band">
-            <div class="condition-band__toolbar">
-              <div class="search-input">
-                <span class="search-input__icon">
-                  <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
-                </span>
-                <input class="input" type="search" placeholder="Search by name, email, ID…" value="in progress" aria-label="Search">
-              </div>
-
-              <select class="select" aria-label="Status filter">
-                <option value="">All statuses</option>
-                <option value="active">Active</option>
-                <option value="pending">Pending</option>
-                <option value="inactive">Inactive</option>
+              <select class="select" aria-label="Region filter">
+                <option value="">All regions</option>
+                <option value="apac">APAC</option>
+                <option value="emea">EMEA</option>
+                <option value="amer">Americas</option>
               </select>
 
+              <!-- Search button — sits WITH the filters. Leading magnifier
+                   (data-lucide="search"), NOT a funnel. -->
               <button class="btn btn--secondary">
                 <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
                 Search
               </button>
-              <span class="condition-band__spacer"></span>
-              <button class="btn btn--secondary">
-                <svg data-lucide="funnel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"/></svg>
-                Advanced
-              </button>
+              <!-- No condition-band__spacer and no Advanced trigger: nothing overflows. -->
             </div>
 
-            <!-- Applied filters: empty — hidden (display:none by class or nothing rendered) -->
-            <!-- <div class="applied-filters applied-filters--empty"> would be hidden -->
+            <!-- Applied-filters is injected by the script on the first Search — nothing
+                 is rendered here until then. -->
           </div>
         </div>
         <div class="demo-card__body">
-          <em>Nothing submitted — chips are not shown until Search is clicked</em>
+          <em>Pick Status / Region and click Search — chips build up from nothing</em>
         </div>
       </div>
     </div>
 
-    <!-- ── Section: Single filter chip ── -->
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: WITH Advanced — overflow dimensions move to a real sheet
+         Many filter dimensions → keep the PRIMARY quick filter inline and
+         push the rest into an Advanced filter SHEET reached by the funnel
+         trigger. The trigger is secondary and pushed to the far right by
+         condition-band__spacer; its glyph is the funnel (data-lucide=
+         "funnel"), NOT the search magnifier. The sheet (at the end of the
+         body) is a REAL working drawer: pick Region / Priority / Plan, click
+         Apply, and each criterion becomes a chip — all from nothing.
+         ════════════════════════════════════════════════════════════════ -->
     <div class="demo-section">
-      <h2 class="demo-section__title">List filter · single active filter</h2>
+      <h2 class="demo-section__title">List filter · with Advanced (overflow dimensions in a sheet)</h2>
       <p class="demo-section__desc">
-        After submitting, a single criterion is shown as one chip. The
-        label "Filters:" is always shown before the chips. The clear all
-        button removes all filters at once.
+        When a list has many dimensions, only the primary quick filter (Status) stays
+        inline; the rest live in an <strong>Advanced</strong> filter sheet opened by the
+        funnel trigger that <code>condition-band__spacer</code> pushes to the right edge.
+        Click <strong>Advanced</strong> to open the sheet, choose criteria, then
+        <strong>Apply</strong> — the sheet's filters surface as chips beside the inline one,
+        so the active query stays fully visible.
       </p>
 
       <div class="demo-card">
@@ -266,9 +276,10 @@
                 <input class="input" type="search" placeholder="Search by name, email, ID…" aria-label="Search">
               </div>
 
+              <!-- Only the primary quick filter stays inline; the rest live in the sheet. -->
               <select class="select" aria-label="Status filter">
                 <option value="">All statuses</option>
-                <option value="active" selected>Active</option>
+                <option value="active">Active</option>
                 <option value="pending">Pending</option>
                 <option value="inactive">Inactive</option>
               </select>
@@ -277,118 +288,29 @@
                 <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
                 Search
               </button>
+
+              <!-- Spacer pushes Advanced to the right — signals the less-common path
+                   without changing its visual weight. -->
               <span class="condition-band__spacer"></span>
-              <button class="btn btn--secondary">
+
+              <!-- Advanced trigger — FUNNEL glyph; opens the sheet below. -->
+              <button class="btn btn--secondary" type="button" id="adv-trigger" aria-haspopup="dialog" aria-expanded="false">
                 <svg data-lucide="funnel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"/></svg>
                 Advanced
               </button>
             </div>
 
-            <div class="applied-filters">
-              <span class="applied-filters__label">Filters:</span>
-              <span class="filter-chip">
-                Status: Active
-                <button class="filter-chip__remove" aria-label="Remove filter: Status: Active">
-                  <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                </button>
-              </span>
-              <button class="btn btn--ghost btn--xs">clear all</button>
-            </div>
+            <!-- Applied-filters injected by the script — from inline Search and/or the
+                 sheet's Apply. Nothing renders until the first criterion lands. -->
           </div>
         </div>
         <div class="demo-card__body">
-          <em>Results filtered by active status</em>
+          <em>Open Advanced, pick Region / Priority / Plan, Apply — chips appear from nothing</em>
         </div>
       </div>
     </div>
 
-    <!-- ── Section: Many chips (overflow wrap) ── -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">List filter · many chips (wrapping)</h2>
-      <p class="demo-section__desc">
-        When there are multiple filters, chips wrap naturally to the next
-        line inside the applied-filters flex container (flex-wrap: wrap).
-        Each chip is a consistent height (control-xs, 22px).
-      </p>
-
-      <div class="demo-card">
-        <div class="list-card__filter-area">
-          <div class="condition-band">
-            <div class="condition-band__toolbar">
-              <div class="search-input">
-                <span class="search-input__icon">
-                  <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
-                </span>
-                <input class="input" type="search" placeholder="Search by name, email, ID…" aria-label="Search">
-              </div>
-
-              <select class="select" aria-label="Department filter">
-                <option value="">All departments</option>
-                <option value="engineering" selected>Engineering</option>
-                <option value="marketing">Marketing</option>
-                <option value="sales">Sales</option>
-              </select>
-
-              <button class="btn btn--secondary">
-                <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
-                Search
-              </button>
-              <span class="condition-band__spacer"></span>
-              <button class="btn btn--secondary">
-                <svg data-lucide="funnel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"/></svg>
-                Advanced
-              </button>
-            </div>
-
-            <div class="applied-filters">
-              <span class="applied-filters__label">Filters:</span>
-              <span class="filter-chip">
-                Status: Active
-                <button class="filter-chip__remove" aria-label="Remove filter: Status: Active">
-                  <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                </button>
-              </span>
-              <span class="filter-chip">
-                Department: Engineering
-                <button class="filter-chip__remove" aria-label="Remove filter: Department: Engineering">
-                  <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                </button>
-              </span>
-              <span class="filter-chip">
-                Region: APAC
-                <button class="filter-chip__remove" aria-label="Remove filter: Region: APAC">
-                  <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                </button>
-              </span>
-              <span class="filter-chip">
-                Created: After Jan 1, 2026
-                <button class="filter-chip__remove" aria-label="Remove filter: Created: After Jan 1, 2026">
-                  <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                </button>
-              </span>
-              <span class="filter-chip">
-                Priority: High
-                <button class="filter-chip__remove" aria-label="Remove filter: Priority: High">
-                  <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                </button>
-              </span>
-              <span class="filter-chip">
-                Assignee: Current User
-                <button class="filter-chip__remove" aria-label="Remove filter: Assignee: Current User">
-                  <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                </button>
-              </span>
-              <button class="btn btn--ghost btn--xs">clear all</button>
-            </div>
-          </div>
-        </div>
-        <div class="demo-card__body">
-          <em>Results filtered by 6 criteria — chips wrap as needed</em>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── Section: Search input structure detail ── -->
+    <!-- ── Section 3: Search input structure detail ── -->
     <div class="demo-section">
       <h2 class="demo-section__title">Search input · exact structure reference</h2>
       <p class="demo-section__desc">
@@ -401,20 +323,256 @@
 
       <div class="demo-card">
         <div class="list-card__filter-area">
-          <!-- Exact contract markup from list-filter.md -->
-          <div class="search-input" style="max-inline-size:24rem;flex:none">
-            <span class="search-input__icon">
-              <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
-            </span>
-            <input class="input" type="search" placeholder="Search…">
+          <!-- Exact contract markup — the search-input paired with its Search button:
+               the simplest condition-band (single-field search, no quick filters, no
+               Advanced). Live — type a term and click Search / press Enter. -->
+          <div class="condition-band">
+            <div class="condition-band__toolbar">
+              <div class="search-input">
+                <span class="search-input__icon">
+                  <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+                </span>
+                <input class="input" type="search" placeholder="Search…" aria-label="Search">
+              </div>
+              <!-- Search button — the SAME magnifier glyph as the search-input icon, never a funnel. -->
+              <button class="btn btn--secondary">
+                <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+                Search
+              </button>
+            </div>
           </div>
           <p style="font-size:var(--text-xs);color:var(--color-content-tertiary);margin:var(--space-2) 0 0">
-            Icon is wrapped in <code>.search-input__icon</code> — the only correct structure.
+            The magnifier is wrapped in <code>.search-input__icon</code> — the only correct
+            structure — and the Search button carries the same glyph (never a funnel).
           </p>
         </div>
       </div>
     </div>
 
   </div>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       Advanced filter SHEET — opened by Section 2's Advanced trigger.
+       A real, working drawer (mirrors patterns/list-page-advanced-filter.html
+       with a trimmed control set). Fixed to the viewport's right edge; hidden
+       until opened. Apply projects its criteria into the band's chips; Reset
+       clears the controls; X / scrim / Esc close it.
+       ════════════════════════════════════════════════════════════════════ -->
+  <div class="sheet-overlay" id="adv-overlay" role="presentation"></div>
+  <div class="sheet sheet--right" id="adv-panel" role="dialog" aria-modal="true" aria-labelledby="adv-title">
+
+    <!-- Header: funnel icon + title/desc + inline close -->
+    <div class="sheet__header filter-sheet__header">
+      <svg class="filter-sheet__icon" data-lucide="funnel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"/></svg>
+      <div class="filter-sheet__text">
+        <div class="sheet__title" id="adv-title">Advanced filters</div>
+        <div class="sheet__description">Narrow results with additional criteria. Changes apply when you click "Apply".</div>
+      </div>
+      <button class="btn btn--ghost btn--icon btn--icon-sm" type="button" id="adv-close" aria-label="Close advanced filters">
+        <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+
+    <!-- Body: filter groups -->
+    <div class="sheet__body">
+      <div class="filter-group">
+        <div class="filter-group__label">Region</div>
+        <div class="filter-group__row">
+          <select class="select" id="adv-region" aria-label="Region">
+            <option value="">Any region</option>
+            <option>APAC</option>
+            <option>EMEA</option>
+            <option>Americas</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-group__label">Priority</div>
+        <div class="filter-group__row">
+          <select class="select" id="adv-priority" aria-label="Priority">
+            <option value="">Any priority</option>
+            <option>High</option>
+            <option>Medium</option>
+            <option>Low</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-group__label">Plan</div>
+        <div class="check-list">
+          <label class="check-list__item"><input class="checkbox" type="checkbox" name="adv-plan" value="Enterprise"> Enterprise</label>
+          <label class="check-list__item"><input class="checkbox" type="checkbox" name="adv-plan" value="Business"> Business</label>
+          <label class="check-list__item"><input class="checkbox" type="checkbox" name="adv-plan" value="Starter"> Starter</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer: Reset · Apply -->
+    <div class="sheet__footer filter-sheet__footer">
+      <button class="btn btn--ghost" type="button" id="adv-reset">Reset</button>
+      <button class="btn btn--primary" type="button" id="adv-apply">Apply filters</button>
+    </div>
+  </div>
+
+  <script>
+    // A COMPLETE, from-nothing filtering demo. PRINCIPLE 14: the search box + quick
+    // filters only edit a DRAFT — nothing commits on input/change. The inline query
+    // commits on Search / Enter; the Advanced sheet commits on Apply. Both project into
+    // the same applied-filter chips (each removable; "clear all" drops them). An empty
+    // applied-filters row renders nothing at all — that is every band's start state.
+    (function () {
+      var X = '<svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>';
+
+      function dimOf(text) { return text.split(':')[0].trim(); }
+
+      function clearAllIn(row) {
+        return Array.prototype.find.call(row.querySelectorAll('.btn'), function (b) {
+          return b.textContent.trim() === 'clear all';
+        });
+      }
+
+      function makeChip(text) {
+        var chip = document.createElement('span');
+        chip.className = 'filter-chip';
+        chip.appendChild(document.createTextNode(text + ' '));
+        var rm = document.createElement('button');
+        rm.className = 'filter-chip__remove';
+        rm.setAttribute('aria-label', 'Remove filter: ' + text);
+        rm.innerHTML = X;
+        chip.appendChild(rm);
+        return chip;
+      }
+
+      // Create the applied-filters row on demand — so a band that has never been
+      // searched renders nothing at all (not an empty bar).
+      function ensureRow(band) {
+        var row = band.querySelector('.applied-filters');
+        if (!row) {
+          row = document.createElement('div');
+          row.className = 'applied-filters';
+          row.innerHTML = '<span class="applied-filters__label">Filters:</span>' +
+            '<button class="btn btn--ghost btn--xs">clear all</button>';
+          band.appendChild(row);
+        }
+        return row;
+      }
+
+      function setChip(row, text) {
+        var dim = dimOf(text);
+        row.querySelectorAll('.filter-chip').forEach(function (c) {
+          if (dimOf(c.textContent) === dim) c.remove();
+        });
+        row.insertBefore(makeChip(text), clearAllIn(row));
+      }
+
+      function removeChipDim(row, dim) {
+        row.querySelectorAll('.filter-chip').forEach(function (c) {
+          if (dimOf(c.textContent) === dim) c.remove();
+        });
+      }
+
+      // Empty row renders nothing; non-empty row shows.
+      function refreshEmpty(row) {
+        row.classList.toggle('applied-filters--empty', !row.querySelector('.filter-chip'));
+      }
+
+      // Commit the inline draft (search term + inline quick filters) into chips.
+      function commit(band) {
+        var input = band.querySelector('.search-input .input');
+        var term = input ? input.value.trim() : '';
+        var row = ensureRow(band);
+        if (term) setChip(row, 'Search: ' + term); else removeChipDim(row, 'Search');
+        // Every INLINE quick filter (sheet selects live outside .condition-band).
+        band.querySelectorAll('.select').forEach(function (select) {
+          var dim = (select.getAttribute('aria-label') || 'Filter').replace(/\s*filter$/i, '').trim();
+          if (select.value) setChip(row, dim + ': ' + select.options[select.selectedIndex].text);
+          else removeChipDim(row, dim);
+        });
+        refreshEmpty(row);
+      }
+
+      document.querySelectorAll('.condition-band').forEach(function (band) {
+        var searchBtn = Array.prototype.find.call(band.querySelectorAll('.condition-band__toolbar .btn'), function (b) {
+          return b.textContent.trim() === 'Search';
+        });
+        if (searchBtn) searchBtn.addEventListener('click', function () { commit(band); });
+        var input = band.querySelector('.search-input .input');
+        // Enter-to-commit — NOT an input listener (keydown is the sanctioned commit path).
+        if (input) input.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') { e.preventDefault(); commit(band); }
+        });
+      });
+
+      // ── Advanced sheet: open / close / apply / reset ──────────────────────────
+      var overlay = document.getElementById('adv-overlay');
+      var panel   = document.getElementById('adv-panel');
+      var trigger = document.getElementById('adv-trigger');
+      var advBand = trigger ? trigger.closest('.condition-band') : null;
+
+      function openSheet() {
+        overlay.classList.add('is-open');
+        panel.classList.add('is-open');
+        document.body.classList.add('sheet-open');
+        if (trigger) trigger.setAttribute('aria-expanded', 'true');
+      }
+      function closeSheet() {
+        overlay.classList.remove('is-open');
+        panel.classList.remove('is-open');
+        document.body.classList.remove('sheet-open');
+        if (trigger) trigger.setAttribute('aria-expanded', 'false');
+      }
+
+      if (trigger) trigger.addEventListener('click', openSheet);
+      if (overlay) overlay.addEventListener('click', closeSheet);
+      var closeBtn = document.getElementById('adv-close');
+      if (closeBtn) closeBtn.addEventListener('click', closeSheet);
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && panel && panel.classList.contains('is-open')) closeSheet();
+      });
+
+      // Apply: read the sheet's controls → chips on the Advanced band (removing the
+      // chip for any dimension cleared back to "Any"). This is the sheet's commit.
+      var applyBtn = document.getElementById('adv-apply');
+      if (applyBtn) applyBtn.addEventListener('click', function () {
+        if (!advBand) return;
+        var row = ensureRow(advBand);
+        var region = document.getElementById('adv-region');
+        var priority = document.getElementById('adv-priority');
+        if (region.value) setChip(row, 'Region: ' + region.value); else removeChipDim(row, 'Region');
+        if (priority.value) setChip(row, 'Priority: ' + priority.value); else removeChipDim(row, 'Priority');
+        var plans = Array.prototype.map.call(panel.querySelectorAll('input[name="adv-plan"]:checked'), function (c) { return c.value; });
+        if (plans.length) setChip(row, 'Plan: ' + plans.join(', ')); else removeChipDim(row, 'Plan');
+        refreshEmpty(row);
+        closeSheet();
+      });
+
+      // Reset: clear the sheet's controls (takes effect on the next Apply).
+      var resetBtn = document.getElementById('adv-reset');
+      if (resetBtn) resetBtn.addEventListener('click', function () {
+        var region = document.getElementById('adv-region'); if (region) region.value = '';
+        var priority = document.getElementById('adv-priority'); if (priority) priority.value = '';
+        panel.querySelectorAll('input[name="adv-plan"]').forEach(function (c) { c.checked = false; });
+      });
+
+      // Chip removal + clear all (delegated so dynamically-added chips work too).
+      document.addEventListener('click', function (e) {
+        var rm = e.target.closest('.filter-chip__remove');
+        if (rm) {
+          var row = rm.closest('.applied-filters');
+          rm.closest('.filter-chip').remove();
+          if (row) refreshEmpty(row);
+          return;
+        }
+        var btn = e.target.closest('.btn');
+        if (btn && btn.closest('.applied-filters') && btn.textContent.trim() === 'clear all') {
+          var row2 = btn.closest('.applied-filters');
+          row2.querySelectorAll('.filter-chip').forEach(function (c) { c.remove(); });
+          refreshEmpty(row2);
+        }
+      });
+    })();
+  </script>
 </body>
 </html>

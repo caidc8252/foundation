@@ -30,18 +30,22 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      /* max-width: 900px; */
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
     }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
+    }
+    /* Interactive wizard rails signal clickability; the read-only status
+       pipeline (no data-interactive) stays a plain display. */
+    .step-indicator[data-interactive] .step { cursor: pointer; }
     .demo-section {
       display: flex;
       flex-direction: column;
@@ -59,14 +63,6 @@
       font-size: var(--text-sm);
       color: var(--color-content-tertiary);
       margin: 0;
-    }
-    .demo-col2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-6);
-    }
-    @media (max-width: 700px) {
-      .demo-col2 { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -86,7 +82,7 @@
 
       <div class="card" style="padding:var(--space-5);">
         <div style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin-bottom:var(--space-5);">Company onboarding</div>
-        <ol class="step-indicator">
+        <ol class="step-indicator" data-interactive>
           <li class="step step--completed" data-state="completed" aria-label="Step 1 completed">
             <div class="step__body">
               <div class="step__dot">
@@ -146,7 +142,7 @@
 
       <div class="card" style="padding:var(--space-5);">
         <div style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin-bottom:var(--space-5);">Store setup wizard</div>
-        <ol class="step-indicator">
+        <ol class="step-indicator" data-interactive>
           <li class="step step--completed" data-state="completed" aria-label="Step 1 completed">
             <div class="step__body">
               <div class="step__dot">
@@ -208,7 +204,6 @@
         captions carry stage dates instead of step numbers.
       </p>
 
-      <div class="demo-col2">
         <div class="card" style="padding:var(--space-5);">
           <div style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin-bottom:var(--space-1);">Order #ORD-87321</div>
           <div style="font-size:var(--text-xs);color:var(--color-content-tertiary);margin-bottom:var(--space-5);">Current stage: Shipped</div>
@@ -312,9 +307,51 @@
             </li>
           </ol>
         </div>
-      </div>
     </div>
 
   </div>
+  <script>
+    // Wizard rails (data-interactive) are navigable: clicking a step makes it the
+    // current step and re-derives every step's state + ARIA — earlier steps flip to
+    // completed, later steps to upcoming. A numbered rail swaps its dot between the
+    // step number and a check; an icon rail keeps its glyph through every state.
+    // The read-only status pipeline carries no data-interactive and stays inert.
+    (function () {
+      var CHECK = '<svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+      document.querySelectorAll('.step-indicator[data-interactive]').forEach(function (rail) {
+        var steps = Array.prototype.slice.call(rail.querySelectorAll('.step'));
+        var active = steps.findIndex(function (s) { return s.getAttribute('data-state') === 'active'; });
+        if (active < 0) active = 0;
+        // Numbered rail: the active dot is a bare number (no svg) → swap number↔check.
+        var usesCheck = !steps[active].querySelector('.step__dot svg');
+        function render() {
+          steps.forEach(function (step, j) {
+            var state = j < active ? 'completed' : (j === active ? 'active' : 'upcoming');
+            step.className = 'step step--' + state;
+            step.setAttribute('data-state', state);
+            if (state === 'completed') {
+              step.setAttribute('aria-label', 'Step ' + (j + 1) + ' completed');
+              step.removeAttribute('aria-current');
+            } else if (state === 'active') {
+              step.removeAttribute('aria-label');
+              step.setAttribute('aria-current', 'step');
+            } else {
+              step.removeAttribute('aria-label');
+              step.removeAttribute('aria-current');
+            }
+            if (usesCheck) {
+              var dot = step.querySelector('.step__dot');
+              if (state === 'completed') dot.innerHTML = CHECK;
+              else dot.textContent = String(j + 1);
+            }
+          });
+        }
+        steps.forEach(function (step, j) {
+          step.addEventListener('click', function () { if (j === active) return; active = j; render(); });
+        });
+        render();
+      });
+    })();
+  </script>
 </body>
 </html>

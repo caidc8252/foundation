@@ -31,17 +31,18 @@
     /* Page-local overrides for this demo page */
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -88,7 +89,7 @@
       <div class="table-frame table-frame--flush">
         <div class="summary-bar">
           <div class="summary-bar__count">
-            <strong>1,248</strong> results · sorted by name
+            <strong>1,248</strong> results
           </div>
           <div class="summary-bar__actions">
             <button class="btn btn--secondary btn--sm">
@@ -101,6 +102,11 @@
           <table class="data-table">
             <thead>
               <tr>
+                <th class="col-select" scope="col">
+                  <label data-tooltip="Select all">
+                    <input type="checkbox" class="checkbox" aria-label="Select all rows">
+                  </label>
+                </th>
                 <th>Company</th>
                 <th>Plan</th>
                 <th>Status</th>
@@ -110,6 +116,11 @@
             </thead>
             <tbody>
               <tr>
+                <td class="col-select">
+                  <label>
+                    <input type="checkbox" class="checkbox" aria-label="Select row">
+                  </label>
+                </td>
                 <td>Acme Corporation</td>
                 <td>Enterprise</td>
                 <td><span class="badge badge--success"><span class="badge__dot" aria-hidden="true"></span>Active</span></td>
@@ -117,6 +128,11 @@
                 <td>Jan 15, 2024</td>
               </tr>
               <tr>
+                <td class="col-select">
+                  <label>
+                    <input type="checkbox" class="checkbox" aria-label="Select row">
+                  </label>
+                </td>
                 <td>Beta Systems</td>
                 <td>Growth</td>
                 <td><span class="badge badge--success"><span class="badge__dot" aria-hidden="true"></span>Active</span></td>
@@ -124,6 +140,11 @@
                 <td>Mar 3, 2024</td>
               </tr>
               <tr>
+                <td class="col-select">
+                  <label>
+                    <input type="checkbox" class="checkbox" aria-label="Select row">
+                  </label>
+                </td>
                 <td>Cobalt Industries</td>
                 <td>Starter</td>
                 <td><span class="badge badge--warning"><span class="badge__dot" aria-hidden="true"></span>Trial</span></td>
@@ -131,6 +152,11 @@
                 <td>Jun 1, 2024</td>
               </tr>
               <tr>
+                <td class="col-select">
+                  <label>
+                    <input type="checkbox" class="checkbox" aria-label="Select row">
+                  </label>
+                </td>
                 <td>Delta Analytics</td>
                 <td>Growth</td>
                 <td><span class="badge badge--neutral"><span class="badge__dot" aria-hidden="true"></span>Churned</span></td>
@@ -138,6 +164,11 @@
                 <td>Nov 20, 2023</td>
               </tr>
               <tr>
+                <td class="col-select">
+                  <label>
+                    <input type="checkbox" class="checkbox" aria-label="Select row">
+                  </label>
+                </td>
                 <td>Echo Technologies</td>
                 <td>Enterprise</td>
                 <td><span class="badge badge--success"><span class="badge__dot" aria-hidden="true"></span>Active</span></td>
@@ -227,7 +258,7 @@
       <div class="table-frame table-frame--flush" style="max-height:360px; overflow-y:auto;">
         <div class="summary-bar summary-bar--sticky">
           <div class="summary-bar__count">
-            <strong>1,248</strong> results · sorted by name
+            <strong>1,248</strong> results
           </div>
           <div class="summary-bar__actions">
             <button class="btn btn--secondary btn--sm">
@@ -240,6 +271,11 @@
           <table class="data-table data-table--sticky-head">
             <thead>
               <tr>
+                <th class="col-select" scope="col">
+                  <label data-tooltip="Select all">
+                    <input type="checkbox" class="checkbox" aria-label="Select all rows">
+                  </label>
+                </th>
                 <th>Company</th>
                 <th>Plan</th>
                 <th>Status</th>
@@ -249,6 +285,11 @@
             </thead>
             <tbody>
               <tr>
+                <td class="col-select">
+                  <label>
+                    <input type="checkbox" class="checkbox" aria-label="Select row">
+                  </label>
+                </td>
                 <td>Acme Corporation</td>
                 <td>Enterprise</td>
                 <td><span class="badge badge--success"><span class="badge__dot" aria-hidden="true"></span>Active</span></td>
@@ -256,6 +297,11 @@
                 <td>Jan 15, 2024</td>
               </tr>
               <tr>
+                <td class="col-select">
+                  <label>
+                    <input type="checkbox" class="checkbox" aria-label="Select row">
+                  </label>
+                </td>
                 <td>Beta Systems</td>
                 <td>Growth</td>
                 <td><span class="badge badge--success"><span class="badge__dot" aria-hidden="true"></span>Active</span></td>
@@ -263,6 +309,11 @@
                 <td>Mar 3, 2024</td>
               </tr>
               <tr>
+                <td class="col-select">
+                  <label>
+                    <input type="checkbox" class="checkbox" aria-label="Select row">
+                  </label>
+                </td>
                 <td>Cobalt Industries</td>
                 <td>Starter</td>
                 <td><span class="badge badge--warning"><span class="badge__dot" aria-hidden="true"></span>Trial</span></td>
@@ -270,6 +321,11 @@
                 <td>Jun 1, 2024</td>
               </tr>
               <tr>
+                <td class="col-select">
+                  <label>
+                    <input type="checkbox" class="checkbox" aria-label="Select row">
+                  </label>
+                </td>
                 <td>Delta Analytics</td>
                 <td>Growth</td>
                 <td><span class="badge badge--neutral"><span class="badge__dot" aria-hidden="true"></span>Churned</span></td>
@@ -277,6 +333,11 @@
                 <td>Nov 20, 2023</td>
               </tr>
               <tr>
+                <td class="col-select">
+                  <label>
+                    <input type="checkbox" class="checkbox" aria-label="Select row">
+                  </label>
+                </td>
                 <td>Echo Technologies</td>
                 <td>Enterprise</td>
                 <td><span class="badge badge--success"><span class="badge__dot" aria-hidden="true"></span>Active</span></td>
@@ -284,6 +345,11 @@
                 <td>Aug 8, 2023</td>
               </tr>
               <tr>
+                <td class="col-select">
+                  <label>
+                    <input type="checkbox" class="checkbox" aria-label="Select row">
+                  </label>
+                </td>
                 <td>Foxtrot Media</td>
                 <td>Growth</td>
                 <td><span class="badge badge--success"><span class="badge__dot" aria-hidden="true"></span>Active</span></td>
@@ -291,6 +357,11 @@
                 <td>Feb 14, 2024</td>
               </tr>
               <tr>
+                <td class="col-select">
+                  <label>
+                    <input type="checkbox" class="checkbox" aria-label="Select row">
+                  </label>
+                </td>
                 <td>Gamma Retail</td>
                 <td>Starter</td>
                 <td><span class="badge badge--success"><span class="badge__dot" aria-hidden="true"></span>Active</span></td>
@@ -298,6 +369,11 @@
                 <td>Apr 5, 2024</td>
               </tr>
               <tr>
+                <td class="col-select">
+                  <label>
+                    <input type="checkbox" class="checkbox" aria-label="Select row">
+                  </label>
+                </td>
                 <td>Harbor Logistics</td>
                 <td>Enterprise</td>
                 <td><span class="badge badge--success"><span class="badge__dot" aria-hidden="true"></span>Active</span></td>
@@ -305,6 +381,11 @@
                 <td>Oct 12, 2023</td>
               </tr>
               <tr>
+                <td class="col-select">
+                  <label>
+                    <input type="checkbox" class="checkbox" aria-label="Select row">
+                  </label>
+                </td>
                 <td>Indigo Software</td>
                 <td>Growth</td>
                 <td><span class="badge badge--warning"><span class="badge__dot" aria-hidden="true"></span>Past due</span></td>
@@ -312,6 +393,11 @@
                 <td>Jan 29, 2024</td>
               </tr>
               <tr>
+                <td class="col-select">
+                  <label>
+                    <input type="checkbox" class="checkbox" aria-label="Select row">
+                  </label>
+                </td>
                 <td>Jupiter Consulting</td>
                 <td>Starter</td>
                 <td><span class="badge badge--success"><span class="badge__dot" aria-hidden="true"></span>Active</span></td>
@@ -319,6 +405,11 @@
                 <td>May 17, 2024</td>
               </tr>
               <tr>
+                <td class="col-select">
+                  <label>
+                    <input type="checkbox" class="checkbox" aria-label="Select row">
+                  </label>
+                </td>
                 <td>Kestrel Finance</td>
                 <td>Enterprise</td>
                 <td><span class="badge badge--success"><span class="badge__dot" aria-hidden="true"></span>Active</span></td>
@@ -326,6 +417,11 @@
                 <td>Sep 2, 2023</td>
               </tr>
               <tr>
+                <td class="col-select">
+                  <label>
+                    <input type="checkbox" class="checkbox" aria-label="Select row">
+                  </label>
+                </td>
                 <td>Lunar Health</td>
                 <td>Growth</td>
                 <td><span class="badge badge--neutral"><span class="badge__dot" aria-hidden="true"></span>Churned</span></td>
@@ -339,5 +435,65 @@
     </div>
 
   </div>
+  <script>
+    // Row selection flips the summary bar from its idle state (result count + Export)
+    // to the batch-action state (selection count + bulk verbs), then back when the
+    // selection empties. Selection wiring mirrors data-table.html: drive the header
+    // "select all" via the native `change` event (tri-state check/dash/empty) and
+    // keep tr[aria-selected] in step. Destructive bulk verbs route through a
+    // confirm-danger dialog in production (actions.md); here they just flip the bar.
+    (function () {
+      var BATCH =
+        '<button class="btn btn--secondary btn--sm" type="button">' +
+          '<svg data-lucide="user-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>' +
+          'Assign' +
+        '</button>' +
+        '<button class="btn btn--ghost-danger btn--sm" type="button">' +
+          '<svg data-lucide="trash-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>' +
+          'Delete' +
+        '</button>';
+
+      document.querySelectorAll('table.data-table').forEach(function (table) {
+        var head = table.querySelector('thead .col-select input[type="checkbox"]');
+        if (!head) return; // no selection column on this table
+        var frame = table.closest('.table-frame');
+        var bar = frame && frame.querySelector('.summary-bar');
+        if (!bar) return;
+        var count = bar.querySelector('.summary-bar__count');
+        var actions = bar.querySelector('.summary-bar__actions');
+        var idleCount = count.innerHTML, idleActions = actions.innerHTML;
+
+        var rows = Array.prototype.slice
+          .call(table.querySelectorAll('tbody .col-select input[type="checkbox"]'))
+          .filter(function (cb) { return !cb.disabled; });
+        if (!rows.length) return;
+
+        function syncRow(cb) {
+          var tr = cb.closest('tr');
+          if (tr) tr.setAttribute('aria-selected', cb.checked ? 'true' : 'false');
+        }
+        function updateBar() {
+          var n = rows.filter(function (cb) { return cb.checked; }).length;
+          head.checked = n === rows.length;
+          head.indeterminate = n > 0 && n < rows.length;
+          if (n > 0) {
+            count.innerHTML = '<strong>' + n + '</strong> selected';
+            actions.innerHTML = BATCH;
+          } else {
+            count.innerHTML = idleCount;
+            actions.innerHTML = idleActions;
+          }
+        }
+        head.addEventListener('change', function () {
+          rows.forEach(function (cb) { cb.checked = head.checked; syncRow(cb); });
+          updateBar();
+        });
+        rows.forEach(function (cb) {
+          cb.addEventListener('change', function () { syncRow(cb); updateBar(); });
+        });
+        updateBar();
+      });
+    })();
+  </script>
 </body>
 </html>

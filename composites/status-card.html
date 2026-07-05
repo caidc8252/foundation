@@ -34,17 +34,18 @@
     /* Page-local overrides for this demo page */
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 560px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -271,7 +272,11 @@
       <p class="demo-section__desc">
         The <code>.status-card__footer-end</code> cluster can hold text action
         buttons instead of an icon button — a <code>.btn</code> group for
-        row-level actions (secondary + primary).
+        row-level actions (secondary + primary). Per the card contract, the
+        footer button size tracks the card size — a default <code>md</code> card
+        takes <code>btn--md</code>. With no left cluster, drop
+        <code>__footer-start</code>; <code>__footer-end</code> stays right-aligned
+        on its own <code>margin-left:auto</code>.
       </p>
 
       <div class="card status-card">
@@ -294,17 +299,32 @@
           </div>
         </div>
         <div class="card__footer">
-          <div class="status-card__footer-start">
-            
-          </div>
           <div class="status-card__footer-end">
-            <button class="btn btn--secondary btn--sm">Details</button>
-            <button class="btn btn--primary btn--sm">Promote</button>
+            <button class="btn btn--secondary btn--md">Details</button>
+            <button class="btn btn--primary btn--md">Promote</button>
           </div>
         </div>
       </div>
     </div>
 
   </div>
+
+  <script>
+    // Genuine affordance: the footer switch enables/disables monitoring per card.
+    (function () {
+      document.querySelectorAll('.status-card .switch').forEach(function (sw) {
+        var label = sw.nextElementSibling;
+        function toggle() {
+          var next = sw.getAttribute('aria-checked') !== 'true';
+          sw.setAttribute('aria-checked', String(next));
+          if (label) label.textContent = next ? 'Enabled' : 'Disabled';
+        }
+        sw.addEventListener('click', toggle);
+        sw.addEventListener('keydown', function (e) {
+          if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggle(); }
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

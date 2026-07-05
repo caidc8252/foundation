@@ -16,6 +16,18 @@
                                      .input-group__control) — that IS the foundation
                                      time-picker; a bare native time input is still
                                      flagged.
+     ✗ field hint+error both shown — a `.field` whose at-rest markup renders BOTH a
+                                     visible `.field__hint` AND a visible `.field__error`;
+                                     the two are mutually exclusive (field.md · States) —
+                                     the interactive swap must hide one (`.is-hidden` /
+                                     `hidden` / display:none). Statically decidable, so it
+                                     fails the build.
+     ⚠ .label outside a Field      — a foundation `.label` wired to a control (`for=`) but
+                                     not wrapped in a `.field`. The "hand-rolled form row"
+                                     escape (principle 5 · create-form.md · field.md). A
+                                     toolbar control uses `aria-label` (no `.label` element)
+                                     and never trips; a standalone label demo does — HEURISTIC
+                                     + advisory, confirm intent.
      ⚠ classes not in the set     — neither a foundation class nor defined in
                                      this file's own <style> (page-local
                                      composition is allowed; an off-set
@@ -377,6 +389,78 @@ const flushFrameNestingFromMarkup = (markup) => {
   return hits;
 };
 
+// Field caption contract (primitives/field.md) + the "forms use Field" mandate
+// (principle 5 · create-form.md). One stack walk, two findings:
+//
+//   HARD — hint↔error mutual exclusion. A `.field` renders EITHER a `.field__hint`
+//   OR a `.field__error`, never both at once (field.md · States: "error replaces the
+//   hint entirely"). A field whose AT-REST markup shows BOTH a visible hint AND a
+//   visible error is a contract breach — the interactive swap must hide one at rest
+//   (the codebase convention is the page-local `.is-hidden`; a `hidden` attribute or
+//   inline `display:none` counts too). Statically decidable with no false positive,
+//   so it fails the build.
+//
+//   ADVISORY — a foundation `.label` wired to a control (`for=`/`htmlFor`) but sitting
+//   OUTSIDE any `.field` wrapper: the "hand-rolled form row" escape — a label+control
+//   improvised without the Field primitive that owns the stacked label→control→caption
+//   anatomy (field.md · label.md: "For the full stacked field, compose with .field").
+//   The `for=` gate keeps this precise: a toolbar/pagination/quick-filter control is
+//   labelled by `aria-label` (no `.label` ELEMENT) and never trips; `.field-check` rows
+//   caption with `.field-check__text`, not `.label`. HEURISTIC + advisory only — a
+//   standalone `.label` primitive DEMO (primitives/label.html) legitimately shows the
+//   label without a field, so confirm intent. Scans `markup` (script-stripped), so a
+//   form BUILT IN JS is invisible here — the enforcement.md review-gate item is the
+//   backstop for that (the ungoverned JS/DOM layer a class scan cannot see).
+const CAPTION_HIDDEN = (tag) => /\bis-hidden\b|\bhidden\b|display\s*:\s*none/i.test(tag);
+const fieldFindingsFromMarkup = (markup) => {
+  const captionConflict = []; // .field showing a visible hint AND a visible error (hard)
+  const labelOutsideField = []; // a `for=`-wired .label with no .field ancestor (advisory)
+  const stack = [];
+  const snip = (s) => (s.length > 90 ? `${s.slice(0, 87)}…` : s);
+  const verdict = (f) => {
+    if (f.field && f.field.hint > 0 && f.field.error > 0) captionConflict.push(f.field.snip);
+  };
+  for (const m of markup.matchAll(/<(\/)?([A-Za-z][A-Za-z0-9:-]*)((?:\s[^<>]*)?)>/g)) {
+    const [full, closing, rawName, attrs] = m;
+    const tag = rawName.toLowerCase();
+    if (closing) {
+      for (let i = stack.length - 1; i >= 0; i--) {
+        if (stack[i].tag === tag) {
+          for (let j = stack.length - 1; j >= i; j--) verdict(stack[j]);
+          stack.length = i;
+          break;
+        }
+      }
+      continue;
+    }
+    const classes = classAttrValuesFromTag(full).join(" ").split(/\s+/).filter(Boolean);
+    const classSet = new Set(classes);
+    // Caption → credit a VISIBLE hint/error to the nearest open .field ancestor.
+    if (classSet.has("field__hint") || classSet.has("field__error")) {
+      if (!CAPTION_HIDDEN(full)) {
+        for (let i = stack.length - 1; i >= 0; i--) {
+          if (stack[i].field) {
+            if (classSet.has("field__hint")) stack[i].field.hint++;
+            else stack[i].field.error++;
+            break;
+          }
+        }
+      }
+    }
+    // A `for=`-wired .label (a real control caption) with no .field ancestor.
+    if (classSet.has("label") && /\bfor\s*=/i.test(full) && !stack.some((f) => f.field)) {
+      labelOutsideField.push(snip(full));
+    }
+    const selfClose = attrs.trimEnd().endsWith("/") || VOID_ELEMENTS.has(tag);
+    if (!selfClose) {
+      const isField = classSet.has("field");
+      stack.push({ tag, field: isField ? { hint: 0, error: 0, snip: snip(full) } : null });
+    }
+  }
+  for (const f of stack) verdict(f); // flush any fields left open by unbalanced markup
+  return { captionConflict, labelOutsideField };
+};
+
 // Principle 14: filtering commits on the Search button / Enter, NEVER on change.
 // Unlike every other check, this one scans the RAW html (scripts included) for a
 // search/filter control wired to an on-change handler: an `input` (search-as-you-type)
@@ -544,12 +628,17 @@ for (const file of files) {
   // slider, progress/meter → progress). Scans the RAW html so JS-templated ones count.
   const nativeSkinnable = nativeSkinnableFromHtml(html);
 
+  // Field caption contract + "forms use Field": HARD hint+error-both-visible, plus an
+  // ADVISORY for a stacked control hand-rolled outside a Field / recognized host.
+  const fieldFindings = fieldFindingsFromMarkup(markup);
+
   const hard =
     unknownTokens.length +
     hardColors.length +
     icons.unknown.length +
     structure.cellTagsOnTableCells.length +
     nativeDateInputs.length +
+    fieldFindings.captionConflict.length +
     (strict ? offSetClasses.length + icons.mismatch.length : 0);
   hardTotal += hard;
 
@@ -581,6 +670,10 @@ for (const file of files) {
   console.log(`  date/time inputs: ${nativeDateInputs.length === 0 ? "ok" : `${nativeDateInputs.length} native input(s)`}`);
   if (nativeDateInputs.length)
     console.log(`    ✗ native browser date/time chrome bypasses the token skin — use the picker family (.date-trigger): ${nativeDateInputs.map((n) => `type="${n.type}" → ${n.picker}`).join(", ")}`);
+  const captionBad = fieldFindings.captionConflict.length;
+  console.log(`  field captions: ${captionBad === 0 ? "ok" : `${captionBad} issue(s)`}`);
+  if (captionBad)
+    console.log(`    ✗ .field shows a hint AND an error at once — they are mutually exclusive (field.md); hide one at rest (.is-hidden) and let the swap reveal it: ${fieldFindings.captionConflict.join(" · ")}`);
   if (structure.chevronAsCell.length)
     console.log(`  ⚠ review: ${structure.chevronAsCell.length} .cell-chevron on a table cell — the chevron is no longer its own cell; move it inside the trailing .row-actions cell as the last child of .row-actions__inner, verbs first (data-table.md): ${structure.chevronAsCell.join(" · ")}`);
   if (layoutHacks.length)
@@ -595,6 +688,8 @@ for (const file of files) {
     console.log(`  ⚠ review: app-shell chrome in a frameless page — ${frameChrome.join(", ")} belongs in the full app-frame top bar, not a frameless business page; drop it (dark/light is verified by the visual pass's two renders)`);
   if (nativeSkinnable.length)
     console.log(`  ⚠ review: ${nativeSkinnable.length} native control(s) with a foundation equivalent — the native element skips the closed-set component; use it instead: ${nativeSkinnable.map((n) => `<${n.el}> → ${n.repl}`).join(", ")}`);
+  if (fieldFindings.labelOutsideField.length)
+    console.log(`  ⚠ review: ${fieldFindings.labelOutsideField.length} .label wired to a control but outside a Field — the hand-rolled form-row escape; the stacked label→control→caption anatomy belongs to the Field primitive (principle 5 · create-form.md · field.md). Wrap it in .field, or confirm this is a standalone label demo: ${fieldFindings.labelOutsideField.join(" · ")}`);
   const passText = strict
     ? "PASS (strict: no out-of-set tokens, hardcoded colors, or off-set classes)"
     : "PASS (no out-of-set tokens, no hardcoded colors)";

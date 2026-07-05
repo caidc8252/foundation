@@ -11,7 +11,7 @@ the list-level actions (Export, bulk ops). Mirrors @cloud/ui
 
 ```
 ┌ summary-bar (h = 48) ────────────────────────────────────────┐
-│ 1,248 results · sorted by name                   [ Export? ] │
+│ 1,248 results                                    [ Export? ] │
 └───────────────────────────────────────────────────────────────┘
 ```
 
@@ -20,8 +20,9 @@ the list-level actions (Export, bulk ops). Mirrors @cloud/ui
 - **Fixed height 48px** (`--space-12`). This is load-bearing: when the bar is
   sticky, the table's sticky header docks at exactly this offset so the two tile
   flush. The @cloud/ui constant is `LIST_SUMMARY_BAR_HEIGHT = 48`.
-- **Count is mono + tabular + `content-primary`**; the trailing label
-  ("results · sorted by …") is `content-secondary`. The number must not reflow as
+- **Count is mono + tabular + `content-primary`**; the trailing label — the count
+  noun alone ("results" / "transactions") — is `content-secondary`. It reports the
+  current total only, **not** the sort or filter state. The number must not reflow as
   it updates.
 - **Right slot is business-driven** — it carries only the list-level secondary
   actions this list actually needs, included per need (it is **not** a fixed set).

@@ -32,17 +32,18 @@
     /* Page-local overrides for this demo page */
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -72,6 +73,10 @@
       margin-right: var(--space-1);
       vertical-align: middle;
     }
+    /* Live-demo helpers — page-local, NOT design vocabulary. */
+    .is-hidden { display: none !important; }
+    .feed-item { cursor: pointer; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
   </style>
 </head>
@@ -91,7 +96,10 @@
         <div class="card__header">
           <h3 style="font-size:var(--text-sm);font-weight:600;margin:0">Notifications</h3>
           <div class="card__action">
-            <button class="btn btn--ghost btn--xs">Mark all as read</button>
+            <button class="btn btn--secondary btn--md" type="button">
+              <svg data-lucide="check-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 7 17l-5-5"/><path d="m22 10-7.5 7.5L13 16"/></svg>
+              Mark all as read
+            </button>
           </div>
         </div>
         <div class="card__content card__content--flush">
@@ -147,7 +155,7 @@
               </div>
             </div>
 
-            <!-- Row 3: warning tone, unread, body + danger/ghost actions -->
+            <!-- Row 3: warning tone, unread, body + actions -->
             <div class="feed-item">
               <div class="feed-item__icon feed-item__icon--warning" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -167,7 +175,7 @@
                   1h ago
                 </div>
                 <div class="feed-item__actions">
-                  <button class="btn btn--danger btn--sm">Retry now</button>
+                  <button class="btn btn--secondary btn--sm">View metrics</button>
                   <button class="btn btn--secondary btn--sm">Dismiss</button>
                 </div>
               </div>
@@ -361,5 +369,57 @@
     </div>
 
   </div>
+  <script>
+    // Make the feed live like production: clicking a row toggles its read state (and
+    // its unread dot), resolving verbs (Approve/Deny/…) settle the row, Dismiss removes
+    // it, navigational verbs give brief feedback, and "Mark all as read" clears the card.
+    (function () {
+      var PAST = { Approve: 'Approved', Deny: 'Denied', Accept: 'Accepted', Decline: 'Declined', Acknowledge: 'Acknowledged' };
+      var SPIN = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="animation:spin 1s linear infinite;vertical-align:middle;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>';
+
+      function setRead(item, read) {
+        item.classList.toggle('feed-item--read', read);
+        var dot = item.querySelector('.unread-dot');
+        if (dot) dot.classList.toggle('is-hidden', read);
+      }
+
+      // Row click (outside the action cluster) toggles read.
+      document.querySelectorAll('.feed-item').forEach(function (item) {
+        item.addEventListener('click', function (e) {
+          if (e.target.closest('.feed-item__actions')) return;
+          setRead(item, !item.classList.contains('feed-item--read'));
+        });
+      });
+
+      // Per-row action buttons fire their real verb.
+      document.querySelectorAll('.feed-item__actions .btn').forEach(function (btn) {
+        var verb = btn.textContent.trim();
+        btn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var item = btn.closest('.feed-item');
+          var actions = btn.closest('.feed-item__actions');
+          if (verb === 'Dismiss') { item.remove(); return; }
+          if (PAST[verb]) {                       // resolving verb → settle + mark read
+            setRead(item, true);
+            actions.innerHTML = '<span class="badge badge--neutral">' + PAST[verb] + '</span>';
+            return;
+          }
+          if (btn.disabled) return;               // navigational / retry verb → brief feedback
+          var original = btn.innerHTML;
+          btn.disabled = true;
+          btn.innerHTML = SPIN + ' ' + verb;
+          setTimeout(function () { btn.innerHTML = original; btn.disabled = false; }, 900);
+        });
+      });
+
+      // "Mark all as read" clears every row in the card.
+      document.querySelectorAll('.card__header .btn').forEach(function (btn) {
+        if (btn.textContent.trim().toLowerCase() !== 'mark all as read') return;
+        btn.addEventListener('click', function () {
+          btn.closest('.card').querySelectorAll('.feed-item').forEach(function (item) { setRead(item, true); });
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

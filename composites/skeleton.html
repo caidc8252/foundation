@@ -35,9 +35,13 @@
   <style>
     /* Page-local layout */
     body {
+      margin: 0;
       font-family: var(--font-sans);
       background-color: var(--color-surface-1);
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
+    }
+    @media (max-width: 640px) {
+      body { padding: var(--space-5) var(--space-4); }
     }
     .example-section {
       margin-bottom: var(--space-10);

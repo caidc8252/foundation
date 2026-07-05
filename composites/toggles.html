@@ -15,7 +15,8 @@
     - .toggle-radio — radio + label inside a radio group with fieldset/legend
     - .toggle-switch — switch + label (on, off, disabled)
     - All three share the same flex-row layout recipe (gap: space-2, cursor: pointer)
-    - data-disabled="true" state (opacity 0.5, cursor not-allowed, pointer-events none)
+    - data-disabled="true" state (opacity 0.5 + cursor not-allowed on the wrapper;
+      pointer-events none on its children so the not-allowed cursor still shows)
     - Control inside a <label> element so clicking the text activates the control
 
   Cross-reference: @cloud/ui ToggleCheckbox, ToggleRadio, ToggleSwitch.
@@ -38,12 +39,14 @@
   <style>
     /* --- Page-local overrides --- */
     body {
+      margin: 0;
       font-family: var(--font-sans);
       background-color: var(--color-surface-1);
       color: var(--color-content-primary);
-      padding: var(--space-6);
-      max-width: 800px;
-      margin: 0 auto;
+      padding: var(--space-6) var(--space-8);
+    }
+    @media (max-width: 640px) {
+      body { padding: var(--space-5) var(--space-4); }
     }
 
     .demo-section {
@@ -406,11 +409,42 @@
   <div style="height: var(--space-12);"></div>
 
   <script>
-    // Set indeterminate state for the demo checkbox
-    document.addEventListener('DOMContentLoaded', function () {
+    (function () {
+      // Indeterminate is a JS-only checkbox state — set it on the demo box.
       var cb = document.getElementById('cb-indeterminate');
       if (cb) cb.indeterminate = true;
-    });
+
+      // The .switch is a custom span control (checkboxes/radios above are
+      // native and toggle themselves). Wire click + Space/Enter to flip
+      // aria-checked / data-checked, mirroring primitives/switch.html.
+      // Disabled switches (aria-disabled="true") never respond.
+      document.querySelectorAll('.switch').forEach(function (sw) {
+        function isChecked() {
+          return sw.getAttribute('aria-checked') === 'true' || sw.hasAttribute('data-checked');
+        }
+        function toggle() {
+          if (sw.getAttribute('aria-disabled') === 'true') return;
+          var nowChecked = !isChecked();
+          sw.setAttribute('aria-checked', String(nowChecked));
+          if (nowChecked) sw.setAttribute('data-checked', '');
+          else sw.removeAttribute('data-checked');
+        }
+        sw.addEventListener('click', toggle);
+        sw.addEventListener('keydown', function (e) {
+          if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggle(); }
+        });
+
+        // Clicking the LABEL text must also toggle the switch — the whole point of
+        // the .toggle-switch wrapper. A native <input> gets this free from <label>;
+        // a custom span does not, so forward label clicks here. Clicks on the switch
+        // itself are ignored (its own handler already ran) to avoid a double-toggle.
+        var wrap = sw.closest('.toggle-switch');
+        if (wrap) wrap.addEventListener('click', function (e) {
+          if (e.target.closest('.switch')) return;
+          toggle();
+        });
+      });
+    })();
   </script>
 
 </body>

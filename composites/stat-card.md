@@ -70,7 +70,9 @@ grows with content; it never has a fixed height. Inner padding is fixed at
 - **`__label`** — overline: `text-xs`, weight 500, UPPERCASE, `tracking-overline`,
   `content-tertiary` (→ `primary-700` selected). Sits in a top row beside the icon.
 - **`__icon`** — optional, top-right, `shrink-0`, `content-tertiary`
-  (→ `primary-700` selected). Decorative; size set by the consumer's glyph.
+  (→ `primary-700` selected). Decorative; size set by the consumer's glyph
+  (`space-5` / 20px). The head reserves this height (`min-height: space-5`) so a
+  label-only card aligns with an icon card across a grid — values don't stagger.
 - **`__value`** — the metric: `font-mono`, `text-2xl`, weight 600, `tracking-tight`,
   `tabular-nums`. Color = the `tone` recipe (→ `primary-700` selected).
 - **`__delta`** — optional trend chip inline-baseline after the value: `text-xs`

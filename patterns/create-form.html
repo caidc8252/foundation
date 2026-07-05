@@ -44,6 +44,10 @@
 
   .field-check { display: flex; align-items: flex-start; gap: var(--space-2); }
   .field-check__text { font-size: var(--text-sm); color: var(--color-content-primary); }
+
+  /* Live-validation helper — page-local, NOT design vocabulary. Toggles the
+     hint↔error swap the same way primitives/field.html demonstrates it. */
+  .is-hidden { display: none !important; }
 </style>
 <body>
 
@@ -119,7 +123,7 @@
              fields into labelled section cards by concern — one Card per concern
              (Identity, Billing, …) — not one flat list. The FIRST card is required;
              any further section cards are OPTIONAL (see the commented stub below). -->
-        <form id="create-form" class="card form-page" onsubmit="return false">
+        <form id="create-form" class="card form-page" novalidate onsubmit="return false">
           <!-- REQUIRED: a section header. OPTIONAL: a per-section description below it,
                added only when the section's purpose isn't obvious from its header. -->
           <div class="card__header"><span class="form-title">Customer details</span></div>
@@ -128,7 +132,7 @@
             <!-- One Field = label + control + help/error, vertically stacked -->
             <div class="field">
               <label class="label" for="f-name">Company name <span class="field__required">*</span></label>
-              <input id="f-name" class="input" type="text" placeholder="Acme Robotics" value="Acme Robotics">
+              <input id="f-name" class="input" type="text" required placeholder="Acme Robotics" value="Acme Robotics">
             </div>
 
             <div class="form-grid form-grid--2">
@@ -146,11 +150,16 @@
               </div>
             </div>
 
-            <!-- invalid field: control carries aria-invalid; error REPLACES hint, in the interface's voice -->
-            <div class="field">
+            <!-- Invalid field, LIVE — mirrors primitives/field.html's validation model: validate
+                 on input + blur, flip aria-invalid on the control, and swap the .field__hint for
+                 the .field__error line (or back). The error is in the interface's voice and says how
+                 to fix. Markup owns the copy (data-msg-required + the initial error text); the script
+                 below just toggles. Seeded invalid ("dana@acme") so the error shows at rest. -->
+            <div class="field" data-validate="email">
               <label class="label" for="f-email">Billing email <span class="field__required">*</span></label>
-              <input id="f-email" class="input" type="email" value="dana@acme" aria-invalid="true">
-              <p class="field__error" role="alert">Enter a valid email address, e.g. dana@acme-robotics.example</p>
+              <input id="f-email" class="input" type="email" required value="dana@acme" aria-invalid="true">
+              <p class="field__hint is-hidden">Where invoices and receipts are sent.</p>
+              <p class="field__error" role="alert" data-msg-required="Billing email is required">Enter a valid email address, e.g. dana@acme-robotics.example</p>
             </div>
 
             <div class="field">
@@ -179,4 +188,51 @@
     </main>
   </div>
 </div>
+
+<script>
+  // Live field validation — the SAME model primitives/field.html demonstrates, ported to
+  // the pattern: validate on input + blur, flip aria-invalid on the control, and swap the
+  // .field__hint for the .field__error line (or back). Required-empty is only surfaced after
+  // a blur so the field doesn't shout before the user has touched it. The form is `novalidate`
+  // so native bubbles never compete with these captions (production mirrors the Zod rules here).
+  // Copy factors: markup owns the copy — the initial .field__error text is the format message,
+  // data-msg-required is the required message — so the interface voice lives in the HTML, not JS.
+  (function () {
+    var VALIDATORS = { email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ };
+    document.querySelectorAll('.field[data-validate]').forEach(function (field) {
+      var re = VALIDATORS[field.getAttribute('data-validate')];
+      var input = field.querySelector('.input, .textarea');
+      var hint = field.querySelector('.field__hint');
+      var error = field.querySelector('.field__error');
+      if (!re || !input || !error) return;
+
+      var invalidMsg = error.textContent;
+      var requiredMsg = error.getAttribute('data-msg-required') || 'This field is required';
+
+      function evaluate(force) {
+        var v = input.value.trim();
+        var msg = '';
+        if (!v) {
+          if (input.hasAttribute('required') && force) msg = requiredMsg;
+        } else if (!re.test(v)) {
+          msg = invalidMsg;
+        }
+        var invalid = !!msg;
+        if (invalid) {
+          input.setAttribute('aria-invalid', 'true');
+          error.textContent = msg;
+        } else {
+          input.removeAttribute('aria-invalid');
+        }
+        error.classList.toggle('is-hidden', !invalid);
+        if (hint) hint.classList.toggle('is-hidden', invalid);
+      }
+
+      input.addEventListener('input', function () { evaluate(false); });
+      input.addEventListener('blur', function () { evaluate(true); });
+      // Reflect the seeded value so the pre-filled invalid field shows its error at rest.
+      if (input.value.trim()) evaluate(false);
+    });
+  })();
+</script>
 </body>

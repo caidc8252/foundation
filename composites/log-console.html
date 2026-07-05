@@ -2,10 +2,19 @@
   log-console.html
   ──────────────────────────────────────────────────────────────────────
   Demonstrates the Log console composite in the foundation design system.
+
+  When to use (AI decision guide)
+  ──────────────────────────────────────────────────────────────────────
+  Use log-console for streamed / collected LOG LINES parsed into columns
+  (time · pid/tid · level · tag · message), scanned by severity — device
+  diagnostics, crash triage, field debugging.
+  · feed-list / timeline — for prose activity / notification feeds, NOT log lines
+  · a single copyable snippet — use a plain <pre> code block, not log-console
+
   Covers:
     - Structured logcat rows: time · pid/tid · level · tag · message (fixed grid)
     - Level colours: muted V/D/I, coloured rail W, rail+wash E/F
-    - Toolbar: level toggles + reused .search-input + download
+    - Toolbar: level toggles (multi-select toggle-group) + reused .search-input + download
     - Expandable rows revealing a full stack trace
     - Filter / expand / download wired by a small inline script
   ──────────────────────────────────────────────────────────────────────
@@ -20,8 +29,21 @@
   <link rel="stylesheet" href="../primitives/primitives.css">
   <link rel="stylesheet" href="../release/composites.css">
   <style>
-    body { margin: 0; background-color: var(--color-surface-2); font-family: var(--font-sans); }
-    .demo-page { max-width: 960px; margin: 0 auto; padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-4); }
+    body {
+      margin: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+      color: var(--color-content-primary);
+    }
+    .demo-page {
+      padding: var(--space-6) var(--space-8);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
+    }
     .demo-title { font-size: var(--text-lg); font-weight: 600; color: var(--color-content-primary); margin: 0; }
     .demo-desc { font-size: var(--text-sm); color: var(--color-content-tertiary); margin: 0; }
   </style>
@@ -33,19 +55,21 @@
 
     <div class="log-console">
       <div class="log-console__toolbar">
-        <div class="log-console__levels">
-          <button type="button" class="log-console__level-toggle log-console__level-toggle--active" data-level="V">V</button>
-          <button type="button" class="log-console__level-toggle log-console__level-toggle--active" data-level="D">D</button>
-          <button type="button" class="log-console__level-toggle log-console__level-toggle--active" data-level="I">I</button>
-          <button type="button" class="log-console__level-toggle log-console__level-toggle--active" data-level="W">W</button>
-          <button type="button" class="log-console__level-toggle log-console__level-toggle--active" data-level="E">E</button>
-          <button type="button" class="log-console__level-toggle log-console__level-toggle--active" data-level="F">F</button>
+        <!-- Level filter — a multi-select toggle-group (each level independently on/off).
+             data-type="multiple" is the select-mode hint; the on state is aria-pressed. -->
+        <div class="toggle-group toggle-group--outline" role="group" data-type="multiple" aria-label="Log levels">
+          <button type="button" class="toggle-group__item toggle-group__item--sm" data-level="V" aria-pressed="true">V</button>
+          <button type="button" class="toggle-group__item toggle-group__item--sm" data-level="D" aria-pressed="true">D</button>
+          <button type="button" class="toggle-group__item toggle-group__item--sm" data-level="I" aria-pressed="true">I</button>
+          <button type="button" class="toggle-group__item toggle-group__item--sm" data-level="W" aria-pressed="true">W</button>
+          <button type="button" class="toggle-group__item toggle-group__item--sm" data-level="E" aria-pressed="true">E</button>
+          <button type="button" class="toggle-group__item toggle-group__item--sm" data-level="F" aria-pressed="true">F</button>
         </div>
         <div class="search-input">
           <span class="search-input__icon"><svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg></span>
           <input class="input" type="text" placeholder="Filter tag or text…" aria-label="Filter logs">
         </div>
-        <button type="button" class="btn btn--secondary btn--sm log-console__download">
+        <button type="button" class="btn btn--primary btn--md log-console__download">
           <svg data-lucide="download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>
           Download
         </button>
@@ -130,11 +154,11 @@
         if (empty) empty.hidden = shown !== 0;
       }
 
-      root.querySelectorAll('.log-console__level-toggle').forEach(function (btn) {
+      root.querySelectorAll('.toggle-group__item[data-level]').forEach(function (btn) {
         btn.addEventListener('click', function () {
           var lvl = btn.getAttribute('data-level');
           active[lvl] = !active[lvl];
-          btn.classList.toggle('log-console__level-toggle--active', active[lvl]);
+          btn.setAttribute('aria-pressed', String(active[lvl]));
           apply();
         });
       });

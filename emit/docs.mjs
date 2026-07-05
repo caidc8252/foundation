@@ -933,9 +933,9 @@ h6.md-h { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 
         </div>
       </div>
 
-      <h3 class="group">头像 / 面包屑 / 分隔线 / 提示气泡</h3>
+      <h3 class="group">头像 / 分隔线 / 提示气泡</h3>
       <div class="cx-demo">
-        <div class="cx-demo__head"><div class="cx-demo__name">Avatar / Breadcrumb / Separator / Tooltip <code>.avatar · .breadcrumb · .separator · .tooltip</code></div></div>
+        <div class="cx-demo__head"><div class="cx-demo__name">Avatar / Separator / Tooltip <code>.avatar · .separator · .tooltip</code></div></div>
         <div class="cx-demo__body" style="display:flex;flex-direction:column;gap:var(--space-6)">
           <div style="display:flex;align-items:center;gap:var(--space-5)">
             <span class="avatar avatar--sm"><span class="avatar__fallback">李</span></span>
@@ -948,13 +948,6 @@ h6.md-h { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 
               <span class="avatar avatar--md"><span class="avatar__fallback">C</span></span>
             </span>
           </div>
-          <nav class="breadcrumb"><ol class="breadcrumb__list">
-            <li class="breadcrumb__item"><a class="breadcrumb__link">首页</a></li>
-            <li class="breadcrumb__separator">/</li>
-            <li class="breadcrumb__item"><a class="breadcrumb__link">订单</a></li>
-            <li class="breadcrumb__separator">/</li>
-            <li class="breadcrumb__item"><span class="breadcrumb__page">#10241</span></li>
-          </ol></nav>
           <div style="max-width:360px">
             <div style="font-size:var(--text-sm);color:var(--color-content-secondary)">分隔线上方</div>
             <div class="separator" style="margin-block:var(--space-3)"></div>
@@ -2023,7 +2016,7 @@ const MD_MAP = {
   InputGroup: ["input-group", "textarea", "select"], Checkbox: ["checkbox", "radio-group", "switch"],
   Slider: ["slider", "field", "label"], Badge: ["badge"], Alert: ["alert"],
   Progress: ["progress", "spinner"], Card: ["card"], Tabs: ["tabs"], Accordion: ["accordion"],
-  Avatar: ["avatar", "breadcrumb", "separator", "tooltip"],
+  Avatar: ["avatar", "separator", "tooltip"],
   AspectRatio: ["aspect-ratio"], ScrollArea: ["scroll-area"], Resizable: ["resizable"],
   Collapsible: ["collapsible"], Carousel: ["carousel"], ColorTile: ["color-tile"],
   InitialsTile: ["initials-tile"], InputOTP: ["input-otp"], Calendar: ["calendar"],
