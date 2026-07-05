@@ -1,6 +1,6 @@
 # Toggle Group
 
-A set of press-toggle buttons that act as one control: a segmented switch (radio-like, max one pressed) or a multi-select chip/segment cluster. The container picks the look; child `Toggle` items inherit it.
+A set of press-toggle buttons that act as one control. The container variant picks the **look** (outline / segmented / cloud / plain); the `type` sets the **select mode** (single / multiple) — independently, so any look works with either mode. Child `Toggle` items inherit the look.
 
 > **Contract scope.** This file is the cross-consumer *design contract*: the
 > variant/size vocabulary, token recipe, states, anatomy, a11y. It is the
@@ -9,6 +9,15 @@ A set of press-toggle buttons that act as one control: a segmented switch (radio
 > or base-ui specifics — those live with the Next implementation (`@cloud/ui` +
 > the `ui` skill). When the contract and an implementation disagree, the contract
 > is right and the implementation is a bug.
+
+## When to use — Toggle Group vs Toggle
+
+Both are **two-state (on/off) buttons**. Use a **Toggle Group** when several act as one control (shared container + coordinated selection); use a single [`Toggle`](./toggle.md) for one standalone on/off button — independent toggles in a row are separate `Toggle`s, not a group.
+
+A group carries **two independent choices — never conflate them**:
+
+- **Select mode** — `data-type` on the container: `single` (radio-like, ≤1 on) or `multiple` (any number on). Behavior only; the visual variant never implies it — a `segmented` group can be multi-select, a `cloud` group can be single-select.
+- **Look** — the `--variant`: `outline` / `segmented` / `cloud` / `plain`. Any variant works with either mode.
 
 ## Variants
 
@@ -20,7 +29,7 @@ prop threading.
 | variant | use | container recipe | item recipe (per state) |
 |---|---|---|---|
 | `outline` *(default)* | connected segments sharing one outer border (view / mode switch) | `inline-flex` · radius `radius-md` · border `line-strong` · bg `surface-2` · `overflow:hidden` clips item corners | items go borderless except a `line-strong` right divider (last item drops it); flat corners; bg `surface-2`, hover `surface-hover`, **pressed** bg `surface-active` |
-| `segmented` | TOMS-style pill track for an OS / mode picker (pair with single-select) | `inline-flex` · radius `radius-md` · border `line-subtle` · tinted track bg `surface-3` · inner padding (track inset) + 1px gap | borderless transparent item, text `content-secondary`; hover → text `content-primary`; **pressed** lifts into a pill: bg `surface-2` + `shadow-1` + text `content-primary` |
+| `segmented` | TOMS-style pill track for a mode / view picker (connected-track look reads “pick one”; select mode is still the container's `data-type`, not the variant) | `inline-flex` · radius `radius-md` · border `line-subtle` · tinted track bg `surface-3` · inner padding (track inset) + `space-1` gap | borderless transparent item, text `content-secondary`; hover → text `content-primary`; **pressed** lifts into a pill: bg `surface-2` + `shadow-1` + text `content-primary` |
 | `cloud` | free-wrapping standalone chips (tag / category picker; single or multi) | `flex flex-wrap` · gap `--space-1` (≈`gap-1.5`) · **no track** | each item is its own `radius-full` chip, border `line-default`, bg `surface-2`, text `xs`/`content-secondary`; hover border `line-strong`; **pressed** tints: border `primary-500` + bg `primary-50` + text `primary-700` (weight 500) |
 | `plain` | container only; children are custom option cards/tiles that own their own selected look | `flex flex-wrap` · gap `--space-2` · **no track, no child restyle** | unchanged — the caller's `Toggle`/card styling wins |
 
@@ -70,7 +79,7 @@ Each item is a `Toggle` (press-toggle button). Inline icons follow the `Toggle`/
 ## Notes
 
 - The `Toggle` item also exposes its own `variant` (`default`/`outline`) for standalone (non-grouped) use; inside a group, the *group* `data-variant` drives the look and these item-level variants are not the selection vocabulary.
-- The `segmented` track uses a 2px inset padding and a 1px inter-item gap — neither has an exact space token (the raw scale floors at `--space-1` = 4px). The reference CSS uses the 1px hairline (conventionally exempt) for the gap and `--space-1` for the inset as the nearest token; a `--space-0_5` (2px) token would let the artifact match the React `p-0.5` exactly. Recorded as a token wish, not hardcoded beyond the exempt hairline.
+- The `segmented` track uses `--space-1` (4px) for the inter-item gap — clean pill separation on the recessed track. The track inset padding is also `--space-1` (the nearest token to the React 2px `p-0.5` inset); a `--space-0_5` (2px) token would let the inset match React exactly. Recorded as a token wish.
 - `plain` is intentionally style-free here — the contract only defines the container; selected styling lives with the caller's option-card component.
 
 ## Implementations

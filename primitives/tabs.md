@@ -18,6 +18,15 @@ Variant lives on the **list** (`TabsList`); the **trigger** adapts its active/ho
 | `line` *(default)* | section tabs on a page — minimal, sits over content | list: no fill · bottom hairline `inset 0 -1px 0 line-default` · `gap-1`. trigger: text `content-secondary` · transparent · active text `content-primary` + `font-semibold` + animated `primary-700` underline |
 | `default` | pill tabs inside a contained tray | list: `bg-surface-3` · `radius-md` · `p-1` · `gap-1` · height `control-sm`. trigger: text `content-secondary` · `radius-md` · hover text `content-primary` · active `bg-surface-2` + text `content-primary` + `shadow-1` (raised pill) |
 
+### Orientation
+
+Horizontal by default. For a side rail (settings-style vertical tabs), add `.tabs--vertical` to the root **and** `.tabs__list--vertical` to the list; the variant (line / default) is orthogonal and unchanged. The root switches to `flex-direction: row` (rail beside the panel), triggers stretch to the rail width and left-align, and:
+
+- `line` — the hairline + the active bar move to the rail's **inline-end** edge (a vertical `primary-700` bar, `scaleY` in) instead of the bottom underline.
+- `default` — the pill tray stacks into a column; the raised-pill active state is direction-agnostic, so it needs no change.
+
+Mark the list `role="tablist"` `aria-orientation="vertical"`; arrow-key roving follows the **vertical** axis (↑/↓). Reach for this over a horizontal tab bar only when the layout is a left-rail settings/detail page; a top tab bar stays the default.
+
 ## Sizes
 
 No size prop. The trigger is fixed at `text-sm` / `font-medium`. Geometry is variant-driven, not size-driven:

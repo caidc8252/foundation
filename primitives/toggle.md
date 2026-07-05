@@ -9,6 +9,15 @@ A press-toggle button with on/off (pressed) state. Used standalone for a single 
 > implementation (`@cloud/ui` + the `ui` skill). When the contract and an
 > implementation disagree, the contract is right and the implementation is a bug.
 
+## When to use — Toggle vs Toggle Group
+
+Both are **two-state (on/off) buttons** — a `Toggle` is a button that is either on or off.
+
+- **Toggle** (this component) — one standalone on/off button: a lone Bold, a favorite / mute / pin, a "show grid". Independent toggles sitting in a row are still separate `Toggle`s.
+- **Toggle Group** ([`toggle-group.md`](./toggle-group.md)) — a set of these buttons managed as one control. Its **select mode** lives on the container as `data-type` (`single` = radio-like, ≤1 on · `multiple` = any number on) and is **independent of the visual variant**: a `segmented` group can be multi-select, a `cloud` group can be single-select.
+
+Rule of thumb: one independent on/off → **Toggle**; a set managed together → **Toggle Group** (then choose the select mode and the look independently).
+
 ## Variants
 
 A `Toggle` has two **own** variants. A third axis — its look inside a `<ToggleGroup>` — is not a prop on `Toggle` at all: the item restyles purely from the parent group's `data-variant` (`in-data-[variant=…]`), with no prop threading.

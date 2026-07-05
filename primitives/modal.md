@@ -24,6 +24,25 @@ Width presets only — height is content-driven and capped (see States · overfl
 
 > The width presets are raw px (360/480/640/880) and the fullscreen frame is `64px` — no sizing token expresses popup dimensions yet (same gap noted in hover-card / dropdown-menu / command). See **Notes**.
 
+### Choosing a width
+
+A decision rule so the same content lands on the same width every time (a modal-specific reading of governance §15, *default to the md/default size*):
+
+1. **Start at `md` (480px).** It is the default; most create/edit forms and detail dialogs belong here.
+2. **Width tracks horizontal content shape — never height or importance.** The body scrolls (`max-height: 100vh − 96px`), so a tall form is never a reason to widen. Widen only when the content structurally needs the horizontal room (side-by-side columns, a table).
+3. **Escalate one step at a time.** Don't jump to `xl` for a three-field form; if you are widening to reduce scrolling, stop — that is the wrong reason.
+4. **A destructive confirm** → `sm`, and prefer an `AlertDialog` over a hardened Modal.
+
+Map the content's shape to the width:
+
+| content shape | width |
+|---|---|
+| a yes/no, or one field (confirm, delete, rename, single OTP) | `sm` |
+| a single-column form (2–6 stacked fields) or plain detail text | `md` *(default)* |
+| side-by-side fields, a short list/table, or a key–value record detail | `lg` |
+| a dense multi-column form or data-heavy config | `xl` |
+| an immersive sub-task that should own the screen (editor, builder, canvas) — a *mode*, not a dialog; use sparingly | `fullscreen` |
+
 ## States
 
 - **overlay (scrim)** — a fixed `surface-overlay` wash behind the panel; an optional backdrop blur where supported. Clicking it dismisses (unless `closeOnOverlay` is off) — that gating is impl-owned.

@@ -52,6 +52,8 @@ The transparent 1px border on the scrollbar (left for vertical, top for horizont
 
 The implementation paints the thumb in `bg-line-strong` (resolves to the `--color-line-strong` token) at `opacity-70`. The `p-px` track padding and the 1px `border-{l,t}-transparent` gutter are hairline/transparent values — conventionally exempt, not token violations. The `4px` cross-axis thickness maps cleanly onto `--space-1`.
 
+**The viewport clips floating popups.** `.scroll-area__viewport` sets `overflow: auto`, which establishes a clip rect. An inline, absolutely-positioned popup opened from *inside* the viewport — a `dropdown-menu`, `popover`, `select`/`combobox` listbox, `tooltip`, `hover-card` — is cut off flat at the viewport edge; only the slice within bounds paints. The React components portal their popup to the body and are unaffected, but a self-contained artifact that nests the popup inline will lose the overflowing part. Lift such a popup to a non-clipping ancestor, or use a `fixed` surface (`modal`/`sheet`) which escapes the overflow. This is the general rule in governance principle 17 — it applies to any overflow container (`.table-scroll`, an `overflow:auto` card), not just this one.
+
 ## Implementations
 
 - **Next / @cloud/ui** — `import { ScrollArea, ScrollBar } from "@cloud/ui"`. base-ui `ScrollArea` (`Root` / `Viewport` / `Scrollbar` / `Thumb` / `Corner`) under the hood; `ScrollBar` takes `orientation`. **Scroll detection, scrollbar fade-in/out, pointer-drag, and corner placement are owned by the React/base-ui implementation; the reference CSS expresses the static skin only** (track + thumb surface, radius, gutter, focus ring). API details: the `ui` skill.

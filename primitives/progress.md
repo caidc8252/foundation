@@ -83,9 +83,6 @@ itself to the row end with `ml-auto`. The track always clips its indicator
   default brand fill uses the same `-700` step as `.btn--primary`), while
   `bg-success` / `bg-warning` / `bg-error` / `bg-info` → the semantic shortcut tokens
   `--color-success` / … (not a ramp step).
-- Indeterminate / streaming animation is not part of this contract — the source
-  renders a determinate fill from `value`. If a future indeterminate mode is
-  added it belongs to the React implementation and would extend this contract.
 
 ## Implementations
 

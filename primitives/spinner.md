@@ -26,8 +26,8 @@ Single visual variant — a circular ring (`rounded-full`) drawn as a 2px border
 |---|---|---|---|
 | `sm` | 14px | — *(no 14px size token; see notes)* | inline beside text, dense rows |
 | `md` *(default)* | 16px | `--space-4` | standard inline / in-button replacing the left icon |
-| `lg` | 20px | `--space-5` | section / card busy state |
-| `xl` | 32px | `--space-8` | full-panel / empty-area load |
+| `lg` | 20px | `--space-5` | small indeterminate section / overlay busy state (not a known-shape card — that uses a Skeleton) |
+| `xl` | 32px | `--space-8` | full-panel / empty-area load of unknown shape |
 
 Border stays 2px across all sizes (a 1px-hairline-exempt value does not apply — the 2px ring weight is intrinsic to the glyph, not a hairline; it is the one fixed stroke and carries through every size).
 
