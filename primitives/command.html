@@ -21,17 +21,18 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 840px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -311,6 +312,51 @@
           } else {
             openDialog();
           }
+        }
+      });
+
+      // ── Make every command palette live: typeahead filtering + active-item
+      //    selection. Each .command shell (embedded + dialog) is upgraded so no
+      //    rendered instance is inert. Picking an item in the dialog commits and
+      //    closes it, matching a production command palette. ──
+      document.querySelectorAll('.command').forEach(function (cmd) {
+        var searchInput = cmd.querySelector('.command__input');
+        var items = cmd.querySelectorAll('.command__item');
+        var inDialog = dialogWrap.contains(cmd);
+
+        function isDisabled(item) {
+          return item.getAttribute('data-disabled') === 'true';
+        }
+        function setActive(item) {
+          if (isDisabled(item)) return;
+          items.forEach(function (i) { i.classList.remove('command__item--active'); });
+          item.classList.add('command__item--active');
+        }
+
+        items.forEach(function (item) {
+          item.addEventListener('mousemove', function () { setActive(item); });
+          item.addEventListener('click', function () {
+            if (isDisabled(item)) return;
+            setActive(item);
+            if (inDialog) closeDialog();
+          });
+        });
+
+        if (searchInput) {
+          searchInput.addEventListener('input', function () {
+            var q = searchInput.value.trim().toLowerCase();
+            cmd.querySelectorAll('.command__group').forEach(function (group) {
+              var anyVisible = false;
+              group.querySelectorAll('.command__item').forEach(function (item) {
+                var labelEl = item.querySelector('span');
+                var label = (labelEl ? labelEl.textContent : item.textContent).toLowerCase();
+                var match = label.indexOf(q) !== -1;
+                item.style.display = match ? '' : 'none';
+                if (match) anyVisible = true;
+              });
+              group.style.display = anyVisible ? '' : 'none';
+            });
+          });
         }
       });
     })();

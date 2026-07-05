@@ -19,17 +19,18 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 840px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -53,6 +54,57 @@
       display: flex;
       flex-wrap: wrap;
       gap: var(--space-3);
+    }
+    /* "Choosing a width" guidance callout — teaches the AI a deterministic
+       width-selection rule (mirrors the modal.md contract). */
+    .demo-guide {
+      border: 1px solid var(--color-line-subtle);
+      border-radius: var(--radius-lg);
+      background-color: var(--color-surface-2);
+      padding: var(--space-4) var(--space-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    .demo-guide__title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-content-primary);
+      margin: 0;
+    }
+    .demo-guide__rule {
+      margin: 0;
+      padding-left: var(--space-5);
+      font-size: var(--text-sm);
+      color: var(--color-content-secondary);
+      line-height: 1.55;
+    }
+    .demo-guide__rule li { margin-bottom: var(--space-1); }
+    .demo-guide__rule li:last-child { margin-bottom: 0; }
+    .demo-guide__table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: var(--text-sm);
+    }
+    .demo-guide__table th,
+    .demo-guide__table td {
+      text-align: left;
+      padding: var(--space-2) var(--space-3);
+      border-bottom: 1px solid var(--color-line-subtle);
+      vertical-align: top;
+    }
+    .demo-guide__table tr:last-child td { border-bottom: none; }
+    .demo-guide__table th {
+      color: var(--color-content-tertiary);
+      font-weight: 600;
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .demo-guide__table td:last-child {
+      white-space: nowrap;
+      color: var(--color-content-primary);
+      font-weight: 500;
     }
     .demo-card-label {
       font-size: var(--text-xs);
@@ -110,6 +162,26 @@
         Click a button to open the corresponding modal. Press <kbd>Esc</kbd> or click the overlay or close
         button to dismiss.
       </p>
+
+      <div class="demo-guide">
+        <p class="demo-guide__title">Choosing a width</p>
+        <ol class="demo-guide__rule">
+          <li>Start at <code>md</code> (480px) — the default; most create/edit forms and detail dialogs belong here.</li>
+          <li>Width tracks <strong>horizontal content shape, never height or importance</strong>: the body scrolls, so a tall form is never a reason to widen. Widen only for real horizontal need (side-by-side columns, a table).</li>
+          <li>Escalate <strong>one step at a time</strong> — don't jump to <code>xl</code> for a three-field form.</li>
+          <li>A destructive confirm → <code>sm</code>, and prefer an <code>AlertDialog</code> over a hardened Modal.</li>
+        </ol>
+        <table class="demo-guide__table">
+          <thead><tr><th>Content shape</th><th>Width</th></tr></thead>
+          <tbody>
+            <tr><td>A yes/no, or one field (confirm, delete, rename, single OTP)</td><td><code>sm</code> 360px</td></tr>
+            <tr><td>A single-column form (2–6 stacked fields) or plain detail text</td><td><code>md</code> 480px</td></tr>
+            <tr><td>Side-by-side fields, a short list/table, or key–value record detail</td><td><code>lg</code> 640px</td></tr>
+            <tr><td>A dense multi-column form or data-heavy config</td><td><code>xl</code> 880px</td></tr>
+            <tr><td>An immersive sub-task that should own the screen (editor, builder, canvas)</td><td><code>fullscreen</code></td></tr>
+          </tbody>
+        </table>
+      </div>
 
       <div class="demo-size-buttons">
         <button class="btn btn--primary" type="button" data-modal="modal-sm">Open sm (360px)</button>
@@ -184,7 +256,7 @@
       <div class="modal__header">
         <div class="modal__heading">
           <h2 class="modal__title">Small modal</h2>
-          <p class="modal__description">360px max-width — for a quick confirm or a one-field prompt.</p>
+          <p class="modal__description">For a quick confirm or one-field prompt.</p>
         </div>
         <button class="modal__close" type="button" aria-label="Close">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
@@ -195,7 +267,7 @@
       </div>
       <div class="modal__footer">
         <button class="btn btn--ghost" data-modal-close type="button">Cancel</button>
-        <button class="btn btn--danger" type="button">Delete</button>
+        <button class="btn btn--danger" data-modal-close type="button">Delete</button>
       </div>
     </div>
   </div>
@@ -205,8 +277,8 @@
     <div class="modal modal--md" role="dialog" aria-modal="true">
       <div class="modal__header">
         <div class="modal__heading">
-          <h2 class="modal__title">Edit billing details</h2>
-          <p class="modal__description">Update your payment method and tax information.</p>
+          <h2 class="modal__title">Edit account</h2>
+          <p class="modal__description">Update your name, email, and plan.</p>
         </div>
         <button class="modal__close" type="button" aria-label="Close">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
@@ -234,7 +306,7 @@
       </div>
       <div class="modal__footer">
         <button class="btn btn--ghost" data-modal-close type="button">Cancel</button>
-        <button class="btn btn--primary" type="button">Save changes</button>
+        <button class="btn btn--primary" data-modal-close type="button">Save changes</button>
       </div>
     </div>
   </div>
@@ -245,7 +317,7 @@
       <div class="modal__header">
         <div class="modal__heading">
           <h2 class="modal__title">Team members</h2>
-          <p class="modal__description">640px max-width — manage your team with side-by-side fields.</p>
+          <p class="modal__description">Manage the people on your team — a list of records that wants lg width.</p>
         </div>
         <button class="modal__close" type="button" aria-label="Close">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
@@ -253,15 +325,15 @@
       </div>
       <div class="modal__body">
         <dl class="kv-grid">
-          <div class="kv-grid__row"><dt>Name</dt><dd>Alice Chen <span class="badge badge--success" style="margin-left:var(--space-2);"><span class="badge__dot" aria-hidden="true"></span>Active</span></dd></div>
-          <div class="kv-grid__row"><dt>Name</dt><dd>Bob Rivera <span class="badge badge--success" style="margin-left:var(--space-2);"><span class="badge__dot" aria-hidden="true"></span>Active</span></dd></div>
-          <div class="kv-grid__row"><dt>Name</dt><dd>Carol Smith <span class="badge badge--neutral" style="margin-left:var(--space-2);"><span class="badge__dot" aria-hidden="true"></span>Invited</span></dd></div>
-          <div class="kv-grid__row"><dt>Name</dt><dd>Dan Lee <span class="badge badge--error"><span class="badge__dot" aria-hidden="true"></span>Disabled</span></dd></div>
+          <div class="kv-grid__row"><dt>Alice Chen</dt><dd><span class="badge badge--success"><span class="badge__dot" aria-hidden="true"></span>Active</span></dd></div>
+          <div class="kv-grid__row"><dt>Bob Rivera</dt><dd><span class="badge badge--success"><span class="badge__dot" aria-hidden="true"></span>Active</span></dd></div>
+          <div class="kv-grid__row"><dt>Carol Smith</dt><dd><span class="badge badge--neutral"><span class="badge__dot" aria-hidden="true"></span>Invited</span></dd></div>
+          <div class="kv-grid__row"><dt>Dan Lee</dt><dd><span class="badge badge--error"><span class="badge__dot" aria-hidden="true"></span>Disabled</span></dd></div>
         </dl>
       </div>
       <div class="modal__footer">
         <button class="btn btn--ghost" data-modal-close type="button">Close</button>
-        <button class="btn btn--primary" type="button">Add member</button>
+        <button class="btn btn--primary" data-modal-close type="button">Add member</button>
       </div>
     </div>
   </div>
@@ -272,7 +344,7 @@
       <div class="modal__header">
         <div class="modal__heading">
           <h2 class="modal__title">Edit configuration</h2>
-          <p class="modal__description">880px max-width — a dense multi-column layout.</p>
+          <p class="modal__description">A dense, multi-column configuration form.</p>
         </div>
         <button class="modal__close" type="button" aria-label="Close">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
@@ -304,7 +376,7 @@
       </div>
       <div class="modal__footer">
         <button class="btn btn--ghost" data-modal-close type="button">Cancel</button>
-        <button class="btn btn--primary" type="button">Save configuration</button>
+        <button class="btn btn--primary" data-modal-close type="button">Save configuration</button>
       </div>
     </div>
   </div>
@@ -340,7 +412,7 @@ modal gives you room to focus on complex tasks.</textarea>
       </div>
       <div class="modal__footer">
         <button class="btn btn--ghost" data-modal-close type="button">Cancel</button>
-        <button class="btn btn--primary" type="button">Save</button>
+        <button class="btn btn--primary" data-modal-close type="button">Save</button>
       </div>
     </div>
   </div>

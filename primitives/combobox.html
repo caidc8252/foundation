@@ -2,14 +2,12 @@
   combobox.html
   ──────────────────────────────────────────────────────────────────────
   Demonstrates the Combobox primitive in the foundation design system.
-  Covers:
-    - Default (md) combobox — resting trigger with placeholder + open popup
-      (search + list: one highlighted, one selected with check indicator)
-    - Size sm combobox — small trigger, open popup
-    - Disabled state — disabled trigger
-    - Invalid state — trigger with aria-invalid="true"
-    - Interactive combobox demo — functional JS: input filters items,
-      click to select, keyboard navigation
+  Covers (every combobox is LIVE — one generic controller drives all [data-combobox]):
+    - Default (md) combobox — closed by default, no default selection; fully interactive
+      (click to open, type to filter, click/keyboard to select)
+    - Size sm combobox — closed by default, no default selection; interactive
+    - Disabled state — aria-disabled trigger (state only, does not open)
+    - Invalid state — trigger with aria-invalid="true" (state only)
   ──────────────────────────────────────────────────────────────────────
 -->
 <!DOCTYPE html>
@@ -24,17 +22,18 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 840px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -54,14 +53,8 @@
       color: var(--color-content-tertiary);
       margin: 0;
     }
-    .demo-col2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-6);
-    }
-    @media (max-width: 640px) {
-      .demo-col2 { grid-template-columns: 1fr; }
-    }
+    /* Open/close is driven by the trigger's aria-expanded — no inline display juggling. */
+    .combobox__trigger[aria-expanded="false"] + .combobox__content { display: none; }
 
     /* Wrapper that positions the popup relative to the trigger */
     .combobox-wrapper {
@@ -76,27 +69,6 @@
       width: 100%;
     }
 
-    /* Position the open popup beside the trigger for side-by-side demo */
-    .combobox-demo-open {
-      max-width: 320px;
-    }
-    .combobox-demo-open .combobox__content {
-      margin-block-start: var(--space-1);
-      width: 100%;
-    }
-
-    /* Interactive demo: constrain the wrapper for popup positioning */
-    .combobox-interactive {
-      position: relative;
-      max-width: 320px;
-    }
-    .combobox-interactive .combobox__content {
-      position: absolute;
-      inset-inline-start: 0;
-      inset-block-start: calc(100% + var(--space-1));
-      z-index: 50;
-      width: 100%;
-    }
   </style>
 </head>
 <body>
@@ -108,51 +80,43 @@
     <div class="demo-section">
       <h2 class="demo-section__title">Combobox · default (md)</h2>
       <p class="demo-section__desc">
-        A <code>36px</code> trigger showing a placeholder value, with the open popup below.
-        The popup contains a search row with a magnifying glass icon, a filter input,
-        a scrollable list of items (one <code>--highlighted</code>, one
-        <code>--selected</code> with check indicator), and an empty state row.
+        A <code>36px</code> trigger, closed by default. It is <strong>live</strong> —
+        click the trigger to open, type in the search to filter, click a row to select
+        (arrow keys + Enter also work). The popup has a search row and a scrollable list
+        (the focused row carries <code>--highlighted</code>; a chosen row gets
+        <code>--selected</code> + a trailing check). Nothing is selected by default.
       </p>
 
-      <div class="demo-col2">
-        <!-- Closed trigger -->
-        <div class="combobox-wrapper">
-          <div class="combobox__trigger" role="combobox" aria-expanded="false" aria-haspopup="listbox">
-            <span class="combobox__value combobox__value--placeholder">Select framework</span>
-            <svg class="combobox__chevron" data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-          </div>
+      <!-- Live combobox, closed by default. Click the trigger to open, type to
+           filter, click a row to select. -->
+      <div class="combobox-wrapper" data-combobox>
+        <div class="combobox__trigger" role="combobox" aria-expanded="false" aria-haspopup="listbox" tabindex="0">
+          <span class="combobox__value combobox__value--placeholder">Select framework</span>
+          <svg class="combobox__chevron" data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
         </div>
-
-        <!-- Open popup -->
-        <div class="combobox-demo-open">
-          <div class="combobox__trigger" role="combobox" aria-expanded="true" aria-haspopup="listbox">
-            <span class="combobox__value combobox__value--placeholder">Select framework</span>
-            <svg class="combobox__chevron" data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        <div class="combobox__content" role="listbox">
+          <div class="combobox__search">
+            <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+            <input class="combobox__input" type="text" placeholder="Filter frameworks…">
           </div>
-          <div class="combobox__content" role="listbox">
-            <div class="combobox__search">
-              <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
-              <input class="combobox__input" type="text" placeholder="Filter frameworks…" value="rea">
+          <div class="combobox__list">
+            <div class="combobox__item" role="option" aria-selected="false" data-value="React">
+              <span>React</span>
+              <span class="combobox__item-indicator" aria-hidden="true">
+                <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              </span>
             </div>
-            <div class="combobox__list">
-              <div class="combobox__item combobox__item--highlighted" role="option" aria-selected="false">
-                <span>React</span>
-                <span class="combobox__item-indicator" aria-hidden="true">
-                  <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-                </span>
-              </div>
-              <div class="combobox__item combobox__item--selected" role="option" aria-selected="true">
-                <span>React Native</span>
-                <span class="combobox__item-indicator" aria-hidden="true">
-                  <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-                </span>
-              </div>
-              <div class="combobox__item" role="option" aria-selected="false">
-                <span>Remix</span>
-                <span class="combobox__item-indicator" aria-hidden="true">
-                  <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-                </span>
-              </div>
+            <div class="combobox__item" role="option" aria-selected="false" data-value="React Native">
+              <span>React Native</span>
+              <span class="combobox__item-indicator" aria-hidden="true">
+                <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              </span>
+            </div>
+            <div class="combobox__item" role="option" aria-selected="false" data-value="Remix">
+              <span>Remix</span>
+              <span class="combobox__item-indicator" aria-hidden="true">
+                <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              </span>
             </div>
           </div>
         </div>
@@ -166,52 +130,43 @@
       <h2 class="demo-section__title">Combobox · size sm</h2>
       <p class="demo-section__desc">
         A <code>28px</code> compact trigger via <code>.combobox__trigger--sm</code>,
-        with the same popup layout.
+        with the same live popup layout — also closed by default and fully interactive.
       </p>
 
-      <div class="demo-col2">
-        <div class="combobox-wrapper">
-          <div class="combobox__trigger combobox__trigger--sm" role="combobox" aria-expanded="false" aria-haspopup="listbox">
-            <span class="combobox__value combobox__value--placeholder">Select framework</span>
-            <svg class="combobox__chevron" data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-          </div>
+      <div class="combobox-wrapper" data-combobox>
+        <div class="combobox__trigger combobox__trigger--sm" role="combobox" aria-expanded="false" aria-haspopup="listbox" tabindex="0">
+          <span class="combobox__value combobox__value--placeholder">Select framework</span>
+          <svg class="combobox__chevron" data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
         </div>
-
-        <div class="combobox-demo-open">
-          <div class="combobox__trigger combobox__trigger--sm" role="combobox" aria-expanded="true" aria-haspopup="listbox">
-            <span class="combobox__value combobox__value--placeholder">Select framework</span>
-            <svg class="combobox__chevron" data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        <div class="combobox__content" role="listbox">
+          <div class="combobox__search">
+            <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+            <input class="combobox__input" type="text" placeholder="Filter…">
           </div>
-          <div class="combobox__content" role="listbox">
-            <div class="combobox__search">
-              <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
-              <input class="combobox__input" type="text" placeholder="Filter…">
+          <div class="combobox__list">
+            <div class="combobox__item" role="option" aria-selected="false" data-value="Vue">
+              <span>Vue</span>
+              <span class="combobox__item-indicator" aria-hidden="true">
+                <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              </span>
             </div>
-            <div class="combobox__list">
-              <div class="combobox__item combobox__item--highlighted" role="option" aria-selected="false">
-                <span>Vue</span>
-                <span class="combobox__item-indicator" aria-hidden="true">
-                  <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-                </span>
-              </div>
-              <div class="combobox__item combobox__item--selected" role="option" aria-selected="true">
-                <span>Svelte</span>
-                <span class="combobox__item-indicator" aria-hidden="true">
-                  <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-                </span>
-              </div>
-              <div class="combobox__item" role="option" aria-selected="false">
-                <span>Solid</span>
-                <span class="combobox__item-indicator" aria-hidden="true">
-                  <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-                </span>
-              </div>
-              <div class="combobox__item" role="option" aria-selected="false">
-                <span>Qwik</span>
-                <span class="combobox__item-indicator" aria-hidden="true">
-                  <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-                </span>
-              </div>
+            <div class="combobox__item" role="option" aria-selected="false" data-value="Svelte">
+              <span>Svelte</span>
+              <span class="combobox__item-indicator" aria-hidden="true">
+                <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              </span>
+            </div>
+            <div class="combobox__item" role="option" aria-selected="false" data-value="Solid">
+              <span>Solid</span>
+              <span class="combobox__item-indicator" aria-hidden="true">
+                <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              </span>
+            </div>
+            <div class="combobox__item" role="option" aria-selected="false" data-value="Qwik">
+              <span>Qwik</span>
+              <span class="combobox__item-indicator" aria-hidden="true">
+                <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              </span>
             </div>
           </div>
         </div>
@@ -224,12 +179,14 @@
     <div class="demo-section">
       <h2 class="demo-section__title">Combobox · disabled</h2>
       <p class="demo-section__desc">
-        A disabled trigger using <code>disabled</code> attribute. The control is dimmed
-        (<code>opacity: 0.5</code>) with <code>cursor: not-allowed</code>.
+        A disabled trigger via <code>aria-disabled="true"</code> (the trigger is a
+        <code>div</code>, so the native <code>disabled</code> attribute wouldn't match
+        <code>:disabled</code>). The control is dimmed (<code>opacity: 0.5</code>) with
+        <code>cursor: not-allowed</code>.
       </p>
 
       <div class="combobox-wrapper">
-        <div class="combobox__trigger" role="combobox" aria-expanded="false" aria-haspopup="listbox" disabled>
+        <div class="combobox__trigger" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-disabled="true">
           <span class="combobox__value">Vue.js</span>
           <svg class="combobox__chevron" data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
         </div>
@@ -254,251 +211,88 @@
       </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════════════════════════
-         Section 5: Interactive combobox demo
-         ════════════════════════════════════════════════════════════════ -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">Combobox · interactive demo</h2>
-      <p class="demo-section__desc">
-        Try it live: click the trigger to open the popup, type to filter items,
-        click an item to select it, or use keyboard navigation (arrow keys to
-        move, Enter to select, Escape to close).
-      </p>
-
-      <div class="combobox-interactive" id="demo-combobox">
-        <div class="combobox__trigger" id="demo-trigger" role="combobox" aria-expanded="false" aria-haspopup="listbox" tabindex="0">
-          <span class="combobox__value combobox__value--placeholder" id="demo-value">Select framework</span>
-          <svg class="combobox__chevron" data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-        </div>
-        <div class="combobox__content" id="demo-content" role="listbox" style="display:none;">
-          <div class="combobox__search">
-            <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
-            <input class="combobox__input" id="demo-search-input" type="text" placeholder="Filter frameworks…">
-          </div>
-          <div class="combobox__list" id="demo-list">
-            <div class="combobox__item" role="option" aria-selected="false" data-value="React">
-              <span>React</span>
-              <span class="combobox__item-indicator" aria-hidden="true">
-                <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-              </span>
-            </div>
-            <div class="combobox__item" role="option" aria-selected="false" data-value="React Native">
-              <span>React Native</span>
-              <span class="combobox__item-indicator" aria-hidden="true">
-                <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-              </span>
-            </div>
-            <div class="combobox__item" role="option" aria-selected="false" data-value="Vue">
-              <span>Vue</span>
-              <span class="combobox__item-indicator" aria-hidden="true">
-                <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-              </span>
-            </div>
-            <div class="combobox__item" role="option" aria-selected="false" data-value="Svelte">
-              <span>Svelte</span>
-              <span class="combobox__item-indicator" aria-hidden="true">
-                <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-              </span>
-            </div>
-            <div class="combobox__item" role="option" aria-selected="false" data-value="Solid">
-              <span>Solid</span>
-              <span class="combobox__item-indicator" aria-hidden="true">
-                <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-              </span>
-            </div>
-            <div class="combobox__item" role="option" aria-selected="false" data-value="Angular">
-              <span>Angular</span>
-              <span class="combobox__item-indicator" aria-hidden="true">
-                <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-              </span>
-            </div>
-            <div class="combobox__item" role="option" aria-selected="false" data-value="Ember">
-              <span>Ember</span>
-              <span class="combobox__item-indicator" aria-hidden="true">
-                <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-              </span>
-            </div>
-            <div class="combobox__item" role="option" aria-selected="false" data-value="Preact">
-              <span>Preact</span>
-              <span class="combobox__item-indicator" aria-hidden="true">
-                <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-              </span>
-            </div>
-          </div>
-          <div class="combobox__empty" id="demo-empty" style="display:none;">No results found</div>
-        </div>
-      </div>
-    </div>
-
   </div>
 
   <script>
+    // One generic controller drives every [data-combobox] — open/close, filter,
+    // select, keyboard nav, click-outside. Open state is the trigger's
+    // aria-expanded (CSS hides the content when false); nothing is a static skin.
     (function () {
-      var combobox = document.getElementById('demo-combobox');
-      var trigger = document.getElementById('demo-trigger');
-      var valueEl = document.getElementById('demo-value');
-      var content = document.getElementById('demo-content');
-      var searchInput = document.getElementById('demo-search-input');
-      var list = document.getElementById('demo-list');
-      var empty = document.getElementById('demo-empty');
-      var items = list.querySelectorAll('.combobox__item');
-      var selectedValue = null;
-      var highlightedIndex = -1;
+      function initCombobox(root) {
+        var trigger = root.querySelector('.combobox__trigger');
+        var content = root.querySelector('.combobox__content');
+        if (!trigger || !content) return;                       // state-only demos (disabled/invalid)
+        if (trigger.getAttribute('aria-disabled') === 'true') return;
 
-      /* ── Open / close ──────────────────────────────────────────────── */
+        var valueEl = trigger.querySelector('.combobox__value');
+        var searchInput = content.querySelector('.combobox__input');
+        var empty = content.querySelector('.combobox__empty');
+        var items = Array.prototype.slice.call(content.querySelectorAll('.combobox__item'));
+        var highlighted = -1;
 
-      function open() {
-        trigger.setAttribute('aria-expanded', 'true');
-        content.style.display = '';
-        searchInput.value = '';
-        filterItems('');
-        searchInput.focus();
-        highlightedIndex = -1;
-        removeHighlight();
-      }
+        if (!trigger.hasAttribute('tabindex')) trigger.setAttribute('tabindex', '0');
 
-      function close() {
-        trigger.setAttribute('aria-expanded', 'false');
-        content.style.display = 'none';
-        highlightedIndex = -1;
-        removeHighlight();
-        trigger.focus();
-      }
+        function isOpen() { return trigger.getAttribute('aria-expanded') === 'true'; }
+        function visible() { return items.filter(function (it) { return it.style.display !== 'none'; }); }
 
-      function toggle() {
-        if (trigger.getAttribute('aria-expanded') === 'true') {
+        function setHighlight(i) {
+          items.forEach(function (it) { it.classList.remove('combobox__item--highlighted'); });
+          var vis = visible();
+          highlighted = i;
+          if (i >= 0 && vis[i]) { vis[i].classList.add('combobox__item--highlighted'); vis[i].scrollIntoView({ block: 'nearest' }); }
+        }
+
+        function filter(q) {
+          var lower = q.toLowerCase(), count = 0;
+          items.forEach(function (it) {
+            var text = it.getAttribute('data-value') || it.textContent;
+            var match = text.toLowerCase().indexOf(lower) !== -1;
+            it.style.display = match ? '' : 'none';
+            if (match) count++;
+          });
+          if (empty) empty.style.display = count === 0 ? '' : 'none';
+          setHighlight(-1);
+        }
+
+        function open() {
+          trigger.setAttribute('aria-expanded', 'true');
+          if (searchInput) { searchInput.value = ''; filter(''); searchInput.focus(); }
+          setHighlight(-1);
+        }
+        function close() { trigger.setAttribute('aria-expanded', 'false'); setHighlight(-1); }
+        function toggle() { isOpen() ? close() : open(); }
+
+        function select(it) {
+          items.forEach(function (el) { el.classList.remove('combobox__item--selected'); el.setAttribute('aria-selected', 'false'); });
+          it.classList.add('combobox__item--selected');
+          it.setAttribute('aria-selected', 'true');
+          if (valueEl) {
+            valueEl.textContent = it.getAttribute('data-value') || it.textContent.trim();
+            valueEl.classList.remove('combobox__value--placeholder');
+          }
           close();
-        } else {
-          open();
+          trigger.focus();
         }
-      }
 
-      trigger.addEventListener('click', toggle);
-
-      /* ── Filtering ─────────────────────────────────────────────────── */
-
-      function filterItems(query) {
-        var lower = query.toLowerCase();
-        var visibleCount = 0;
-
-        items.forEach(function (item) {
-          var text = item.getAttribute('data-value') || item.textContent;
-          var match = text.toLowerCase().indexOf(lower) !== -1;
-          item.style.display = match ? '' : 'none';
-          if (match) visibleCount++;
+        trigger.addEventListener('click', toggle);
+        trigger.addEventListener('keydown', function (e) {
+          if ((e.key === 'Enter' || e.key === 'ArrowDown' || e.key === ' ') && !isOpen()) { e.preventDefault(); open(); }
         });
-
-        empty.style.display = visibleCount === 0 ? '' : 'none';
-        highlightedIndex = -1;
-        removeHighlight();
-      }
-
-      searchInput.addEventListener('input', function () {
-        filterItems(searchInput.value);
-      });
-
-      /* ── Select item ───────────────────────────────────────────────── */
-
-      function selectItem(item) {
-        /* Deselect all */
-        items.forEach(function (el) {
-          el.classList.remove('combobox__item--selected');
-          el.setAttribute('aria-selected', 'false');
-        });
-
-        /* Mark selected */
-        item.classList.add('combobox__item--selected');
-        item.setAttribute('aria-selected', 'true');
-
-        /* Update trigger value */
-        selectedValue = item.getAttribute('data-value') || item.textContent.trim();
-        valueEl.textContent = selectedValue;
-        valueEl.classList.remove('combobox__value--placeholder');
-
-        close();
-      }
-
-      items.forEach(function (item) {
-        item.addEventListener('click', function () {
-          selectItem(item);
-        });
-      });
-
-      /* ── Highlight (keyboard navigation helper) ─────────────────────── */
-
-      function getVisibleItems() {
-        var result = [];
-        items.forEach(function (item) {
-          if (item.style.display !== 'none') result.push(item);
-        });
-        return result;
-      }
-
-      function removeHighlight() {
-        items.forEach(function (el) {
-          el.classList.remove('combobox__item--highlighted');
-        });
-      }
-
-      function highlightItem(item) {
-        removeHighlight();
-        if (item) {
-          item.classList.add('combobox__item--highlighted');
-          item.scrollIntoView({ block: 'nearest' });
+        items.forEach(function (it) { it.addEventListener('click', function () { select(it); }); });
+        if (searchInput) {
+          searchInput.addEventListener('input', function () { filter(searchInput.value); });
+          searchInput.addEventListener('keydown', function (e) {
+            var vis = visible();
+            if (e.key === 'ArrowDown') { e.preventDefault(); setHighlight(Math.min(highlighted + 1, vis.length - 1)); }
+            else if (e.key === 'ArrowUp') { e.preventDefault(); setHighlight(Math.max(highlighted - 1, 0)); }
+            else if (e.key === 'Enter') { e.preventDefault(); if (vis[highlighted]) select(vis[highlighted]); }
+            else if (e.key === 'Escape') { e.preventDefault(); close(); trigger.focus(); }
+          });
         }
+        document.addEventListener('click', function (e) { if (isOpen() && !root.contains(e.target)) close(); });
       }
 
-      /* ── Keyboard navigation ────────────────────────────────────────── */
-
-      trigger.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' || e.key === 'ArrowDown') {
-          e.preventDefault();
-          open();
-        }
-      });
-
-      searchInput.addEventListener('keydown', function (e) {
-        var visible = getVisibleItems();
-
-        switch (e.key) {
-          case 'ArrowDown':
-            e.preventDefault();
-            highlightedIndex = Math.min(highlightedIndex + 1, visible.length - 1);
-            highlightItem(visible[highlightedIndex]);
-            break;
-
-          case 'ArrowUp':
-            e.preventDefault();
-            if (highlightedIndex <= 0) {
-              highlightedIndex = -1;
-              removeHighlight();
-            } else {
-              highlightedIndex--;
-              highlightItem(visible[highlightedIndex]);
-            }
-            break;
-
-          case 'Enter':
-            e.preventDefault();
-            if (highlightedIndex !== -1 && visible[highlightedIndex]) {
-              selectItem(visible[highlightedIndex]);
-            }
-            break;
-
-          case 'Escape':
-            e.preventDefault();
-            close();
-            break;
-        }
-      });
-
-      /* ── Close on click outside ─────────────────────────────────────── */
-
-      document.addEventListener('click', function (e) {
-        if (!combobox.contains(e.target) && trigger.getAttribute('aria-expanded') === 'true') {
-          close();
-        }
-      });
+      document.querySelectorAll('[data-combobox]').forEach(initCombobox);
     })();
   </script>
 </body>

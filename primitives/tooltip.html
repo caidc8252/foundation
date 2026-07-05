@@ -23,17 +23,18 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 840px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -58,7 +59,8 @@
     .demo-tooltip-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: var(--space-8);
+      gap: var(--space-6);
+      max-width: 720px;   /* cluster the four triggers instead of spreading them full-width */
       padding: var(--space-12) 0;
     }
     @media (max-width: 640px) {
@@ -139,6 +141,7 @@
     /* Arrow */
     .tooltip__arrow {
       position: absolute;
+      inset: auto;   /* reset primitives.css's base left:50%/bottom so each --side rule fully controls placement (else --left, which pins via right, inherits left:50% and lands over the text) */
       width: 10px;
       height: 10px;
       background: var(--color-content-primary);
@@ -196,12 +199,19 @@
       height: 16px;
     }
 
-    /* Show tooltips on wrapper hover based on data-show-on-hover */
+    /* Tooltip visibility — hidden by default; JS reveals it on the trigger's
+       hover AND keyboard focus (see the script at the end of <body>). */
     .tooltip-wrapper .tooltip {
       display: none;
     }
-    .tooltip-wrapper:hover .tooltip {
+    .tooltip-wrapper .tooltip.is-visible {
       display: block;
+    }
+    /* Focusable triggers get a visible focus ring for keyboard users. */
+    .demo-trigger:focus-visible,
+    .demo-icon-btn:focus-visible {
+      outline: 2px solid var(--color-line-focus);
+      outline-offset: 2px;
     }
 
     .demo-icon-row {
@@ -353,5 +363,35 @@
     </div>
 
   </div>
+
+  <script>
+    // Production tooltip behavior: closed by default, shown on the trigger's
+    // hover AND keyboard focus, dismissed on blur / mouse-leave / Escape.
+    // Each trigger is made focusable and wired to its bubble via aria-describedby.
+    (function () {
+      var seq = 0;
+      document.querySelectorAll('.tooltip-wrapper').forEach(function (wrapper) {
+        var trigger = wrapper.querySelector('.demo-trigger, .demo-icon-btn');
+        var tip = wrapper.querySelector('.tooltip');
+        if (!trigger || !tip) return;
+
+        if (!tip.id) tip.id = 'tooltip-' + (++seq);
+        tip.setAttribute('role', 'tooltip');
+        trigger.setAttribute('tabindex', '0');
+        trigger.setAttribute('aria-describedby', tip.id);
+
+        var show = function () { tip.classList.add('is-visible'); };
+        var hide = function () { tip.classList.remove('is-visible'); };
+
+        trigger.addEventListener('mouseenter', show);
+        trigger.addEventListener('mouseleave', hide);
+        trigger.addEventListener('focus', show);
+        trigger.addEventListener('blur', hide);
+        trigger.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') { hide(); trigger.blur(); }
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

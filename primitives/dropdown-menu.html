@@ -6,7 +6,11 @@
   bg-surface-2, border, shadow-4) with .dropdown-menu__label,
   .dropdown-menu__item, .dropdown-menu__separator,
   .dropdown-menu__checkbox-item, .dropdown-menu__radio-item,
-  .dropdown-menu__sub-trigger, .dropdown-menu__item--destructive.
+  .dropdown-menu__sub-trigger + .dropdown-menu__sub-content,
+  and .dropdown-menu__item--destructive.
+
+  One live menu: click the trigger to open; items, checkbox, radio group,
+  and a real nested submenu (hover "Invite users") are all wired.
   ──────────────────────────────────────────────────────────────────────
 -->
 <!DOCTYPE html>
@@ -20,17 +24,18 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 840px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -59,14 +64,18 @@
       top: calc(100% + 4px);
       left: 0;
       z-index: 1000;
-      max-height: 80vh;
-      overflow-y: auto;
+      /* The base panel clips (overflow-x:hidden + max-height scroll); a submenu
+         sitting at left:100% would be cut off, so the ROOT opts out of clipping.
+         This menu is short — no scroll needed here. */
+      overflow: visible;
+      max-height: none;
     }
 
     /* ── Reset browser defaults on <button> elements used as menu items.
        React's base-ui Item renders as a <div> — no defaults to fight.
-       The CSS contract only defines the visible style, not the element reset. ── */
-    .dropdown-menu > button {
+       Descendant (not child) selector so submenu buttons + the wrapped
+       sub-trigger button are reset too. ── */
+    .dropdown-menu button {
       border: none;
       background: transparent;
       text-align: left;
@@ -74,101 +83,33 @@
       width: 100%;
       cursor: pointer;
     }
+
+    /* ── Submenu: sub-trigger + its .dropdown-menu__sub-content live in a
+       position:relative wrapper (the sub-trigger is a <button>, so the popup
+       can't nest inside it). The popup pins to the trigger's right edge. ── */
+    .demo-sub { position: relative; }
+    .demo-sub-content {
+      position: absolute;
+      left: 100%;
+      top: calc(-1 * var(--space-1));
+      margin-left: var(--space-1);
+      display: none;
+    }
+    .demo-sub[data-open] > .demo-sub-content { display: flex; flex-direction: column; }
   </style>
 </head>
 <body>
   <div class="demo-page">
 
     <!-- ══════════════════════════════════════════════════════════════════
-         Section 1: Static dropdown panel
-         ════════════════════════════════════════════════════════════════ -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">Dropdown menu · panel</h2>
-      <p class="demo-section__desc">
-        Full dropdown menu showing: <code>.dropdown-menu__label</code>,
-        <code>.dropdown-menu__item</code> with icons and
-        <code>.dropdown-menu__shortcut</code>, <code>.dropdown-menu__separator</code>,
-        <code>.dropdown-menu__checkbox-item</code>,
-        <code>.dropdown-menu__radio-item</code>,
-        <code>.dropdown-menu__sub-trigger</code>, and
-        <code>.dropdown-menu__item--destructive</code>. All styling comes from
-        <code>primitives.css</code> — SVG icons have <strong>no</strong> inline
-        width/height so the CSS sizing (14px for items, 16px for indicators)
-        applies.
-      </p>
-
-      <div class="dropdown-menu" style="width:260px;">
-        <div class="dropdown-menu__label">ACCOUNT</div>
-
-        <button class="dropdown-menu__item" type="button">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
-          Profile
-        </button>
-
-        <button class="dropdown-menu__item" type="button">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
-          Billing
-        </button>
-
-        <button class="dropdown-menu__item" type="button">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-          Settings
-          <span class="dropdown-menu__shortcut">⌘,</span>
-        </button>
-
-        <div class="dropdown-menu__separator" role="separator"></div>
-
-        <div class="dropdown-menu__checkbox-item">
-          <span class="dropdown-menu__item-indicator">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
-          </span>
-          Show gridlines
-        </div>
-
-        <div class="dropdown-menu__checkbox-item" data-disabled="true">
-          <span class="dropdown-menu__item-indicator"></span>
-          Compact mode (disabled)
-        </div>
-
-        <div class="dropdown-menu__separator" role="separator"></div>
-
-        <div class="dropdown-menu__radio-item">
-          <span class="dropdown-menu__item-indicator"></span>
-          Light mode
-        </div>
-
-        <div class="dropdown-menu__radio-item dropdown-menu__radio-item--active">
-          <span class="dropdown-menu__item-indicator">
-            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><circle cx="12" cy="12" r="3"/></svg>
-          </span>
-          Dark mode
-        </div>
-
-        <div class="dropdown-menu__separator" role="separator"></div>
-
-        <button class="dropdown-menu__item dropdown-menu__sub-trigger" type="button">
-          More tools
-          <span class="dropdown-menu__sub-trigger__chevron" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-          </span>
-        </button>
-
-        <div class="dropdown-menu__separator" role="separator"></div>
-
-        <button class="dropdown-menu__item dropdown-menu__item--destructive" type="button">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-          Delete account
-        </button>
-      </div>
-    </div>
-
-    <!-- ══════════════════════════════════════════════════════════════════
-         Section 2: Interactive demo
+         Interactive dropdown — items · checkbox · radio group · submenu
          ════════════════════════════════════════════════════════════════ -->
     <div class="demo-section">
       <h2 class="demo-section__title">Dropdown menu · interactive</h2>
       <p class="demo-section__desc">
-        Click the trigger to toggle. Click outside or press <kbd>Escape</kbd> to close.
+        Click the trigger to toggle. Hover <strong>Invite users</strong> to open
+        its submenu; the checkbox toggles in place and Light/Dark are a
+        single-select radio group. Click outside or press <kbd>Escape</kbd> to close.
       </p>
 
       <div class="demo-dropdown-wrapper" id="demo-wrapper">
@@ -219,12 +160,32 @@
 
           <div class="dropdown-menu__separator" role="separator"></div>
 
-          <button class="dropdown-menu__item dropdown-menu__sub-trigger" type="button">
-            More options
-            <span class="dropdown-menu__sub-trigger__chevron" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-            </span>
-          </button>
+          <!-- ── Real nested submenu (opens on hover of the wrapper) ── -->
+          <div class="demo-sub" data-submenu>
+            <button class="dropdown-menu__item dropdown-menu__sub-trigger" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 11h-6"/></svg>
+              Invite users
+              <span class="dropdown-menu__sub-trigger__chevron" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+              </span>
+            </button>
+
+            <div class="dropdown-menu dropdown-menu__sub-content demo-sub-content">
+              <button class="dropdown-menu__item" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                Email
+              </button>
+              <button class="dropdown-menu__item" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                Message
+              </button>
+              <div class="dropdown-menu__separator" role="separator"></div>
+              <button class="dropdown-menu__item" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
+                More…
+              </button>
+            </div>
+          </div>
 
           <div class="dropdown-menu__separator" role="separator"></div>
 
@@ -245,35 +206,53 @@
       var wrapper = document.getElementById('demo-wrapper');
       if (!trigger || !menu || !wrapper) return;
 
+      function closeMenu() {
+        menu.hidden = true;
+        // reset any open submenu so it reopens on hover next time
+        menu.querySelectorAll('.demo-sub[data-open]').forEach(function (s) {
+          s.removeAttribute('data-open');
+          var t = s.querySelector('.dropdown-menu__sub-trigger');
+          if (t) t.classList.remove('dropdown-menu__sub-trigger--open');
+        });
+      }
+
       // Toggle menu on trigger click
       trigger.addEventListener('click', function (e) {
         e.stopPropagation();
-        menu.hidden = !menu.hidden;
+        if (menu.hidden) { menu.hidden = false; } else { closeMenu(); }
       });
 
       // Close when clicking outside wrapper
       document.addEventListener('click', function (e) {
         if (wrapper.contains(e.target)) return;
-        menu.hidden = true;
+        closeMenu();
       });
 
       // Close on Escape
       document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && !menu.hidden) menu.hidden = true;
+        if (e.key === 'Escape' && !menu.hidden) closeMenu();
       });
 
-      // ── Interactive items inside the menu ──────────────────────
-
-      // Regular item click → close menu (standard dropdown behaviour)
-      menu.querySelectorAll('.dropdown-menu__item:not(.dropdown-menu__sub-trigger):not(.dropdown-menu__item--destructive)').forEach(function (item) {
-        item.addEventListener('click', function () { menu.hidden = true; });
+      // ── Submenu: open on hover of its wrapper (the popup is a descendant,
+      //    so moving onto it keeps the wrapper "entered"). ──
+      menu.querySelectorAll('.demo-sub[data-submenu]').forEach(function (sub) {
+        var subTrigger = sub.querySelector('.dropdown-menu__sub-trigger');
+        sub.addEventListener('mouseenter', function () {
+          sub.setAttribute('data-open', '');
+          if (subTrigger) subTrigger.classList.add('dropdown-menu__sub-trigger--open');
+        });
+        sub.addEventListener('mouseleave', function () {
+          sub.removeAttribute('data-open');
+          if (subTrigger) subTrigger.classList.remove('dropdown-menu__sub-trigger--open');
+        });
       });
 
-      // Sub-trigger — keep menu open (stays open for nested demo)
-      // Destructive — close menu (action performed)
-      menu.querySelector('.dropdown-menu__item--destructive').addEventListener('click', function () { menu.hidden = true; });
+      // ── Plain items (incl. submenu items) → run action + close whole menu ──
+      menu.querySelectorAll('.dropdown-menu__item:not(.dropdown-menu__sub-trigger)').forEach(function (item) {
+        item.addEventListener('click', function () { closeMenu(); });
+      });
 
-      // Checkbox toggle
+      // Checkbox toggle — stays open
       var checkboxItem = document.getElementById('demo-checkbox-item');
       var checkboxIndicator = document.getElementById('demo-checkbox-indicator');
       checkboxItem.addEventListener('click', function (e) {
@@ -288,10 +267,9 @@
         }
       });
 
-      // Radio toggle
+      // Radio group — single select, stays open
       var radioLight = document.getElementById('demo-radio-light');
       var radioDark = document.getElementById('demo-radio-dark');
-      var radioItems = [radioLight, radioDark];
       var currentRadio = 'dark';
 
       function updateRadio() {

@@ -2,9 +2,13 @@
   hover-card.html
   ──────────────────────────────────────────────────────────────────────
   Demonstrates the Hover Card primitive in the foundation design system.
-  Covers:
-    - Static hover card popup (surface, avatar, title, body, actions)
-    - Interactive demo (hover-triggered show/hide with CSS transitions)
+  One live demo, four placements (top / right / bottom / left), modeled on
+  shadcn/base-ui PreviewCard's `side` prop. Each trigger reveals the same
+  .hover-card surface on hover / focus with a fade + zoom + directional slide.
+  Placement is page-local (the closed set has no side class — the React side
+  owns positioning); the side-openers are ordered to open toward the centre so
+  the 280px card never clips a page edge, and transparent bridges keep the
+  hover alive across the trigger→card gap.
   ──────────────────────────────────────────────────────────────────────
 -->
 <!DOCTYPE html>
@@ -18,17 +22,18 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 840px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -50,18 +55,27 @@
     }
 
     /* ════════════════════════════════════════════════════════════════════
-       Static popup display — show the hover-card surface in isolation
+       Placement stage — four triggers, cards open toward the centre so a
+       280px card can't clip the viewport edge; vertical padding gives the
+       top/bottom cards room.
        ════════════════════════════════════════════════════════════════ */
-    .static-popup-display {
+    .hc-stage {
       display: flex;
+      flex-wrap: wrap;
       justify-content: center;
+      align-items: center;
+      gap: var(--space-4) var(--space-16);
       padding: var(--space-8);
-      background-color: var(--color-surface-1);
-      border: 1px dashed var(--color-line-subtle);
-      border-radius: var(--radius-lg);
+      /* Tall enough that a top-opening 244px card clears the description above
+         and a bottom-opening one clears the stage below — the "leave a gap"
+         fix for edge/neighbour occlusion. */
+      min-height: 520px;
     }
 
-    /* Avatar placeholder — 40px circular image placeholder */
+    /* Positioning context per trigger. */
+    .hc-trigger { position: relative; display: inline-flex; }
+
+    /* Avatar placeholder used inside the card header (40px circle). */
     .avatar-40 {
       display: inline-flex;
       flex-shrink: 0;
@@ -78,205 +92,194 @@
       user-select: none;
     }
 
-    /* ════════════════════════════════════════════════════════════════════
-       Interactive demo — hover-triggered card
-       ════════════════════════════════════════════════════════════════ */
+    /* ── The floating popup (wears .hover-card for the surface) ── */
+    .hc-pop {
+      position: absolute;
+      z-index: 10;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--duration-fast) var(--ease-standard),
+                  transform var(--duration-fast) var(--ease-standard);
+    }
+    /* Resting (hidden) anchor + entry offset per side. */
+    .hc--top    { bottom: 100%; left: 50%;  margin-bottom: var(--space-2); transform-origin: bottom center; transform: translateX(-50%) translateY(4px)  scale(0.96); }
+    .hc--bottom { top: 100%;    left: 50%;  margin-top: var(--space-2);    transform-origin: top center;    transform: translateX(-50%) translateY(-4px) scale(0.96); }
+    .hc--right  { left: 100%;   top: 50%;   margin-left: var(--space-2);   transform-origin: left center;   transform: translateY(-50%) translateX(-4px) scale(0.96); }
+    .hc--left   { right: 100%;  top: 50%;   margin-right: var(--space-2);  transform-origin: right center;  transform: translateY(-50%) translateX(4px)  scale(0.96); }
 
-    /* Wrapper: establishes the positioning context + keeps hover alive
-       when moving from trigger to card (extended bottom padding). */
-    .hover-card-demo {
-      position: relative;
-      display: inline-flex;
-      flex-direction: column;
-      align-items: flex-start;
-      padding-bottom: var(--space-8);   /* hover runway */
+    /* Transparent bridge over the gap so the pointer can travel trigger→card
+       without the hover dropping (::before is a descendant, so it keeps
+       :hover on the trigger wrapper). */
+    .hc-pop::before { content: ""; position: absolute; }
+    .hc--top::before    { left: 0; right: 0; bottom: calc(-1 * var(--space-2)); height: var(--space-2); }
+    .hc--bottom::before { left: 0; right: 0; top: calc(-1 * var(--space-2));    height: var(--space-2); }
+    .hc--right::before  { top: 0; bottom: 0; left: calc(-1 * var(--space-2));   width: var(--space-2); }
+    .hc--left::before   { top: 0; bottom: 0; right: calc(-1 * var(--space-2));  width: var(--space-2); }
+
+    /* Shown on hover or keyboard focus of the trigger. */
+    .hc-trigger:hover .hc-pop,
+    .hc-trigger:focus-within .hc-pop {
+      opacity: 1;
+      pointer-events: auto;
+      transition-delay: 0.12s;   /* hover-intent */
+    }
+    .hc-trigger:hover .hc--top,
+    .hc-trigger:focus-within .hc--top,
+    .hc-trigger:hover .hc--bottom,
+    .hc-trigger:focus-within .hc--bottom { transform: translateX(-50%) scale(1); }
+    .hc-trigger:hover .hc--right,
+    .hc-trigger:focus-within .hc--right,
+    .hc-trigger:hover .hc--left,
+    .hc-trigger:focus-within .hc--left { transform: translateY(-50%) scale(1); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hc-pop { transition: opacity 0s; }
     }
 
-    /* The trigger — an inline row the user hovers or focuses. */
-    .hover-card-demo__trigger {
+    /* ── Trigger chrome ── */
+    .hc-trigger__btn {
       display: inline-flex;
       align-items: center;
       gap: var(--space-2);
       cursor: pointer;
       user-select: none;
     }
-    .hover-card-demo__trigger:focus-visible {
+    .hc-trigger__btn:focus-visible {
       outline: none;
       box-shadow: var(--shadow-focus);
       border-radius: var(--radius-md);
     }
-    .hover-card-demo__username {
+    .hc-trigger__name {
       font-size: var(--text-md);
       font-weight: 500;
       color: var(--color-primary-500);
       border-bottom: 1px dashed var(--color-primary-500);
     }
-
-    /* The popup — positioned below the trigger, centered, with fade+zoom.
-       Uses the .hover-card class for surface styling. */
-    .hover-card-demo__popup {
-      position: absolute;
-      top: calc(100% - var(--space-8) + var(--space-1));  /* below trigger + 4px gap */
-      left: 50%;
-      z-index: 10;
-      opacity: 0;
-      transform: translateX(-50%) scale(0.95);
-      transform-origin: top center;
-      pointer-events: none;
-      transition: opacity var(--duration-fast) var(--ease-standard),
-                  transform var(--duration-fast) var(--ease-standard);
-      transition-delay: 0s;
-    }
-
-    /* Show on hover of the entire demo wrapper (includes runway). */
-    .hover-card-demo:hover .hover-card-demo__popup {
-      opacity: 1;
-      transform: translateX(-50%) scale(1);
-      pointer-events: auto;
-      transition-delay: 0.15s;   /* hover-intent delay */
-    }
-
-    /* Also show on focus-within (keyboard users). */
-    .hover-card-demo:focus-within .hover-card-demo__popup {
-      opacity: 1;
-      transform: translateX(-50%) scale(1);
-      pointer-events: auto;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .hover-card-demo__popup { transition: opacity 0s; }
+    .hc-trigger__side {
+      font-size: var(--text-xs);
+      color: var(--color-content-tertiary);
     }
 
     /* ── Content layout inside .hover-card ── */
-    .hover-card__header {
-      display: flex;
-      align-items: center;
-      gap: var(--space-3);
-      margin-bottom: var(--space-2);
-    }
-    .hover-card__info {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-0);
-    }
-    .hover-card__title {
-      font-size: var(--text-md);
-      font-weight: 600;
-      color: var(--color-content-primary);
-      line-height: 1.3;
-    }
-    .hover-card__subtitle {
-      font-size: var(--text-xs);
-      color: var(--color-content-tertiary);
-      line-height: 1.4;
-    }
-    .hover-card__body {
-      font-size: var(--text-sm);
-      color: var(--color-content-secondary);
-      line-height: 1.5;
-      margin-bottom: var(--space-3);
-    }
-    .hover-card__actions {
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-    }
+    .hover-card__header { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-2); }
+    .hover-card__info   { display: flex; flex-direction: column; gap: var(--space-0); }
+    .hover-card__title    { font-size: var(--text-md); font-weight: 600; color: var(--color-content-primary); line-height: 1.3; }
+    .hover-card__subtitle { font-size: var(--text-xs); color: var(--color-content-tertiary); line-height: 1.4; }
+    .hover-card__body   { font-size: var(--text-sm); color: var(--color-content-secondary); line-height: 1.5; margin-bottom: var(--space-3); }
+    .hover-card__actions { display: flex; align-items: center; gap: var(--space-2); }
   </style>
 </head>
 <body>
   <div class="demo-page">
 
     <!-- ══════════════════════════════════════════════════════════════════
-         Section 1: Static hover card popup
+         Hover card · placement (top / right / bottom / left)
          ════════════════════════════════════════════════════════════════ -->
     <div class="demo-section">
-      <h2 class="demo-section__title">Hover Card · static popup</h2>
+      <h2 class="demo-section__title">Hover Card · placement</h2>
       <p class="demo-section__desc">
-        The popup surface rendered in isolation: <code>.hover-card</code>.
-        Width 280px, <code>radius-xl</code> (12px), <code>surface-2</code> background,
-        1px <code>line-default</code> border, <code>spacing-cx-md</code> (14px) padding,
-        <code>text-sm</code> content, <code>shadow-4</code>. No size variants.
+        Hover (or keyboard-focus) each trigger to reveal the same
+        <code>.hover-card</code> surface on a different side. The card fades and
+        zooms in (scale 0.96 → 1) with a directional slide and a 120ms
+        hover-intent delay. The <strong>left</strong>/<strong>right</strong>
+        triggers are ordered to open toward the centre so the 280px card never
+        runs off a page edge.
       </p>
 
-      <div class="static-popup-display">
-        <div class="hover-card">
-          <div class="hover-card__header">
-            <span class="avatar-40" aria-hidden="true">AC</span>
-            <div class="hover-card__info">
-              <div class="hover-card__title">Alice Chen</div>
-              <div class="hover-card__subtitle">Senior Designer at Acme Corp</div>
-            </div>
-          </div>
-          <div class="hover-card__body">
-            Alice leads product design at Acme Corp with over 8 years of experience
-            in enterprise SaaS. She specialises in design systems, accessibility,
-            and developer tooling.
-          </div>
-          <div class="hover-card__actions">
-            <button class="btn btn--ghost btn--sm" type="button">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              Profile
-            </button>
-            <button class="btn btn--ghost btn--sm" type="button">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4Z"/></svg>
-              Message
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+      <div class="hc-stage">
+        <!-- opens RIGHT — placed left of centre so it opens inward -->
+        <span class="hc-trigger">
+          <span class="hc-trigger__btn" tabindex="0" role="button" aria-label="Alice Chen — card opens right">
+            <span class="avatar avatar--lg" aria-hidden="true"><span class="avatar__fallback">AC</span></span>
+            <span class="hc-trigger__side">right ▸</span>
+          </span>
+          <div class="hover-card hc-pop hc--right" data-hc-card role="dialog" aria-label="Alice Chen preview"></div>
+        </span>
 
-    <!-- ══════════════════════════════════════════════════════════════════
-         Section 2: Interactive demo
-         ════════════════════════════════════════════════════════════════ -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">Hover Card · interactive</h2>
-      <p class="demo-section__desc">
-        Hover over the avatar or username to reveal the hover card. The card
-        fades and zooms in (scale 0.95 → 1) with a 150ms hover-intent delay.
-        On mouse leave, the card fades out immediately. Keyboard users can
-        focus the trigger to open the card.
-      </p>
+        <!-- opens TOP -->
+        <span class="hc-trigger">
+          <span class="hc-trigger__btn" tabindex="0" role="button" aria-label="Alice Chen — card opens top">
+            <span class="avatar avatar--lg" aria-hidden="true"><span class="avatar__fallback">AC</span></span>
+            <span class="hc-trigger__side">▴ top</span>
+          </span>
+          <div class="hover-card hc-pop hc--top" data-hc-card role="dialog" aria-label="Alice Chen preview"></div>
+        </span>
 
-      <div style="padding:var(--space-4) 0;">
-        <div class="hover-card-demo" tabindex="0" aria-label="Hover card demo">
-          <!-- Trigger -->
-          <div class="hover-card-demo__trigger">
-            <span class="avatar avatar--lg" aria-hidden="true">
-              <span class="avatar__fallback">AC</span>
-            </span>
-            <span class="hover-card-demo__username">@alicechen</span>
-          </div>
+        <!-- opens BOTTOM -->
+        <span class="hc-trigger">
+          <span class="hc-trigger__btn" tabindex="0" role="button" aria-label="Alice Chen — card opens bottom">
+            <span class="avatar avatar--lg" aria-hidden="true"><span class="avatar__fallback">AC</span></span>
+            <span class="hc-trigger__side">▾ bottom</span>
+          </span>
+          <div class="hover-card hc-pop hc--bottom" data-hc-card role="dialog" aria-label="Alice Chen preview"></div>
+        </span>
 
-          <!-- Popup -->
-          <div class="hover-card hover-card-demo__popup" aria-hidden="true">
-            <div class="hover-card__header">
-              <span class="avatar-40" aria-hidden="true">AC</span>
-              <div class="hover-card__info">
-                <div class="hover-card__title">Alice Chen</div>
-                <div class="hover-card__subtitle">Senior Designer at Acme Corp</div>
-              </div>
-            </div>
-            <div class="hover-card__body">
-              Alice leads product design at Acme Corp with over 8 years of experience
-              in enterprise SaaS. She specialises in design systems, accessibility,
-              and developer tooling.
-            </div>
-            <div class="hover-card__actions">
-              <button class="btn btn--ghost btn--sm" type="button">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                Profile
-              </button>
-              <button class="btn btn--ghost btn--sm" type="button">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4Z"/></svg>
-                Message
-              </button>
-            </div>
-          </div>
-        </div>
+        <!-- opens LEFT — placed right of centre so it opens inward -->
+        <span class="hc-trigger">
+          <span class="hc-trigger__btn" tabindex="0" role="button" aria-label="Alice Chen — card opens left">
+            <span class="avatar avatar--lg" aria-hidden="true"><span class="avatar__fallback">AC</span></span>
+            <span class="hc-trigger__side">◂ left</span>
+          </span>
+          <div class="hover-card hc-pop hc--left" data-hc-card role="dialog" aria-label="Alice Chen preview"></div>
+        </span>
       </div>
     </div>
 
   </div>
+
+  <!-- Card content authored once; cloned into every popup so all four stay in sync. -->
+  <template id="hc-card-template">
+    <div class="hover-card__header">
+      <span class="avatar-40" aria-hidden="true">AC</span>
+      <div class="hover-card__info">
+        <div class="hover-card__title">Alice Chen</div>
+        <div class="hover-card__subtitle">Senior Designer at Acme Corp</div>
+      </div>
+    </div>
+    <div class="hover-card__body">
+      Alice leads product design at Acme Corp with over 8 years of experience in
+      enterprise SaaS. She specialises in design systems, accessibility, and
+      developer tooling.
+    </div>
+    <div class="hover-card__actions">
+      <button class="btn btn--ghost btn--sm" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Profile
+      </button>
+      <button class="btn btn--ghost btn--sm" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4Z"/></svg>
+        Message
+      </button>
+    </div>
+  </template>
+
+  <script>
+    (function () {
+      // Fill every popup from the shared template (one source of truth).
+      var tpl = document.getElementById('hc-card-template');
+      document.querySelectorAll('[data-hc-card]').forEach(function (card) {
+        card.appendChild(tpl.content.cloneNode(true));
+        card.setAttribute('aria-hidden', 'true');
+      });
+
+      // Sync the ARIA truth a CSS-only open/close can't express: as the card
+      // shows on pointer hover OR keyboard focus, flip aria-hidden on the popup
+      // and aria-expanded on the trigger button.
+      document.querySelectorAll('.hc-trigger').forEach(function (trigger) {
+        var btn = trigger.querySelector('.hc-trigger__btn');
+        var card = trigger.querySelector('[data-hc-card]');
+        if (!btn || !card) return;
+        btn.setAttribute('aria-expanded', 'false');
+        function setOpen(open) {
+          btn.setAttribute('aria-expanded', String(open));
+          card.setAttribute('aria-hidden', String(!open));
+        }
+        trigger.addEventListener('mouseenter', function () { setOpen(true); });
+        trigger.addEventListener('mouseleave', function () { setOpen(false); });
+        trigger.addEventListener('focusin', function () { setOpen(true); });
+        trigger.addEventListener('focusout', function () { setOpen(false); });
+      });
+    })();
+  </script>
 </body>
 </html>

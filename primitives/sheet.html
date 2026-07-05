@@ -22,17 +22,18 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 840px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -191,6 +192,13 @@
       flex-direction: column;
       gap: var(--space-2);
     }
+    /* Right sheet uses the modal footer scheme: a ghost Cancel + primary action,
+       right-aligned in a row (column-reverse on narrow widths, like .modal__footer).
+       Scoped via .sheet--right so the other sheets keep the stacked default. */
+    .sheet--right .sheet__footer { flex-direction: column-reverse; }
+    @media (min-width: 640px) {
+      .sheet--right .sheet__footer { flex-direction: row; justify-content: flex-end; }
+    }
 
     /* Demo content inside sheet */
     .demo-sheet-field {
@@ -275,8 +283,8 @@
           </div>
         </div>
         <div class="sheet__footer">
-          <button class="btn btn--primary" type="button">Save changes</button>
           <button class="btn btn--ghost" type="button" data-sheet-close="right">Cancel</button>
+          <button class="btn btn--primary" type="button">Save changes</button>
         </div>
       </div>
     </div>
