@@ -240,12 +240,6 @@
     "badge--tag",
     "badge--warning",
     "badge__dot",
-    "breadcrumb__ellipsis",
-    "breadcrumb__item",
-    "breadcrumb__link",
-    "breadcrumb__list",
-    "breadcrumb__page",
-    "breadcrumb__separator",
     "btn",
     "btn--auto",
     "btn--danger",
@@ -787,10 +781,12 @@
     "table-frame--flush",
     "table-scroll",
     "tabs",
+    "tabs--vertical",
     "tabs__content",
     "tabs__list",
     "tabs__list--default",
     "tabs__list--line",
+    "tabs__list--vertical",
     "tabs__trigger",
     "tabs__trigger--active",
     "textarea",
@@ -955,22 +951,6 @@
         ".badge--tag",
         ".badge--warning",
         ".badge__dot"
-      ]
-    },
-    {
-      "layer": "primitive",
-      "name": "breadcrumb",
-      "title": "Breadcrumb",
-      "summary": "A horizontal navigation trail showing the current page's location in the hierarchy.",
-      "contract": "primitives/breadcrumb.md",
-      "example": "primitives/breadcrumb.html",
-      "classes": [
-        ".breadcrumb__ellipsis",
-        ".breadcrumb__item",
-        ".breadcrumb__link",
-        ".breadcrumb__list",
-        ".breadcrumb__page",
-        ".breadcrumb__separator"
       ]
     },
     {
@@ -1664,10 +1644,12 @@
       "example": "primitives/tabs.html",
       "classes": [
         ".tabs",
+        ".tabs--vertical",
         ".tabs__content",
         ".tabs__list",
         ".tabs__list--default",
         ".tabs__list--line",
+        ".tabs__list--vertical",
         ".tabs__trigger",
         ".tabs__trigger--active"
       ]
@@ -1719,7 +1701,7 @@
       "layer": "primitive",
       "name": "toggle-group",
       "title": "Toggle Group",
-      "summary": "A set of press-toggle buttons that act as one control: a segmented switch (radio-like, max one pressed) or a multi-select chip/segment cluster.",
+      "summary": "A set of press-toggle buttons that act as one control.",
       "contract": "primitives/toggle-group.md",
       "example": "primitives/toggle-group.html",
       "classes": [

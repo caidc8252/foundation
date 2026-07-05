@@ -245,7 +245,7 @@ semantic name: what you grep, what the checker keys on, the Next.js bridge):
 - **Color** is `stroke="currentColor"` — the icon inherits the text color of its
   context. Never set a color literal or a fill (it would fail the checker).
 - Drop it into a slot that already styles icons (`.btn`, `.alert__icon`,
-  `.breadcrumb`, an input affix) and it is sized/colored for you.
+  `.input-group`, an input affix) and it is sized/colored for you.
 
 ## Sizing
 
