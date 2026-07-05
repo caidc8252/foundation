@@ -3,10 +3,10 @@
   ──────────────────────────────────────────────────────────────────────
   Demonstrates the Carousel primitive in the foundation design system.
   Covers:
-    - Horizontal carousel with navigation
-    - Prev/next buttons (outline icon buttons)
-    - Dot indicators with active state
-    - Multiple slides with content
+    - Horizontal carousel with navigation (prev/next + dots, active state)
+    - Sizes: multiple items per view via per-item flex-basis (basis-1/2, basis-1/3)
+    - Spacing: the negative-margin + per-item padding gutter (default 16px vs tight 4px)
+    - Orientation: vertical (.carousel--vertical) — re-pinned nav, column axis
   ──────────────────────────────────────────────────────────────────────
 -->
 <!DOCTYPE html>
@@ -21,17 +21,18 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 840px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -79,6 +80,25 @@
       color: var(--color-primary-700);
       margin-bottom: var(--space-3);
     }
+
+    /* Compact tile — demo-local slide body for the multi-up / vertical examples. */
+    .carousel-tile {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 104px;
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-line-subtle);
+      border-radius: var(--radius-md);
+      font-size: var(--text-2xl);
+      font-weight: 600;
+      color: var(--color-content-secondary);
+      font-variant-numeric: tabular-nums;
+    }
+    /* Tightened inter-slide gutter (4px): override the baked 16px pair — the
+       track's negative margin AND each item's matching padding move together. */
+    .demo-gutter-sm .carousel__track { margin-left: calc(-1 * var(--space-1)); }
+    .demo-gutter-sm .carousel__item  { padding-left: var(--space-1); }
   </style>
 </head>
 <body>
@@ -164,55 +184,208 @@
       </div><!-- /padding wrapper -->
     </div>
 
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Sizes — multiple items per view (re-basis)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Carousel · sizes (multiple items per view)</h2>
+      <p class="demo-section__desc">
+        A slide is full-width by default. To show several at once the consumer
+        re-<em>basises</em> each <code>.carousel__item</code> (shadcn
+        <code>basis-1/2</code> / <code>basis-1/3</code>) — here via inline
+        <code>flex-basis</code>. The baked 16px gutter keeps them apart; Prev/Next
+        advance one slide at a time.
+      </p>
+
+      <!-- 2 per view — flex-basis:50% -->
+      <div style="padding-inline: var(--space-12);">
+        <div class="carousel" role="region" aria-roledescription="carousel" aria-label="Two slides per view">
+          <button class="btn btn--secondary btn--icon btn--sm carousel__nav carousel__prev" type="button" aria-label="Previous slide">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <div class="carousel__viewport">
+            <div class="carousel__track">
+              <div class="carousel__item" style="flex-basis:50%;" role="group" aria-roledescription="slide"><div class="carousel-tile">1</div></div>
+              <div class="carousel__item" style="flex-basis:50%;" role="group" aria-roledescription="slide"><div class="carousel-tile">2</div></div>
+              <div class="carousel__item" style="flex-basis:50%;" role="group" aria-roledescription="slide"><div class="carousel-tile">3</div></div>
+              <div class="carousel__item" style="flex-basis:50%;" role="group" aria-roledescription="slide"><div class="carousel-tile">4</div></div>
+              <div class="carousel__item" style="flex-basis:50%;" role="group" aria-roledescription="slide"><div class="carousel-tile">5</div></div>
+              <div class="carousel__item" style="flex-basis:50%;" role="group" aria-roledescription="slide"><div class="carousel-tile">6</div></div>
+            </div>
+          </div>
+          <button class="btn btn--secondary btn--icon btn--sm carousel__nav carousel__next" type="button" aria-label="Next slide">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- 3 per view — flex-basis:33.3333% -->
+      <div style="padding-inline: var(--space-12);">
+        <div class="carousel" role="region" aria-roledescription="carousel" aria-label="Three slides per view">
+          <button class="btn btn--secondary btn--icon btn--sm carousel__nav carousel__prev" type="button" aria-label="Previous slide">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <div class="carousel__viewport">
+            <div class="carousel__track">
+              <div class="carousel__item" style="flex-basis:33.3333%;" role="group" aria-roledescription="slide"><div class="carousel-tile">1</div></div>
+              <div class="carousel__item" style="flex-basis:33.3333%;" role="group" aria-roledescription="slide"><div class="carousel-tile">2</div></div>
+              <div class="carousel__item" style="flex-basis:33.3333%;" role="group" aria-roledescription="slide"><div class="carousel-tile">3</div></div>
+              <div class="carousel__item" style="flex-basis:33.3333%;" role="group" aria-roledescription="slide"><div class="carousel-tile">4</div></div>
+              <div class="carousel__item" style="flex-basis:33.3333%;" role="group" aria-roledescription="slide"><div class="carousel-tile">5</div></div>
+              <div class="carousel__item" style="flex-basis:33.3333%;" role="group" aria-roledescription="slide"><div class="carousel-tile">6</div></div>
+              <div class="carousel__item" style="flex-basis:33.3333%;" role="group" aria-roledescription="slide"><div class="carousel-tile">7</div></div>
+            </div>
+          </div>
+          <button class="btn btn--secondary btn--icon btn--sm carousel__nav carousel__next" type="button" aria-label="Next slide">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Spacing — the slide gutter (default 16px vs tight 8px)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Carousel · spacing (the slide gutter)</h2>
+      <p class="demo-section__desc">
+        The inter-slide gap is a negative margin on <code>.carousel__track</code>
+        (<code>-space-4</code>) paired with matching padding on each
+        <code>.carousel__item</code> (<code>space-4</code>) — netting a clean 16px
+        gutter with no stray leading edge. Change the gap by moving the pair
+        together: below, the default 16px vs a page-local tightened 4px.
+      </p>
+
+      <!-- default 16px gutter, 3-up -->
+      <div style="padding-inline: var(--space-12);">
+        <div class="carousel" role="region" aria-roledescription="carousel" aria-label="Default 16px gutter">
+          <button class="btn btn--secondary btn--icon btn--sm carousel__nav carousel__prev" type="button" aria-label="Previous slide">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <div class="carousel__viewport">
+            <div class="carousel__track">
+              <div class="carousel__item" style="flex-basis:33.3333%;" role="group" aria-roledescription="slide"><div class="carousel-tile">1</div></div>
+              <div class="carousel__item" style="flex-basis:33.3333%;" role="group" aria-roledescription="slide"><div class="carousel-tile">2</div></div>
+              <div class="carousel__item" style="flex-basis:33.3333%;" role="group" aria-roledescription="slide"><div class="carousel-tile">3</div></div>
+              <div class="carousel__item" style="flex-basis:33.3333%;" role="group" aria-roledescription="slide"><div class="carousel-tile">4</div></div>
+              <div class="carousel__item" style="flex-basis:33.3333%;" role="group" aria-roledescription="slide"><div class="carousel-tile">5</div></div>
+              <div class="carousel__item" style="flex-basis:33.3333%;" role="group" aria-roledescription="slide"><div class="carousel-tile">6</div></div>
+            </div>
+          </div>
+          <button class="btn btn--secondary btn--icon btn--sm carousel__nav carousel__next" type="button" aria-label="Next slide">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- tight 8px gutter — .demo-gutter-sm overrides the pair -->
+      <div style="padding-inline: var(--space-12);">
+        <div class="carousel demo-gutter-sm" role="region" aria-roledescription="carousel" aria-label="Tight 4px gutter">
+          <button class="btn btn--secondary btn--icon btn--sm carousel__nav carousel__prev" type="button" aria-label="Previous slide">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <div class="carousel__viewport">
+            <div class="carousel__track">
+              <div class="carousel__item" style="flex-basis:33.3333%;" role="group" aria-roledescription="slide"><div class="carousel-tile">1</div></div>
+              <div class="carousel__item" style="flex-basis:33.3333%;" role="group" aria-roledescription="slide"><div class="carousel-tile">2</div></div>
+              <div class="carousel__item" style="flex-basis:33.3333%;" role="group" aria-roledescription="slide"><div class="carousel-tile">3</div></div>
+              <div class="carousel__item" style="flex-basis:33.3333%;" role="group" aria-roledescription="slide"><div class="carousel-tile">4</div></div>
+              <div class="carousel__item" style="flex-basis:33.3333%;" role="group" aria-roledescription="slide"><div class="carousel-tile">5</div></div>
+              <div class="carousel__item" style="flex-basis:33.3333%;" role="group" aria-roledescription="slide"><div class="carousel-tile">6</div></div>
+            </div>
+          </div>
+          <button class="btn btn--secondary btn--icon btn--sm carousel__nav carousel__next" type="button" aria-label="Next slide">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: Orientation — vertical (.carousel--vertical)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Carousel · orientation (vertical)</h2>
+      <p class="demo-section__desc">
+        Add <code>.carousel--vertical</code> to stack the axis: the track flows in
+        a column, the gutter moves to <code>margin-top</code>/<code>padding-top</code>,
+        and the Prev/Next buttons re-pin to top/bottom (chevrons rotate 90°). The
+        viewport takes a fixed height and items basis to show two at a time.
+        <kbd>↑</kbd>/<kbd>↓</kbd> navigate.
+      </p>
+
+      <div style="max-width: 320px; padding-block: var(--space-12);">
+        <div class="carousel carousel--vertical" role="region" aria-roledescription="carousel" aria-label="Vertical slides">
+          <button class="btn btn--secondary btn--icon btn--sm carousel__nav carousel__prev" type="button" aria-label="Previous slide">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <div class="carousel__viewport" style="height:224px;">
+            <div class="carousel__track">
+              <div class="carousel__item" style="flex-basis:120px;" role="group" aria-roledescription="slide"><div class="carousel-tile">1</div></div>
+              <div class="carousel__item" style="flex-basis:120px;" role="group" aria-roledescription="slide"><div class="carousel-tile">2</div></div>
+              <div class="carousel__item" style="flex-basis:120px;" role="group" aria-roledescription="slide"><div class="carousel-tile">3</div></div>
+              <div class="carousel__item" style="flex-basis:120px;" role="group" aria-roledescription="slide"><div class="carousel-tile">4</div></div>
+              <div class="carousel__item" style="flex-basis:120px;" role="group" aria-roledescription="slide"><div class="carousel-tile">5</div></div>
+            </div>
+          </div>
+          <button class="btn btn--secondary btn--icon btn--sm carousel__nav carousel__next" type="button" aria-label="Next slide">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <script>
+    // One generic controller for every .carousel — horizontal or vertical
+    // (.carousel--vertical), single- or multi-up (item flex-basis), with
+    // optional dots. It steps by one item, clamps so the last item(s) rest at
+    // the track end, and syncs Prev/Next disabled + dot --active.
     (function () {
-      var track = document.getElementById('carousel-track');
-      var prevBtn = document.getElementById('carousel-prev');
-      var nextBtn = document.getElementById('carousel-next');
-      var dots = document.querySelectorAll('.carousel__dot');
-      var slides = track.querySelectorAll('.carousel__item');
-      var currentIndex = 0;
-      var totalSlides = slides.length;
+      function initCarousel(root) {
+        var vertical = root.classList.contains('carousel--vertical');
+        var viewport = root.querySelector('.carousel__viewport');
+        var track = root.querySelector('.carousel__track');
+        var items = Array.prototype.slice.call(root.querySelectorAll('.carousel__item'));
+        var prev = root.querySelector('.carousel__prev');
+        var next = root.querySelector('.carousel__next');
+        var dots = Array.prototype.slice.call(root.querySelectorAll('.carousel__dot'));
+        if (!track || !viewport || !items.length) return;
+        var index = 0;
 
-      function updateCarousel(index) {
-        if (index < 0) index = 0;
-        if (index >= totalSlides) index = totalSlides - 1;
-        currentIndex = index;
+        function step() { return vertical ? items[0].offsetHeight : items[0].offsetWidth; }
+        function perView() {
+          var vp = vertical ? viewport.clientHeight : viewport.clientWidth;
+          return Math.max(1, Math.round(vp / step()));
+        }
+        function maxIndex() { return Math.max(0, items.length - perView()); }
 
-        // Scroll track
-        var slideWidth = slides[0].offsetWidth;
-        track.style.transform = 'translateX(-' + (currentIndex * slideWidth) + 'px)';
-        track.style.transition = 'transform 0.3s ease';
+        function render() {
+          index = Math.max(0, Math.min(index, maxIndex()));
+          var offset = index * step();
+          track.style.transition = 'transform 0.3s ease';
+          track.style.transform = vertical ? 'translateY(-' + offset + 'px)' : 'translateX(-' + offset + 'px)';
+          if (prev) prev.disabled = index <= 0;
+          if (next) next.disabled = index >= maxIndex();
+          dots.forEach(function (dot, i) { dot.classList.toggle('carousel__dot--active', i === index); });
+        }
+        function go(i) { index = i; render(); }
 
-        // Update buttons
-        prevBtn.disabled = currentIndex === 0;
-        nextBtn.disabled = currentIndex === totalSlides - 1;
-
-        // Update dots
-        dots.forEach(function (dot, i) {
-          dot.classList.toggle('carousel__dot--active', i === currentIndex);
+        if (prev) prev.addEventListener('click', function () { go(index - 1); });
+        if (next) next.addEventListener('click', function () { go(index + 1); });
+        dots.forEach(function (dot, i) { dot.addEventListener('click', function () { go(i); }); });
+        root.addEventListener('keydown', function (e) {
+          var back = vertical ? 'ArrowUp' : 'ArrowLeft';
+          var fwd = vertical ? 'ArrowDown' : 'ArrowRight';
+          if (e.key === back) { e.preventDefault(); go(index - 1); }
+          if (e.key === fwd) { e.preventDefault(); go(index + 1); }
         });
+        window.addEventListener('resize', render);
+        render();
       }
 
-      prevBtn.addEventListener('click', function () { updateCarousel(currentIndex - 1); });
-      nextBtn.addEventListener('click', function () { updateCarousel(currentIndex + 1); });
-      dots.forEach(function (dot, i) {
-        dot.addEventListener('click', function () { updateCarousel(i); });
-      });
-
-      // Keyboard nav on the carousel region
-      document.getElementById('demo-carousel').addEventListener('keydown', function (e) {
-        if (e.key === 'ArrowLeft') { e.preventDefault(); updateCarousel(currentIndex - 1); }
-        if (e.key === 'ArrowRight') { e.preventDefault(); updateCarousel(currentIndex + 1); }
-      });
-
-      // Initial state
-      updateCarousel(0);
-
-      // Recalculate on resize
-      window.addEventListener('resize', function () { updateCarousel(currentIndex); });
+      document.querySelectorAll('.carousel').forEach(initCarousel);
     })();
   </script>
 </body>

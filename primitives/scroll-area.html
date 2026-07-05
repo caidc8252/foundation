@@ -20,17 +20,18 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 840px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -65,6 +66,8 @@
     }
     .demo-scroll-box--wide {
       width: 100%;
+      max-width: 420px;   /* cap the box so the wide content overflows and the horizontal scroll is demonstrable */
+      height: auto;       /* hug the single row instead of inheriting the 240px vertical-demo height */
       overflow-x: auto;
       border: 1px solid var(--color-line-default);
       border-radius: var(--radius-md);
@@ -82,6 +85,7 @@
       display: inline-block;
       padding: var(--space-3) var(--space-4);
       border-right: 1px solid var(--color-line-subtle);
+      border-bottom: 1px solid var(--color-line-subtle);
       font-size: var(--text-sm);
       color: var(--color-content-primary);
       white-space: nowrap;
@@ -94,6 +98,30 @@
       outline: 2px solid var(--color-line-focus);
       outline-offset: -2px;
     }
+
+    /* ── Wrong-vs-right: a floating popup nested in the overflow viewport is
+       clipped; lifted out of it, it shows in full (governance principle 17).
+       Both menus are shown open on purpose — the contrast IS the lesson. ── */
+    .demo-overflow-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-8) var(--space-6);
+      align-items: start;
+    }
+    @media (max-width: 640px) { .demo-overflow-pair { grid-template-columns: 1fr; } }
+    .demo-clip-note { font-size: var(--text-xs); font-weight: 600; margin: 0 0 var(--space-2); }
+    .demo-clip-note--bad { color: var(--color-error); }
+    .demo-clip-note--good { color: var(--color-success); }
+    .demo-clip-box { height: 120px; max-width: 300px; border: 1px solid var(--color-line-default); border-radius: var(--radius-md); }
+    .demo-clip-box .scroll-area__viewport { padding: var(--space-4); }
+    .demo-clip-row { margin: 0 0 var(--space-3); font-size: var(--text-sm); }
+    .demo-clip-trigger-wrap { position: relative; }
+    /* ❌ menu is a descendant of the overflow viewport → clipped at its edge */
+    .demo-clip-menu { position: absolute; top: calc(100% + var(--space-1)); left: 0; }
+    /* ✅ wrapper is NOT an overflow container; the menu is a SIBLING of the
+       scroll box, so it escapes the box's overflow and paints in full */
+    .demo-lift-wrap { position: relative; max-width: 300px; }
+    .demo-lift-menu { position: absolute; top: 78px; left: var(--space-4); }
   </style>
 </head>
 <body>
@@ -164,7 +192,7 @@
           <h2 class="card__title">Recent activity</h2>
         </div>
         <div class="card__content" style="padding:0;">
-          <div class="scroll-area" style="max-height:200px;">
+          <div class="scroll-area" style="height:200px;">
             <div class="scroll-area__viewport" tabindex="0">
               <div class="demo-scroll-item">Alice created invoice INV-042</div>
               <div class="demo-scroll-item">Bob updated the billing address</div>
@@ -174,6 +202,59 @@
               <div class="demo-scroll-item">Alice exported usage report Q2</div>
               <div class="demo-scroll-item">Bob changed plan to Enterprise</div>
               <div class="demo-scroll-item">Carol removed expired webhook</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: Popups & overflow — clipped vs lifted (principle 17)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Scroll Area · popups &amp; overflow</h2>
+      <p class="demo-section__desc">
+        The viewport's <code>overflow: auto</code> clips floating popups. A
+        dropdown / menu / popover anchored <em>inside</em> the viewport is cut off
+        at its edge; lift the popup out of the overflow ancestor (or use a
+        <code>fixed</code> surface like a modal) and it shows in full. This is the
+        general rule in governance principle 17 — it holds for any overflow
+        container (<code>.table-scroll</code>, an <code>overflow:auto</code> card), not just this one.
+      </p>
+
+      <div class="demo-overflow-pair">
+        <!-- ❌ WRONG: the menu lives inside .scroll-area__viewport, so overflow clips it -->
+        <div>
+          <p class="demo-clip-note demo-clip-note--bad">✕ Menu nested inside the scroll viewport — clipped at the edge</p>
+          <div class="scroll-area demo-clip-box">
+            <div class="scroll-area__viewport">
+              <p class="demo-clip-row">Acme Robotics</p>
+              <div class="demo-clip-trigger-wrap">
+                <button class="btn btn--secondary btn--sm" type="button" aria-haspopup="menu" aria-expanded="true">Actions ▾</button>
+                <div class="dropdown-menu demo-clip-menu" role="menu">
+                  <div class="dropdown-menu__item" role="menuitem">Edit</div>
+                  <div class="dropdown-menu__item" role="menuitem">Duplicate</div>
+                  <div class="dropdown-menu__item dropdown-menu__item--destructive" role="menuitem">Delete</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ✅ RIGHT: the menu is a SIBLING of the scroll box, outside its overflow -->
+        <div>
+          <p class="demo-clip-note demo-clip-note--good">✓ Menu lifted out of the overflow ancestor — shows in full</p>
+          <div class="demo-lift-wrap">
+            <div class="scroll-area demo-clip-box">
+              <div class="scroll-area__viewport">
+                <p class="demo-clip-row">Acme Robotics</p>
+                <button class="btn btn--secondary btn--sm" type="button" aria-haspopup="menu" aria-expanded="true">Actions ▾</button>
+              </div>
+            </div>
+            <div class="dropdown-menu demo-lift-menu" role="menu">
+              <div class="dropdown-menu__item" role="menuitem">Edit</div>
+              <div class="dropdown-menu__item" role="menuitem">Duplicate</div>
+              <div class="dropdown-menu__item dropdown-menu__item--destructive" role="menuitem">Delete</div>
             </div>
           </div>
         </div>

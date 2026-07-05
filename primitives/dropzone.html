@@ -22,17 +22,18 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 740px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -80,42 +81,35 @@
   <div class="demo-page">
 
     <!-- ══════════════════════════════════════════════════════════════════
-         Section 1: Resting dropzone
+         Section 1: Interactive demo (click to browse / drag to drop)
          ════════════════════════════════════════════════════════════════ -->
     <div class="demo-section">
-      <h2 class="demo-section__title">Dropzone · resting</h2>
+      <h2 class="demo-section__title">Dropzone · interactive demo</h2>
       <p class="demo-section__desc">
-        A dashed-border drop target: <code>.dropzone</code> with an upload icon,
-        "Drop files here or click to browse" text, and a hidden <code>&lt;input type="file"&gt;</code>.
+        Try it: click the dropzone to select files, or drag files onto it — the
+        zone tints via <code>.dropzone--drag</code> during a drag. Uploaded files
+        appear in the list below as <code>.file-row</code> items with a remove button.
       </p>
 
-      <label class="dropzone">
-        <svg data-lucide="upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:var(--space-6);height:var(--space-6);"><path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>
-        <span>Drop files here or click to browse</span>
-        <input type="file" hidden multiple>
-      </label>
+      <div class="demo-dropzone-area">
+        <!-- Interactive dropzone -->
+        <label class="dropzone" id="demo-dropzone">
+          <svg data-lucide="upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:var(--space-6);height:var(--space-6);"><path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>
+          <span>Drop files here or click to browse</span>
+          <input type="file" id="demo-file-input" hidden multiple>
+        </label>
+
+        <!-- File list (populated dynamically) -->
+        <ul class="file-list" id="demo-file-list">
+          <li class="file-row" style="color:var(--color-content-tertiary);font-size:var(--text-sm);justify-content:center;border-color:transparent;">
+            No files selected yet.
+          </li>
+        </ul>
+      </div>
     </div>
 
     <!-- ══════════════════════════════════════════════════════════════════
-         Section 2: Drag active state
-         ════════════════════════════════════════════════════════════════ -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">Dropzone · drag active</h2>
-      <p class="demo-section__desc">
-        Add <code>.dropzone--drag</code> when a file is dragged over the zone.
-        Border shifts to <code>--color-primary-500</code> and background tints to
-        <code>--color-primary-50</code>.
-      </p>
-
-      <label class="dropzone dropzone--drag">
-        <svg data-lucide="upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:var(--space-6);height:var(--space-6);"><path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>
-        <span>Drop files here or click to browse</span>
-        <input type="file" hidden multiple>
-      </label>
-    </div>
-
-    <!-- ══════════════════════════════════════════════════════════════════
-         Section 3: Disabled dropzone
+         Section 2: Disabled dropzone
          ════════════════════════════════════════════════════════════════ -->
     <div class="demo-section">
       <h2 class="demo-section__title">Dropzone · disabled</h2>
@@ -132,7 +126,7 @@
     </div>
 
     <!-- ══════════════════════════════════════════════════════════════════
-         Section 4: File list with file rows
+         Section 3: File list with file rows
          ════════════════════════════════════════════════════════════════ -->
     <div class="demo-section">
       <h2 class="demo-section__title">File list · file rows</h2>
@@ -194,33 +188,6 @@
           </button>
         </li>
       </ul>
-    </div>
-
-    <!-- ══════════════════════════════════════════════════════════════════
-         Section 5: Interactive demo
-         ════════════════════════════════════════════════════════════════ -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">Dropzone · interactive demo</h2>
-      <p class="demo-section__desc">
-        Try it: click the dropzone to select files, or drag files onto it.
-        Uploaded files appear in the list below with a remove button.
-      </p>
-
-      <div class="demo-dropzone-area">
-        <!-- Interactive dropzone -->
-        <label class="dropzone" id="demo-dropzone">
-          <svg data-lucide="upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:var(--space-6);height:var(--space-6);"><path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>
-          <span>Drop files here or click to browse</span>
-          <input type="file" id="demo-file-input" hidden multiple>
-        </label>
-
-        <!-- File list (populated dynamically) -->
-        <ul class="file-list" id="demo-file-list">
-          <li class="file-row" style="color:var(--color-content-tertiary);font-size:var(--text-sm);justify-content:center;border-color:transparent;">
-            No files selected yet.
-          </li>
-        </ul>
-      </div>
     </div>
 
   </div>

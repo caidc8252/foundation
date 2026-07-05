@@ -20,17 +20,18 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 840px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -118,6 +119,14 @@
       white-space: nowrap;
       flex-shrink: 0;
     }
+
+    /* Settings list: the content slot is flushed (.card__content--flush) so the
+       separators bleed to the card edges; each section carries its own inline
+       padding to keep text inset, and the first/last restore the top/bottom
+       breathing the flush removed. */
+    .settings-section { padding-inline: var(--space-5); }
+    .settings-section:first-child { padding-top: var(--space-5); }
+    .settings-section:last-child { padding-bottom: var(--space-5); }
   </style>
 </head>
 <body>
@@ -133,7 +142,7 @@
       </p>
 
       <div class="card">
-        <div class="card__content" style="display:flex;flex-direction:column;gap:var(--space-3);">
+        <div class="card__content stack stack--3">
           <p class="demo-card-text" style="margin:0;">Account overview section with summary information about the current plan and status.</p>
           <div class="separator" role="separator" aria-orientation="horizontal"></div>
           <p class="demo-card-text" style="margin:0;">Billing details including payment method, next invoice date, and tax information.</p>
@@ -185,7 +194,7 @@
       </p>
 
       <div class="card">
-        <div class="card__content" style="display:flex;flex-direction:column;gap:var(--space-4);">
+        <div class="card__content stack stack--4">
           <p class="demo-card-text" style="margin:0;">Email address and password sign-in section with form fields for credentials.</p>
 
           <div class="separator-labeled">
@@ -216,18 +225,18 @@
         <div class="card__header">
           <h2 class="card__title">Settings</h2>
         </div>
-        <div class="card__content" style="display:flex;flex-direction:column;gap:var(--space-3);">
-          <div>
+        <div class="card__content card__content--flush stack stack--4">
+          <div class="settings-section">
             <h3 style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin:0 0 var(--space-1);">Profile</h3>
             <p class="demo-card-text" style="margin:0;">Manage your public profile information and preferences.</p>
           </div>
           <div class="separator" role="separator" aria-orientation="horizontal"></div>
-          <div>
+          <div class="settings-section">
             <h3 style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin:0 0 var(--space-1);">Security</h3>
             <p class="demo-card-text" style="margin:0;">Password, two-factor authentication, and active sessions.</p>
           </div>
           <div class="separator" role="separator" aria-orientation="horizontal"></div>
-          <div>
+          <div class="settings-section">
             <h3 style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin:0 0 var(--space-1);">Notifications</h3>
             <p class="demo-card-text" style="margin:0;">Email, push, and in-app notification preferences.</p>
           </div>

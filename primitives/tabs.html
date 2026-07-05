@@ -3,10 +3,8 @@
   ──────────────────────────────────────────────────────────────────────
   Demonstrates the Tabs primitive in the foundation design system.
   Covers:
-    - Line variant (default)
-    - Default (pill) variant
-    - Disabled tab trigger
-    - Tabs in a card
+    - Line variant (horizontal) with a disabled trigger
+    - Vertical orientation (.tabs--vertical / .tabs__list--vertical) — left rail
   ──────────────────────────────────────────────────────────────────────
 -->
 <!DOCTYPE html>
@@ -21,17 +19,18 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 840px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -50,117 +49,6 @@
       font-size: var(--text-sm);
       color: var(--color-content-tertiary);
       margin: 0;
-    }
-    .demo-col2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-6);
-    }
-    @media (max-width: 640px) {
-      .demo-col2 { grid-template-columns: 1fr; }
-    }
-
-    /* Tabs base */
-    .tabs {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-2);
-    }
-
-    /* Tabs list - line variant (default) */
-    .tabs__list {
-      display: flex;
-      gap: var(--space-1);
-      position: relative;
-    }
-    .tabs__list--line {
-      border-bottom: 1px solid var(--color-line-default);
-    }
-
-    /* Tabs trigger */
-    .tabs__trigger {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--space-2);
-      padding: var(--space-2) 12px;
-      font-size: var(--text-sm);
-      font-weight: 500;
-      font-family: var(--font-sans);
-      color: var(--color-content-secondary);
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      white-space: nowrap;
-      position: relative;
-      outline: none;
-      border-radius: 0;
-    }
-    .tabs__trigger:hover {
-      color: var(--color-content-primary);
-    }
-    .tabs__trigger:focus-visible {
-      box-shadow: var(--shadow-focus);
-      border-radius: var(--radius-md);
-    }
-    .tabs__trigger:disabled,
-    .tabs__trigger[aria-disabled="true"] {
-      cursor: not-allowed;
-      color: var(--color-content-disabled);
-    }
-
-    /* Line variant active */
-    .tabs__list--line .tabs__trigger.tabs__trigger--active,
-    .tabs__list--line .tabs__trigger[aria-selected="true"] {
-      color: var(--color-content-primary);
-      font-weight: 600;
-    }
-    .tabs__list--line .tabs__trigger.tabs__trigger--active::after,
-    .tabs__list--line .tabs__trigger[aria-selected="true"]::after {
-      content: '';
-      position: absolute;
-      bottom: -1px;
-      left: 12px;
-      right: 12px;
-      height: 2px;
-      background: var(--color-primary-700);
-    }
-
-    /* Default (pill) variant */
-    .tabs__list--default {
-      background: var(--color-surface-3);
-      border-radius: var(--radius-md);
-      padding: var(--space-1);
-      gap: var(--space-1);
-      height: 28px;
-      align-items: center;
-    }
-    .tabs__list--default .tabs__trigger {
-      height: calc(100% - 2px);
-      padding: 0 12px;
-      border-radius: var(--radius-md);
-      font-size: var(--text-sm);
-      font-weight: 500;
-      color: var(--color-content-secondary);
-    }
-    .tabs__list--default .tabs__trigger:hover {
-      color: var(--color-content-primary);
-    }
-    .tabs__list--default .tabs__trigger.tabs__trigger--active,
-    .tabs__list--default .tabs__trigger[aria-selected="true"] {
-      background: var(--color-surface-2);
-      color: var(--color-content-primary);
-      box-shadow: var(--shadow-1);
-    }
-
-    /* Tabs content panels */
-    .tabs__content {
-      padding: var(--space-3) 0;
-      font-size: var(--text-sm);
-      color: var(--color-content-secondary);
-      line-height: 1.6;
-    }
-    .tabs__content[hidden] {
-      display: none;
     }
   </style>
 </head>
@@ -196,6 +84,40 @@
         </div>
         <div class="tabs__content" id="line-panel-4" role="tabpanel" hidden>
           <p><strong>Disabled tab</strong> — This panel belongs to a disabled tab.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Vertical orientation (left rail)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Tabs · vertical</h2>
+      <p class="demo-section__desc">
+        Add <code>.tabs--vertical</code> to the root and <code>.tabs__list--vertical</code>
+        to the list for a left-rail layout (settings/detail pages). The line variant's
+        active indicator moves to the rail's trailing edge; arrow keys rove the
+        vertical (↑/↓) axis. Click a tab to switch panels.
+      </p>
+
+      <div class="tabs tabs--vertical" id="tabs-vertical">
+        <div class="tabs__list tabs__list--vertical tabs__list--line" role="tablist" aria-orientation="vertical">
+          <button class="tabs__trigger tabs__trigger--active" role="tab" aria-selected="true" aria-controls="v-panel-1" tabindex="0">Profile</button>
+          <button class="tabs__trigger" role="tab" aria-selected="false" aria-controls="v-panel-2" tabindex="-1">Account</button>
+          <button class="tabs__trigger" role="tab" aria-selected="false" aria-controls="v-panel-3" tabindex="-1">Notifications</button>
+          <button class="tabs__trigger" role="tab" aria-selected="false" aria-controls="v-panel-4" tabindex="-1" disabled>Billing</button>
+        </div>
+        <div class="tabs__content" id="v-panel-1" role="tabpanel">
+          <p><strong>Profile</strong> — Your public profile: display name, avatar, bio, and the links shown on your member card.</p>
+        </div>
+        <div class="tabs__content" id="v-panel-2" role="tabpanel" hidden>
+          <p><strong>Account</strong> — Email, password, connected sign-in providers, and account deletion.</p>
+        </div>
+        <div class="tabs__content" id="v-panel-3" role="tabpanel" hidden>
+          <p><strong>Notifications</strong> — Choose which events email you and set the digest frequency.</p>
+        </div>
+        <div class="tabs__content" id="v-panel-4" role="tabpanel" hidden>
+          <p><strong>Billing</strong> — This panel belongs to a disabled tab.</p>
         </div>
       </div>
     </div>

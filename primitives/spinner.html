@@ -6,6 +6,8 @@
     - All four sizes (sm, md, lg, xl)
     - Spinner inline with text
     - Spinner inside a button (loading state)
+    (Card/section loading uses a skeleton — see card.html — not a spinner: a
+     known content shape should be telegraphed, not hidden behind a spinner.)
   ──────────────────────────────────────────────────────────────────────
 -->
 <!DOCTYPE html>
@@ -20,17 +22,18 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 840px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -50,15 +53,6 @@
       color: var(--color-content-tertiary);
       margin: 0;
     }
-    .demo-col2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-6);
-    }
-    @media (max-width: 640px) {
-      .demo-col2 { grid-template-columns: 1fr; }
-    }
-
     /* Spinner sizing */
     .spinner--sm {
       width: 14px;
@@ -182,7 +176,7 @@
         The spinner replaces the left icon slot in a button when <code>loading</code> is set.
       </p>
 
-      <div class="demo-col2">
+      <div class="demo-inline-row" style="flex-wrap:wrap;">
         <button class="btn btn--primary" type="button" disabled style="display:inline-flex;align-items:center;gap:var(--space-2);">
           <div class="spinner spinner--md" role="status" aria-label="Loading"></div>
           Saving
@@ -191,25 +185,6 @@
           <div class="spinner spinner--md" role="status" aria-label="Loading"></div>
           Processing
         </button>
-      </div>
-    </div>
-
-    <!-- ══════════════════════════════════════════════════════════════════
-         Section 4: Spinner in a card (section loading)
-         ════════════════════════════════════════════════════════════════ -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">Spinner · in card loading state</h2>
-      <p class="demo-section__desc">
-        A larger <code>.spinner--lg</code> centered in a card while content loads.
-      </p>
-
-      <div class="card">
-        <div class="card__header">
-          <h2 class="card__title">Usage metrics</h2>
-        </div>
-        <div class="card__content" style="display:flex;align-items:center;justify-content:center;min-height:120px;">
-          <div class="spinner spinner--lg" role="status" aria-label="Loading"></div>
-        </div>
       </div>
     </div>
 

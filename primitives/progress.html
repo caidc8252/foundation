@@ -6,7 +6,6 @@
     - Different percentages (0%, 25%, 50%, 75%, 100%)
     - With label and value (caption + percentage readout)
     - Semantic tones (success, warning, error, info)
-    - Indeterminate (conceptual approximation via CSS animation)
   ──────────────────────────────────────────────────────────────────────
 -->
 <!DOCTYPE html>
@@ -21,17 +20,18 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 840px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -58,18 +58,6 @@
     }
     @media (max-width: 640px) {
       .demo-col2 { grid-template-columns: 1fr; }
-    }
-    .indeterminate-bar {
-      width: 100%;
-    }
-    @keyframes indeterminate {
-      0%   { transform: translateX(-100%); }
-      50%  { transform: translateX(200%); }
-      100% { transform: translateX(400%); }
-    }
-    .indeterminate-bar .progress__indicator {
-      width: 33%;
-      animation: indeterminate 1.5s ease-in-out infinite;
     }
   </style>
 </head>
@@ -214,32 +202,6 @@
           <div class="progress__indicator progress__indicator--info" style="width:50%"></div>
         </div>
       </div>
-    </div>
-
-    <!-- ══════════════════════════════════════════════════════════════════
-         Section 4: Indeterminate (conceptual)
-         ════════════════════════════════════════════════════════════════ -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">Progress · indeterminate (conceptual)</h2>
-      <p class="demo-section__desc">
-        Indeterminate / streaming animation is not part of this contract — the
-        source renders a determinate fill from <code>value</code>. This visual
-        approximation uses a CSS keyframe animation on the indicator. The actual
-        indeterminate behavior belongs to the React implementation
-        (<code>@cloud/ui</code>).
-      </p>
-
-      <div class="progress">
-        <div class="progress__track indeterminate-bar">
-          <div class="progress__indicator" style="width:33%"></div>
-        </div>
-      </div>
-
-      <p class="demo-section__desc" style="font-style:italic;">
-        Note: The pulsing bar above is a static CSS-only approximation. The true
-        indeterminate <code>Progress</code> component is driven by React and
-        <code>base-ui</code> — it is not representable in plain HTML.
-      </p>
     </div>
 
   </div>

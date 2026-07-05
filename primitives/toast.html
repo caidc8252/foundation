@@ -25,17 +25,18 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 840px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -54,14 +55,6 @@
       font-size: var(--text-sm);
       color: var(--color-content-tertiary);
       margin: 0;
-    }
-    .demo-col2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-6);
-    }
-    @media (max-width: 640px) {
-      .demo-col2 { grid-template-columns: 1fr; }
     }
     .demo-btn-row {
       display: flex;
@@ -192,6 +185,13 @@
       flex-direction: column;
       gap: var(--space-3);
     }
+    /* Two 340px toast columns clustered left (not spread across the page). */
+    .demo-toast-cols {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: var(--space-4);
+    }
   </style>
 </head>
 <body>
@@ -203,7 +203,8 @@
     <div class="demo-section">
       <h2 class="demo-section__title">Toast · trigger</h2>
       <p class="demo-section__desc">
-        Click a button to show a transient toast notification. Toasts auto-dismiss after 2.5 seconds.
+        Click a button to show a transient toast notification. Toasts auto-dismiss after 2.5 seconds;
+        the loading toast resolves to a success toast first, then auto-dismisses.
       </p>
 
       <div class="demo-btn-row">
@@ -226,7 +227,7 @@
         <code>line-default</code> border, and tone-driven icon color.
       </p>
 
-      <div class="demo-col2">
+      <div class="demo-toast-cols">
         <div class="demo-toast-grid">
           <!-- Default -->
           <div class="toast">
@@ -374,6 +375,31 @@
           }, TOAST_DURATION);
         }
 
+        // Loading toasts resolve (toast.promise pattern): after a beat they swap
+        // to a success toast in place, gain a countdown + close button, then
+        // auto-dismiss like any other — so they never hang open forever.
+        if (isLoading) {
+          setTimeout(function () {
+            if (!toast.parentNode) return;
+            toast.classList.remove('toast--loading');
+            toast.classList.add('toast--countdown');
+            toast.style.setProperty('--toast-duration', TOAST_DURATION + 'ms');
+            var icon = toast.querySelector('.toast__icon');
+            if (icon) { icon.className = 'toast__icon toast__icon--success'; icon.innerHTML = ICONS.success; }
+            var t = toast.querySelector('.toast__title'); if (t) t.textContent = 'Payment successful';
+            var d = toast.querySelector('.toast__description'); if (d) d.textContent = 'Invoice #INV-042 has been paid.';
+            if (!toast.querySelector('.toast__close')) {
+              var cb = document.createElement('button');
+              cb.className = 'toast__close'; cb.type = 'button'; cb.setAttribute('aria-label', 'Close'); cb.innerHTML = CLOSE_SVG;
+              cb.addEventListener('click', function () { if (toast.parentNode) toast.parentNode.removeChild(toast); });
+              toast.appendChild(cb);
+            }
+            setTimeout(function () {
+              if (toast.parentNode) toast.parentNode.removeChild(toast);
+            }, TOAST_DURATION);
+          }, 1800);
+        }
+
         return toast;
       }
 
@@ -397,6 +423,14 @@
             var toastEl = fn();
             container.appendChild(toastEl);
           }
+        });
+      });
+
+      // Static example toasts: their close button dismisses the toast, same as live ones.
+      document.querySelectorAll('.demo-toast-grid .toast__close').forEach(function (closeBtn) {
+        closeBtn.addEventListener('click', function () {
+          var toast = closeBtn.closest('.toast');
+          if (toast && toast.parentNode) toast.parentNode.removeChild(toast);
         });
       });
 
