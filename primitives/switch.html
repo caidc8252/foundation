@@ -3,11 +3,11 @@
   ──────────────────────────────────────────────────────────────────────
   Demonstrates the Switch primitive in the foundation design system.
   Covers:
-    - Default switch unchecked
-    - Default switch checked
-    - Small switch unchecked
-    - Small switch checked
-    - Disabled switch (unchecked and checked)
+    - Sizes (default + sm) — interactive; one switch shows both states by toggling
+    - Disabled (off + on) — the one genuinely unreachable state
+    - Switches in a settings card
+  (No separate checked/unchecked twins: the switches are live, so clicking one
+   reveals both states — a static pair would just be an inert duplicate.)
   ──────────────────────────────────────────────────────────────────────
 -->
 <!DOCTYPE html>
@@ -22,17 +22,18 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 840px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -52,15 +53,6 @@
       color: var(--color-content-tertiary);
       margin: 0;
     }
-    .demo-col2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-6);
-    }
-    @media (max-width: 640px) {
-      .demo-col2 { grid-template-columns: 1fr; }
-    }
-
     /* Switch */
     .switch {
       position: relative;
@@ -147,113 +139,59 @@
   <div class="demo-page">
 
     <!-- ══════════════════════════════════════════════════════════════════
-         Section 1: Default size - unchecked and checked
+         Section 1: Sizes (default + sm) — interactive; toggle reveals both states
          ════════════════════════════════════════════════════════════════ -->
     <div class="demo-section">
-      <h2 class="demo-section__title">Switch · default size</h2>
+      <h2 class="demo-section__title">Switch · sizes</h2>
       <p class="demo-section__desc">
-        Default (20x36px) switches. Click to toggle between checked and unchecked.
-        <code>aria-checked</code> drives the visual state.
+        Default (20×36px) and small (<code>.switch--sm</code>, 14×24px). Click either to
+        toggle — <code>aria-checked</code> drives the visual, so one switch shows both states.
       </p>
 
-      <div class="demo-col2">
-        <div>
-          <h3 style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin:0 0 var(--space-2);">Unchecked</h3>
-          <div class="demo-switch-row">
-            <button class="switch" role="switch" aria-checked="false" aria-label="Enable notifications" type="button">
-              <span class="switch__thumb"></span>
-            </button>
-            <span class="demo-switch-label">Notifications</span>
-          </div>
-          <div class="demo-switch-row" style="margin-top:var(--space-2);">
-            <button class="switch" role="switch" aria-checked="false" aria-label="Enable dark mode" type="button">
-              <span class="switch__thumb"></span>
-            </button>
-            <span class="demo-switch-label">Dark mode</span>
-          </div>
+      <div class="stack stack--3">
+        <div class="demo-switch-row">
+          <button class="switch" role="switch" aria-checked="true" data-checked aria-label="Enable email alerts" type="button">
+            <span class="switch__thumb"></span>
+          </button>
+          <span class="demo-switch-label">Email alerts · default</span>
         </div>
-        <div>
-          <h3 style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin:0 0 var(--space-2);">Checked</h3>
-          <div class="demo-switch-row">
-            <button class="switch" role="switch" aria-checked="true" data-checked aria-label="Enable email alerts" type="button">
-              <span class="switch__thumb"></span>
-            </button>
-            <span class="demo-switch-label">Email alerts</span>
-          </div>
-          <div class="demo-switch-row" style="margin-top:var(--space-2);">
-            <button class="switch" role="switch" aria-checked="true" data-checked aria-label="Enable two-factor auth" type="button">
-              <span class="switch__thumb"></span>
-            </button>
-            <span class="demo-switch-label">Two-factor auth</span>
-          </div>
+        <div class="demo-switch-row">
+          <button class="switch switch--sm" role="switch" aria-checked="false" aria-label="Enable sound" type="button">
+            <span class="switch__thumb"></span>
+          </button>
+          <span class="demo-switch-label">Sound · sm</span>
         </div>
       </div>
     </div>
 
     <!-- ══════════════════════════════════════════════════════════════════
-         Section 2: Small size
-         ════════════════════════════════════════════════════════════════ -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">Switch · sm size</h2>
-      <p class="demo-section__desc">
-        Small (14x24px) switches with <code>.switch--sm</code> for dense layouts.
-      </p>
-
-      <div class="demo-col2">
-        <div>
-          <h3 style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin:0 0 var(--space-2);">Unchecked</h3>
-          <div class="demo-switch-row">
-            <button class="switch switch--sm" role="switch" aria-checked="false" aria-label="Sound" type="button">
-              <span class="switch__thumb"></span>
-            </button>
-            <span class="demo-switch-label">Sound</span>
-          </div>
-        </div>
-        <div>
-          <h3 style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin:0 0 var(--space-2);">Checked</h3>
-          <div class="demo-switch-row">
-            <button class="switch switch--sm" role="switch" aria-checked="true" data-checked aria-label="Vibration" type="button">
-              <span class="switch__thumb"></span>
-            </button>
-            <span class="demo-switch-label">Vibration</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════════════════════════════════════════════════════════════════
-         Section 3: Disabled state
+         Section 2: Disabled — the one unreachable state; off + on shown statically
          ════════════════════════════════════════════════════════════════ -->
     <div class="demo-section">
       <h2 class="demo-section__title">Switch · disabled</h2>
       <p class="demo-section__desc">
-        Disabled switches with <code>:disabled</code> and <code>opacity-50</code>.
+        Non-interactive: <code>:disabled</code> + <code>opacity-50</code>. Both resting states
+        are shown here because a disabled switch can't be toggled to reveal them.
       </p>
 
-      <div class="demo-col2">
-        <div>
-          <h3 style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin:0 0 var(--space-2);">Unchecked</h3>
-          <div class="demo-switch-row">
-            <button class="switch" role="switch" aria-checked="false" aria-label="Beta features" type="button" disabled>
-              <span class="switch__thumb"></span>
-            </button>
-            <span class="demo-switch-label" style="opacity:0.5;">Beta features</span>
-          </div>
+      <div class="stack stack--3">
+        <div class="demo-switch-row">
+          <button class="switch" role="switch" aria-checked="false" aria-label="Beta features" type="button" disabled>
+            <span class="switch__thumb"></span>
+          </button>
+          <span class="demo-switch-label" style="opacity:0.5;">Beta features · off</span>
         </div>
-        <div>
-          <h3 style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin:0 0 var(--space-2);">Checked</h3>
-          <div class="demo-switch-row">
-            <button class="switch" role="switch" aria-checked="true" data-checked aria-label="Auto-update" type="button" disabled>
-              <span class="switch__thumb"></span>
-            </button>
-            <span class="demo-switch-label" style="opacity:0.5;">Auto-update</span>
-          </div>
+        <div class="demo-switch-row">
+          <button class="switch" role="switch" aria-checked="true" data-checked aria-label="Auto-update" type="button" disabled>
+            <span class="switch__thumb"></span>
+          </button>
+          <span class="demo-switch-label" style="opacity:0.5;">Auto-update · on</span>
         </div>
       </div>
     </div>
 
     <!-- ══════════════════════════════════════════════════════════════════
-         Section 4: In a card
+         Section 3: In a settings card (complete real-usage example)
          ════════════════════════════════════════════════════════════════ -->
     <div class="demo-section">
       <h2 class="demo-section__title">Switch · in a card</h2>
@@ -265,7 +203,7 @@
         <div class="card__header">
           <h2 class="card__title">Preferences</h2>
         </div>
-        <div class="card__content" style="display:flex;flex-direction:column;gap:var(--space-3);">
+        <div class="card__content stack stack--4">
           <div class="demo-switch-row">
             <button class="switch" role="switch" aria-checked="true" data-checked aria-label="Email notifications" type="button">
               <span class="switch__thumb"></span>
@@ -281,7 +219,7 @@
           </div>
           <div class="separator" role="separator" aria-orientation="horizontal"></div>
           <div class="demo-switch-row">
-            <button class="switch switch--sm" role="switch" aria-checked="false" aria-label="Sound" type="button">
+            <button class="switch" role="switch" aria-checked="false" aria-label="Sound" type="button">
               <span class="switch__thumb"></span>
             </button>
             <span class="demo-switch-label">Sound</span>

@@ -3,10 +3,11 @@
   ──────────────────────────────────────────────────────────────────────
   Demonstrates the InputOTP primitive in the foundation design system.
   Covers:
-    - Grouped (3-3) with separator
-    - Ungrouped (single group)
-    - Grouped with error state (aria-invalid)
-    - Disabled container
+    - Grouped (3-3) with separator — interactive
+    - Ungrouped (single group) — interactive
+    - Invalid: a filled code that failed validation, both groups ring red +
+      destructive message (static illustration of an unreachable state)
+    - Disabled: a filled, dimmed, locked field, no caret (static illustration)
   ──────────────────────────────────────────────────────────────────────
 -->
 <!DOCTYPE html>
@@ -21,17 +22,18 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 840px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -58,6 +60,12 @@
     }
     @media (max-width: 640px) {
       .demo-col2 { grid-template-columns: 1fr; }
+    }
+    /* Validation message under an invalid field (shadcn shows a destructive line). */
+    .input-otp-message {
+      font-size: var(--text-sm);
+      color: var(--color-error);
+      margin: 0;
     }
   </style>
 </head>
@@ -115,26 +123,29 @@
          Section 3: Grouped with error
          ════════════════════════════════════════════════════════════════ -->
     <div class="demo-section">
-      <h2 class="demo-section__title">InputOTP · grouped with error</h2>
+      <h2 class="demo-section__title">InputOTP · invalid</h2>
       <p class="demo-section__desc">
-        Six slots in a 3-3 layout. The first group has <code>aria-invalid="true"</code>
-        on one slot, causing the group to render the unified error ring.
+        A fully-entered code that failed validation. <code>aria-invalid="true"</code>
+        is set on the slots so <em>both</em> groups draw the unified error ring
+        (<code>.input-otp__group:has([aria-invalid])</code>), with a destructive
+        message below — the state a user actually sees, not an empty field.
       </p>
 
-      <div class="input-otp">
-        <input type="tel" maxlength="6" autocomplete="one-time-code" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;">
+      <div class="input-otp" data-static>
+        <input type="tel" maxlength="6" value="820416" autocomplete="one-time-code" aria-invalid="true" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;">
         <div class="input-otp__group">
-          <div class="input-otp__slot input-otp__slot--active" aria-invalid="true"><span class="input-otp__caret"></span></div>
-          <div class="input-otp__slot" aria-invalid="true"></div>
-          <div class="input-otp__slot" aria-invalid="true"></div>
+          <div class="input-otp__slot" aria-invalid="true">8</div>
+          <div class="input-otp__slot" aria-invalid="true">2</div>
+          <div class="input-otp__slot" aria-invalid="true">0</div>
         </div>
         <span class="input-otp__separator" role="separator">–</span>
         <div class="input-otp__group">
-          <div class="input-otp__slot"></div>
-          <div class="input-otp__slot"></div>
-          <div class="input-otp__slot"></div>
+          <div class="input-otp__slot" aria-invalid="true">4</div>
+          <div class="input-otp__slot" aria-invalid="true">1</div>
+          <div class="input-otp__slot" aria-invalid="true">6</div>
         </div>
       </div>
+      <p class="input-otp-message" role="alert">That code isn’t valid. Check it and try again.</p>
     </div>
 
     <!-- ══════════════════════════════════════════════════════════════════
@@ -143,22 +154,24 @@
     <div class="demo-section">
       <h2 class="demo-section__title">InputOTP · disabled</h2>
       <p class="demo-section__desc">
-        The whole container wrapped with <code>aria-disabled="true"</code>.
-        Slots dim to <code>opacity-50</code> and are <code>cursor-not-allowed</code>.
+        A locked, non-editable code: the container carries <code>aria-disabled="true"</code>
+        and the hidden input is <code>disabled</code>. The whole field dims to
+        <code>opacity-50</code> with <code>cursor-not-allowed</code> — shown filled so
+        the dimmed digits read as disabled content, and with no active caret.
       </p>
 
-      <div class="input-otp" aria-disabled="true">
-        <input type="tel" maxlength="6" autocomplete="one-time-code" disabled style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;">
+      <div class="input-otp" aria-disabled="true" data-static>
+        <input type="tel" maxlength="6" value="123456" autocomplete="one-time-code" disabled style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;">
         <div class="input-otp__group">
-          <div class="input-otp__slot"></div>
-          <div class="input-otp__slot"></div>
-          <div class="input-otp__slot"></div>
+          <div class="input-otp__slot">1</div>
+          <div class="input-otp__slot">2</div>
+          <div class="input-otp__slot">3</div>
         </div>
         <span class="input-otp__separator" role="separator">–</span>
         <div class="input-otp__group">
-          <div class="input-otp__slot"></div>
-          <div class="input-otp__slot"></div>
-          <div class="input-otp__slot"></div>
+          <div class="input-otp__slot">4</div>
+          <div class="input-otp__slot">5</div>
+          <div class="input-otp__slot">6</div>
         </div>
       </div>
     </div>
@@ -171,6 +184,11 @@
   // no JS suppression needed. The visible focus signal is the active slot's ring.
 
   document.querySelectorAll('.input-otp').forEach(function (root) {
+    // Static-illustration states (invalid / disabled) render their digits from
+    // markup and must NOT be wired — otherwise render() would strip the value
+    // and inject an active caret, making a disabled/errored field look focused.
+    if (root.hasAttribute('data-static')) return;
+
     var slots = Array.from(root.querySelectorAll('.input-otp__slot'));
     if (!slots.length) return;
 

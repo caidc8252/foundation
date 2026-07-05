@@ -23,17 +23,18 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 840px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -86,6 +87,20 @@
     @media (max-width: 640px) {
       .demo-field { min-width: 100%; }
     }
+
+    /* Live-demo affordances — page-local composition, NOT design vocabulary.
+       A trailing in-field control (password reveal / clear) sits over the input's
+       right padding gutter; the button itself reuses .btn .btn--ghost .btn--icon. */
+    .is-hidden { display: none !important; }
+    .input-affix { position: relative; }
+    .input-affix .input { padding-right: var(--space-8); }
+    .input-affix__action {
+      position: absolute;
+      top: 50%;
+      right: var(--space-1);
+      transform: translateY(-50%);
+      color: var(--color-content-tertiary);
+    }
   </style>
 </head>
 <body>
@@ -133,7 +148,12 @@
         </div>
         <div class="demo-field">
           <label class="label" for="input-password">Password</label>
-          <input id="input-password" class="input" type="password" placeholder="Enter password">
+          <div class="input-affix">
+            <input id="input-password" class="input" type="password" placeholder="Enter password">
+            <button class="btn btn--ghost btn--xs btn--icon input-affix__action" type="button" aria-label="Show password" data-password-toggle>
+              <svg data-lucide="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
         </div>
         <div class="demo-field">
           <label class="label" for="input-email">Email</label>
@@ -141,7 +161,12 @@
         </div>
         <div class="demo-field">
           <label class="label" for="input-search">Search</label>
-          <input id="input-search" class="input" type="search" placeholder="Search...">
+          <div class="input-affix">
+            <input id="input-search" class="input" type="search" placeholder="Search...">
+            <button class="btn btn--ghost btn--xs btn--icon input-affix__action is-hidden" type="button" aria-label="Clear search" data-input-clear>
+              <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -177,29 +202,7 @@
     </div>
 
     <!-- ══════════════════════════════════════════════════════════════════
-         Section 4: Validation
-         ════════════════════════════════════════════════════════════════ -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">Input · validation</h2>
-      <p class="demo-section__desc">
-        The orthogonal validation axis: <code>.input--warn</code> (warning-500 border) and
-        <code>.input--ok</code> (success-500 border). These are independent of the size variant.
-      </p>
-
-      <div class="demo-row">
-        <div class="demo-field">
-          <label class="label" for="input-warn">Warning</label>
-          <input id="input-warn" class="input input--warn" type="text" placeholder="Expiring soon">
-        </div>
-        <div class="demo-field">
-          <label class="label" for="input-ok">OK / Success</label>
-          <input id="input-ok" class="input input--ok" type="text" placeholder="All good">
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════════════════════════════════════════════════════════════════
-         Section 5: Filled variant
+         Section 4: Filled variant
          ════════════════════════════════════════════════════════════════ -->
     <div class="demo-section">
       <h2 class="demo-section__title">Input · filled variant</h2>
@@ -225,7 +228,7 @@
     </div>
 
     <!-- ══════════════════════════════════════════════════════════════════
-         Section 6: With icon
+         Section 5: With icon
          ════════════════════════════════════════════════════════════════ -->
     <div class="demo-section">
       <h2 class="demo-section__title">Input · with icon prefix</h2>
@@ -260,5 +263,39 @@
     </div>
 
   </div>
+  <script>
+    // Native typing already works on every input; this wires the in-field
+    // affordances the demo shows, modeling production: a password reveal toggle
+    // and a clear button that appears only while the search field has text.
+    (function () {
+      var EYE = '<svg data-lucide="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>';
+      var EYE_OFF = '<svg data-lucide="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></svg>';
+
+      // Password reveal: flip the control's type and swap the eye / eye-off glyph.
+      document.querySelectorAll('[data-password-toggle]').forEach(function (btn) {
+        var input = btn.parentElement.querySelector('.input');
+        btn.addEventListener('click', function () {
+          var show = input.type === 'password';
+          input.type = show ? 'text' : 'password';
+          btn.innerHTML = show ? EYE_OFF : EYE;
+          btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+        });
+      });
+
+      // Clear affordance: reveal it only while there's text; clicking empties the
+      // field and returns focus.
+      document.querySelectorAll('[data-input-clear]').forEach(function (btn) {
+        var input = btn.parentElement.querySelector('.input');
+        function sync() { btn.classList.toggle('is-hidden', input.value.length === 0); }
+        input.addEventListener('input', sync);
+        btn.addEventListener('click', function () {
+          input.value = '';
+          sync();
+          input.focus();
+        });
+        sync();
+      });
+    })();
+  </script>
 </body>
 </html>

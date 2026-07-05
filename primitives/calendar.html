@@ -24,17 +24,18 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 840px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -93,8 +94,8 @@
           <!-- Days rendered by JS -->
         </div>
         <div class="calendar__footer">
-          <button class="calendar__link" type="button">Clear</button>
-          <button class="calendar__link" type="button">Today</button>
+          <button class="calendar__link" type="button" data-cal-clear>Clear</button>
+          <button class="calendar__link" type="button" data-cal-today>Today</button>
         </div>
       </div>
     </div>
@@ -135,6 +136,9 @@
       var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
       var DAYS = ['Su','Mo','Tu','We','Th','Fr','Sa'];
 
+      // Comparable numeric key for a calendar date.
+      function key(y, m, d) { return y * 10000 + m * 100 + d; }
+
       function buildGrid(year, month, opts) {
         opts = opts || {};
         var html = '';
@@ -149,78 +153,127 @@
         var daysInPrev = new Date(year, month, 0).getDate();
         // Total cells
         var totalCells = Math.ceil((startDow + daysInMonth) / 7) * 7;
+        var today = new Date();
 
         for (var i = 0; i < totalCells; i++) {
-          var dayNum, classes = 'calendar__day';
+          var dayNum, outside = false, disabled = false, classes = 'calendar__day';
           if (i < startDow) {
             // Previous month
             dayNum = daysInPrev - startDow + i + 1;
+            outside = true;
             classes += ' calendar__day--outside';
           } else if (i >= startDow + daysInMonth) {
             // Next month
             dayNum = i - startDow - daysInMonth + 1;
+            outside = true;
             classes += ' calendar__day--outside';
           } else {
             dayNum = i - startDow + 1;
           }
 
-          // Today highlight
-          var today = new Date();
-          if (dayNum === today.getDate() && month === today.getMonth() && year === today.getFullYear() && !classes.match(/outside/)) {
-            classes += ' calendar__day--today';
+          if (!outside) {
+            // Today highlight
+            if (dayNum === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+              classes += ' calendar__day--today';
+            }
+            // Single-select
+            if (opts.selected === dayNum) {
+              classes = classes.replace(' calendar__day--today', '');
+              classes += ' calendar__day--selected';
+            }
+            // Disabled
+            if (opts.disabled && opts.disabled.indexOf(dayNum) !== -1) {
+              classes += ' calendar__day--disabled';
+              disabled = true;
+            }
+            // Range (start/end/middle computed from comparable date keys)
+            if (opts.start != null || opts.end != null) {
+              var cur = key(year, month, dayNum);
+              if (opts.start != null && cur === opts.start) {
+                classes += ' calendar__day--range-start';
+              } else if (opts.end != null && cur === opts.end) {
+                classes += ' calendar__day--range-end';
+              } else if (opts.start != null && opts.end != null && cur > opts.start && cur < opts.end) {
+                classes += ' calendar__day--range-middle';
+              }
+            }
           }
 
-          // Apply opts
-          if (opts.selected && dayNum === opts.selected && !classes.match(/outside/)) {
-            classes += ' calendar__day--selected';
-            classes = classes.replace('calendar__day--today', '');
-          }
-          if (opts.rangeStart && dayNum === opts.rangeStart && !classes.match(/outside/)) {
-            classes += ' calendar__day--range-start';
-          }
-          if (opts.rangeEnd && dayNum === opts.rangeEnd && !classes.match(/outside/)) {
-            classes += ' calendar__day--range-end';
-          }
-          if (opts.rangeMiddle && opts.rangeMiddle.indexOf(dayNum) !== -1 && !classes.match(/outside/)) {
-            classes += ' calendar__day--range-middle';
-          }
-          if (opts.disabled && opts.disabled.indexOf(dayNum) !== -1 && !classes.match(/outside/)) {
-            classes += ' calendar__day--disabled';
-          }
-
-          html += '<button class="' + classes.trim() + '" type="button"' + (classes.indexOf('disabled') !== -1 ? ' disabled' : '') + '>' + dayNum + '</button>';
+          html += '<button class="' + classes.trim() + '" type="button" data-day="' + dayNum + '"' +
+            (outside ? ' data-outside' : '') + (disabled ? ' disabled' : '') + '>' + dayNum + '</button>';
         }
         return html;
       }
 
+      // Resolve a clicked day button within a grid → its day number, or null if not selectable.
+      function clickedDay(e) {
+        var btn = e.target.closest('.calendar__day');
+        if (!btn || btn.hasAttribute('data-outside') || btn.disabled) return null;
+        return parseInt(btn.getAttribute('data-day'), 10);
+      }
+
       // --- Single calendar ---
       var calYear = 2026, calMonth = 5; // June
+      var sel = { y: 2026, m: 5, d: 15 }; // initial selection
+      var singleGrid = document.getElementById('cal-single-grid');
       function renderSingle() {
         document.getElementById('cal-single-caption').textContent = MONTHS[calMonth] + ' ' + calYear;
-        document.getElementById('cal-single-grid').innerHTML = buildGrid(calYear, calMonth, { selected: 15 });
+        var opts = (sel && sel.y === calYear && sel.m === calMonth) ? { selected: sel.d } : {};
+        singleGrid.innerHTML = buildGrid(calYear, calMonth, opts);
       }
       renderSingle();
+      singleGrid.addEventListener('click', function (e) {
+        var day = clickedDay(e);
+        if (day == null) return;
+        sel = { y: calYear, m: calMonth, d: day };
+        renderSingle();
+      });
       document.getElementById('cal-single-prev').addEventListener('click', function () {
         calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } renderSingle();
       });
       document.getElementById('cal-single-next').addEventListener('click', function () {
         calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; } renderSingle();
       });
+      document.querySelector('#cal-single [data-cal-clear]').addEventListener('click', function () {
+        sel = null; renderSingle();
+      });
+      document.querySelector('#cal-single [data-cal-today]').addEventListener('click', function () {
+        var t = new Date();
+        calYear = t.getFullYear(); calMonth = t.getMonth();
+        sel = { y: calYear, m: calMonth, d: t.getDate() };
+        renderSingle();
+      });
 
       // --- Range calendar ---
       var rangeYear = 2026, rangeMonth = 5;
+      var rStart = { y: 2026, m: 5, d: 10 }, rEnd = { y: 2026, m: 5, d: 15 }; // initial range
+      var RANGE_DISABLED = [7, 8, 21, 22];
+      var rangeGrid = document.getElementById('cal-range-grid');
+      function val(o) { return o ? key(o.y, o.m, o.d) : null; }
       function renderRange() {
         document.getElementById('cal-range-caption').textContent = MONTHS[rangeMonth] + ' ' + rangeYear;
-        var rangeMiddle = [];
-        for (var d = 11; d <= 14; d++) rangeMiddle.push(d);
-        document.getElementById('cal-range-grid').innerHTML = buildGrid(rangeYear, rangeMonth, {
-          rangeStart: 10,
-          rangeEnd: 15,
-          rangeMiddle: rangeMiddle,
-          disabled: [7, 8, 21, 22]
+        rangeGrid.innerHTML = buildGrid(rangeYear, rangeMonth, {
+          start: val(rStart),
+          end: val(rEnd),
+          disabled: RANGE_DISABLED
         });
       }
       renderRange();
+      rangeGrid.addEventListener('click', function (e) {
+        var day = clickedDay(e);
+        if (day == null) return;
+        var picked = { y: rangeYear, m: rangeMonth, d: day };
+        if (!rStart || (rStart && rEnd)) {
+          // Begin a new range.
+          rStart = picked; rEnd = null;
+        } else if (val(picked) < val(rStart)) {
+          // Clicked before the start → picked becomes start, old start becomes end.
+          rEnd = rStart; rStart = picked;
+        } else {
+          rEnd = picked;
+        }
+        renderRange();
+      });
       document.getElementById('cal-range-prev').addEventListener('click', function () {
         rangeMonth--; if (rangeMonth < 0) { rangeMonth = 11; rangeYear--; } renderRange();
       });

@@ -22,17 +22,18 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 840px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -228,7 +229,25 @@
             input.value = '';
             input.focus();
           }
+          syncCount(group);
         });
+      });
+
+      // Block addon: live character count against the textarea's maxlength.
+      var MAX = 500;
+      function syncCount(group) {
+        var ta = group.querySelector('textarea.input-group__control');
+        var out = group.querySelector('.input-group__addon--block-end .input-group__text');
+        if (!ta || !out) return;
+        if (ta.value.length > MAX) ta.value = ta.value.slice(0, MAX);
+        out.textContent = ta.value.length + ' / ' + MAX + ' characters';
+      }
+      document.querySelectorAll('.input-group--block').forEach(function (group) {
+        var ta = group.querySelector('textarea.input-group__control');
+        if (!ta) return;
+        ta.setAttribute('maxlength', MAX);
+        ta.addEventListener('input', function () { syncCount(group); });
+        syncCount(group);
       });
     })();
   </script>

@@ -23,17 +23,18 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       background-color: var(--color-surface-1);
       font-family: var(--font-sans);
+      color: var(--color-content-primary);
     }
     .demo-page {
-      max-width: 840px;
-      margin: 0 auto;
-      padding: var(--space-6);
+      padding: var(--space-6) var(--space-8);
       display: flex;
       flex-direction: column;
       gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
     }
     .demo-section {
       display: flex;
@@ -52,14 +53,6 @@
       font-size: var(--text-sm);
       color: var(--color-content-tertiary);
       margin: 0;
-    }
-    .demo-col2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-6);
-    }
-    @media (max-width: 640px) {
-      .demo-col2 { grid-template-columns: 1fr; }
     }
 
     /* Toggle base - default variant */
@@ -145,8 +138,10 @@
     <div class="demo-section">
       <h2 class="demo-section__title">Toggle · default variant</h2>
       <p class="demo-section__desc">
-        Standalone press-toggle buttons with <code>.toggle</code>. Pressed state is
-        <code>aria-pressed="true"</code>. Click to toggle.
+        A <strong>Toggle</strong> is a single <strong>two-state (on/off)</strong> button:
+        <code>.toggle</code>, pressed state <code>aria-pressed="true"</code>. For a set of
+        toggles managed as one control, use <strong>Toggle Group</strong> (the select mode is
+        the group's <code>data-type</code>, independent of its look). Click to toggle.
       </p>
 
       <div class="demo-toggle-row">
@@ -199,7 +194,7 @@
         Small (<code>.toggle--sm</code>, 28px) for dense toolbars and default (<code>.toggle--md</code>, 36px).
       </p>
 
-      <div class="demo-col2">
+      <div class="stack stack--4">
         <div>
           <h3 style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin:0 0 var(--space-2);">Small</h3>
           <div class="demo-toggle-row">
