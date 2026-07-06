@@ -1158,6 +1158,19 @@
   font-family: var(--font-sans);
 }
 
+/* Card wrapper — the sanctioned surface for a bare rail (wizard rail or status
+   pipeline). Same chrome as .card (border line-default · bg surface-2 · radius-xl
+   · shadow-1) but with padding tuned to the 32px dot row: inline 24px (space-6),
+   block 20px (space-5). Holds ONLY the rail — any heading/meta for the flow sits
+   ABOVE the card, not inside it. */
+.step-indicator-card {
+  border: 1px solid var(--color-line-default);
+  background-color: var(--color-surface-2);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-1);
+  padding: var(--space-5) var(--space-6);   /* 20px 24px */
+}
+
 /* One step. Non-last steps grow to spread the rail (source flex-1); the last
    is flex-none so its trailing gap collapses. */
 .step {

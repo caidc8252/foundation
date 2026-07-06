@@ -63,8 +63,11 @@ color via `currentColor`. No size modifier.
   spreads to fill its width). It is a sibling of `__body` inside `<li>`, not
   nested within it.
 - The component renders **bare** (just the dot row + connectors) so it composes
-  anywhere; wrap it yourself for the card look (`border` `line-default` · bg
-  `surface-2` · `radius-xl` · `shadow-1` · `px-6 py-4`).
+  anywhere; wrap it in **`.step-indicator-card`** for the card look (`border`
+  `line-default` · bg `surface-2` · `radius-xl` · `shadow-1`, padding inline `24px`
+  / block `20px` — tuned to the 32px dot row). The card holds **only** the rail;
+  any heading or meta for the flow (a form title, a record id) sits **above** the
+  card, never inside it.
 
 ## Accessibility
 
@@ -105,8 +108,8 @@ Use the same completed / active / upcoming states:
 | **Status pipeline** | system-driven lifecycle; the record moves through stages automatically (payment, fulfilment, delivery). User reads, not drives. |
 
 For a status pipeline, omit `onStepClick` / navigation — it is purely display. Wrap
-the bare `<ol class="step-indicator">` in a card for surface (border `line-default` ·
-bg `surface-2` · `radius-xl` · `shadow-1` · `px-6 py-4`), same as the wizard rail.
+the bare `<ol class="step-indicator">` in **`.step-indicator-card`** for surface, same
+as the wizard rail; the record heading/meta (id, current stage) sits above the card.
 Use captions to show stage dates or IDs where available.
 
 ## Implementations

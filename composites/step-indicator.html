@@ -64,6 +64,23 @@
       color: var(--color-content-tertiary);
       margin: 0;
     }
+    /* A rail + its heading: the heading sits ABOVE the .step-indicator-card,
+       never inside it (the card holds only the rail). */
+    .rail-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    .rail-heading__title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-content-primary);
+    }
+    .rail-heading__meta {
+      font-size: var(--text-xs);
+      color: var(--color-content-tertiary);
+      margin-top: var(--space-1);
+    }
   </style>
 </head>
 <body>
@@ -80,8 +97,9 @@
         upcoming is muted.
       </p>
 
-      <div class="card" style="padding:var(--space-5);">
-        <div style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin-bottom:var(--space-5);">Company onboarding</div>
+      <div class="rail-group">
+        <div class="rail-heading__title">Company onboarding</div>
+        <div class="step-indicator-card">
         <ol class="step-indicator" data-interactive>
           <li class="step step--completed" data-state="completed" aria-label="Step 1 completed">
             <div class="step__body">
@@ -127,6 +145,7 @@
             </div>
           </li>
         </ol>
+        </div>
       </div>
     </div>
 
@@ -140,8 +159,9 @@
         instead of swapping to a checkmark.
       </p>
 
-      <div class="card" style="padding:var(--space-5);">
-        <div style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin-bottom:var(--space-5);">Store setup wizard</div>
+      <div class="rail-group">
+        <div class="rail-heading__title">Store setup wizard</div>
+        <div class="step-indicator-card">
         <ol class="step-indicator" data-interactive>
           <li class="step step--completed" data-state="completed" aria-label="Step 1 completed">
             <div class="step__body">
@@ -191,6 +211,7 @@
             </div>
           </li>
         </ol>
+        </div>
       </div>
     </div>
 
@@ -204,9 +225,12 @@
         captions carry stage dates instead of step numbers.
       </p>
 
-        <div class="card" style="padding:var(--space-5);">
-          <div style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin-bottom:var(--space-1);">Order #ORD-87321</div>
-          <div style="font-size:var(--text-xs);color:var(--color-content-tertiary);margin-bottom:var(--space-5);">Current stage: Shipped</div>
+        <div class="rail-group">
+          <div>
+            <div class="rail-heading__title">Order #ORD-87321</div>
+            <div class="rail-heading__meta">Current stage: Shipped</div>
+          </div>
+          <div class="step-indicator-card">
           <ol class="step-indicator">
             <li class="step step--completed" data-state="completed">
               <div class="step__body">
@@ -252,11 +276,15 @@
               </div>
             </li>
           </ol>
+          </div>
         </div>
 
-        <div class="card" style="padding:var(--space-5);">
-          <div style="font-size:var(--text-sm);font-weight:600;color:var(--color-content-primary);margin-bottom:var(--space-1);">Payout #B-2048</div>
-          <div style="font-size:var(--text-xs);color:var(--color-content-tertiary);margin-bottom:var(--space-5);">Current stage: Completed</div>
+        <div class="rail-group">
+          <div>
+            <div class="rail-heading__title">Payout #B-2048</div>
+            <div class="rail-heading__meta">Current stage: Completed</div>
+          </div>
+          <div class="step-indicator-card">
           <ol class="step-indicator">
             <li class="step step--completed" data-state="completed">
               <div class="step__body">
@@ -306,6 +334,7 @@
               </div>
             </li>
           </ol>
+          </div>
         </div>
     </div>
 

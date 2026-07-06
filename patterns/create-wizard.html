@@ -46,8 +46,8 @@
   /* Layout — full-bleed (fills the page-body width, no max-width cap). The form column
      and the summary rail split main:rail = 7:3; the stepper spans the same full width. */
 
-  /* Wrap the bare step-indicator for the card look (per step-indicator.md). */
-  .stepper-card { border: 1px solid var(--color-line-default); background-color: var(--color-surface-2); border-radius: var(--radius-xl); box-shadow: var(--shadow-1); padding: var(--space-4) var(--space-6); }
+  /* The bare step-indicator is wrapped in the governed .step-indicator-card
+     (per step-indicator.md) — no page-local card recipe needed. */
 
   /* Body row: the step's form-section cards beside the summary rail, split 7:3. */
   .wizard-cols { display: flex; align-items: flex-start; gap: var(--space-6); }
@@ -132,8 +132,8 @@
 
       <div class="page-body">
 
-        <!-- [REQUIRED] steps: step-indicator wrapped for card chrome; JS updates step--* classes. -->
-        <div class="stepper-card" id="stepper">
+        <!-- [REQUIRED] steps: step-indicator wrapped in the governed .step-indicator-card; JS updates step--* classes. -->
+        <div class="step-indicator-card" id="stepper">
           <ol class="step-indicator">
             <li class="step step--active" id="step-item-0" aria-current="step">
               <span class="step__body">

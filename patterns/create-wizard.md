@@ -115,7 +115,7 @@ rail; this pattern fixes which appear and how they sequence:
 | shell (context, **not ported**) | [`app-frame`](../composites/app-frame.md) — the page renders inside `.app-frame__main` |
 | header band (sticky, back = exit; no Cancel, no primary) | [`detail-header`](../composites/detail-header.md) (reduced form: back + title) |
 | content region (gutters + stack) | [`page-body`](../composites/page-body.md) |
-| steps rail | [`step-indicator`](../composites/step-indicator.md) — wrap the bare `ol` for the card look (`border` `line-default` · `surface-2` · `radius-xl` · `shadow-1` · `px-6 py-4`) |
+| steps rail | [`step-indicator`](../composites/step-indicator.md) — wrap the bare `ol` in `.step-indicator-card` for the card look (padding inline `24px` / block `20px`) |
 | current-step body | [`field`](../primitives/field.md) units inside per-concern [`card`](../primitives/card.md) form-sections |
 | nav (Back / Continue / Create) | [`button`](../primitives/button.md) — ghost Back, primary Continue/verb |
 | summary rail (optional) | page-local `dl` (composition only, built from tokens — not a foundation component) inside a [`card`](../primitives/card.md). **KV labels in the summary rail must be UPPERCASE** (`text-transform: uppercase`, overline tracking, `content-tertiary`). Match the [`kv-grid`](../composites/kv-grid.md) label recipe exactly — never title-case. |
