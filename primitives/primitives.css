@@ -36,11 +36,12 @@
 /* Flow-element margin reset. The Next consumer gets this from Tailwind
    Preflight; a self-contained artifact otherwise inherits the UA defaults —
    e.g. <dd> ships `margin-inline-start: 40px` (indenting KV values off their
-   labels), <h1>/<p>/<dl> ship block margins that leak into headers and cards.
+   labels), <h1>/<p>/<dl> ship block margins that leak into headers and cards,
+   and <form> ships `margin-block-end: 1em` that leaks below a `form.card`.
    Foundation spaces with gap + explicit tokens, never per-element UA margins,
    so zeroing these is safe. `:where()` keeps specificity at 0 — any component
    or page-glue rule still wins (e.g. .page-header__description's margin-top). */
-:where(h1, h2, h3, h4, h5, h6, p, figure, blockquote, dl, dd, dt, ul, ol) {
+:where(h1, h2, h3, h4, h5, h6, p, figure, blockquote, dl, dd, dt, ul, ol, form) {
   margin: 0;
   padding: 0;
 }
