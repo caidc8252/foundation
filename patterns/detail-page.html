@@ -312,9 +312,12 @@
                        (New order) rides the right slot. In a rich collection section this
                        is the primary's home: there is no page-header here to carry it. -->
                   <div class="summary-bar">
-                    <div class="summary-bar__count"><strong>12</strong> orders</div>
+                    <div class="summary-bar__count"><strong>2</strong> orders</div>
                     <div class="summary-bar__actions">
-                      <button class="btn btn--primary btn--sm" type="button">New order</button>
+                      <button class="btn btn--primary btn--sm" type="button">
+                        <svg data-lucide="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                        New order
+                      </button>
                     </div>
                   </div>
 
@@ -365,7 +368,7 @@
                           <option selected>10</option><option>25</option><option>50</option>
                         </select>
                       </div>
-                      <span class="rich-pagination__summary">Showing 1–10 of <strong>12</strong></span>
+                      <span class="rich-pagination__summary">Showing 1–2 of <strong>2</strong></span>
                     </div>
                     <nav class="pagination" aria-label="Orders pagination">
                       <button class="pagination__page" type="button" disabled aria-label="Previous page">
@@ -541,6 +544,60 @@
     menu.querySelectorAll('.dropdown-menu__item').forEach(function (item) {
       item.addEventListener('click', function () { setOpen(false); });
     });
+  })();
+
+  /* Orders pagination (real over the actual table rows). Tables never use numbered
+     jump targets — the current page is a display, not a button. Prev/Next enable
+     strictly from page position, so with fewer rows than a page they both disable
+     instead of leaving a dead "Next" clickable. Scoped to this table-frame. */
+  (function () {
+    var pag = document.querySelector('.rich-pagination');
+    if (!pag) return;
+    var frame = pag.closest('.table-frame') || pag.parentElement;
+    var tbody = frame.querySelector('.data-table tbody');
+    var rowsSelect = pag.querySelector('.rich-pagination__rows select');
+    var pageSummary = pag.querySelector('.rich-pagination__summary');
+    var pagNav = pag.querySelector('.pagination');
+    if (!tbody || !rowsSelect || !pageSummary || !pagNav) return;
+
+    var prevBtn = pagNav.querySelector('[aria-label="Previous page"]');
+    var nextBtn = pagNav.querySelector('[aria-label="Next page"]');
+    var pageCurrent = pagNav.querySelector('.pagination__current');
+    var rows = [].slice.call(tbody.querySelectorAll('tr'));
+    var total = rows.length;
+    var pageSize = parseInt(rowsSelect.value, 10) || 10;
+    var currentPage = 1;
+
+    function pageCount() { return Math.max(1, Math.ceil(total / pageSize)); }
+
+    function renderPage() {
+      var pages = pageCount();
+      currentPage = Math.min(Math.max(currentPage, 1), pages);
+      var startIdx = (currentPage - 1) * pageSize;
+      var endIdx = Math.min(startIdx + pageSize, total);
+      rows.forEach(function (row, i) {
+        row.style.display = (i >= startIdx && i < endIdx) ? '' : 'none';
+      });
+      var from = total === 0 ? 0 : startIdx + 1;
+      pageSummary.innerHTML = 'Showing ' + from + '–' + endIdx + ' of <strong>' + total + '</strong>';
+      if (pageCurrent) pageCurrent.textContent = String(currentPage);
+      if (prevBtn) prevBtn.disabled = currentPage <= 1;
+      if (nextBtn) nextBtn.disabled = currentPage >= pages;
+    }
+
+    rowsSelect.addEventListener('change', function () {
+      pageSize = parseInt(rowsSelect.value, 10) || 10;
+      currentPage = 1;
+      renderPage();
+    });
+    if (prevBtn) prevBtn.addEventListener('click', function () {
+      if (currentPage > 1) { currentPage -= 1; renderPage(); }
+    });
+    if (nextBtn) nextBtn.addEventListener('click', function () {
+      if (currentPage < pageCount()) { currentPage += 1; renderPage(); }
+    });
+
+    renderPage();
   })();
 </script>
 </body>
