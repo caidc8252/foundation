@@ -195,12 +195,13 @@
                 </div>
 
               </div>
-              <!-- Per-group Save: bottom-right, enabled only when the group is dirty. This
-                   card is shown DIRTY (an edit is pending) to demonstrate the active state:
-                   an "Unsaved changes" hint on the left, the enabled Save on the right. -->
+              <!-- Per-group Save: bottom-right, enabled only when the group is dirty.
+                   Loads clean — the "Unsaved changes" hint is hidden and Save is disabled
+                   until an edit in THIS card diverges from its loaded values; the inline
+                   script at the end of <body> tracks each card's dirty state on its own. -->
               <div class="card__footer">
-                <span class="settings-dirty">Unsaved changes</span>
-                <button class="btn btn--primary btn--sm" type="button">Save changes</button>
+                <span class="settings-dirty" hidden>Unsaved changes</span>
+                <button class="btn btn--primary btn--sm" type="button" disabled>Save changes</button>
               </div>
             </section>
 
@@ -249,6 +250,7 @@
 
               </div>
               <div class="card__footer">
+                <span class="settings-dirty" hidden>Unsaved changes</span>
                 <button class="btn btn--primary btn--sm" type="button" disabled>Save changes</button>
               </div>
             </section>
@@ -293,6 +295,7 @@
 
               </div>
               <div class="card__footer">
+                <span class="settings-dirty" hidden>Unsaved changes</span>
                 <button class="btn btn--primary btn--sm" type="button" disabled>Save changes</button>
               </div>
             </section>
@@ -341,6 +344,7 @@
 
               </div>
               <div class="card__footer">
+                <span class="settings-dirty" hidden>Unsaved changes</span>
                 <button class="btn btn--primary btn--sm" type="button" disabled>Save changes</button>
               </div>
             </section>
@@ -435,6 +439,61 @@
     }, { passive: true });
 
     setActive(currentId()); // initial state, overriding the markup's default
+  })();
+
+  /* Per-group dirty tracking. Each setting-group card "saves on its own": its
+     Save stays disabled and its "Unsaved changes" hint stays hidden until a
+     control in THAT card diverges from the value it loaded with. Editing back to
+     the loaded value clears the state; Saving re-baselines the card to clean.
+     The Danger zone has no Save footer, so it is skipped. */
+  (function () {
+    var cards = [].slice.call(document.querySelectorAll('.settings-content .card'));
+
+    cards.forEach(function (card) {
+      var save = card.querySelector('.card__footer .btn--primary');
+      if (!save) return; // no per-group Save (e.g. Danger zone) → nothing to track
+      var hint = card.querySelector('.settings-dirty');
+      var fields = [].slice.call(card.querySelectorAll('.input, .select, .switch'));
+
+      // A switch's state is its aria-checked; native controls report .value.
+      function snapshot(el) {
+        return el.classList.contains('switch')
+          ? String(el.getAttribute('aria-checked') === 'true')
+          : el.value;
+      }
+
+      var baseline = fields.map(snapshot); // the values this card loaded with
+
+      function refresh() {
+        var dirty = fields.some(function (el, i) { return snapshot(el) !== baseline[i]; });
+        save.disabled = !dirty;
+        if (hint) hint.hidden = !dirty;
+      }
+
+      fields.forEach(function (el) {
+        if (el.classList.contains('switch')) {
+          // The switch is a static skin until here — make it actually toggle,
+          // flipping both state hooks the CSS reads (aria-checked / data-checked).
+          el.addEventListener('click', function () {
+            var on = el.getAttribute('aria-checked') !== 'true';
+            el.setAttribute('aria-checked', String(on));
+            if (on) el.setAttribute('data-checked', '');
+            else el.removeAttribute('data-checked');
+            refresh();
+          });
+        } else {
+          el.addEventListener('input', refresh);
+          el.addEventListener('change', refresh);
+        }
+      });
+
+      save.addEventListener('click', function () {
+        baseline = fields.map(snapshot); // commit → these values are the new clean state
+        refresh();
+      });
+
+      refresh(); // start from the true state (clean on load)
+    });
   })();
 </script>
 </body>
