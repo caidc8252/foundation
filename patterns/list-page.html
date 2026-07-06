@@ -92,7 +92,10 @@
           </div>
           <!-- exactly ONE primary, rightmost; everything else secondary/ghost -->
           <div class="page-header__actions">
-            <button class="btn btn--secondary" type="button">Import</button>
+            <button class="btn btn--secondary" type="button">
+              <svg data-lucide="import" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m8 11 4 4 4-4"/><path d="M8 5H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4"/></svg>
+              Import
+            </button>
             <button class="btn btn--primary" type="button">
               <svg data-lucide="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
               New customer
@@ -154,7 +157,7 @@
                clipped — otherwise the thead would stick to .table-scroll and scroll away (the
                sticky-head trap; data-table.md §Sticky-head trap). -->
           <div class="summary-bar summary-bar--sticky">
-            <div class="summary-bar__count"><strong>1,248</strong> customers</div>
+            <div class="summary-bar__count"><strong>15</strong> customers</div>
             <div class="summary-bar__actions">
               <!-- Business-driven slot: list-level secondary actions, included only per need.
                    Export is the common one — delete it if the filtered result needs no export.
@@ -404,10 +407,10 @@
               <div class="rich-pagination__rows">
                 Rows
                 <select class="select select--sm" aria-label="Rows per page">
-                  <option>10</option><option selected>25</option><option>50</option><option>100</option>
+                  <option selected>10</option><option>25</option><option>50</option><option>100</option>
                 </select>
               </div>
-              <span class="rich-pagination__summary">Showing 1–25 of <strong>1,248</strong></span>
+              <span class="rich-pagination__summary">Showing 1–10 of <strong>15</strong></span>
             </div>
             <nav class="pagination" aria-label="Pagination">
               <button class="pagination__page" type="button" disabled aria-label="Previous page">
@@ -485,6 +488,11 @@
   // LP9: summary bar count reflects the active filter set (count number only)
   var summaryCount = document.querySelector('.summary-bar__count strong');
 
+  // The list's only real data is the table body; totals + pagination derive from it,
+  // so the count, the "of N" summary, and prev/next can never contradict each other.
+  var pageRows = Array.prototype.slice.call(document.querySelectorAll('.data-table tbody tr'));
+  var TOTAL_ROWS = pageRows.length;
+
   // No filters applied at load (empty chips); chips get added as the user filters
   var chips = [];
 
@@ -498,8 +506,8 @@
 
     if (chips.length === 0) {
       appliedRow.style.display = 'none';
-      // LP9: no filters → show full count
-      if (summaryCount) summaryCount.textContent = '1,248';
+      // LP9: no filters → show full count (the real row total)
+      if (summaryCount) summaryCount.textContent = String(TOTAL_ROWS);
       return;
     }
 
@@ -569,6 +577,56 @@
     if (qsRegion) qsRegion.value = '';
     renderChips();
   });
+
+  // ── Pagination (real: rows-per-page + prev/next over the actual table rows) ───
+  // Tables never use numbered jump targets — the current page is a display, not a
+  // button (see list-page.md). Prev/Next enable strictly from page position, and
+  // the rows-per-page select repaginates the same real rows, so "1 of 1 with Next
+  // still clickable" can't happen.
+  var rowsSelect = document.querySelector('.rich-pagination__rows select');
+  var pageSummary = document.querySelector('.rich-pagination__summary');
+  var pagNav = document.querySelector('.rich-pagination .pagination');
+
+  if (rowsSelect && pageSummary && pagNav) {
+    var prevBtn = pagNav.querySelector('[aria-label="Previous page"]');
+    var nextBtn = pagNav.querySelector('[aria-label="Next page"]');
+    var pageCurrent = pagNav.querySelector('.pagination__current');
+    var pageSize = parseInt(rowsSelect.value, 10) || 25;
+    var currentPage = 1;
+
+    function pageCount() { return Math.max(1, Math.ceil(TOTAL_ROWS / pageSize)); }
+
+    function renderPage() {
+      var pages = pageCount();
+      currentPage = Math.min(Math.max(currentPage, 1), pages);
+      var startIdx = (currentPage - 1) * pageSize;
+      var endIdx = Math.min(startIdx + pageSize, TOTAL_ROWS);
+
+      pageRows.forEach(function (row, i) {
+        row.style.display = (i >= startIdx && i < endIdx) ? '' : 'none';
+      });
+
+      var from = TOTAL_ROWS === 0 ? 0 : startIdx + 1;
+      pageSummary.innerHTML = 'Showing ' + from + '–' + endIdx + ' of <strong>' + TOTAL_ROWS + '</strong>';
+      if (pageCurrent) pageCurrent.textContent = String(currentPage);
+      if (prevBtn) prevBtn.disabled = currentPage <= 1;
+      if (nextBtn) nextBtn.disabled = currentPage >= pages;
+    }
+
+    rowsSelect.addEventListener('change', function () {
+      pageSize = parseInt(rowsSelect.value, 10) || 25;
+      currentPage = 1;
+      renderPage();
+    });
+    if (prevBtn) prevBtn.addEventListener('click', function () {
+      if (currentPage > 1) { currentPage -= 1; renderPage(); }
+    });
+    if (nextBtn) nextBtn.addEventListener('click', function () {
+      if (currentPage < pageCount()) { currentPage += 1; renderPage(); }
+    });
+
+    renderPage();
+  }
 })();
 </script>
 </body>
