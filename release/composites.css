@@ -1637,6 +1637,16 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+/* Optional one-line description under the title — only in the reduced form
+   (create / edit / wizard header), where it carries the page's purpose in place
+   of the meta row. Mirrors .page-header__description so title+description reads
+   the same rhythm across page-header and detail-header pages. */
+.detail-header__description {
+  margin: var(--space-1) 0 0;
+  max-width: 48rem; /* layout measure (~prose width), no token */
+  font-size: var(--text-md);
+  color: var(--color-content-tertiary);
+}
 .detail-header__meta {
   display: flex;
   flex-wrap: wrap;

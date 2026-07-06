@@ -90,8 +90,12 @@ top of its anatomy; [`create-form`](../patterns/create-form.md) and
   badges; a status *change* is an explicit, confirmed action, not a toggle on the
   chip.
 - **Reduced form (create / edit / wizard header).** The same composite heads
-  create/edit/wizard pages with only its **back + title** — **no actions, logo, meta,
-  chips, or tabs**. Both a single-step create/edit page and a wizard carry **no** header
+  create/edit/wizard pages with only its **back + title** (+ an **optional one-line
+  `.detail-header__description`** under the title, carrying the page's purpose) —
+  **no actions, logo, meta, chips, or tabs**. The description mirrors
+  `page-header`'s (`text-md` / `content-tertiary`, one line) so create/edit pages
+  keep the same title+description rhythm as top-level pages; omit it when the title
+  alone makes the page obvious. Both a single-step create/edit page and a wizard carry **no** header
   action at all: the commit cluster lives in a **sticky bottom action footer** — a
   create/edit page a `ghost Cancel + primary` (Create / Save), a wizard a `ghost Back +
   primary Continue`; see [`create-form.md`](../patterns/create-form.md) /
@@ -146,6 +150,7 @@ Cross-consumer guards:
 - **Artifact** — `.detail-header` (+ `--sticky`) → `.detail-header__bar`
   (holding `.btn--ghost.detail-header__back`, `.detail-header__logo`,
   `.detail-header__main` → `.detail-header__title` [contains `.detail-header__name`
-  + status `.badge`(s) + `.detail-header__chips`] / `.detail-header__meta`, then
+  + status `.badge`(s) + `.detail-header__chips`] / `.detail-header__meta`
+  (or, in the reduced form, `.detail-header__description`), then
   `.detail-header__actions` with `.btn--*`) → `.detail-header__tabs` wrapping a
   `.tabs__list--line`. In `composites.css`.
