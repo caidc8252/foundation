@@ -364,7 +364,7 @@
                     <span class="setting-row__desc">Unenroll every device and disable the console. This cannot be undone.</span>
                   </div>
                   <div class="setting-row__control">
-                    <button class="btn btn--danger btn--sm" type="button">Deactivate…</button>
+                    <button class="btn btn--danger btn--sm" type="button" data-dialog="deactivate-dialog" aria-haspopup="dialog">Deactivate…</button>
                   </div>
                 </div>
               </div>
@@ -373,6 +373,28 @@
           </div>
         </div>
 
+      </div>
+
+      <!-- Forced-action confirm for the Deactivate… button (the trailing … promises
+           this step). alert-dialog primitive: no ×, and — per its contract — Escape
+           and overlay-click do NOT dismiss; the user must pick Cancel or Deactivate.
+           The shared skin paints the resting-OPEN dialog, so visibility is driven
+           here by toggling the `hidden` attribute on the overlay (the script at the
+           end of <body>). -->
+      <div class="alert-dialog-overlay" id="deactivate-dialog" role="presentation" hidden>
+        <div class="alert-dialog" role="alertdialog" aria-labelledby="deactivate-title" aria-describedby="deactivate-desc">
+          <div class="alert-dialog__header">
+            <h2 class="alert-dialog__title" id="deactivate-title">Deactivate workspace?</h2>
+            <p class="alert-dialog__description" id="deactivate-desc">
+              This unenrolls every device and disables the console for everyone. This
+              action is permanent and cannot be undone.
+            </p>
+          </div>
+          <div class="alert-dialog__footer">
+            <button class="btn btn--ghost" type="button" data-dialog-close>Cancel</button>
+            <button class="btn btn--danger" type="button" data-dialog-close>Deactivate</button>
+          </div>
+        </div>
       </div>
     </main>
   </div>
@@ -493,6 +515,34 @@
       });
 
       refresh(); // start from the true state (clean on load)
+    });
+  })();
+
+  /* Deactivate confirm — the alert-dialog the "Deactivate…" ellipsis promises.
+     Forced action: opening shows the scrim + panel (toggle the overlay's `hidden`);
+     only Cancel or Deactivate close it. Per the alert-dialog contract this dialog
+     has no × and neither Escape nor an overlay click dismisses it. Focus moves to
+     the panel on open and returns to the trigger on close. */
+  (function () {
+    var trigger = document.querySelector('[data-dialog="deactivate-dialog"]');
+    var overlay = document.getElementById('deactivate-dialog');
+    if (!trigger || !overlay) return;
+    var cancelBtn = overlay.querySelector('[data-dialog-close]');
+
+    function open() {
+      overlay.hidden = false;
+      trigger.setAttribute('aria-expanded', 'true');
+      if (cancelBtn) cancelBtn.focus(); // land on the safe escape
+    }
+    function close() {
+      overlay.hidden = true;
+      trigger.setAttribute('aria-expanded', 'false');
+      trigger.focus();
+    }
+
+    trigger.addEventListener('click', open);
+    overlay.querySelectorAll('[data-dialog-close]').forEach(function (btn) {
+      btn.addEventListener('click', close);
     });
   })();
 </script>
