@@ -135,9 +135,9 @@ when this record's job calls for it.
   per-tab sub-entity edit) **launches** a `create-form`, the carrier chosen by
   **field count**: few (≤ ~8, no branching) → a `Modal`; many → an **edit sub-page**
   (a `sub-route`). Master edit and in-tab sub-edits follow the same rule. **Editing
-  never uses a wizard** (multi-step is a *create* concern). A single value may still
-  use **inline-edit** in the overview; this rule covers editing the record's fields
-  broadly.
+  never uses a wizard** (multi-step is a *create* concern). This rule covers editing
+  the record's fields broadly — down to a **single value**, which still *launches*
+  (a `Modal`); there is **no edit-in-place**.
 - **On return from an edit: backfill, and restore the tab.** Saving (or cancelling)
   closes the modal / leaves the edit sub-page, and the detail simply **backfills**
   the updated values — no change-highlight, scroll-to, or flash. An edit launched
@@ -169,9 +169,10 @@ actions — is included per the record's needs (see the slot table under Anatomy
 
 **Actions** — the detail page is where the shared action vocabulary concentrates;
 see [`actions.md`](./actions.md). **copy** (copy an ID/key, ghost icon),
-**inline-edit** (a KV row toggles display↔input with save/cancel), **transition**
-(status flip / approve-reject; destructive directions confirm), **picker**
-(relate/assign via Combobox or a Modal list). Destructive actions stay behind the
+**transition** (status flip / approve-reject; destructive directions confirm),
+**picker** (relate/assign via Combobox or a Modal list). Editing a field is not one
+of these — it **launches** a `create-form` (see the Rules above), never edits in
+place. Destructive actions stay behind the
 overflow menu or a `danger` button (see **Destructive actions** in Rules).
 
 ## Building blocks

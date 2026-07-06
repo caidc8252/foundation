@@ -139,7 +139,7 @@ the three tile flush with no gap or overlap:
 - **The whole row is the click target → it navigates to the record's detail page**
   (`onRowClick`). This is the load-bearing IA rule: **the list navigates; the detail
   page mutates.** The resting row carries only the leading select checkbox and a
-  passive trailing chevron (`content-tertiary`) — **no inline edit / delete**. A
+  passive trailing chevron (`content-tertiary`) — **no in-row edit / delete**. A
   record's single-row verbs (Edit, Delete, status changes) live on the
   [detail page](./detail-page.md)'s `detail-header` actions, never on the list row;
   the list's only mutation path is **bulk** (selection → summary-bar `batch-action`).

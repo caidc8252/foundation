@@ -37,8 +37,9 @@ top of its anatomy; [`create-form`](../patterns/create-form.md) and
   bar. Returns to the place it was reached from. On a **detail** screen it is
   optional (present when the record was reached from a list); on a **create / edit
   / wizard** page it is **required** and is an **exit-without-committing**
-  affordance. A **wizard** has no Cancel (back is its sole exit); a single-step
-  **create / edit** page also carries a ghost Cancel beside its primary (see Reduced form).
+  affordance. Neither a **wizard** nor a single-step **create / edit** page carries a
+  Cancel or a commit in this header — the back button is its only header control; the
+  commit cluster lives in a sticky bottom action footer (see Reduced form).
   Its glyph is the **`chevron-left`** icon (per `primitives/icon.md` — Back =
   `chevron-left`), the same back affordance used across wizards and pagination —
   **not** `arrow-left`. On a wizard, this header back **exits the whole flow**; the
@@ -89,13 +90,13 @@ top of its anatomy; [`create-form`](../patterns/create-form.md) and
   badges; a status *change* is an explicit, confirmed action, not a toggle on the
   chip.
 - **Reduced form (create / edit / wizard header).** The same composite heads
-  create/edit/wizard pages with only its **back + title (+ its commit actions)** —
-  **no logo, meta, chips, or tabs**. A single-step create/edit page carries a
-  **ghost Cancel + the primary commit** (Create / Save) in `.detail-header__actions`
-  (Cancel left, primary right per [`actions.md`](../patterns/actions.md)); a **wizard**
-  carries **no** header action at all (its commit verb lives in the footer nav) —
-  the header is just back + title. Same classes, same band; the identity slots are
-  simply omitted (they are all optional).
+  create/edit/wizard pages with only its **back + title** — **no actions, logo, meta,
+  chips, or tabs**. Both a single-step create/edit page and a wizard carry **no** header
+  action at all: the commit cluster lives in a **sticky bottom action footer** — a
+  create/edit page a `ghost Cancel + primary` (Create / Save), a wizard a `ghost Back +
+  primary Continue`; see [`create-form.md`](../patterns/create-form.md) /
+  [`create-wizard.md`](../patterns/create-wizard.md). Same classes, same band; the identity
+  and action slots are simply omitted (they are all optional).
 - The band is **sticky by default in patterns** — apply `.detail-header--sticky`
   so the identity + actions (+ tabs) dock under the app header while the body
   scrolls. detail-page, create-form, and create-wizard all use `--sticky`.

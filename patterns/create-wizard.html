@@ -5,9 +5,10 @@
   Copy this file and edit the markup to build a real multi-step create flow:
   a sticky detail-header (the "with back" header kind — back button that exits the whole
   wizard; NO header primary), a step-indicator rail, the CURRENT step's form-section card
-  beside a sticky summary rail, and a Back/Continue nav below the card. The footer's own
-  "Back" (previous step) is hidden on step 1, so it never collides with the header's exit
-  back. Includes all interactive steps and the done state.
+  beside a sticky summary rail, and a sticky bottom Back/Continue nav band pinned to the
+  page footer (right-aligned). The footer's own "Back" (previous step) is hidden on step 1,
+  so it never collides with the header's exit back. Includes all interactive steps and the
+  done state (which hides the nav band).
   Just one step (or two, no branching)? Use the single-step form instead — that is
   its own pattern: ./create-form.md (./create-form.html).
 
@@ -53,8 +54,14 @@
   .wizard-cols { display: flex; align-items: flex-start; gap: var(--space-6); }
   .wizard-main { flex: 7 1 0; min-width: 0; display: flex; flex-direction: column; gap: var(--space-6); }
 
-  /* Summary rail — sticky card, 3/10 of the row (ref: 3:7 split). */
-  .summary-rail { flex: 3 1 0; min-width: 0; position: sticky; top: var(--space-6); }
+  /* Summary rail — sticky card, 3/10 of the row (ref: 3:7 split). Its sticky `top` must
+     CLEAR the sticky detail-header, otherwise it slides up under the header band when a
+     long step scrolls. Offset it by the header height + the page-body top gutter so it
+     pins exactly at its natural resting line (seamless). --wizard-header-h is MEASURED
+     per page = the rendered .detail-header height (same convention as list-page's
+     --lp-header-h / settings' --settings-header-h). */
+  :root { --wizard-header-h: 61px; }
+  .summary-rail { flex: 3 1 0; min-width: 0; position: sticky; top: calc(var(--wizard-header-h) + var(--space-6)); }
 
   /* Narrow: rail drops below the form and the columns stack full-width
      (align-items:stretch overrides the flex-start used in the row layout). */
@@ -74,8 +81,9 @@
   .summary-row dd { min-width: 0; flex: 1; word-break: break-word; color: var(--color-content-primary); margin: 0; }
   .summary-row dd.is-empty { color: var(--color-content-tertiary); }
 
-  /* Wizard footer nav: sits BELOW the step card(s), actions right-aligned. */
-  .wizard-footer { display: flex; align-items: center; justify-content: flex-end; gap: var(--space-2); }
+  /* The sticky bottom nav band is the governed `.action-footer` composite
+     (composites/action-footer.md) — surface + hairline + viewport-bottom pinning are all
+     owned there, so NO page-local band CSS is needed here. */
 
   .field-check { display: flex; align-items: flex-start; gap: var(--space-2); }
   .field-check__text { font-size: var(--text-sm); color: var(--color-content-primary); }
@@ -204,6 +212,77 @@
                     <input id="f-email" class="input" type="email" placeholder="billing@company.example" autocomplete="off">
                     <p class="field__error" role="alert" id="err-email" hidden>Enter a valid email address, e.g. dana@company.example</p>
                   </div>
+
+                  <!-- Extra fields (scroll-test filler — not wired to summary/validation). -->
+                  <div class="form-row">
+                    <div class="field">
+                      <label class="label" for="f-website">Website</label>
+                      <input id="f-website" class="input" type="url" placeholder="https://company.example" autocomplete="off">
+                    </div>
+                    <div class="field">
+                      <label class="label" for="f-phone">Phone</label>
+                      <input id="f-phone" class="input" type="tel" placeholder="+1 555 010 0000" autocomplete="off">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="field">
+                      <label class="label" for="f-industry">Industry</label>
+                      <select id="f-industry" class="select">
+                        <option>Software</option><option>Manufacturing</option><option>Retail</option><option>Finance</option>
+                      </select>
+                    </div>
+                    <div class="field">
+                      <label class="label" for="f-size">Company size</label>
+                      <select id="f-size" class="select">
+                        <option>1–10</option><option>11–50</option><option selected>51–200</option><option>201–1000</option><option>1000+</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label" for="f-street">Address line 1</label>
+                    <input id="f-street" class="input" type="text" placeholder="123 Market St" autocomplete="off">
+                  </div>
+                  <div class="field">
+                    <label class="label" for="f-street2">Address line 2</label>
+                    <input id="f-street2" class="input" type="text" placeholder="Suite, floor, unit (optional)" autocomplete="off">
+                  </div>
+                  <div class="form-row">
+                    <div class="field">
+                      <label class="label" for="f-city">City</label>
+                      <input id="f-city" class="input" type="text" placeholder="San Francisco" autocomplete="off">
+                    </div>
+                    <div class="field">
+                      <label class="label" for="f-state">State / Province</label>
+                      <input id="f-state" class="input" type="text" placeholder="CA" autocomplete="off">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="field">
+                      <label class="label" for="f-postal">Postal code</label>
+                      <input id="f-postal" class="input" type="text" placeholder="94103" autocomplete="off">
+                    </div>
+                    <div class="field">
+                      <label class="label" for="f-country">Country</label>
+                      <select id="f-country" class="select">
+                        <option>United States</option><option>United Kingdom</option><option>Germany</option><option>Singapore</option><option>Australia</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="field">
+                      <label class="label" for="f-taxid">Tax ID / VAT</label>
+                      <input id="f-taxid" class="input" type="text" placeholder="US-99-9999999" autocomplete="off">
+                    </div>
+                    <div class="field">
+                      <label class="label" for="f-reg">Registration number</label>
+                      <input id="f-reg" class="input" type="text" placeholder="Company registration no." autocomplete="off">
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label" for="f-desc">Company description</label>
+                    <textarea id="f-desc" class="textarea" placeholder="What does this company do?"></textarea>
+                    <p class="field__hint">Optional — internal context for the account team.</p>
+                  </div>
                 </div>
               </form>
             </div>
@@ -284,18 +363,9 @@
               </div>
             </div>
 
-            <!-- [REQUIRED] nav footer: Back ghost (hidden on step 1, visible from step 2) + Continue/Create primary.
-                 Sits BELOW the step card, never inside card__footer. A Review step precedes commit. -->
-            <div class="wizard-footer">
-              <button id="btn-back" class="btn btn--ghost" type="button" hidden>
-                <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-                Back
-              </button>
-              <button id="btn-next" class="btn btn--primary" type="button">
-                Continue
-                <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-              </button>
-            </div>
+            <!-- The nav footer (Back/Continue) is no longer here — it moved OUT of the
+                 column into the .action-footer composite pinned to the page bottom (below,
+                 after page-body). It is right-aligned there across the full page width. -->
           </div>
 
           <!-- [OPTIONAL] SUMMARY RAIL — REMOVABLE. Per principle #9 this slot is optional;
@@ -340,6 +410,23 @@
         </div>
 
       </div>
+
+      <!-- [REQUIRED] nav band: the governed .action-footer composite (composites/action-footer.md) —
+           Back ghost (hidden on step 1, visible from step 2) + Continue/Create primary. Sticky-pinned
+           to the viewport bottom, OUTSIDE page-body, right-aligned (never split). A Review step
+           precedes commit. Hidden by the done state (see btn-next handler). -->
+      <footer class="action-footer" id="wizard-nav">
+        <div class="action-footer__bar">
+          <button id="btn-back" class="btn btn--ghost" type="button" hidden>
+            <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+            Back
+          </button>
+          <button id="btn-next" class="btn btn--primary" type="button">
+            Continue
+            <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+        </div>
+      </footer>
     </main>
   </div>
 </div>
@@ -359,6 +446,7 @@
   var btnNext    = document.getElementById('btn-next');
   var stepper    = document.getElementById('stepper');
   var wizardCols = document.getElementById('wizard-cols');
+  var wizardNav  = document.getElementById('wizard-nav');
   var doneState  = document.getElementById('done-state');
 
   /* ── Step indicator ── */
@@ -487,7 +575,7 @@
       var label = data.name.trim() || 'Customer';
       document.getElementById('done-title').textContent = label + ' created';
       document.getElementById('done-text').textContent  = label + ' is set up and ready. You can start adding orders now.';
-      hide(stepper); hide(wizardCols); show(doneState);
+      hide(stepper); hide(wizardCols); hide(wizardNav); show(doneState);
       return;
     }
     step++; render();

@@ -2,16 +2,22 @@
   Pattern · Actions — copyable example
   ─────────────────────────────────────────────────────────────────────────────
   Companion to ./actions.md (the contract — when the two disagree, the .md wins).
-  A one-page GALLERY of the shared action vocabulary: one labelled card per
-  action, showing its carrier and — where the action opens a surface — that
-  surface rendered INLINE so all seven fit on one page. Copy the carrier markup
-  for the action you need into the relevant page/composite slot.
+  One SECTION per action. Each section shows the verb in a believable slot with a
+  LIVE carrier that opens its REAL surface the real way — an AlertDialog / Modal
+  portals over a full-screen scrim and centres; a dropdown-menu / Combobox anchors
+  to its trigger; all are closed until you act. This is usage, not a wiring diagram:
+  nothing is forced inline or shown pre-opened. Copy the carrier (and, where it
+  opens one, the surface) for the action you need into the relevant page slot.
 
   HOW THE STYLES LOAD
-    This file LINKS the reference CSS (relative to patterns/), so run `pnpm build` after source edits to refresh release — no forked copy that can drift.
+    This file LINKS the reference CSS (relative to patterns/), so run `pnpm build`
+    after source edits to refresh release — no forked copy that can drift.
     Order is load-bearing:  tokens → primitives → composites.
-    To ship as a self-contained artifact (CSP, no external fetch), inline those
-    three blocks into a <style> instead — see README "How each consumer uses it".
+    The reference layer paints each surface's resting OPEN state; the CONSUMER owns
+    visibility (see primitives.css). So the open/close toggles, the scrim's
+    hidden-by-default, and the popup anchoring below are page-local here — exactly
+    what a real host supplies. To ship as a self-contained artifact (CSP, no
+    external fetch), inline the three CSS blocks into a <style> — see README.
 
 -->
 <meta charset="utf-8">
@@ -24,21 +30,16 @@
 
 <style>
 
-  /* Page-local composition — NOT new design vocabulary, just how this gallery
-     stacks its demo cells. All values are tokens; restyle or drop freely. */
+  /* Page-local composition — NOT new design vocabulary. All values are tokens;
+     restyle or drop freely. */
 
-  /* Gallery grid — one card per action, following container width. */
-  .action-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
-    gap: var(--space-5);
-  }
+  /* One section per action. page-body already stacks these with space-6. */
+  .action-section { display: block; }
+  .action-section__head { margin-bottom: var(--space-3); }
+  .action-section__name { font-size: var(--text-md); font-weight: 600; color: var(--color-content-primary); }
+  .action-section__intent { font-size: var(--text-sm); color: var(--color-content-secondary); margin-top: var(--space-1); max-width: 72ch; line-height: 1.5; }
 
-  /* Per-action card head: the action name + its one-line intent. */
-  .action-card__name { font-size: var(--text-sm); font-weight: 600; color: var(--color-content-primary); }
-  .action-card__intent { font-size: var(--text-xs); color: var(--color-content-tertiary); margin-top: var(--space-1); }
-
-  /* The carrier sits on a faint stage so the control reads as the subject. */
+  /* Neutral stage that hosts the live carrier(s) in a believable slot. */
   .action-stage {
     display: flex;
     flex-wrap: wrap;
@@ -49,49 +50,39 @@
     border-radius: var(--radius-lg);
     background-color: var(--color-surface-1);
   }
-  /* Demo box that hosts an opened surface INLINE — real surfaces portal over a
-     full-screen overlay; here position:relative keeps the panel in flow so all
-     seven actions fit on one page. */
-  .action-stage--surface { position: relative; align-items: flex-start; }
+  .action-stage--between { justify-content: space-between; }
+  .action-stage--stack { flex-direction: column; align-items: flex-start; gap: var(--space-2); }
 
-  /* A short note under a carrier (e.g. "opens a confirm"). */
-  .action-note { font-size: var(--text-xs); color: var(--color-content-secondary); margin-top: var(--space-3); }
-  /* Inline note between carriers — no top gap, full width to break below siblings. */
-  .action-note--inline { width: 100%; margin-top: 0; }
+  .action-note { font-size: var(--text-xs); color: var(--color-content-secondary); margin-top: var(--space-3); max-width: 74ch; line-height: 1.5; }
 
-  /* Two states side by side (inline-edit: display vs edit). */
-  .action-states { display: grid; gap: var(--space-3); }
-  .action-state__label { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-content-tertiary); margin-bottom: var(--space-2); }
-  .action-edit-row { display: flex; align-items: center; gap: var(--space-2); }
-  .action-edit-row .field { flex: 1 1 auto; }
-
-  /* The display value an inline-edit / copy acts on. */
   .action-value { font-size: var(--text-sm); color: var(--color-content-primary); }
   .action-value--mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
-
-  /* Batch-action selection count (page-local label, not a component part). */
+  .action-field-label { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-content-tertiary); }
   .action-count { font-size: var(--text-sm); font-weight: 500; color: var(--color-content-primary); }
-
-  /* The inline alert-dialog/combobox panels override the primitives' fixed/
-     centered positioning so they render in flow inside the demo box. */
-  .action-inline-dialog { position: static; inset: auto; width: 100%; max-width: 100%; transform: none; }
-  .action-inline-combo { width: 100%; }
-
-  /* Variant stage for menus/modals that need a column-flow surface. */
-  .action-stage--col { flex-direction: column; align-items: flex-start; }
-
-  /* Inline dropdown-menu demo: override min-width so it fits card width. */
-  .action-inline-menu { position: static; inset: auto; width: 100%; max-width: 100%; transform: none; }
-
-  /* Inline modal demo: sits below its trigger with a gap. */
-  .action-inline-modal { position: static; inset: auto; max-width: 100%; transform: none; margin-top: var(--space-3); }
-
-  /* list-row quick-ops stage: space-between layout. */
-  .action-stage--row { justify-content: space-between; }
+  .action-or { font-size: var(--text-xs); color: var(--color-content-tertiary); }
   .action-btn-group { display: flex; gap: var(--space-2); }
+  .action-edit-row { display: flex; align-items: center; gap: var(--space-2); width: 100%; }
+  .action-edit-row .field { flex: 1 1 auto; }
 
-  /* Live-demo helpers — page-local, NOT design vocabulary. */
-  .is-hidden { display: none !important; }
+  /* ── Real surfaces. The release layer paints each surface's resting-open look;
+        below is the visibility the consumer owns. ── */
+
+  /* AlertDialog & Modal: portal over a full-screen scrim, centred. Forced-action
+     — dismiss ONLY via the footer buttons (no overlay-click, no Escape). */
+  .alert-dialog-overlay { display: none; }
+  .alert-dialog-overlay.is-open { display: block; }
+  .modal-overlay { display: none; }
+  .modal-overlay.is-open { display: flex; }
+
+  /* Combobox: popup anchors under its trigger; collapsed until aria-expanded. */
+  .combobox-wrapper { position: relative; width: 100%; max-width: 320px; }
+  .combobox-wrapper .combobox__content { position: absolute; top: calc(100% + var(--space-1)); left: 0; right: 0; z-index: 20; }
+  .combobox__trigger[aria-expanded="false"] + .combobox__content { display: none; }
+
+  /* Dropdown menu: anchors beneath its ⋯ trigger (see the portal note below). */
+  .action-menu-wrapper { position: relative; display: inline-block; }
+  .action-menu-wrapper .dropdown-menu { position: absolute; top: calc(100% + var(--space-1)); right: 0; z-index: 20; min-width: 200px; }
+
   @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 <body>
@@ -107,395 +98,401 @@
             <div class="page-header__heading">
               <h1 class="page-header__title">Action patterns</h1>
             </div>
-            <p class="page-header__description">The shared verb vocabulary — one card per action, showing its carrier and any surface it opens. See actions.md for the rules.</p>
+            <p class="page-header__description">The shared verb vocabulary — one section per action, each in a believable slot with a live carrier that opens its real surface. See actions.md for the rules.</p>
           </div>
         </div>
       </header>
 
       <!-- page-body (gutters + space-6 stack) -->
       <div class="page-body">
-        <div class="action-grid">
 
-          <!-- ░░ confirm-danger — neutral trash icon → an AlertDialog (the safety gate) ░░ -->
-          <section class="card">
-            <div class="card__header">
-              <div class="action-card__name">confirm-danger</div>
-              <p class="action-card__intent">Destructive confirm — delete / remove / revoke. Carrier opens a forced-action dialog.</p>
+        <!-- ░░ confirm-danger — a danger carrier → a real AlertDialog (safety gate) ░░ -->
+        <section class="action-section">
+          <div class="action-section__head">
+            <div class="action-section__name">confirm-danger</div>
+            <p class="action-section__intent">Destructive confirm — delete / remove / revoke. The trigger carries <code>danger</code> tone (a <code>ghost-danger</code> icon <em>or</em> a <code>danger</code> text button) and opens an <strong>AlertDialog</strong> whose Confirm is <code>danger</code> too. Click either carrier to open the real dialog; it dismisses only via Cancel or Confirm.</p>
+          </div>
+          <div class="action-stage">
+            <span class="action-value">Acme Robotics</span>
+            <button class="btn btn--ghost-danger btn--icon" type="button" aria-label="Delete Acme Robotics" title="Delete" data-dialog="dlg-delete">
+              <svg data-lucide="trash-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            </button>
+            <span class="action-or">or</span>
+            <button class="btn btn--danger" type="button" data-dialog="dlg-delete">Delete</button>
+          </div>
+        </section>
+
+        <!-- ░░ secondary-action — a neutral tool action; ONE place only ░░ -->
+        <section class="action-section">
+          <div class="action-section__head">
+            <div class="action-section__name">secondary-action</div>
+            <p class="action-section__intent">A secondary tool action — Export, Import, Download, Refresh: a <code>secondary</code> button + a leading icon. It is <strong>not</strong> the page's primary CTA (that's reserved for Create / Save) and it does <strong>not</strong> confirm — it's read-only / reversible, so it just runs (spinner → done). It lands in <strong>exactly one</strong> place: the list summary bar <em>or</em> the page header — never both.</p>
+          </div>
+          <div class="summary-bar">
+            <div class="summary-bar__count"><span class="action-count">128 customers</span></div>
+            <div class="summary-bar__actions">
+              <button class="btn btn--secondary" type="button" data-async="Export">
+                <svg data-lucide="download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>
+                Export
+              </button>
             </div>
-            <div class="card__content">
-              <div class="action-stage action-stage--surface">
-                <!-- carrier A: ghost-danger icon button (list rows / KV rows) -->
-                <button class="btn btn--ghost-danger btn--icon" type="button" aria-label="Delete customer">
-                  <svg data-lucide="trash-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                </button>
-                <!-- carrier B: danger text button — same dialog, parallel variant -->
-                <button class="btn btn--danger" type="button">Delete</button>
-                <p class="action-note action-note--inline">or a danger text button — same dialog</p>
-                <!-- the surface it opens, rendered INLINE (real one portals over .alert-dialog-overlay); closed until a carrier opens it -->
-                <div class="alert-dialog action-inline-dialog is-hidden" role="alertdialog" aria-modal="true">
-                  <div class="alert-dialog__header">
-                    <h2 class="alert-dialog__title">Delete Acme Robotics?</h2>
-                    <p class="alert-dialog__description">This permanently removes the customer and its order history. This action cannot be undone.</p>
+          </div>
+        </section>
+
+        <!-- ░░ batch-action — selection count + bulk button group in the summary bar ░░ -->
+        <section class="action-section">
+          <div class="action-section__head">
+            <div class="action-section__name">batch-action</div>
+            <p class="action-section__intent">Acts on a multi-selection. It lives in the <strong>summary bar</strong> and appears <strong>only after rows are selected</strong> — a selection count + a bulk button group that <strong>replaces</strong> the bar's idle actions (not a floating toolbar, not per-row buttons). Neutral verbs (Assign) run directly; destructive verbs (Delete) route through <strong>confirm-danger</strong>.</p>
+          </div>
+          <div class="summary-bar">
+            <div class="summary-bar__count"><span class="action-count">3 selected</span></div>
+            <div class="summary-bar__actions">
+              <button class="btn btn--secondary btn--sm" type="button" data-async="Assign">
+                <svg data-lucide="user-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
+                Assign
+              </button>
+              <button class="btn btn--ghost-danger btn--sm" type="button" data-dialog="dlg-batch-delete">
+                <svg data-lucide="trash-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                Delete
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ░░ transition — status flip; destructive direction uses danger + a confirm ░░ -->
+        <section class="action-section">
+          <div class="action-section__head">
+            <div class="action-section__name">transition</div>
+            <p class="action-section__intent">Changes a record's <strong>status / lifecycle state</strong> — activate/suspend, approve/reject, publish/unpublish. Same record, but <strong>the direction decides the tone</strong>: destructive or service-interrupting directions (Suspend, Reject) use <code>danger</code> + a confirm; safe directions (Activate, Approve) stay neutral and run directly.</p>
+          </div>
+          <div class="action-stage">
+            <span class="action-value">Status: <strong>Active</strong></span>
+            <button class="btn btn--danger" type="button" data-dialog="dlg-suspend">
+              <svg data-lucide="circle-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="10" x2="10" y1="15" y2="9"/><line x1="14" x2="14" y1="15" y2="9"/></svg>
+              Suspend
+            </button>
+            <button class="btn btn--secondary" type="button" data-async="Activate">
+              <svg data-lucide="circle-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z"/><circle cx="12" cy="12" r="10"/></svg>
+              Activate
+            </button>
+          </div>
+          <p class="action-note">Suspend opens a confirm-danger AlertDialog; Activate runs directly — neutral tone, no confirm. Several target statuses → collapse them into a <code>dropdown-menu</code> of status items rather than a row of buttons.</p>
+        </section>
+
+        <!-- ░░ picker — relate / assign; trigger → a real, anchored Combobox ░░ -->
+        <section class="action-section">
+          <div class="action-section__head">
+            <div class="action-section__name">picker</div>
+            <p class="action-section__intent">Relate / assign. A trigger opens a <strong>Combobox</strong> (inline) or a Modal list. Click to open; type to filter; pick to commit and close. No confirm; neutral tone.</p>
+          </div>
+          <div class="action-stage">
+            <div class="combobox-wrapper" data-combobox>
+              <div class="combobox__trigger" role="combobox" aria-expanded="false" aria-haspopup="listbox" tabindex="0">
+                <span class="combobox__value combobox__value--placeholder">Assign owner…</span>
+                <svg data-lucide="chevron-down" class="combobox__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+              <div class="combobox__content" role="listbox">
+                <div class="combobox__search">
+                  <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+                  <input class="combobox__input" type="text" placeholder="Search owners…" aria-label="Search owners">
+                </div>
+                <div class="combobox__list">
+                  <div class="combobox__item" role="option" aria-selected="false" data-value="Dana Okafor">
+                    Dana Okafor
+                    <span class="combobox__item-indicator" aria-hidden="true">
+                      <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                    </span>
                   </div>
-                  <div class="alert-dialog__footer">
-                    <button class="btn btn--secondary" type="button">Cancel</button>
-                    <button class="btn btn--danger" type="button">Delete customer</button>
+                  <div class="combobox__item" role="option" aria-selected="false" data-value="Casey Mboya">
+                    Casey Mboya
+                    <span class="combobox__item-indicator" aria-hidden="true">
+                      <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                    </span>
+                  </div>
+                  <div class="combobox__item" role="option" aria-selected="false" data-value="Priya Raman">
+                    Priya Raman
+                    <span class="combobox__item-indicator" aria-hidden="true">
+                      <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                    </span>
+                  </div>
+                  <div class="combobox__item" role="option" aria-selected="false" data-value="Sam Whitfield">
+                    Sam Whitfield
+                    <span class="combobox__item-indicator" aria-hidden="true">
+                      <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
-          </section>
+          </div>
+          <p class="action-note">Large sets open a <code>Modal</code> list instead of the inline Combobox.</p>
+        </section>
 
-          <!-- ░░ secondary-action — a neutral tool action; ONE place only ░░ -->
-          <section class="card">
-            <div class="card__header">
-              <div class="action-card__name">secondary-action</div>
-              <p class="action-card__intent">A secondary tool action (e.g. Export). Lands in the list summary OR the page header — never both.</p>
+        <!-- ░░ copy — copy an id/key to the clipboard; ghost icon-sm + a copy glyph ░░ -->
+        <section class="action-section">
+          <div class="action-section__head">
+            <div class="action-section__name">copy</div>
+            <p class="action-section__intent">Copy an id / key to the clipboard — a <code>ghost</code> icon-sm + a copy glyph, landing in KV rows, detail meta, or section rows. It writes to the clipboard for real and flashes a check.</p>
+          </div>
+          <div class="action-stage action-stage--stack">
+            <span class="action-field-label">Account ID</span>
+            <div class="action-edit-row">
+              <span class="action-value action-value--mono">C-10293-7F2A</span>
+              <button class="btn btn--ghost btn--sm btn--icon" type="button" aria-label="Copy account ID" title="Copy" data-copy="C-10293-7F2A">
+                <svg data-lucide="copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              </button>
             </div>
-            <div class="card__content">
-              <div class="action-stage">
-                <button class="btn btn--secondary" type="button">
-                  <svg data-lucide="download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>
-                  Export
+          </div>
+        </section>
+
+        <!-- ░░ kebab (⋯) menu — trigger → a real dropdown-menu (items, never buttons) ░░ -->
+        <section class="action-section">
+          <div class="action-section__head">
+            <div class="action-section__name">kebab (⋯) menu</div>
+            <p class="action-section__intent">One carrier per row — collapse a row's verbs to a <code>⋯</code> overflow past 2 frequent verbs. Click to open the real menu; it closes on select, outside-click, or Escape. Menu rows are <code>.dropdown-menu__item</code> (destructive → <code>--destructive</code>), never <code>.btn</code>.</p>
+          </div>
+          <div class="action-stage action-stage--between">
+            <span class="action-value">Globex Inc.</span>
+            <div class="action-menu-wrapper">
+              <button class="btn btn--ghost btn--icon" type="button" aria-label="Row actions" aria-haspopup="menu" aria-expanded="false">
+                <svg data-lucide="ellipsis-vertical" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+              </button>
+              <div class="dropdown-menu" role="menu" hidden>
+                <button class="dropdown-menu__item" type="button" role="menuitem">
+                  <svg data-lucide="square-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
+                  Edit
                 </button>
-              </div>
-            </div>
-          </section>
-
-          <!-- ░░ batch-action — selection count + bulk button group in the summary bar ░░ -->
-          <section class="card">
-            <div class="card__header">
-              <div class="action-card__name">batch-action</div>
-              <p class="action-card__intent">Appears after multi-select; replaces the summary bar's idle actions. Destructive verbs route through confirm-danger.</p>
-            </div>
-            <div class="card__content">
-              <div class="summary-bar">
-                <div class="summary-bar__count"><span class="action-count">3 selected</span></div>
-                <div class="summary-bar__actions">
-                  <button class="btn btn--secondary btn--sm" type="button">
-                    <svg data-lucide="user-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
-                    Assign
-                  </button>
-                  <button class="btn btn--ghost-danger btn--sm" type="button">
-                    <svg data-lucide="trash-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- ░░ transition — status flip; destructive direction uses danger + a confirm ░░ -->
-          <section class="card">
-            <div class="card__header">
-              <div class="action-card__name">transition</div>
-              <p class="action-card__intent">Status flip / approve–reject. Destructive directions use danger and a confirm; safe ones stay neutral.</p>
-            </div>
-            <div class="card__content">
-              <div class="action-stage">
-                <!-- destructive direction: danger button + confirm -->
-                <button class="btn btn--danger" type="button">
-                  <svg data-lucide="circle-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="10" x2="10" y1="15" y2="9"/><line x1="14" x2="14" y1="15" y2="9"/></svg>
-                  Suspend
-                </button>
-                <!-- safe/neutral direction: secondary button, no confirm -->
-                <button class="btn btn--secondary" type="button">
-                  <svg data-lucide="circle-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z"/><circle cx="12" cy="12" r="10"/></svg>
-                  Activate
-                </button>
-              </div>
-              <p class="action-note">Destructive directions (Suspend) open a confirm-danger AlertDialog. Safe directions (Activate) run directly — neutral tone, no confirm. Multiple statuses → use a <code>dropdown-menu</code> of status items instead.</p>
-            </div>
-          </section>
-
-          <!-- ░░ picker — relate / assign; trigger → an inline Combobox ░░ -->
-          <section class="card">
-            <div class="card__header">
-              <div class="action-card__name">picker</div>
-              <p class="action-card__intent">Relate / assign. Trigger opens a Combobox (inline) or a Modal list.</p>
-            </div>
-            <div class="card__content">
-              <div class="action-stage action-stage--surface">
-                <!-- carrier: the closed trigger (shown above its opened popup for the demo) -->
-                <button class="combobox__trigger action-inline-combo" type="button" aria-haspopup="listbox" aria-expanded="false">
-                  <span class="combobox__value combobox__value--placeholder">Assign owner…</span>
-                  <svg data-lucide="chevron-down" class="combobox__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                </button>
-                <!-- the popup it opens, rendered INLINE (real one portals beneath the trigger); closed until the trigger opens it -->
-                <div class="combobox__content action-inline-combo is-hidden">
-                  <div class="combobox__search">
-                    <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
-                    <input class="combobox__input" type="text" placeholder="Search owners…" aria-label="Search owners">
-                  </div>
-                  <div class="combobox__list" role="listbox">
-                    <div class="combobox__item combobox__item--selected" role="option" aria-selected="true">
-                      Dana Okafor
-                      <span class="combobox__item-indicator">
-                        <svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-                      </span>
-                    </div>
-                    <div class="combobox__item combobox__item--highlighted" role="option" aria-selected="false">Casey Mboya</div>
-                    <div class="combobox__item" role="option" aria-selected="false">Priya Raman</div>
-                    <div class="combobox__item" role="option" aria-selected="false">Sam Whitfield</div>
-                  </div>
-                </div>
-              </div>
-              <p class="action-note">Large sets open a <code>Modal</code> list instead of the inline Combobox.</p>
-            </div>
-          </section>
-
-          <!-- ░░ inline-edit — a KV value toggles to a Field+Input; BOTH states shown ░░ -->
-          <section class="card">
-            <div class="card__header">
-              <div class="action-card__name">inline-edit</div>
-              <p class="action-card__intent">Edit one value in place — a display value toggles to a Field + Input with inline Save / Cancel.</p>
-            </div>
-            <div class="card__content">
-              <div class="action-states">
-                <!-- display state: value + an edit pencil (icon-only → aria-label) -->
-                <div>
-                  <div class="action-state__label">Display</div>
-                  <div class="action-edit-row">
-                    <span class="action-value">Dana Okafor</span>
-                    <button class="btn btn--ghost btn--icon" type="button" aria-label="Edit primary contact">
-                      <svg data-lucide="square-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
-                    </button>
-                  </div>
-                </div>
-                <!-- edit state: Field+Input + inline Save (primary sm) / Cancel (ghost sm) -->
-                <div>
-                  <div class="action-state__label">Editing</div>
-                  <div class="action-edit-row">
-                    <div class="field">
-                      <input class="input input--sm" type="text" value="Dana Okafor" aria-label="Primary contact">
-                    </div>
-                    <button class="btn btn--primary btn--sm" type="button">Save</button>
-                    <button class="btn btn--ghost btn--sm" type="button">Cancel</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- ░░ copy — copy an id/key to the clipboard; ghost icon-sm + a copy glyph ░░ -->
-          <section class="card">
-            <div class="card__header">
-              <div class="action-card__name">copy</div>
-              <p class="action-card__intent">Copy an id / key to the clipboard. Lands in KV rows, detail meta, section rows.</p>
-            </div>
-            <div class="card__content">
-              <div class="action-stage">
-                <span class="action-value action-value--mono">C-10293-7F2A</span>
-                <button class="btn btn--ghost btn--sm btn--icon" type="button" aria-label="Copy account ID">
+                <button class="dropdown-menu__item" type="button" role="menuitem">
                   <svg data-lucide="copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                  Duplicate
+                </button>
+                <button class="dropdown-menu__item dropdown-menu__item--destructive" type="button" role="menuitem" data-dialog="dlg-delete">
+                  <svg data-lucide="trash-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  Delete
                 </button>
               </div>
             </div>
-          </section>
+          </div>
+          <p class="action-note">Here the menu anchors under its trigger. In production it <strong>portals</strong> to the body: a kebab lives in a table row, inside <code>.table-scroll</code>, and an inline floating menu anchored inside a <code>.table-scroll</code> / <code>.scroll-area</code> / <code>overflow:auto</code> ancestor is clipped flat at the box's edge (<strong>principle 17</strong>). Lift it out of the overflow ancestor, or use a <code>fixed</code> surface.</p>
+        </section>
 
-          <!-- ░░ kebab menu — ⋯ trigger → dropdown-menu (core rule: items, never buttons) ░░ -->
-          <section class="card">
-            <div class="card__header">
-              <div class="action-card__name">kebab (⋯) menu</div>
-              <p class="action-card__intent">One carrier per row — collapse to a kebab past 2 frequent verbs. Menu rows are <code>.dropdown-menu__item</code>, never <code>.btn</code>.</p>
-            </div>
-            <div class="card__content">
-              <div class="action-stage action-stage--surface action-stage--col">
-                <!-- trigger: ghost icon + ellipsis-vertical -->
-                <button class="btn btn--ghost btn--icon" type="button" aria-label="Row actions" aria-haspopup="menu" aria-expanded="false">
-                  <svg data-lucide="ellipsis-vertical" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
-                </button>
-                <!-- the menu it opens, rendered INLINE (real one portals beneath trigger); closed until the trigger opens it -->
-                <div class="dropdown-menu action-inline-menu is-hidden" role="menu">
-                  <div class="dropdown-menu__item" role="menuitem">
-                    <svg data-lucide="square-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
-                    Edit
-                  </div>
-                  <div class="dropdown-menu__item" role="menuitem">
-                    <svg data-lucide="copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-                    Duplicate
-                  </div>
-                  <div class="dropdown-menu__item dropdown-menu__item--destructive" role="menuitem">
-                    <svg data-lucide="trash-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                    Delete
-                  </div>
-                </div>
-              </div>
-              <p class="action-note">The gallery flows this menu inline; in production it <strong>portals</strong> to the body and positions beneath the trigger. That matters because a kebab lives in a table row — inside <code>.table-scroll</code>. Portaling escapes that overflow; an <em>inline</em> floating menu anchored inside a <code>.table-scroll</code> / <code>.scroll-area</code> / <code>overflow:auto</code> card is clipped flat at the box's edge (<strong>principle 17</strong>). Lift it out of the overflow ancestor, or use a <code>fixed</code> surface.</p>
-            </div>
-          </section>
+        <!-- ░░ confirm-with-input — hardened Modal (captures a reason) ░░ -->
+        <section class="action-section">
+          <div class="action-section__head">
+            <div class="action-section__name">confirm with input</div>
+            <p class="action-section__intent">When a confirm must capture context (a reject reason, a suspend note), an AlertDialog can't hold a field — so use a <strong>hardened <code>Modal</code></strong> (<code>closeOnOverlay</code> + <code>closeOnEscape</code> off, no × close) that keeps the forced choice.</p>
+          </div>
+          <div class="action-stage action-stage--between">
+            <span class="action-value">Application #4821</span>
+            <button class="btn btn--danger" type="button" data-modal="modal-reject">Reject…</button>
+          </div>
+          <p class="action-note">The modal dismisses only via Cancel or Reject — overlay-click and Escape are disabled, keeping the forced choice.</p>
+        </section>
 
-          <!-- ░░ confirm-with-input — hardened Modal (reject reason / suspend note) ░░ -->
-          <section class="card">
-            <div class="card__header">
-              <div class="action-card__name">confirm with input</div>
-              <p class="action-card__intent">Action must capture context (reject reason, suspend note) — use a hardened <code>Modal</code> (<code>closeOnOverlay</code> + <code>closeOnEscape</code> off), not an AlertDialog.</p>
-            </div>
-            <div class="card__content">
-              <div class="action-stage action-stage--surface action-stage--col">
-                <!-- trigger: danger button -->
-                <button class="btn btn--danger" type="button">Reject</button>
-                <!-- the hardened modal it opens, rendered INLINE (real one portals over .modal-overlay); closed until the trigger opens it -->
-                <div class="modal action-inline-modal is-hidden" role="dialog" aria-modal="true">
-                  <div class="modal__header">
-                    <div class="modal__heading">
-                      <h2 class="modal__title">Reject application?</h2>
-                      <p class="modal__description">Provide a reason — the applicant will see this note.</p>
-                    </div>
-                  </div>
-                  <div class="modal__body">
-                    <div class="field">
-                      <label class="label" for="reject-reason">Rejection reason</label>
-                      <textarea class="input input--sm" id="reject-reason" rows="3" placeholder="Explain why the application is being rejected…"></textarea>
-                    </div>
-                  </div>
-                  <div class="modal__footer">
-                    <button class="btn btn--secondary" type="button">Cancel</button>
-                    <button class="btn btn--danger" type="button">Reject application</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
+        <!-- ░░ list-row quick-ops — always-visible icon verbs on a row ░░ -->
+        <section class="action-section">
+          <div class="action-section__head">
+            <div class="action-section__name">list-row quick-ops</div>
+            <p class="action-section__intent">Single-row verbs when a requirement calls for them — always-visible <strong>icon</strong> buttons (the list-page override): a <code>ghost</code> icon-sm for the action, <code>ghost-danger</code> icon-sm for a Delete that opens the confirm-danger dialog — not text buttons, not hover-reveal icons.</p>
+          </div>
+          <div class="action-stage action-stage--between">
+            <span class="action-value">Acme Robotics</span>
+            <span class="action-btn-group">
+              <button class="btn btn--ghost btn--icon-sm" type="button" aria-label="Edit Acme Robotics" title="Edit">
+                <svg data-lucide="square-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
+              </button>
+              <button class="btn btn--ghost-danger btn--icon-sm" type="button" aria-label="Delete Acme Robotics" title="Delete" data-dialog="dlg-delete">
+                <svg data-lucide="trash-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              </button>
+            </span>
+          </div>
+          <p class="action-note">Delete opens the confirm-danger AlertDialog — the same surface as its full-size trigger. An abstract verb with no conventional glyph (Manage, Rotate key) routes into the <code>⋯</code> overflow instead.</p>
+        </section>
 
-          <!-- ░░ list-row quick-ops — always-visible xs buttons on a row ░░ -->
-          <section class="card">
-            <div class="card__header">
-              <div class="action-card__name">list-row quick-ops</div>
-              <p class="action-card__intent">Single-row verbs when a requirement calls for them — always-visible <code>xs</code> buttons (<code>secondary</code> for the action, <code>danger</code> for Delete), not hover-reveal icons.</p>
-            </div>
-            <div class="card__content">
-              <div class="action-stage action-stage--row">
-                <span class="action-value">Acme Robotics</span>
-                <span class="action-btn-group">
-                  <button class="btn btn--secondary btn--xs" type="button">Edit</button>
-                  <button class="btn btn--danger btn--xs" type="button">Delete</button>
-                </span>
-              </div>
-              <p class="action-note">These open the same surfaces as their full-size counterparts (inline-edit or confirm-danger AlertDialog).</p>
-            </div>
-          </section>
-
-        </div>
       </div>
 
     </main>
   </div>
 </div>
+
+<!-- ══ Real surfaces, portaled to end-of-body (over a full-screen scrim) ══ -->
+
+<!-- confirm-danger · single delete (shared by confirm-danger, kebab, list-row) -->
+<div class="alert-dialog-overlay" id="dlg-delete" role="presentation">
+  <div class="alert-dialog" role="alertdialog" aria-modal="true" aria-labelledby="dlg-delete-t" aria-describedby="dlg-delete-d">
+    <div class="alert-dialog__header">
+      <h2 class="alert-dialog__title" id="dlg-delete-t">Delete Acme Robotics?</h2>
+      <p class="alert-dialog__description" id="dlg-delete-d">This permanently removes the customer and its order history. This action cannot be undone.</p>
+    </div>
+    <div class="alert-dialog__footer">
+      <button class="btn btn--ghost" type="button" data-dialog-close>Cancel</button>
+      <button class="btn btn--danger" type="button" data-dialog-close>Delete customer</button>
+    </div>
+  </div>
+</div>
+
+<!-- batch-action · bulk delete -->
+<div class="alert-dialog-overlay" id="dlg-batch-delete" role="presentation">
+  <div class="alert-dialog" role="alertdialog" aria-modal="true" aria-labelledby="dlg-batch-t" aria-describedby="dlg-batch-d">
+    <div class="alert-dialog__header">
+      <h2 class="alert-dialog__title" id="dlg-batch-t">Delete 3 customers?</h2>
+      <p class="alert-dialog__description" id="dlg-batch-d">This permanently removes the 3 selected customers and their order history. This action cannot be undone.</p>
+    </div>
+    <div class="alert-dialog__footer">
+      <button class="btn btn--ghost" type="button" data-dialog-close>Cancel</button>
+      <button class="btn btn--danger" type="button" data-dialog-close>Delete 3 customers</button>
+    </div>
+  </div>
+</div>
+
+<!-- transition · suspend confirm -->
+<div class="alert-dialog-overlay" id="dlg-suspend" role="presentation">
+  <div class="alert-dialog" role="alertdialog" aria-modal="true" aria-labelledby="dlg-suspend-t" aria-describedby="dlg-suspend-d">
+    <div class="alert-dialog__header">
+      <h2 class="alert-dialog__title" id="dlg-suspend-t">Suspend Acme Robotics?</h2>
+      <p class="alert-dialog__description" id="dlg-suspend-d">Suspending pauses all active services for this customer until you reactivate them. You can reverse this at any time.</p>
+    </div>
+    <div class="alert-dialog__footer">
+      <button class="btn btn--ghost" type="button" data-dialog-close>Cancel</button>
+      <button class="btn btn--danger" type="button" data-dialog-close>Suspend</button>
+    </div>
+  </div>
+</div>
+
+<!-- confirm-with-input · hardened Modal (reject reason) -->
+<div class="modal-overlay" id="modal-reject">
+  <div class="modal modal--md" role="dialog" aria-modal="true" aria-labelledby="modal-reject-t" aria-describedby="modal-reject-d">
+    <div class="modal__header">
+      <div class="modal__heading">
+        <h2 class="modal__title" id="modal-reject-t">Reject application?</h2>
+        <p class="modal__description" id="modal-reject-d">Provide a reason — the applicant will see this note.</p>
+      </div>
+    </div>
+    <div class="modal__body">
+      <div class="field">
+        <label class="label" for="reject-reason">Rejection reason</label>
+        <textarea class="input" id="reject-reason" rows="3" placeholder="Explain why the application is being rejected…"></textarea>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <button class="btn btn--ghost" type="button" data-modal-close>Cancel</button>
+      <button class="btn btn--danger" type="button" data-modal-close>Reject application</button>
+    </div>
+  </div>
+</div>
+
 <script>
-  // Make every action carrier live while keeping the gallery's "show every state
-  // at once" property: opened surfaces stay visible by default; triggers toggle
-  // them, selections/edits commit, copy hits the clipboard.
+  // Every carrier is LIVE and opens its REAL surface — the way a host would drive
+  // it. Generic controllers keyed off data-attributes; nothing is pre-opened.
   (function () {
     var CHECK = '<svg data-lucide="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
     var SPIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;animation:spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>';
-    var SURF = '.alert-dialog, .combobox__content, .dropdown-menu, .modal';
 
-    // Carrier ↔ inline surface: trigger toggles, the surface's own controls dismiss.
-    document.querySelectorAll('.card').forEach(function (card) {
-      var surface = card.querySelector(SURF);
-      if (!surface) return;
-      var triggers = Array.prototype.filter.call(
-        card.querySelectorAll('.action-stage button, .action-stage .combobox__trigger'),
-        function (b) { return !surface.contains(b); }
-      );
-      function setOpen(open) {
-        surface.classList.toggle('is-hidden', !open);
-        triggers.forEach(function (t) { t.setAttribute('aria-expanded', String(open)); });
-      }
-      triggers.forEach(function (t) {
-        t.addEventListener('click', function () { setOpen(surface.classList.contains('is-hidden')); });
+    // ── AlertDialog & hardened Modal: open on trigger; close ONLY via footer
+    //    buttons. Forced-action — no overlay-click, no Escape (that's the point).
+    document.querySelectorAll('[data-dialog]').forEach(function (t) {
+      t.addEventListener('click', function () {
+        var o = document.getElementById(t.getAttribute('data-dialog'));
+        if (o) o.classList.add('is-open');
       });
-      surface.querySelectorAll('.alert-dialog__footer button, .modal__footer button, .dropdown-menu__item')
-        .forEach(function (d) { d.addEventListener('click', function () { setOpen(false); }); });
+    });
+    document.querySelectorAll('[data-modal]').forEach(function (t) {
+      t.addEventListener('click', function () {
+        var o = document.getElementById(t.getAttribute('data-modal'));
+        if (o) o.classList.add('is-open');
+      });
+    });
+    document.querySelectorAll('[data-dialog-close]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var o = b.closest('.alert-dialog-overlay');
+        if (o) o.classList.remove('is-open');
+      });
+    });
+    document.querySelectorAll('[data-modal-close]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var o = b.closest('.modal-overlay');
+        if (o) o.classList.remove('is-open');
+      });
     });
 
-    // picker: select an owner; filter the list from the search box.
-    (function () {
-      var combo = document.querySelector('.combobox__content');
-      if (!combo) return;
-      var trigger = document.querySelector('.combobox__trigger');
-      var triggerVal = trigger && trigger.querySelector('.combobox__value');
-      combo.querySelectorAll('.combobox__item').forEach(function (item) {
+    // ── Combobox: toggle open, filter, select-and-close; outside-click / Escape close.
+    document.querySelectorAll('[data-combobox]').forEach(function (wrap) {
+      var trigger = wrap.querySelector('.combobox__trigger');
+      var valueEl = wrap.querySelector('.combobox__value');
+      var input = wrap.querySelector('.combobox__input');
+      var items = wrap.querySelectorAll('.combobox__item');
+      function isOpen() { return trigger.getAttribute('aria-expanded') === 'true'; }
+      function filter(q) {
+        q = (q || '').toLowerCase();
+        items.forEach(function (i) {
+          i.style.display = i.getAttribute('data-value').toLowerCase().indexOf(q) === -1 ? 'none' : '';
+        });
+      }
+      function open(v) {
+        trigger.setAttribute('aria-expanded', String(v));
+        if (v && input) { input.value = ''; filter(''); input.focus(); }
+      }
+      trigger.addEventListener('click', function () { open(!isOpen()); });
+      trigger.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(!isOpen()); }
+      });
+      if (input) input.addEventListener('input', function () { filter(input.value.trim()); });
+      items.forEach(function (item) {
         item.addEventListener('click', function () {
-          combo.querySelectorAll('.combobox__item').forEach(function (i) {
-            i.classList.remove('combobox__item--selected', 'combobox__item--highlighted');
-            i.setAttribute('aria-selected', 'false');
-            var ind = i.querySelector('.combobox__item-indicator');
-            if (ind) ind.remove();
-          });
+          items.forEach(function (i) { i.classList.remove('combobox__item--selected'); i.setAttribute('aria-selected', 'false'); });
           item.classList.add('combobox__item--selected');
           item.setAttribute('aria-selected', 'true');
-          var ind = document.createElement('span');
-          ind.className = 'combobox__item-indicator';
-          ind.innerHTML = CHECK;
-          item.appendChild(ind);
-          if (triggerVal) {
-            triggerVal.textContent = item.textContent.trim();
-            triggerVal.classList.remove('combobox__value--placeholder');
+          if (valueEl) {
+            valueEl.textContent = item.getAttribute('data-value');
+            valueEl.classList.remove('combobox__value--placeholder');
           }
-          // production combobox: picking a value commits and closes the popup.
-          combo.classList.add('is-hidden');
-          if (trigger) trigger.setAttribute('aria-expanded', 'false');
+          open(false);
         });
       });
-      var search = combo.querySelector('.combobox__input');
-      if (search) search.addEventListener('input', function () {
-        var q = search.value.trim().toLowerCase();
-        combo.querySelectorAll('.combobox__item').forEach(function (i) {
-          i.style.display = i.textContent.trim().toLowerCase().indexOf(q) === -1 ? 'none' : '';
-        });
-      });
-    })();
+      document.addEventListener('click', function (e) { if (!wrap.contains(e.target)) open(false); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') open(false); });
+    });
 
-    // copy: real clipboard write + a transient check glyph.
-    document.querySelectorAll('.btn[aria-label^="Copy"]').forEach(function (btn) {
-      var mono = btn.parentElement.querySelector('.action-value--mono');
+    // ── Dropdown (⋯) menu: toggle; close on select / outside-click / Escape.
+    document.querySelectorAll('.action-menu-wrapper').forEach(function (wrap) {
+      var trigger = wrap.querySelector('[aria-haspopup="menu"]');
+      var menu = wrap.querySelector('.dropdown-menu');
+      function open(v) { menu.hidden = !v; trigger.setAttribute('aria-expanded', String(v)); }
+      trigger.addEventListener('click', function () { open(menu.hidden); });
+      menu.querySelectorAll('.dropdown-menu__item').forEach(function (i) {
+        i.addEventListener('click', function () { open(false); });
+      });
+      document.addEventListener('click', function (e) { if (!wrap.contains(e.target)) open(false); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') open(false); });
+    });
+
+    // ── Copy: real clipboard write + a transient check glyph.
+    document.querySelectorAll('[data-copy]').forEach(function (btn) {
       var original = btn.innerHTML, label = btn.getAttribute('aria-label');
       btn.addEventListener('click', function () {
-        var text = mono ? mono.textContent.trim() : '';
-        if (navigator.clipboard) navigator.clipboard.writeText(text).catch(function () {});
+        if (navigator.clipboard) navigator.clipboard.writeText(btn.getAttribute('data-copy')).catch(function () {});
         btn.innerHTML = CHECK;
         btn.setAttribute('aria-label', 'Copied');
         setTimeout(function () { btn.innerHTML = original; btn.setAttribute('aria-label', label); }, 1200);
       });
     });
 
-    // inline-edit: pencil loads the value into the field; Save commits it; Cancel restores.
-    (function () {
-      var stage = document.querySelector('.action-states');
-      if (!stage) return;
-      var card = stage.closest('.card');
-      var value = card.querySelector('.action-value');
-      var input = card.querySelector('.action-edit-row .input');
-      var byText = function (t) {
-        return Array.prototype.find.call(card.querySelectorAll('button'), function (b) {
-          return b.textContent.trim() === t;
-        });
-      };
-      var pencil = card.querySelector('.btn--icon[aria-label^="Edit"]');
-      var save = byText('Save'), cancel = byText('Cancel');
-      if (pencil) pencil.addEventListener('click', function () { input.value = value.textContent.trim(); input.focus(); input.select(); });
-      if (save) save.addEventListener('click', function () { if (input.value.trim()) value.textContent = input.value.trim(); });
-      if (cancel) cancel.addEventListener('click', function () { input.value = value.textContent.trim(); });
-    })();
-
-    // safe direct verbs run a brief async round-trip (spinner → done → idle).
-    ['Export', 'Assign', 'Activate'].forEach(function (verb) {
-      Array.prototype.forEach.call(document.querySelectorAll('.btn'), function (btn) {
-        if (btn.textContent.trim() !== verb) return;
-        btn.addEventListener('click', function () {
-          if (btn.disabled) return;
-          var original = btn.innerHTML;
-          btn.disabled = true;
-          btn.innerHTML = SPIN + verb;
-          setTimeout(function () {
-            btn.innerHTML = CHECK + verb;
-            setTimeout(function () { btn.innerHTML = original; btn.disabled = false; }, 900);
-          }, 900);
-        });
+    // ── Safe direct verbs (no confirm): brief async round-trip (spinner → done → idle).
+    document.querySelectorAll('[data-async]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        if (btn.disabled) return;
+        var original = btn.innerHTML, verb = btn.getAttribute('data-async');
+        btn.disabled = true;
+        btn.innerHTML = SPIN + ' ' + verb;
+        setTimeout(function () {
+          btn.innerHTML = CHECK + ' ' + verb;
+          setTimeout(function () { btn.innerHTML = original; btn.disabled = false; }, 900);
+        }, 900);
       });
-    })();
+    });
   })();
 </script>
 </body>
+</content>
+</invoke>

@@ -1,0 +1,141 @@
+<!--
+  action-footer.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the action-footer composite in the foundation design system.
+
+  When to use (AI decision guide)
+  ──────────────────────────────────────────────────────────────────────
+  action-footer is the BOTTOM counterpart to the header bands: a full-bleed
+  action band pinned to the bottom of the scroll root, carrying a right-aligned
+  commit cluster. It rides the page's commit verb while the sticky header keeps
+  the exit (back button).
+    · create-form  → ghost Cancel + primary Create/Save
+    · create-wizard → ghost Back + primary Continue / commit verb
+  A modal does NOT use it — a dialog commits in the Modal primitive's own
+  .modal__footer chrome.
+
+  Covers:
+    - Short page: the band sits at the VIEWPORT bottom (margin-block-start: auto)
+    - Long page: the band stays pinned while the body scrolls (position: sticky)
+    - Both arrangements: ghost Cancel + primary · ghost Back + primary Continue
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Action footer · foundation composite</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="../primitives/primitives.css">
+  <link rel="stylesheet" href="../release/composites.css">
+  <style>
+    body {
+      margin: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+      color: var(--color-content-primary);
+    }
+    .demo-page {
+      padding: var(--space-6) var(--space-8);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
+    }
+    .demo-section { display: flex; flex-direction: column; gap: var(--space-4); }
+    .demo-section__title { font-size: var(--text-lg); font-weight: 600; margin: 0; }
+    .demo-section__note { font-size: var(--text-sm); color: var(--color-content-secondary); margin: 0; }
+
+    /* A bounded stand-in for the app shell's scroll root: fixed height so
+       .app-frame__main (flex: 1, overflow-y: auto) has something to fill, and the
+       footer's bottom-pinning is demonstrable. In a real page the app frame owns this. */
+    .demo-frame {
+      height: 22rem;
+      display: flex;
+      border: 1px solid var(--color-line-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background-color: var(--color-surface-1);
+    }
+    .demo-body-title { font-size: var(--text-md); font-weight: 600; margin: 0 0 var(--space-2); }
+    .demo-body-text { font-size: var(--text-sm); color: var(--color-content-secondary); line-height: 1.6; margin: 0; }
+    .demo-filler { height: 30rem; display: flex; align-items: flex-end; }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ── Short page: pinned to the viewport bottom ── -->
+    <section class="demo-section">
+      <h2 class="demo-section__title">Action footer · short page (pinned to the bottom)</h2>
+      <p class="demo-section__note">
+        The body is shorter than the frame, yet the band sits at the bottom —
+        <code>margin-block-start: auto</code> in the flex-column scroll root pushes it there.
+        Arrangement: <code>create-form</code> (ghost Cancel + primary).
+      </p>
+      <div class="demo-frame">
+        <main class="app-frame__main">
+          <div class="page-body">
+            <div class="card">
+              <div class="card__content">
+                <p class="demo-body-title">Customer details</p>
+                <p class="demo-body-text">A short form — only a couple of fields. Even with room to spare, the commit band stays anchored to the bottom edge.</p>
+              </div>
+            </div>
+          </div>
+          <footer class="action-footer">
+            <div class="action-footer__bar">
+              <button class="btn btn--ghost" type="button">
+                <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                Cancel
+              </button>
+              <button class="btn btn--primary" type="button">Create customer</button>
+            </div>
+          </footer>
+        </main>
+      </div>
+    </section>
+
+    <!-- ── Long page: sticky while the body scrolls ── -->
+    <section class="demo-section">
+      <h2 class="demo-section__title">Action footer · long page (sticky while scrolling)</h2>
+      <p class="demo-section__note">
+        Scroll the frame: the body overflows, so <code>position: sticky; bottom: 0</code> keeps
+        the band pinned at the bottom while the content passes beneath it.
+        Arrangement: <code>create-wizard</code> (ghost Back + primary Continue).
+      </p>
+      <div class="demo-frame">
+        <main class="app-frame__main">
+          <div class="page-body">
+            <div class="card">
+              <div class="card__content">
+                <p class="demo-body-title">Step 1 · Details</p>
+                <p class="demo-body-text">A tall step whose fields run past the fold.</p>
+                <div class="demo-filler">
+                  <p class="demo-body-text">End of the step content — the band is still pinned below.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <footer class="action-footer">
+            <div class="action-footer__bar">
+              <button class="btn btn--ghost" type="button">
+                <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+                Back
+              </button>
+              <button class="btn btn--primary" type="button">
+                Continue
+                <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+            </div>
+          </footer>
+        </main>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>

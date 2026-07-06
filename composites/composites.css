@@ -1681,6 +1681,43 @@
   box-shadow: none;
 }
 
+/* ═══════════════════════════════ Action footer ═══════════════════════════════ */
+/* @component action-footer */
+/* The bottom counterpart to the header bands (page-header / detail-header): a
+   full-bleed action band pinned to the bottom of the scroll root, carrying a
+   right-aligned commit cluster. create-form rides its ghost Cancel + primary here,
+   create-wizard its ghost Back + primary Continue — the exit stays in the sticky
+   header, the commit lives in the footer. Mirrors the header band's surface + top
+   hairline, and (like the header) breaks out of page-body's gutters edge-to-edge.
+
+   Pinning model — the band stays at the VIEWPORT bottom whether the page is short or
+   long, and touches nothing when absent:
+   • `:has(.action-footer)` turns the scroll root into a flex column ONLY when a footer
+     is present, so footer-less pages (list / detail / dashboard …) are untouched;
+   • `margin-block-start: auto` pushes the band to the bottom when the content is
+     shorter than the viewport;
+   • `position: sticky; bottom: 0` keeps it pinned while a long page scrolls beneath.
+   Host requirement: the scroll root is `.app-frame__main` (bounded height + own
+   overflow), the same root the sticky header docks to. */
+.app-frame__main:has(.action-footer) { display: flex; flex-direction: column; }
+.action-footer {
+  margin-block-start: auto;   /* short page → sit at the viewport bottom */
+  position: sticky;
+  bottom: 0;
+  z-index: 10;                /* band z-layer — matches .detail-header--sticky */
+  background-color: var(--color-surface-2);
+  border-top: 1px solid var(--color-line-subtle);
+}
+.action-footer__bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;  /* commit rightmost; subordinate controls (ghost Cancel /
+                                 Back) to its left — never split to the far edges */
+  gap: var(--space-2);
+  padding-inline: var(--space-6);
+  padding-block: var(--space-4);
+}
+
 /* ═══════════════════════════ Key-value grid ═══════════════════════════ */
 /* @component kv-grid */
 /* The detail-page Overview: a <dl> of label → value pairs laid out LEFT-RIGHT —

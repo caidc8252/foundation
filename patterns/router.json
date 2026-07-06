@@ -53,15 +53,15 @@
       "builderPattern": "actions",
       "contract": "patterns/actions.md",
       "example": "patterns/actions.html",
-      "intent": "A reference or sandbox page for page actions: confirm delete, export, bulk action, status transition, relation picker, inline edit, copy id.",
+      "intent": "A reference or sandbox page for page actions: confirm delete, export, bulk action, status transition, relation picker, copy id.",
       "chooseWhen": [
         "The user asks to demonstrate action behavior rather than a full business screen.",
-        "The request is about delete confirmation, export, bulk operations, status change, copy, inline edit, or relation assignment."
+        "The request is about delete confirmation, export, bulk operations, status change, copy, or relation assignment."
       ],
       "avoidWhen": [
         "The user asks for a full list, detail, create, edit, or wizard page."
       ],
-      "keywords": ["action", "actions", "delete", "confirm", "bulk", "export", "copy", "status change", "inline edit", "操作", "删除确认", "批量", "导出"],
+      "keywords": ["action", "actions", "delete", "confirm", "bulk", "export", "copy", "status change", "操作", "删除确认", "批量", "导出"],
       "exampleRequests": ["Show action patterns", "做一个删除确认示例", "展示批量操作"],
       "defaultTitle": "Actions",
       "outputNameHints": ["actions", "action-patterns"],
@@ -88,7 +88,7 @@
       "exampleRequests": ["请帮我做一个注册界面", "Create a user registration page", "做一个新增客户表单", "Build an edit profile form"],
       "defaultTitle": "Create record",
       "outputNameHints": ["register", "signup", "create", "new-record", "edit"],
-      "composites": ["detail-header", "page-body"],
+      "composites": ["detail-header", "page-body", "action-footer"],
       "clarifyIf": [
         "The request mentions registration but also says onboarding, review, approval, or multiple stages."
       ]
@@ -112,7 +112,7 @@
       "exampleRequests": ["做一个企业入驻向导", "Create a multi-step onboarding flow", "做一个带复核步骤的新增流程"],
       "defaultTitle": "Create record",
       "outputNameHints": ["wizard", "onboarding", "setup"],
-      "composites": ["detail-header", "page-body", "step-indicator"],
+      "composites": ["detail-header", "page-body", "step-indicator", "action-footer"],
       "clarifyIf": [
         "The request says onboarding but only lists a few fields and no stages."
       ]

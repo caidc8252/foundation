@@ -186,6 +186,8 @@
     "accordion__item--open",
     "accordion__label",
     "accordion__trigger",
+    "action-footer",
+    "action-footer__bar",
     "alert",
     "alert--error",
     "alert--info",
@@ -1708,6 +1710,19 @@
     }
   ],
   "composites": [
+    {
+      "layer": "composite",
+      "name": "action-footer",
+      "title": "Composite · Action footer",
+      "summary": "A full-bleed action band pinned to the bottom of the scroll root, carrying a right-aligned commit cluster — the bottom counterpart to the header bands (page-header / detail-header).",
+      "contract": "composites/action-footer.md",
+      "example": "composites/action-footer.html",
+      "classes": [
+        ".action-footer",
+        ".action-footer__bar",
+        ".app-frame__main"
+      ]
+    },
     {
       "layer": "composite",
       "name": "app-frame",

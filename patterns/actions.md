@@ -17,7 +17,7 @@ blueprint's `action` kind.
 
 ## The vocabulary
 
-Seven actions cover the portal verbs. Pick by intent; the row then dictates the carrier,
+Six actions cover the portal verbs. Pick by intent; the row then dictates the carrier,
 where it lands, and whether it confirms — those are not per-screen choices.
 
 | action | intent | carrier (variant + surface) | lands in (pattern slots) | confirm / tone |
@@ -27,8 +27,13 @@ where it lands, and whether it confirms — those are not per-screen choices.
 | **batch-action** | act on a multi-select | a selection-count label + a bulk **button group** in the `summary-bar` (e.g. secondary Assign, ghost-danger Delete) | list summary (replaces the idle actions on select) | destructive verbs route through **confirm-danger**; otherwise neutral |
 | **transition** | status flip / approve–reject | a status **button** or a `dropdown-menu` of statuses; destructive directions use `danger` + a confirm (or a reject-reason dialog) | detail head · section rows | confirm on destructive / service-interrupting directions; neutral on safe ones |
 | **picker** | relate / assign | a trigger button → a `Combobox` (inline) *or* a `Modal` list | section header · detail head | none; neutral tone |
-| **inline-edit** | edit one value in place | a KV/display value toggles to a `Field` + `Input` with inline **Save** (`primary` `sm`) / **Cancel** (`ghost` `sm`) | KV grid rows | none; neutral tone — destructive edits escalate to a confirm |
 | **copy** | copy an id / key to the clipboard | a `ghost` icon-sm + a copy icon (clipboard glyph) | KV rows · detail meta · section rows | none; neutral tone |
+
+> **Editing a record's fields is not an action here — and never edits in place.**
+> Changing existing values (one field or many) **launches** the `create-form`
+> pattern — a `Modal` for few fields, an edit sub-page for many — never a
+> toggle-to-input on the value itself. The detail page stays read-only; see
+> [`detail-page.md`](./detail-page.md) ("Editing is launched, never in-place").
 
 ## Rules
 
@@ -39,13 +44,15 @@ where it lands, and whether it confirms — those are not per-screen choices.
   **Cancel is leftmost**: `secondary`/`ghost` Cancel → … → `primary`/`danger` Confirm.
   **Cancel tone follows the surface:** a `page-header` actions slot uses a `secondary`
   Cancel; a dialog / confirm surface or a card footer (`Modal` · `AlertDialog` · `Sheet` ·
-  `card__footer`) uses a `ghost` Cancel. **At most one primary per group.** Source order
+  `card__footer`) — and a `create-form` / `create-wizard` **sticky bottom action footer** —
+  uses a `ghost` Cancel (a `ghost` Back in the wizard). **At most one primary per group.** Source order
   *is* visual order in the row — author the markup in this order; never reorder with CSS.
   This is why a `create-wizard` nav is `ghost Back + primary Continue` and an
-  `AlertDialog` is `ghost Cancel + danger Confirm`. (A `create-wizard` header carries
-  no in-group Cancel — its exit is the leftmost `detail-header` back button, outside the
-  actions cluster; a single-step `create-form` header carries a `ghost Cancel + primary`
-  in its actions cluster.) (A trailing destructive
+  `AlertDialog` is `ghost Cancel + danger Confirm`. (Both the `create-form` and the
+  `create-wizard` carry their commit cluster in a **sticky bottom action footer**, not the
+  header — `create-form` a `ghost Cancel + primary`, `create-wizard` a `ghost Back + primary
+  Continue`. The header keeps only the leftmost `detail-header` back button, which exits
+  without committing and sits outside the actions cluster.) (A trailing destructive
   icon — a `ghost-danger` Delete/Terminate after the primary — is the one exception, and
   even then prefer routing it through the `⋯` overflow per **One carrier per row**.)
 - **Danger tone marks destructive verbs.** `danger` / `ghost-danger` skins are for

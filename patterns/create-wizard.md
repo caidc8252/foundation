@@ -6,8 +6,9 @@ structure, not implementation.
 
 > 📐 **Copyable example** · [`create-wizard.html`](./create-wizard.html) — the full
 > wizard (sticky detail-header with a back button that exits the flow → step-indicator →
-> current-step form-section cards beside an optional sticky summary rail → Back/Continue
-> footer → done state as a commented swap), ready to copy and modify. It **links** the
+> current-step form-section cards beside an optional sticky summary rail → a sticky bottom
+> Back/Continue nav band pinned to the page footer → done state as a commented swap), ready
+> to copy and modify. It **links** the
 > reference CSS so it never forks; inline the blocks to ship it as an artifact. All
 > examples: [`index.html`](./index.html).
 
@@ -24,8 +25,8 @@ structure, not implementation.
 │ │        [ input ]                   │ │  Plan      Enterprise  │     right rail
 │ │ … one Card per concern …          │ │  Email     —           │     (dl, em-dash
 │ └───────────────────────────────────┘ │  …                     │      for empty)
-├ nav ──────────────────────────────────┴────────────────────────┤
-│     [ ◂ Back ] [ Continue ▸ / Create ]                         │  ← right-aligned
+├ nav band (sticky bottom) ─────────────┴────────────────────────┤
+│                          [ ◂ Back ] [ Continue ▸ / Create ]   │  ← right-aligned, pinned to page bottom
 └─────────────────────────────────────────────────────────────────┘
 
   done ┌ centered success card ───────────┐
@@ -48,7 +49,7 @@ summary rail and the done state are **optional**, included per business need.
 | **header** | **yes** | always — the sticky [`detail-header`](../composites/detail-header.md) in reduced form: a **back button** (chevron-left) + the page title, nothing else. The back **exits the whole flow** without committing (it replaces the old ghost Cancel). **No primary** lives here; the commit verb is in **nav**. |
 | **steps** | **yes** | always — the `step-indicator` rail (done · here · left). Stretches **full-width** inside `page-body`. |
 | **body** | **yes** | always (repeatable) — the current step's **form-section** card(s) (one `Card` per concern) of `Field`s. Full-width; a card may cap its own internal width but the layout column is not capped. |
-| **nav** | **yes** | always — the footer: right-aligned **ghost Back** (hidden on step 1) **+ primary Continue**; the last step's primary is the contextual commit verb. |
+| **nav** | **yes** | always — the [`action-footer`](../composites/action-footer.md) composite: a **sticky bottom nav band** pinned to the viewport bottom (a sibling of `page-body`, not inside it) with right-aligned **ghost Back** (hidden on step 1) **+ primary Continue**; the last step's primary is the contextual commit verb. Hidden by the done state. |
 | **summary rail** | no | a recap of entered values earns its place — a sticky right rail (`dl`). All-or-nothing across steps when present (see Rules). |
 | **done** | no | the flow ends on a confirmation screen rather than redirecting — a centered success card + a primary CTA. |
 
@@ -69,14 +70,23 @@ summary rail and the done state are **optional**, included per business need.
   returns to a prior step with its fields intact. It is **hidden on step 1** (not
   merely disabled — the slot is empty and the Continue button stays right-aligned
   alone), and visible from step 2 onward.
-  - **Footer is right-aligned, not split.** Back + Continue ride the **same right
-    edge** (`justify-content: flex-end`; Back is a ghost just left of Continue) —
-    **never push Back to the far left** with `margin-inline-start/right: auto` or
-    `justify-content: space-between`. Copy the example's `.wizard-footer`; don't
-    hand-roll a left-Back / right-Next split.
+  - **Footer is the `action-footer` composite, right-aligned, not split.** The nav is the
+    governed [`action-footer`](../composites/action-footer.md) band (sticky, `surface-2` +
+    hairline top, pinned to the viewport bottom), living **outside** `page-body` as a sibling
+    in the scroll root. Inside its `.action-footer__bar`, Back + Continue ride the **same
+    right edge** (Back is a ghost just left of Continue) — **never push Back to the far left**
+    with an auto margin or `justify-content: space-between`. The composite owns the band +
+    pinning; don't hand-roll a left-Back / right-Next split.
 - **The summary rail is all-or-nothing across steps** — show it on every step or
   none; it never blinks in and out. It's a `dl` of entered values; an unfilled value
   renders an **em-dash** (`—`), never a blank or a guess.
+- **The summary rail's sticky `top` must clear the sticky header.** The rail is
+  `position: sticky` in the **same** scroll root as the sticky `detail-header`, so offset
+  its `top` by the header height + the `page-body` top gutter — `top: calc(var(--wizard-header-h)
+  + var(--space-6))`, where `--wizard-header-h` is **measured per page** = the rendered
+  `detail-header` height (same convention as `list-page`'s `--lp-header-h`). A bare
+  `top: var(--space-6)` makes the rail slide up **under** the header band when a long step
+  scrolls.
 - **A step that collects a list of sub-entities (line items — contracts, members,
   addresses, …) has exactly ONE "Add" affordance at a time.** Shape of such a step:
   an `empty-state` → the collected items as an **editable / removable list or
@@ -101,9 +111,16 @@ summary rail and the done state are **optional**, included per business need.
   not this pattern.
 - **All structural children of `page-body` are full-width.** The `page-body`
   composite provides gutters and vertical stack spacing; its direct children
-  (step indicator, body columns, nav row) fill the full available width. Never
+  (step indicator, body columns) fill the full available width. Never
   add a centering wrapper (e.g. `max-width` + `margin-inline: auto`) to a
   layout-structural slot — that is the shell's job, not the pattern's.
+- **The nav band pins to the viewport bottom, not just below the content.** This is the
+  [`action-footer`](../composites/action-footer.md) composite's job — it makes the scroll
+  root a flex column via `:has(.action-footer)` and rides `margin-block-start: auto` +
+  `position: sticky; bottom: 0`, so the band sits at the **viewport** bottom on a short step
+  and stays pinned while a long step scrolls. The pattern only places the
+  `<footer class="action-footer">` as a **sibling of `page-body`** in `.app-frame__main` —
+  no page-local layout CSS.
 
 ## Building blocks
 
@@ -117,8 +134,8 @@ rail; this pattern fixes which appear and how they sequence:
 | content region (gutters + stack) | [`page-body`](../composites/page-body.md) |
 | steps rail | [`step-indicator`](../composites/step-indicator.md) — wrap the bare `ol` in `.step-indicator-card` for the card look (padding inline `24px` / block `20px`) |
 | current-step body | [`field`](../primitives/field.md) units inside per-concern [`card`](../primitives/card.md) form-sections |
-| nav (Back / Continue / Create) | [`button`](../primitives/button.md) — ghost Back, primary Continue/verb |
-| summary rail (optional) | page-local `dl` (composition only, built from tokens — not a foundation component) inside a [`card`](../primitives/card.md). **KV labels in the summary rail must be UPPERCASE** (`text-transform: uppercase`, overline tracking, `content-tertiary`). Match the [`kv-grid`](../composites/kv-grid.md) label recipe exactly — never title-case. |
+| nav band (sticky bottom: Back / Continue / Create) | [`action-footer`](../composites/action-footer.md) — the governed sticky bottom band (`surface-2`, hairline top, viewport-bottom pinning) wrapping [`button`](../primitives/button.md)s — ghost Back, primary Continue/verb |
+| summary rail (optional) | page-local `dl` (composition only, built from tokens — not a foundation component) inside a [`card`](../primitives/card.md). Its sticky `top` clears the header (see Rules). **KV labels in the summary rail must be UPPERCASE** (`text-transform: uppercase`, overline tracking, `content-tertiary`). Match the [`kv-grid`](../composites/kv-grid.md) label recipe exactly — never title-case. |
 | done state | a centered [`card`](../primitives/card.md) + a primary [`button`](../primitives/button.md) |
 
 Those composites lean on primitives (`Button`, `Input`, `Field`, `Card`, `Checkbox`,

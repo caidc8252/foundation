@@ -4,9 +4,10 @@
   Companion to ./create-form.md (the contract — when the two disagree, the .md wins).
   Copy this file and edit the markup to build a real single-step create/edit form:
   a sticky detail-header (the "with back" header kind) — back button (exit without
-  committing) + title + the single primary Create/Save on the right — over a centered
-  card of Field units (no bottom footer). Long forms group their fields into labelled
-  section cards by concern (one Card per concern).
+  committing) + title — over a centered card of Field units, with a sticky bottom
+  action footer carrying the ghost Cancel + primary Create/Save (right-aligned).
+  Long forms group their fields into labelled section cards by concern (one Card per
+  concern).
   Need ≥3 steps or branching? Reach for the multi-step wizard instead — that is
   its own pattern now: ./create-wizard.md (./create-wizard.html).
 
@@ -40,7 +41,9 @@
 
   .form-title { font-size: var(--text-md); font-weight: 600; color: var(--color-content-primary); }
 
-  /* (no form-footer — the primary lives in the sticky detail-header; exit is the back button) */
+  /* The sticky bottom commit band is the governed `.action-footer` composite
+     (composites/action-footer.md) — surface + hairline + viewport-bottom pinning are all
+     owned there, so NO page-local footer CSS is needed here. */
 
   .field-check { display: flex; align-items: flex-start; gap: var(--space-2); }
   .field-check__text { font-size: var(--text-sm); color: var(--color-content-primary); }
@@ -56,12 +59,13 @@
     <main class="app-frame__main">
       <!--
         REQUIRED CORE (do not drop): the sticky detail-header (the "with back" header
-        kind — back button + title + a ghost Cancel and the primary Create/Save) AND at
-        least one form-section card of fields below. Everything marked OPTIONAL is
-        removable per the page's job — copying this example does NOT mean keeping every slot.
-        See create-form.md "Slots" + governance principle #9 (patterns are frameworks).
-        The header reuses the detail-header composite in its reduced form (back + title +
-        one action, NO logo / meta / chips / tabs). See composites/detail-header.md.
+        kind — back button + title), at least one form-section card of fields below, AND
+        the sticky bottom action footer (ghost Cancel + primary Create/Save). Everything
+        marked OPTIONAL is removable per the page's job — copying this example does NOT
+        mean keeping every slot. See create-form.md "Slots" + governance principle #9
+        (patterns are frameworks). The header reuses the detail-header composite in its
+        reduced form (back + title, NO actions / logo / meta / chips / tabs — the commit
+        verb now lives in the footer). See composites/detail-header.md.
       -->
       <header class="detail-header detail-header--sticky">
         <div class="detail-header__bar">
@@ -77,17 +81,9 @@
             </div>
           </div>
 
-          <div class="detail-header__actions">
-            <!-- REQUIRED: ghost Cancel + primary Create/Save. Cancel is leftmost, the primary
-                 commit rightmost (actions.md order). The verb follows the variant: "Create
-                 customer" (create) / "Save changes" (edit). The back button (leftmost of the
-                 bar) is the other exit; Cancel discards the draft and returns too. -->
-            <button class="btn btn--ghost" type="button">
-              <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-              Cancel
-            </button>
-            <button class="btn btn--primary" type="submit" form="create-form">Create customer</button>
-          </div>
+          <!-- No actions cluster in the header anymore — the ghost Cancel + primary
+               Create/Save moved to the .action-footer composite (sticky bottom, below the
+               body). The header keeps only back + title (reduced form). -->
         </div>
       </header>
 
@@ -176,15 +172,87 @@
 
         </form>
 
-        <!-- OPTIONAL: additional form-section cards beyond the first — add one per extra
-             concern only when the form is long enough to split. Removable.
+        <!-- Additional form-section card (the optional per-concern slot) — kept real here
+             so the page is tall enough to scroll-test the sticky footer. Fields use the
+             .form-grid utility for two-up rows. -->
         <section class="card form-page">
-          <div class="card__header"><span class="form-title">Billing</span></div>
-          <div class="card__content form-stack"> … Field units … </div>
+          <div class="card__header"><span class="form-title">Billing &amp; address</span></div>
+          <div class="card__content form-stack">
+            <div class="form-grid form-grid--2">
+              <div class="field">
+                <label class="label" for="f-website">Website</label>
+                <input id="f-website" class="input" type="url" placeholder="https://acme-robotics.example">
+              </div>
+              <div class="field">
+                <label class="label" for="f-phone">Phone</label>
+                <input id="f-phone" class="input" type="tel" placeholder="+1 555 010 0000">
+              </div>
+            </div>
+            <div class="field">
+              <label class="label" for="f-street">Address line 1</label>
+              <input id="f-street" class="input" type="text" placeholder="123 Market St">
+            </div>
+            <div class="field">
+              <label class="label" for="f-street2">Address line 2</label>
+              <input id="f-street2" class="input" type="text" placeholder="Suite, floor, unit (optional)">
+            </div>
+            <div class="form-grid form-grid--2">
+              <div class="field">
+                <label class="label" for="f-city">City</label>
+                <input id="f-city" class="input" type="text" placeholder="San Francisco">
+              </div>
+              <div class="field">
+                <label class="label" for="f-state">State / Province</label>
+                <input id="f-state" class="input" type="text" placeholder="CA">
+              </div>
+            </div>
+            <div class="form-grid form-grid--2">
+              <div class="field">
+                <label class="label" for="f-postal">Postal code</label>
+                <input id="f-postal" class="input" type="text" placeholder="94103">
+              </div>
+              <div class="field">
+                <label class="label" for="f-country">Country</label>
+                <select id="f-country" class="select">
+                  <option>United States</option><option>United Kingdom</option><option>Germany</option><option>Singapore</option><option>Australia</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-grid form-grid--2">
+              <div class="field">
+                <label class="label" for="f-taxid">Tax ID / VAT</label>
+                <input id="f-taxid" class="input" type="text" placeholder="US-99-9999999">
+              </div>
+              <div class="field">
+                <label class="label" for="f-po">PO number</label>
+                <input id="f-po" class="input" type="text" placeholder="Purchase-order reference">
+              </div>
+            </div>
+            <div class="field">
+              <label class="label" for="f-billing-notes">Billing notes</label>
+              <textarea id="f-billing-notes" class="textarea" placeholder="Invoicing instructions, cost-centre, etc."></textarea>
+              <p class="field__hint">Optional — appears on the invoice footer.</p>
+            </div>
+          </div>
         </section>
-        -->
 
       </div>
+
+      <!-- REQUIRED: the governed .action-footer composite (composites/action-footer.md) —
+           a sticky bottom band pinned to the viewport bottom, sibling of page-body. Ghost
+           Cancel (leftmost) + primary Create/Save (rightmost), right-aligned (actions.md
+           order). The primary uses form="create-form" so it submits the form though it sits
+           outside it. The verb follows the variant: "Create customer" / "Save changes". The
+           header back is the other exit; Cancel discards the draft and returns too. -->
+      <footer class="action-footer">
+        <div class="action-footer__bar">
+          <button class="btn btn--ghost" type="button">
+            <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            Cancel
+          </button>
+          <button class="btn btn--primary" type="submit" form="create-form">Create customer</button>
+        </div>
+      </footer>
     </main>
   </div>
 </div>
