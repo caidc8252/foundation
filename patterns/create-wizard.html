@@ -50,9 +50,11 @@
   /* The bare step-indicator is wrapped in the governed .step-indicator-card
      (per step-indicator.md) — no page-local card recipe needed. */
 
-  /* Body row: the step's form-section cards beside the summary rail, split 7:3. */
-  .wizard-cols { display: flex; align-items: flex-start; gap: var(--space-6); }
-  .wizard-main { flex: 7 1 0; min-width: 0; display: flex; flex-direction: column; gap: var(--space-6); }
+  /* Body row: the step's form-section cards beside the summary rail, split 7:3.
+     Grid (like detail-page's .overview-cols) so the main:rail ratio is a single
+     editable grid-template-columns; align-items:start keeps the rail its own height. */
+  .wizard-cols { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 3fr); gap: var(--space-6); align-items: start; }
+  .wizard-main { min-width: 0; display: flex; flex-direction: column; gap: var(--space-6); }
 
   /* Summary rail — sticky card, 3/10 of the row (ref: 3:7 split). Its sticky `top` must
      CLEAR the sticky detail-header, otherwise it slides up under the header band when a
@@ -61,13 +63,13 @@
      per page = the rendered .detail-header height (same convention as list-page's
      --lp-header-h / settings' --settings-header-h). */
   :root { --wizard-header-h: 81px; }
-  .summary-rail { flex: 3 1 0; min-width: 0; position: sticky; top: calc(var(--wizard-header-h) + var(--space-6)); }
+  .summary-rail { min-width: 0; position: sticky; top: calc(var(--wizard-header-h) + var(--space-6)); }
 
   /* Narrow: rail drops below the form and the columns stack full-width
-     (align-items:stretch overrides the flex-start used in the row layout). */
+     (single-column grid track collapses the row into one column). */
   @media (max-width: 48rem) {
-    .wizard-cols { flex-direction: column; align-items: stretch; }
-    .summary-rail { position: static; flex: 1 1 auto; width: 100%; }
+    .wizard-cols { grid-template-columns: minmax(0, 1fr); }
+    .summary-rail { position: static; width: 100%; }
   }
   .summary-rail__title { font-size: var(--text-sm); font-weight: 600; letter-spacing: -0.01em; color: var(--color-content-primary); }
   /* dl is a flex column; each row is its own flex div so dt width is per-row. */
