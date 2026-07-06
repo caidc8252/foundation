@@ -2,14 +2,12 @@
   calendar.html
   ──────────────────────────────────────────────────────────────────────
   Demonstrates the Calendar primitive in the foundation design system.
-  Covers:
-    - Static calendar grid with month navigation (prev/next)
-    - Today highlighted (outlined+bold)
-    - Selected day (primary fill)
-    - Range selection (start, middle, end)
-    - Outside month days
-    - Disabled days
-    - Footer with Clear / Today links
+  Each bare .calendar is wrapped in a .popover for card chrome. Covers:
+    - Single select — today (subtle fill), selected (primary fill), outside, disabled
+    - Dropdown caption — month/year <select>s (.calendar__dropdown)
+    - Range selection — two months side by side (start / middle / end)
+    - Presets — calendar over a card footer of quick-set buttons
+    - Date and time — calendar over start/end time inputs
   ──────────────────────────────────────────────────────────────────────
 -->
 <!DOCTYPE html>
@@ -120,11 +118,11 @@
       <div class="calendar" id="cal-single">
         <div class="calendar__header">
           <button class="calendar__nav-btn" type="button" id="cal-single-prev" aria-label="Previous month">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m15 18-6-6 6-6"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="m15 18-6-6 6-6"/></svg>
           </button>
           <div class="calendar__caption" id="cal-single-caption">June 2026</div>
           <button class="calendar__nav-btn" type="button" id="cal-single-next" aria-label="Next month">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m9 18 6-6-6-6"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="m9 18 6-6-6-6"/></svg>
           </button>
         </div>
         <div class="calendar__grid" id="cal-single-grid">
@@ -142,7 +140,8 @@
       <h2 class="demo-section__title">Calendar · dropdown caption</h2>
       <p class="demo-section__desc">
         The <code>dropdown</code> caption layout: the month/year label becomes two
-        <code>.select .select--sm</code> dropdowns, so you can jump straight to any
+        borderless <code>.calendar__dropdown</code> triggers (each a
+        <code>&lt;select&gt;</code> + chevron), so you can jump straight to any
         month or year instead of stepping one month at a time. Prev / next still
         step a month and keep both dropdowns in sync.
       </p>
@@ -151,7 +150,7 @@
       <div class="calendar" id="cal-dropdown">
         <div class="calendar__header">
           <button class="calendar__nav-btn" type="button" id="cal-dd-prev" aria-label="Previous month">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m15 18-6-6 6-6"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="m15 18-6-6 6-6"/></svg>
           </button>
           <div class="calendar__dropdowns">
             <span class="calendar__dropdown">
@@ -164,7 +163,7 @@
             </span>
           </div>
           <button class="calendar__nav-btn" type="button" id="cal-dd-next" aria-label="Next month">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m9 18 6-6-6-6"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="m9 18 6-6-6-6"/></svg>
           </button>
         </div>
         <div class="calendar__grid" id="cal-dd-grid">
@@ -193,7 +192,7 @@
         <div class="calendar" id="cal-range-left">
           <div class="calendar__header">
             <button class="calendar__nav-btn" type="button" id="cal-range-prev" aria-label="Previous month">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m15 18-6-6 6-6"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="m15 18-6-6 6-6"/></svg>
             </button>
             <div class="calendar__caption" id="cal-range-caption-left">June 2026</div>
             <span style="width:var(--space-8)"></span>
@@ -206,7 +205,7 @@
             <span style="width:var(--space-8)"></span>
             <div class="calendar__caption" id="cal-range-caption-right">July 2026</div>
             <button class="calendar__nav-btn" type="button" id="cal-range-next" aria-label="Next month">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m9 18 6-6-6-6"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="m9 18 6-6-6-6"/></svg>
             </button>
           </div>
           <div class="calendar__grid" id="cal-range-grid-right"><!-- Rendered by JS --></div>
@@ -230,11 +229,11 @@
         <div class="calendar" id="cal-preset">
           <div class="calendar__header">
             <button class="calendar__nav-btn" type="button" id="cal-preset-prev" aria-label="Previous month">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m15 18-6-6 6-6"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="m15 18-6-6 6-6"/></svg>
             </button>
             <div class="calendar__caption" id="cal-preset-caption">July 2026</div>
             <button class="calendar__nav-btn" type="button" id="cal-preset-next" aria-label="Next month">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m9 18 6-6-6-6"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="m9 18 6-6-6-6"/></svg>
             </button>
           </div>
           <div class="calendar__grid" id="cal-preset-grid"><!-- Rendered by JS --></div>
@@ -264,11 +263,11 @@
         <div class="calendar" id="cal-dt">
           <div class="calendar__header">
             <button class="calendar__nav-btn" type="button" id="cal-dt-prev" aria-label="Previous month">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m15 18-6-6 6-6"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="m15 18-6-6 6-6"/></svg>
             </button>
             <div class="calendar__caption" id="cal-dt-caption">June 2026</div>
             <button class="calendar__nav-btn" type="button" id="cal-dt-next" aria-label="Next month">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m9 18 6-6-6-6"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="m9 18 6-6-6-6"/></svg>
             </button>
           </div>
           <div class="calendar__grid" id="cal-dt-grid"><!-- Rendered by JS --></div>

@@ -29,7 +29,7 @@ The base month grid — a weekday header over a 6×7 day matrix with month navig
 - **month_caption** — `text-md` (14px) medium (500) `content-primary` label, centered between the nav buttons. In the `dropdown` caption layout (`react-day-picker` `captionLayout="dropdown"`) it becomes `.calendar__dropdowns` — two `.calendar__dropdown` **borderless** ghost triggers (month + year `<select>`, each with a trailing chevron-down, subtle `surface-hover` on hover) so a viewer can jump straight to any month/year. Prev/next still step one month and keep the dropdowns in sync.
 - **grid** — a **single** CSS grid, `repeat(7, --cell-size)` columns. Day columns sit **edge-to-edge** (no column gap) so selection / range fills join into a continuous track; weeks breathe on an **8px** `row-gap`. Holds the seven weekday header cells *and* all 42 day cells together (not per-week flex rows).
 - **weekday** — day-of-week abbreviation; tiny (`text-xs` 12px), **normal weight** (400), `content-tertiary`.
-- **day** — `--cell-size` (32px) tall ghost button, `--cell-radius` (6px) corners, `text-xs` (12px) `tabular-nums` so columns stay aligned.
+- **day** — `--cell-size` (32px) tall ghost button, `--cell-radius` (10px) corners, `text-xs` (12px) `tabular-nums` so columns stay aligned.
 - **footer** *(optional)* — a flex row split between a *Clear* and a *Today* link button (`primary-700` text), divided from the grid by a 1px `line-default` top border.
 
 Two layout customs the grid is built on: `--cell-size: var(--space-8)` (32px) sizes each cell, and `--cell-radius: var(--radius-md)` (10px) gives day buttons and the range caps a **rounded-square** shape — not circular. Day columns are gapless (fills join); weeks sit on an **8px** `row-gap`.

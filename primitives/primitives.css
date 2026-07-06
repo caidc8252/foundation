@@ -2025,9 +2025,9 @@ body { margin: 0; }
 }
 
 /* ═══════════════════════════════ Date Pickers ═══════════════════════════════ */
-/* @component date-picker date-range-picker date-time-picker date-time-range-picker */
-/* The five-sibling date-picker family (date / date-range / date-time /
-   date-time-range / time). Every variant is an input-styled TRIGGER that opens a
+/* @component date-picker date-range-picker date-time-picker */
+/* The four-sibling date-picker family (date / date-range / date-time / time).
+   Every variant is an input-styled TRIGGER that opens a
    .popover holding the .calendar skin (+ optional presets rail / time row). The
    popover open/close + positioning is base-ui behavior and the month grid is the
    react-day-picker .calendar skin — both out of scope here; this block owns the
@@ -2172,10 +2172,10 @@ body { margin: 0; }
 }
 .date-presets__item:focus-visible { box-shadow: var(--shadow-focus); }
 
-/* ── Time row (date-time + date-time-range) ──
-   Bottom row(s) under a top hairline; holds a native time .input + .btn OK.
-   date-time uses a single space-between row; date-time-range stacks two labeled
-   rows + a right-aligned OK (apply .date-time-row--stacked to the wrapper). */
+/* ── Time row (date-time) ──
+   Bottom row under a top hairline; holds a native time .input + a .btn OK in a
+   single space-between row. A date-time RANGE is composed from two separate
+   date-time pickers (a Start field + an End field), not one dual-time control. */
 .date-time-row {
   display: flex;
   align-items: center;
@@ -2184,20 +2184,8 @@ body { margin: 0; }
   padding: var(--spacing-cx-sm);   /* 10px — source p-2.5 */
   border-top: 1px solid var(--color-line-default);
 }
-.date-time-row--stacked {
-  flex-direction: column;
-  align-items: stretch;
-}
-.date-time-row--stacked .date-time-row__line {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-.date-time-row--stacked .date-time-row__line--actions {
-  justify-content: flex-end;
-}
 
-/* Fixed-width Start/End caption (source w-9 = 36px). */
+/* Fixed-width row caption (source w-9 = 36px). */
 .date-time-row__label {
   flex-shrink: 0;
   width: var(--spacing-control-md);   /* 36px — source w-9 */

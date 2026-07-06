@@ -288,8 +288,8 @@ primitive 是 L2 原子组件。一个组件是**契约优先**（`.md` 是两�
      无命名前缀的卫星 class。marker 让 build 把**整段**归给该组件，连前缀抓不到的卫星也能正确列出。
    - 全部值用 `var(--token-*)`，**零硬编码 hex/px**（1px hairline / `border-0` 等约定例外，法则 #1）。
    - **一段服务多个相近契约**：用一个 marker 写多个 slug，如 primitives.css 里日期选择器那段
-     `/* @component date-picker date-range-picker date-time-picker date-time-range-picker */`，
-     一次把整段 class 标给四个契约。
+     `/* @component date-picker date-range-picker date-time-picker */`，
+     一次把整段 class 标给三个契约。
    - **纯工具 section 不加 marker**（如 `Baseline`、`.sr-only` 这类行为助手）—— 它们的 class 在
      闭合集里、但不属于任何 catalog 组件，这是有意为之。
 3. **可选：HTML 示例 `primitives/<name>.html`** —— 可执行参考，被 `check:examples` lint，必须留在

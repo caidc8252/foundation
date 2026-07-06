@@ -179,7 +179,6 @@ const CLOUD_OWNER_FILES = {
     "date-picker": ["packages/ui/src/components/ui/recipes/date-picker.tsx"],
     "date-range-picker": ["packages/ui/src/components/ui/recipes/date-range-picker.tsx"],
     "date-time-picker": ["packages/ui/src/components/ui/recipes/date-time-picker.tsx"],
-    "date-time-range-picker": ["packages/ui/src/components/ui/recipes/date-time-range-picker.tsx"],
     "input-group": ["packages/ui/src/components/ui/recipes/input-group.tsx"],
     "time-picker": ["packages/ui/src/components/ui/recipes/time-picker.tsx"],
   },

@@ -3,12 +3,9 @@
   ──────────────────────────────────────────────────────────────────────
   Demonstrates the Date Range Picker primitive in the foundation design system.
   Covers:
-    - Default trigger with from–to value and clear button
-    - Trigger with placeholder ("Pick a range")
-    - Size variants (sm, md, lg)
-    - Disabled trigger
-    - Interactive date range picker with popover, presets rail, and
+    - Interactive date range picker (primary): popover, presets rail, and
       two-month range calendar
+    - Disabled trigger — the state the interactive demo can't reach on its own
   ──────────────────────────────────────────────────────────────────────
 -->
 <!DOCTYPE html>
@@ -114,137 +111,18 @@
       gap: var(--space-4);
       padding: var(--space-2);
     }
+
+    /* Moderate, consistent trigger width across the demo (range value fits). */
+    .date-trigger {
+      width: 280px;
+    }
   </style>
 </head>
 <body>
   <div class="demo-page">
 
     <!-- ══════════════════════════════════════════════════════════════════
-         Section 1: Default trigger with value
-         ════════════════════════════════════════════════════════════════ -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">Date Range Picker · default trigger with value</h2>
-      <p class="demo-section__desc">
-        The closed control uses <code>.date-trigger</code> with a calendar icon,
-        <code>.date-trigger__value</code> showing <em>from – to</em>, and a clear
-        button. Add <code>.date-trigger--clearable</code> when the value is present.
-      </p>
-
-      <div class="demo-row">
-        <div class="date-picker__clear-wrapper">
-          <button class="date-trigger date-trigger--clearable" type="button" aria-label="Pick a date range">
-            <span class="date-trigger__icon" aria-hidden="true">
-              <svg data-lucide="calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
-            </span>
-            <span class="date-trigger__value">Mar 1, 2026 – Mar 14, 2026</span>
-          </button>
-          <button class="date-trigger__clear" type="button" aria-label="Clear" tabindex="-1">
-            <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════════════════════════════════════════════════════════════════
-         Section 2: Trigger with placeholder
-         ════════════════════════════════════════════════════════════════ -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">Date Range Picker · placeholder</h2>
-      <p class="demo-section__desc">
-        When no range is selected, show placeholder text via
-        <code>.date-trigger__value--placeholder</code>. The clear button is absent.
-      </p>
-
-      <div class="demo-row">
-        <button class="date-trigger" type="button" aria-label="Pick a date range">
-          <span class="date-trigger__icon" aria-hidden="true">
-            <svg data-lucide="calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
-          </span>
-          <span class="date-trigger__value date-trigger__value--placeholder">Pick a range</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- ══════════════════════════════════════════════════════════════════
-         Section 3: Size variants
-         ════════════════════════════════════════════════════════════════ -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">Date Range Picker · size variants</h2>
-      <p class="demo-section__desc">
-        <code>.date-trigger--sm</code>, <code>.date-trigger--md</code> (default),
-        and <code>.date-trigger--lg</code>.
-      </p>
-
-      <div class="demo-row">
-        <div class="date-picker__clear-wrapper">
-          <button class="date-trigger date-trigger--sm date-trigger--clearable" type="button" aria-label="Pick a date range">
-            <span class="date-trigger__icon" aria-hidden="true">
-              <svg data-lucide="calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
-            </span>
-            <span class="date-trigger__value">Mar 1 – Mar 14</span>
-          </button>
-          <button class="date-trigger__clear" type="button" aria-label="Clear" tabindex="-1">
-            <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-          </button>
-        </div>
-
-        <div class="date-picker__clear-wrapper">
-          <button class="date-trigger date-trigger--md date-trigger--clearable" type="button" aria-label="Pick a date range">
-            <span class="date-trigger__icon" aria-hidden="true">
-              <svg data-lucide="calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
-            </span>
-            <span class="date-trigger__value">Mar 1, 2026 – Mar 14, 2026</span>
-          </button>
-          <button class="date-trigger__clear" type="button" aria-label="Clear" tabindex="-1">
-            <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-          </button>
-        </div>
-
-        <div class="date-picker__clear-wrapper">
-          <button class="date-trigger date-trigger--lg date-trigger--clearable" type="button" aria-label="Pick a date range">
-            <span class="date-trigger__icon" aria-hidden="true">
-              <svg data-lucide="calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
-            </span>
-            <span class="date-trigger__value">Mar 1, 2026 – Mar 14, 2026</span>
-          </button>
-          <button class="date-trigger__clear" type="button" aria-label="Clear" tabindex="-1">
-            <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════════════════════════════════════════════════════════════════
-         Section 4: Disabled state
-         ════════════════════════════════════════════════════════════════ -->
-    <div class="demo-section">
-      <h2 class="demo-section__title">Date Range Picker · disabled</h2>
-      <p class="demo-section__desc">
-        Disabled trigger: <code>cursor-not-allowed</code>, <code>opacity-50</code>,
-        clear button suppressed.
-      </p>
-
-      <div class="demo-row">
-        <div class="date-picker__clear-wrapper">
-          <button class="date-trigger" type="button" aria-label="Pick a date range" disabled>
-            <span class="date-trigger__icon" aria-hidden="true">
-              <svg data-lucide="calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
-            </span>
-            <span class="date-trigger__value">Mar 1, 2026 – Mar 14, 2026</span>
-          </button>
-        </div>
-
-        <button class="date-trigger" type="button" aria-label="Pick a date range" disabled>
-          <span class="date-trigger__icon" aria-hidden="true">
-            <svg data-lucide="calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
-          </span>
-          <span class="date-trigger__value date-trigger__value--placeholder">Pick a range</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- ══════════════════════════════════════════════════════════════════
-         Section 5: Interactive date range picker
+         Interactive date range picker — the primary example
          ════════════════════════════════════════════════════════════════ -->
     <div class="demo-section">
       <h2 class="demo-section__title">Date Range Picker · interactive</h2>
@@ -292,6 +170,24 @@
         <!-- Overlay to catch outside clicks -->
         <div id="popover-overlay" class="popover-overlay popover-overlay--hidden"></div>
       </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         States — the state the interactive demo can't reach on its own
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Date Range Picker · disabled</h2>
+      <p class="demo-section__desc">
+        Disabled trigger: <code>cursor-not-allowed</code>, <code>opacity-50</code>,
+        clear button suppressed.
+      </p>
+
+      <button class="date-trigger" type="button" aria-label="Pick a date range" disabled>
+        <span class="date-trigger__icon" aria-hidden="true">
+          <svg data-lucide="calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+        </span>
+        <span class="date-trigger__value">Mar 1, 2026 – Mar 14, 2026</span>
+      </button>
     </div>
 
   </div>

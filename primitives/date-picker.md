@@ -11,11 +11,12 @@ month-view calendar; the chosen day fills the field as locale-formatted text.
 > (`@cloud/ui` + the `ui` skill). When the contract and an implementation
 > disagree, the contract is right and the implementation is a bug.
 
-This is one of **five sibling pickers** that share a single trigger skin and the
+This is one of **four sibling pickers** that share a single trigger skin and the
 same popover-over-calendar composition: `date-picker` (this file),
-`date-range-picker`, `date-time-picker`, `date-time-range-picker`, `time-picker`.
-Read the sibling each names; the trigger recipe (`.date-trigger`) and the
-clear-button are defined once and reused.
+`date-range-picker`, `date-time-picker`, `time-picker`. Read the sibling each
+names; the trigger recipe (`.date-trigger`) and the clear-button are defined once
+and reused. (A date-time **range** is composed from two `date-time-picker`s — a
+Start field + an End field — not a single dual-calendar control.)
 
 ## Anatomy
 

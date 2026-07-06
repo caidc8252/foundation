@@ -248,8 +248,8 @@ const structuralFindingsFromHtml = (html) => {
 };
 
 // Native CALENDAR date inputs bypass the foundation picker family. The date
-// pickers (date-picker / date-range-picker / date-time-picker /
-// date-time-range-picker) replace the browser-native calendar with a custom
+// pickers (date-picker / date-range-picker / date-time-picker) replace the
+// browser-native calendar with a custom
 // `.date-trigger` + `.calendar` popover; a raw `<input type="date">` — even one
 // wearing `.input` — still pops unskinnable native calendar chrome, so it is a
 // closed-set breach — a HARD violation, not a style smell.

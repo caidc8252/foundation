@@ -12,10 +12,12 @@ popover stacks a single-month calendar over a **time row** (a native time input 
 > `ui` skill). When the contract and an implementation disagree, the contract is
 > right and the implementation is a bug.
 
-One of **five sibling pickers** sharing a trigger skin and popover-over-calendar
+One of **four sibling pickers** sharing a trigger skin and popover-over-calendar
 composition (see `date-picker.md`). The trigger (`.date-trigger`), the clear
-button, and the time row (`.date-time-row`) are defined once and reused —
-`date-time-range-picker` reuses the time row.
+button, and the time row (`.date-time-row`) are defined once and reused across the
+family. A date-time **range** is not its own component: compose it from **two**
+of these pickers — a *Start* field and an *End* field (see the demo) — rather than
+one oversized dual-calendar popover.
 
 ## Anatomy
 

@@ -100,8 +100,7 @@ catalog's per-component class list is **derived from the CSS** — never hand-wr
      "List condition band" ↔ contract `list-filter`), the marker still reads
      `/* @component list-filter */`.
    - **One section, several contracts:** `/* @component date-picker date-range-picker
-     date-time-picker date-time-range-picker */` tags all of them with the shared
-     section's classes.
+     date-time-picker */` tags all of them with the shared section's classes.
    - **Pure utilities get no marker** (Baseline, Stack, auto-fit grids). Their
      classes are in the closed set but belong to no component — that's intended.
 

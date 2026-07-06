@@ -2020,7 +2020,7 @@ const MD_MAP = {
   AspectRatio: ["aspect-ratio"], ScrollArea: ["scroll-area"], Resizable: ["resizable"],
   Collapsible: ["collapsible"], Carousel: ["carousel"], ColorTile: ["color-tile"],
   InitialsTile: ["initials-tile"], InputOTP: ["input-otp"], Calendar: ["calendar"],
-  DatePicker: ["date-picker", "date-range-picker", "time-picker", "date-time-picker", "date-time-range-picker"],
+  DatePicker: ["date-picker", "date-range-picker", "time-picker", "date-time-picker"],
   Modal: ["modal"], AlertDialog: ["alert-dialog"], Sheet: ["sheet"],
   Popover: ["popover"], HoverCard: ["hover-card"], DropdownMenu: ["dropdown-menu"],
   ContextMenu: ["context-menu"], Menubar: ["menubar"], NavigationMenu: ["navigation-menu"],

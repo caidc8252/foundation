@@ -12,10 +12,10 @@ renders `from – to`.
 > (`@cloud/ui` + the `ui` skill). When the contract and an implementation disagree,
 > the contract is right and the implementation is a bug.
 
-One of **five sibling pickers** that share a single trigger skin and the popover-
+One of **four sibling pickers** that share a single trigger skin and the popover-
 over-calendar composition (see `date-picker.md` for the family). The trigger
 (`.date-trigger`), the clear button, and the presets rail (`.date-presets`) are
-defined once and reused — `date-time-range-picker` reuses both.
+defined once and reused across the family.
 
 ## Anatomy
 
