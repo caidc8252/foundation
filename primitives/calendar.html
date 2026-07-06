@@ -61,6 +61,40 @@
       align-items: flex-start;
       gap: var(--space-6);
     }
+    /* Two months side by side — how a range calendar is actually shown. */
+    .calendar-two-month {
+      display: flex;
+      gap: var(--space-2);
+    }
+    /* A footer card uses a roomier calendar (40px cells) so it sits at ~300px and
+       the footer has space to breathe. Card width = the calendar's own width
+       (7 cells + its left/right padding) so calendar and card stay flush — the
+       footer wraps WITHIN it instead of stretching the card wider than the grid. */
+    .calendar-card {
+      width: calc(7 * var(--space-10) + 2 * var(--space-3));   /* ≈ 304px */
+    }
+    .calendar-card .calendar {
+      --cell-size: var(--space-10);   /* 40px cells — a roomier month grid */
+    }
+    /* A card footer beneath the calendar (shadcn CardFooter): preset buttons or
+       time inputs, divided from the grid by a top border. Presets sit in a tidy
+       2-column grid (each button stretches to fill its cell) — no ragged wrap. */
+    .calendar-card-footer {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-2);
+      padding: var(--space-3);
+      border-top: 1px solid var(--color-line-default);
+    }
+    .calendar-time-footer {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      padding: var(--space-3);
+      border-top: 1px solid var(--color-line-default);
+    }
+    /* The clock addon is the prefix — hide the browser's native time indicator. */
+    .calendar-time-footer input[type="time"]::-webkit-calendar-picker-indicator { display: none; }
   </style>
 </head>
 <body>
@@ -72,13 +106,17 @@
     <div class="demo-section">
       <h2 class="demo-section__title">Calendar · single select</h2>
       <p class="demo-section__desc">
-        A bare month view using <code>.calendar</code> with <code>.calendar__header</code>
-        (nav buttons + caption), <code>.calendar__grid</code> (weekdays + days),
-        and optional <code>.calendar__footer</code>. Day states use
+        The default calendar — no footer, matching shadcn. Just
+        <code>.calendar__header</code> (nav buttons + caption) over
+        <code>.calendar__grid</code> (weekdays + days). Day states use
         <code>.calendar__day--today</code>, <code>--selected</code>,
-        <code>--outside</code>, <code>--disabled</code>.
+        <code>--outside</code>, <code>--disabled</code>. (Today / Clear or preset
+        shortcuts are opt-in — see the <em>presets</em> example below.)
       </p>
 
+      <!-- The .calendar root is bare; a .popover wrapper supplies the card chrome
+           (border / radius / shadow), like shadcn's docs wrapper. -->
+      <div class="popover" style="position:static;width:fit-content;padding:0;">
       <div class="calendar" id="cal-single">
         <div class="calendar__header">
           <button class="calendar__nav-btn" type="button" id="cal-single-prev" aria-label="Previous month">
@@ -93,37 +131,167 @@
           <!-- Weekdays rendered by JS -->
           <!-- Days rendered by JS -->
         </div>
-        <div class="calendar__footer">
-          <button class="calendar__link" type="button" data-cal-clear>Clear</button>
-          <button class="calendar__link" type="button" data-cal-today>Today</button>
+      </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Dropdown caption (month + year selects)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Calendar · dropdown caption</h2>
+      <p class="demo-section__desc">
+        The <code>dropdown</code> caption layout: the month/year label becomes two
+        <code>.select .select--sm</code> dropdowns, so you can jump straight to any
+        month or year instead of stepping one month at a time. Prev / next still
+        step a month and keep both dropdowns in sync.
+      </p>
+
+      <div class="popover" style="position:static;width:fit-content;padding:0;">
+      <div class="calendar" id="cal-dropdown">
+        <div class="calendar__header">
+          <button class="calendar__nav-btn" type="button" id="cal-dd-prev" aria-label="Previous month">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <div class="calendar__dropdowns">
+            <span class="calendar__dropdown">
+              <select id="cal-dd-month" aria-label="Month"></select>
+              <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+            <span class="calendar__dropdown">
+              <select id="cal-dd-year" aria-label="Year"></select>
+              <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+          </div>
+          <button class="calendar__nav-btn" type="button" id="cal-dd-next" aria-label="Next month">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+        </div>
+        <div class="calendar__grid" id="cal-dd-grid">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Range selection calendar
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Calendar · range selection</h2>
+      <p class="demo-section__desc">
+        A range spans months, so it's shown as <strong>two months side by side</strong>
+        (place two <code>.calendar</code> in a flex row). Range state classes:
+        <code>.calendar__day--range-start</code>, <code>.calendar__day--range-middle</code>,
+        <code>.calendar__day--range-end</code> — endpoints are a <code>primary-700</code>
+        pill on the <code>surface-3</code> track. Click a start day, then an end day.
+      </p>
+
+      <div class="popover" style="position:static;width:fit-content;padding:0;">
+      <div class="calendar-two-month">
+        <!-- Left month — carries the prev nav. -->
+        <div class="calendar" id="cal-range-left">
+          <div class="calendar__header">
+            <button class="calendar__nav-btn" type="button" id="cal-range-prev" aria-label="Previous month">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m15 18-6-6 6-6"/></svg>
+            </button>
+            <div class="calendar__caption" id="cal-range-caption-left">June 2026</div>
+            <span style="width:var(--space-8)"></span>
+          </div>
+          <div class="calendar__grid" id="cal-range-grid-left"><!-- Rendered by JS --></div>
+        </div>
+        <!-- Right month — carries the next nav. -->
+        <div class="calendar" id="cal-range-right">
+          <div class="calendar__header">
+            <span style="width:var(--space-8)"></span>
+            <div class="calendar__caption" id="cal-range-caption-right">July 2026</div>
+            <button class="calendar__nav-btn" type="button" id="cal-range-next" aria-label="Next month">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+          </div>
+          <div class="calendar__grid" id="cal-range-grid-right"><!-- Rendered by JS --></div>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: Presets
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Calendar · presets</h2>
+      <p class="demo-section__desc">
+        Quick-set shortcuts in a card footer (shadcn's <em>Presets</em> example):
+        the calendar over a bordered-top row of <code>.btn .btn--secondary .btn--sm</code>
+        buttons. Each jumps the selection to a relative day (Today, Tomorrow, …).
+      </p>
+
+      <div class="popover calendar-card" style="position:static;padding:0;">
+        <div class="calendar" id="cal-preset">
+          <div class="calendar__header">
+            <button class="calendar__nav-btn" type="button" id="cal-preset-prev" aria-label="Previous month">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m15 18-6-6 6-6"/></svg>
+            </button>
+            <div class="calendar__caption" id="cal-preset-caption">July 2026</div>
+            <button class="calendar__nav-btn" type="button" id="cal-preset-next" aria-label="Next month">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+          </div>
+          <div class="calendar__grid" id="cal-preset-grid"><!-- Rendered by JS --></div>
+        </div>
+        <div class="calendar-card-footer">
+          <button class="btn btn--secondary btn--sm" type="button" data-preset-offset="0">Today</button>
+          <button class="btn btn--secondary btn--sm" type="button" data-preset-offset="1">Tomorrow</button>
+          <button class="btn btn--secondary btn--sm" type="button" data-preset-offset="7">In a week</button>
+          <button class="btn btn--secondary btn--sm" type="button" data-preset-offset="14">In 2 weeks</button>
         </div>
       </div>
     </div>
 
     <!-- ══════════════════════════════════════════════════════════════════
-         Section 2: Range selection calendar
+         Section 5: Date and time picker
          ════════════════════════════════════════════════════════════════ -->
     <div class="demo-section">
-      <h2 class="demo-section__title">Calendar · range selection</h2>
+      <h2 class="demo-section__title">Calendar · date and time picker</h2>
       <p class="demo-section__desc">
-        Range state classes: <code>.calendar__day--range-start</code>,
-        <code>.calendar__day--range-middle</code>,
-        <code>.calendar__day--range-end</code>. The range start/end use
-        <code>primary-700</code> fill; middle uses <code>surface-3</code>.
+        The calendar composed with time inputs in a card footer (shadcn's
+        <em>Date and Time Picker</em> example): the month grid over a bordered-top
+        section of <code>type="time"</code> fields (<code>.field</code> ›
+        <code>.input-group</code> with a clock addon) for a start and end time.
       </p>
 
-      <div class="calendar" id="cal-range">
-        <div class="calendar__header">
-          <button class="calendar__nav-btn" type="button" id="cal-range-prev" aria-label="Previous month">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m15 18-6-6 6-6"/></svg>
-          </button>
-          <div class="calendar__caption" id="cal-range-caption">June 2026</div>
-          <button class="calendar__nav-btn" type="button" id="cal-range-next" aria-label="Next month">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m9 18 6-6-6-6"/></svg>
-          </button>
+      <div class="popover calendar-card" style="position:static;padding:0;">
+        <div class="calendar" id="cal-dt">
+          <div class="calendar__header">
+            <button class="calendar__nav-btn" type="button" id="cal-dt-prev" aria-label="Previous month">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m15 18-6-6 6-6"/></svg>
+            </button>
+            <div class="calendar__caption" id="cal-dt-caption">June 2026</div>
+            <button class="calendar__nav-btn" type="button" id="cal-dt-next" aria-label="Next month">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+          </div>
+          <div class="calendar__grid" id="cal-dt-grid"><!-- Rendered by JS --></div>
         </div>
-        <div class="calendar__grid" id="cal-range-grid">
-          <!-- Rendered by JS -->
+        <div class="calendar-time-footer">
+          <div class="field">
+            <label class="label" for="cal-dt-start">Start Time</label>
+            <div class="input-group" role="group">
+              <div class="input-group__addon input-group__addon--inline-start" aria-hidden="true">
+                <svg data-lucide="clock" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              </div>
+              <input class="input input--md input-group__control" type="time" step="1" id="cal-dt-start" value="10:30:00">
+            </div>
+          </div>
+          <div class="field">
+            <label class="label" for="cal-dt-end">End Time</label>
+            <div class="input-group" role="group">
+              <div class="input-group__addon input-group__addon--inline-start" aria-hidden="true">
+                <svg data-lucide="clock" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              </div>
+              <input class="input input--md input-group__control" type="time" step="1" id="cal-dt-end" value="12:30:00">
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -234,51 +402,148 @@
       document.getElementById('cal-single-next').addEventListener('click', function () {
         calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; } renderSingle();
       });
-      document.querySelector('#cal-single [data-cal-clear]').addEventListener('click', function () {
-        sel = null; renderSingle();
-      });
-      document.querySelector('#cal-single [data-cal-today]').addEventListener('click', function () {
-        var t = new Date();
-        calYear = t.getFullYear(); calMonth = t.getMonth();
-        sel = { y: calYear, m: calMonth, d: t.getDate() };
-        renderSingle();
-      });
 
-      // --- Range calendar ---
-      var rangeYear = 2026, rangeMonth = 5;
-      var rStart = { y: 2026, m: 5, d: 10 }, rEnd = { y: 2026, m: 5, d: 15 }; // initial range
-      var RANGE_DISABLED = [7, 8, 21, 22];
-      var rangeGrid = document.getElementById('cal-range-grid');
-      function val(o) { return o ? key(o.y, o.m, o.d) : null; }
-      function renderRange() {
-        document.getElementById('cal-range-caption').textContent = MONTHS[rangeMonth] + ' ' + rangeYear;
-        rangeGrid.innerHTML = buildGrid(rangeYear, rangeMonth, {
-          start: val(rStart),
-          end: val(rEnd),
-          disabled: RANGE_DISABLED
-        });
+      // --- Dropdown-caption calendar ---
+      var DD_MIN_YEAR = 2015, DD_MAX_YEAR = 2035;
+      var ddYear = 2026, ddMonth = 5; // June
+      var ddSel = { y: 2026, m: 5, d: 12 };
+      var ddGrid = document.getElementById('cal-dd-grid');
+      var ddMonthSel = document.getElementById('cal-dd-month');
+      var ddYearSel = document.getElementById('cal-dd-year');
+      // Populate the month + year dropdowns.
+      MONTHS.forEach(function (name, i) {
+        var o = document.createElement('option'); o.value = i; o.textContent = name; ddMonthSel.appendChild(o);
+      });
+      for (var yy = DD_MIN_YEAR; yy <= DD_MAX_YEAR; yy++) {
+        var oy = document.createElement('option'); oy.value = yy; oy.textContent = yy; ddYearSel.appendChild(oy);
       }
-      renderRange();
-      rangeGrid.addEventListener('click', function (e) {
+      function renderDropdown() {
+        ddMonthSel.value = ddMonth;
+        ddYearSel.value = ddYear;
+        var opts = (ddSel && ddSel.y === ddYear && ddSel.m === ddMonth) ? { selected: ddSel.d } : {};
+        ddGrid.innerHTML = buildGrid(ddYear, ddMonth, opts);
+      }
+      renderDropdown();
+      ddGrid.addEventListener('click', function (e) {
         var day = clickedDay(e);
         if (day == null) return;
-        var picked = { y: rangeYear, m: rangeMonth, d: day };
+        ddSel = { y: ddYear, m: ddMonth, d: day };
+        renderDropdown();
+      });
+      ddMonthSel.addEventListener('change', function () { ddMonth = parseInt(this.value, 10); renderDropdown(); });
+      ddYearSel.addEventListener('change', function () { ddYear = parseInt(this.value, 10); renderDropdown(); });
+      document.getElementById('cal-dd-prev').addEventListener('click', function () {
+        var m = ddMonth - 1, y = ddYear; if (m < 0) { m = 11; y--; }
+        if (y < DD_MIN_YEAR) return;   // stay within the dropdown's year range
+        ddMonth = m; ddYear = y; renderDropdown();
+      });
+      document.getElementById('cal-dd-next').addEventListener('click', function () {
+        var m = ddMonth + 1, y = ddYear; if (m > 11) { m = 0; y++; }
+        if (y > DD_MAX_YEAR) return;
+        ddMonth = m; ddYear = y; renderDropdown();
+      });
+
+      // --- Range calendar (two months side by side) ---
+      var rangeYear = 2026, rangeMonth = 5;             // left month = June 2026
+      var rStart = { y: 2026, m: 5, d: 12 };            // range spans into the next month …
+      var rEnd   = { y: 2026, m: 6, d: 11 };            // … ending July 11, 2026
+      var rangeGridL = document.getElementById('cal-range-grid-left');
+      var rangeGridR = document.getElementById('cal-range-grid-right');
+      var rangeCapL  = document.getElementById('cal-range-caption-left');
+      var rangeCapR  = document.getElementById('cal-range-caption-right');
+      function val(o) { return o ? key(o.y, o.m, o.d) : null; }
+      // The right month is one after the left, rolling the year over.
+      function rightMonth() {
+        var m = rangeMonth + 1, y = rangeYear;
+        if (m > 11) { m = 0; y++; }
+        return { y: y, m: m };
+      }
+      function renderRange() {
+        var r = rightMonth();
+        rangeCapL.textContent = MONTHS[rangeMonth] + ' ' + rangeYear;
+        rangeCapR.textContent = MONTHS[r.m] + ' ' + r.y;
+        var opts = { start: val(rStart), end: val(rEnd) };
+        rangeGridL.innerHTML = buildGrid(rangeYear, rangeMonth, opts);
+        rangeGridR.innerHTML = buildGrid(r.y, r.m, opts);
+      }
+      renderRange();
+      // Two-click range selection; spans both months via comparable date keys.
+      function pickRange(picked) {
         if (!rStart || (rStart && rEnd)) {
-          // Begin a new range.
-          rStart = picked; rEnd = null;
+          rStart = picked; rEnd = null;               // begin a new range
         } else if (val(picked) < val(rStart)) {
-          // Clicked before the start → picked becomes start, old start becomes end.
-          rEnd = rStart; rStart = picked;
+          rEnd = rStart; rStart = picked;             // clicked before start → swap
         } else {
           rEnd = picked;
         }
         renderRange();
+      }
+      rangeGridL.addEventListener('click', function (e) {
+        var day = clickedDay(e); if (day == null) return;
+        pickRange({ y: rangeYear, m: rangeMonth, d: day });
+      });
+      rangeGridR.addEventListener('click', function (e) {
+        var day = clickedDay(e); if (day == null) return;
+        var r = rightMonth();
+        pickRange({ y: r.y, m: r.m, d: day });
       });
       document.getElementById('cal-range-prev').addEventListener('click', function () {
         rangeMonth--; if (rangeMonth < 0) { rangeMonth = 11; rangeYear--; } renderRange();
       });
       document.getElementById('cal-range-next').addEventListener('click', function () {
         rangeMonth++; if (rangeMonth > 11) { rangeMonth = 0; rangeYear++; } renderRange();
+      });
+
+      // --- Presets calendar (single date + quick-set shortcuts) ---
+      var pcToday = new Date(); pcToday.setHours(0, 0, 0, 0);
+      var pcYear = pcToday.getFullYear(), pcMonth = pcToday.getMonth();
+      var pcSel = { y: pcToday.getFullYear(), m: pcToday.getMonth(), d: pcToday.getDate() };
+      var pcGrid = document.getElementById('cal-preset-grid');
+      function renderPreset() {
+        document.getElementById('cal-preset-caption').textContent = MONTHS[pcMonth] + ' ' + pcYear;
+        var opts = (pcSel && pcSel.y === pcYear && pcSel.m === pcMonth) ? { selected: pcSel.d } : {};
+        pcGrid.innerHTML = buildGrid(pcYear, pcMonth, opts);
+      }
+      renderPreset();
+      pcGrid.addEventListener('click', function (e) {
+        var day = clickedDay(e); if (day == null) return;
+        pcSel = { y: pcYear, m: pcMonth, d: day }; renderPreset();
+      });
+      document.getElementById('cal-preset-prev').addEventListener('click', function () {
+        pcMonth--; if (pcMonth < 0) { pcMonth = 11; pcYear--; } renderPreset();
+      });
+      document.getElementById('cal-preset-next').addEventListener('click', function () {
+        pcMonth++; if (pcMonth > 11) { pcMonth = 0; pcYear++; } renderPreset();
+      });
+      document.querySelectorAll('[data-preset-offset]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var d = new Date(pcToday);
+          d.setDate(d.getDate() + parseInt(btn.getAttribute('data-preset-offset'), 10));
+          pcYear = d.getFullYear(); pcMonth = d.getMonth();
+          pcSel = { y: pcYear, m: pcMonth, d: d.getDate() };
+          renderPreset();
+        });
+      });
+
+      // --- Date-and-time calendar (single date; the time inputs are native) ---
+      var dtYear = 2026, dtMonth = 5;
+      var dtSel = { y: 2026, m: 5, d: 12 };
+      var dtGrid = document.getElementById('cal-dt-grid');
+      function renderDT() {
+        document.getElementById('cal-dt-caption').textContent = MONTHS[dtMonth] + ' ' + dtYear;
+        var opts = (dtSel && dtSel.y === dtYear && dtSel.m === dtMonth) ? { selected: dtSel.d } : {};
+        dtGrid.innerHTML = buildGrid(dtYear, dtMonth, opts);
+      }
+      renderDT();
+      dtGrid.addEventListener('click', function (e) {
+        var day = clickedDay(e); if (day == null) return;
+        dtSel = { y: dtYear, m: dtMonth, d: day }; renderDT();
+      });
+      document.getElementById('cal-dt-prev').addEventListener('click', function () {
+        dtMonth--; if (dtMonth < 0) { dtMonth = 11; dtYear--; } renderDT();
+      });
+      document.getElementById('cal-dt-next').addEventListener('click', function () {
+        dtMonth++; if (dtMonth > 11) { dtMonth = 0; dtYear++; } renderDT();
       });
     })();
   </script>

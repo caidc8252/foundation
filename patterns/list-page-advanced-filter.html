@@ -634,8 +634,10 @@
           <span class="date-trigger__value date-trigger__value--placeholder">To</span>
         </button>
 
-        <!-- Shared calendar popover — retargeted to whichever trigger opened it -->
+        <!-- Shared calendar popover — retargeted to whichever trigger opened it.
+             The .popover supplies the card chrome; the bare .calendar sits inside. -->
         <div class="date-range__popover" id="adv-reg-popover">
+          <div class="popover" style="position:static;width:fit-content;padding:0;">
           <div class="calendar">
             <div class="calendar__header">
               <button class="calendar__nav-btn" type="button" id="adv-cal-prev" aria-label="Previous month">
@@ -651,6 +653,7 @@
               <button class="calendar__link" type="button" id="adv-cal-today">Today</button>
               <button class="calendar__link" type="button" id="adv-cal-clear">Clear</button>
             </div>
+          </div>
           </div>
         </div>
       </div>

@@ -108,109 +108,11 @@
       padding-right: calc(var(--space-8) + var(--space-1));   /* make room for clear button */
     }
 
-    /* ── Interactive calendar styles ──────────────────────────────── */
-    .calendar-grid {
+    /* ── Two-month calendar layout (uses the shared primitives.css .calendar) ── */
+    .date-range-calendars {
       display: flex;
-      gap: var(--space-6);
-      padding: var(--space-1);
-    }
-    .calendar-grid__month {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-1);
-    }
-    .calendar-grid__header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 var(--space-1) var(--space-2);
-    }
-    .calendar-grid__label {
-      font-size: var(--text-sm);
-      font-weight: 600;
-      color: var(--color-content-primary);
-    }
-    .calendar-grid__nav {
-      display: flex;
-      gap: var(--space-1);
-    }
-    .calendar-nav-btn {
-      all: unset;
-      width: 28px;
-      height: 28px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      color: var(--color-content-secondary);
-    }
-    .calendar-nav-btn:hover {
-      background: var(--color-surface-hover);
-      color: var(--color-content-primary);
-    }
-    .calendar-grid__weekdays {
-      display: grid;
-      grid-template-columns: repeat(7, 36px);
-      gap: 2px;
-      text-align: center;
-      font-size: var(--text-xs);
-      color: var(--color-content-tertiary);
-      padding: 0 0 var(--space-1);
-    }
-    .calendar-grid__weekday {
-      padding: 4px 0;
-    }
-    .calendar-grid__days {
-      display: grid;
-      grid-template-columns: repeat(7, 36px);
-      gap: 2px;
-    }
-    .calendar-day {
-      all: unset;
-      width: 36px;
-      height: 36px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: var(--text-sm);
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      color: var(--color-content-primary);
-      position: relative;
-    }
-    .calendar-day:hover {
-      background: var(--color-surface-hover);
-    }
-    .calendar-day--outside {
-      color: var(--color-content-disabled);
-    }
-    .calendar-day--today {
-      font-weight: 600;
-      color: var(--color-accent-600);
-    }
-    .calendar-day--range-start,
-    .calendar-day--range-end {
-      background: var(--color-accent-600);
-      color: var(--color-content-on-primary);
-      border-radius: var(--radius-sm);
-    }
-    .calendar-day--range-middle {
-      background: var(--color-accent-100);
-      border-radius: 0;
-    }
-    .calendar-day--range-start.calendar-day--range-middle {
-      border-radius: var(--radius-sm) 0 0 var(--radius-sm);
-    }
-    .calendar-day--range-end.calendar-day--range-middle {
-      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-    }
-    .calendar-day--selected {
-      background: var(--color-accent-600);
-      color: var(--color-content-on-primary);
-    }
-    .calendar-day--hidden {
-      visibility: hidden;
+      gap: var(--space-4);
+      padding: var(--space-2);
     }
   </style>
 </head>
@@ -379,9 +281,10 @@
               <button class="date-presets__item" data-preset="last-month" type="button">Last month</button>
             </div>
 
-            <!-- Two-month calendar -->
-            <div style="padding:var(--space-4);">
-              <div id="calendar-grid" class="calendar-grid"></div>
+            <!-- Two-month calendar (uses the shared primitives.css .calendar) -->
+            <div class="date-range-calendars">
+              <div class="calendar" id="drp-cal-left"></div>
+              <div class="calendar" id="drp-cal-right"></div>
             </div>
           </div>
         </div>
@@ -436,7 +339,8 @@
       var clearBtn  = document.getElementById('picker-clear');
       var popover   = document.getElementById('picker-popover');
       var overlay   = document.getElementById('popover-overlay');
-      var calendarGrid = document.getElementById('calendar-grid');
+      var calLeftEl  = document.getElementById('drp-cal-left');
+      var calRightEl = document.getElementById('drp-cal-right');
       var presetBtns = document.querySelectorAll('.date-presets__item');
 
       /* ── State ─────────────────────────────────────────────────── */
@@ -446,136 +350,106 @@
       var selecting    = false;  // true after first click, waiting for second
 
       /* ── Render calendar ───────────────────────────────────────── */
+      /* Both months share the primitives.css .calendar skin; the range/today
+         classes are painted per day. Nav + day clicks use event delegation. */
       function renderCalendar() {
-        var month1 = new Date(currentDate);
-        var month2 = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
-
-        calendarGrid.innerHTML = '';
-        calendarGrid.appendChild(buildMonth(month1, 0));
-        calendarGrid.appendChild(buildMonth(month2, 1));
+        calLeftEl.innerHTML  = buildMonth(new Date(currentDate), 0);
+        calRightEl.innerHTML = buildMonth(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1), 1);
       }
 
       function buildMonth(date, offset) {
-        var el = document.createElement('div');
-        el.className = 'calendar-grid__month';
+        var year = date.getFullYear();
+        var month = date.getMonth();
 
-        /* Header: label + nav */
-        var header = document.createElement('div');
-        header.className = 'calendar-grid__header';
-
-        var label = document.createElement('span');
-        label.className = 'calendar-grid__label';
-        label.textContent = MONTHS[date.getMonth()] + ' ' + date.getFullYear();
-        header.appendChild(label);
-
-        var nav = document.createElement('div');
-        nav.className = 'calendar-grid__nav';
+        /* Header: prev nav (left month) · caption · next nav (right month). */
+        var html = '<div class="calendar__header">';
         if (offset === 0) {
-          var prevBtn = document.createElement('button');
-          prevBtn.className = 'calendar-nav-btn';
-          prevBtn.type = 'button';
-          prevBtn.setAttribute('aria-label', 'Previous month');
-          prevBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="m15 18-6-6 6-6"/></svg>';
-          prevBtn.addEventListener('click', function (e) { e.stopPropagation(); prevMonth(); });
-          nav.appendChild(prevBtn);
+          html += '<button class="calendar__nav-btn" type="button" data-nav="prev" aria-label="Previous month">';
+          html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="m15 18-6-6 6-6"/></svg></button>';
+        } else {
+          html += '<span style="width:var(--cell-size)"></span>';
         }
+        html += '<div class="calendar__caption">' + MONTHS[month] + ' ' + year + '</div>';
         if (offset === 1) {
-          var nextBtn = document.createElement('button');
-          nextBtn.className = 'calendar-nav-btn';
-          nextBtn.type = 'button';
-          nextBtn.setAttribute('aria-label', 'Next month');
-          nextBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="m9 18 6-6-6-6"/></svg>';
-          nextBtn.addEventListener('click', function (e) { e.stopPropagation(); nextMonth(); });
-          nav.appendChild(nextBtn);
+          html += '<button class="calendar__nav-btn" type="button" data-nav="next" aria-label="Next month">';
+          html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="m9 18 6-6-6-6"/></svg></button>';
+        } else {
+          html += '<span style="width:var(--cell-size)"></span>';
         }
-        header.appendChild(nav);
-        el.appendChild(header);
+        html += '</div>';
 
-        /* Weekday row */
-        var weekdays = document.createElement('div');
-        weekdays.className = 'calendar-grid__weekdays';
+        /* Grid: 7 weekday cells + 42 day cells as direct children. */
+        html += '<div class="calendar__grid">';
         DAYS_SHORT.forEach(function (d) {
-          var wd = document.createElement('span');
-          wd.className = 'calendar-grid__weekday';
-          wd.textContent = d;
-          weekdays.appendChild(wd);
+          html += '<div class="calendar__weekday">' + d + '</div>';
         });
-        el.appendChild(weekdays);
-
-        /* Day cells */
-        var daysGrid = document.createElement('div');
-        daysGrid.className = 'calendar-grid__days';
 
         var monthStart = getMonthStart(date);
         var monthEnd   = getMonthEnd(date);
         var startDow   = monthStart.getDay();
 
-        /* Leading blanks for days before the 1st */
+        /* Leading outside days (prev month), shown dimmed and non-interactive. */
         for (var i = 0; i < startDow; i++) {
-          var blank = document.createElement('span');
-          blank.className = 'calendar-day calendar-day--outside';
-          var prevMonthDay = new Date(date.getFullYear(), date.getMonth(), -startDow + 1 + i);
-          blank.textContent = prevMonthDay.getDate();
-          daysGrid.appendChild(blank);
+          var lead = new Date(year, month, -startDow + 1 + i);
+          html += '<span class="calendar__day calendar__day--outside">' + lead.getDate() + '</span>';
         }
 
-        /* Actual days of the month */
+        /* Days of the month. */
         for (var d = 1; d <= monthEnd.getDate(); d++) {
-          var cellDate = new Date(date.getFullYear(), date.getMonth(), d);
-          var btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = 'calendar-day';
-          btn.textContent = d;
-          btn.dataset.date = cellDate.toISOString();
+          var cellDate = new Date(year, month, d);
+          var classes = 'calendar__day';
 
-          /* Today marker */
-          if (sameDay(cellDate, today)) {
-            btn.classList.add('calendar-day--today');
-          }
+          if (sameDay(cellDate, today)) classes += ' calendar__day--today';
 
-          /* Range highlighting */
           if (rangeStart && rangeEnd) {
             if (sameDay(cellDate, rangeStart)) {
-              btn.classList.add('calendar-day--range-start');
-              if (!sameDay(rangeStart, rangeEnd)) btn.classList.add('calendar-day--range-middle');
+              classes += ' calendar__day--range-start';
+              if (!sameDay(rangeStart, rangeEnd)) classes += ' calendar__day--range-middle';
             }
             if (sameDay(cellDate, rangeEnd)) {
-              btn.classList.add('calendar-day--range-end');
-              if (!sameDay(rangeStart, rangeEnd)) btn.classList.add('calendar-day--range-middle');
+              classes += ' calendar__day--range-end';
+              if (!sameDay(rangeStart, rangeEnd)) classes += ' calendar__day--range-middle';
             }
             if (rangeStart < rangeEnd && cellDate > rangeStart && cellDate < rangeEnd) {
-              btn.classList.add('calendar-day--range-middle');
+              classes += ' calendar__day--range-middle';
             }
           } else if (rangeStart && !rangeEnd) {
-            if (sameDay(cellDate, rangeStart)) {
-              btn.classList.add('calendar-day--selected');
-            }
+            if (sameDay(cellDate, rangeStart)) classes += ' calendar__day--selected';
           }
 
-          btn.addEventListener('click', function (e) {
-            e.stopPropagation();
-            handleDayClick(new Date(this.dataset.date));
-          });
-
-          daysGrid.appendChild(btn);
+          html += '<button class="' + classes + '" type="button" data-date="' + cellDate.toISOString() + '">' + d + '</button>';
         }
 
-        /* Trailing blanks to fill the last row */
+        /* Trailing outside days (next month) to complete the last row. */
         var totalCells = startDow + monthEnd.getDate();
         var remainder = totalCells % 7;
         if (remainder > 0) {
           for (var j = 0; j < 7 - remainder; j++) {
-            var trail = document.createElement('span');
-            trail.className = 'calendar-day calendar-day--outside';
-            var nextMonthDay = new Date(date.getFullYear(), date.getMonth() + 1, 1 + j);
-            trail.textContent = nextMonthDay.getDate();
-            daysGrid.appendChild(trail);
+            var trail = new Date(year, month + 1, 1 + j);
+            html += '<span class="calendar__day calendar__day--outside">' + trail.getDate() + '</span>';
           }
         }
 
-        el.appendChild(daysGrid);
-        return el;
+        html += '</div>';
+        return html;
       }
+
+      /* Event delegation: nav + day clicks on either month container. */
+      [calLeftEl, calRightEl].forEach(function (container) {
+        container.addEventListener('click', function (e) {
+          var nav = e.target.closest('[data-nav]');
+          if (nav) {
+            e.stopPropagation();
+            if (nav.getAttribute('data-nav') === 'prev') { prevMonth(); } else { nextMonth(); }
+            return;
+          }
+          var day = e.target.closest('.calendar__day[data-date]');
+          if (day) {
+            e.stopPropagation();
+            handleDayClick(new Date(day.getAttribute('data-date')));
+          }
+        });
+      });
 
       /* ── Navigation ────────────────────────────────────────────── */
       function prevMonth() {

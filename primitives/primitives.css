@@ -1084,26 +1084,28 @@ body { margin: 0; }
 /* @component calendar */
 /* The base month grid date pickers build their popup on: a flex header (prev /
    caption / next), a single 7-column CSS grid that holds the weekday header row
-   PLUS the 6×7 day matrix on one uniform 2px gap, and an optional footer
-   (Clear / Today). Month navigation, day/range selection, the label-vs-dropdown
-   caption, roving arrow-key focus, and the RTL chevron flip are react-day-picker
-   behaviors — out of scope for this static skin. The reference layer paints the
-   resting surface, the grid, and one day in each state; mark days with
-   .calendar__day--today / --selected / --range-start / --range-end /
-   --range-middle / --outside / --disabled / --focused (the skin can't observe
-   live selection/focus). Two component-local customs key off tokens: --cell-size
-   (32px, --space-8) and --cell-radius (--radius-md — rounded-square day cells,
-   not circles). */
+   PLUS the 6×7 day matrix — day columns sit edge-to-edge (no column gap) so
+   selection/range fills join into a continuous track, with an 8px row rhythm
+   between weeks — and an optional footer (Clear / Today). Month navigation,
+   day/range selection, the label-vs-dropdown caption, roving arrow-key focus, and
+   the RTL chevron flip are react-day-picker behaviors — out of scope for this
+   static skin. The reference layer paints the resting surface, the grid, and one
+   day in each state; mark days with .calendar__day--today / --selected /
+   --range-start / --range-end / --range-middle / --outside / --disabled /
+   --focused (the skin can't observe live selection/focus).
+
+   The root is a BARE surface (padding + type only, no border/shadow/background) —
+   the host paints the chrome: a .popover in the pickers, a bordered wrapper for a
+   standalone view. Two component-local customs key off tokens: --cell-size
+   (32px, --space-8) and --cell-radius (--radius-md, 10px — rounded-square day
+   cells, not circles). */
 
 .calendar {
   --cell-size: var(--space-8);          /* 32px */
-  --cell-radius: var(--radius-md);      /* 6px — rounded-square day cells (not circles) */
+  --cell-radius: var(--radius-md);      /* 10px — rounded-square day cells (not circles) */
   width: fit-content;
   padding: var(--space-3);              /* 12px */
-  border: 1px solid var(--color-line-default);
-  border-radius: var(--radius-xl);      /* 12px */
-  background-color: var(--color-surface-2);
-  box-shadow: var(--shadow-3);
+  background-color: transparent;        /* bare — host surface shows through */
   color: var(--color-content-primary);
   font-family: var(--font-sans);
 }
@@ -1116,17 +1118,17 @@ body { margin: 0; }
   margin-bottom: var(--space-2);        /* 8px */
 }
 
-/* Prev / next — 26px bordered icon button (light line, rounded square). */
+/* Prev / next — cell-size (32px) ghost icon button: no border/fill until hover. */
 .calendar__nav-btn {
   display: inline-flex;
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 1.625rem;   /* 26px */
-  height: 1.625rem;
-  border: 1px solid var(--color-line-default);
+  width: var(--cell-size);              /* 32px */
+  height: var(--cell-size);
+  border: none;
   border-radius: var(--radius-md);
-  background-color: var(--color-surface-2);
+  background-color: transparent;
   color: var(--color-content-secondary);
   font-size: var(--text-lg);            /* 16px chevron */
   line-height: 1;
@@ -1148,25 +1150,73 @@ body { margin: 0; }
 /* Month/year caption — centered between the nav buttons. */
 .calendar__caption {
   font-size: var(--text-md);            /* 14px */
-  font-weight: 600;
+  font-weight: 500;
   color: var(--color-content-primary);
   user-select: none;
 }
 
-/* Grid — one 7-column track holding the weekday header + all 42 day cells. */
+/* Dropdown caption — the text label swapped for month + year <select>s so a
+   viewer can jump straight to any month/year (source captionLayout="dropdown").
+   Borderless ghost triggers: the label + a chevron, no box at rest, a subtle
+   surface-hover on hover. The native <select> carries the options; a chevron-down
+   icon overlays its trailing edge. */
+.calendar__dropdowns {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+.calendar__dropdown {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.calendar__dropdown select {
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);            /* 14px */
+  font-weight: 500;
+  line-height: 1;
+  padding-block: var(--space-1);
+  padding-inline: var(--space-2) calc(var(--space-4) + var(--space-2));  /* right room for the chevron */
+  cursor: pointer;
+  transition: background-color 0.12s;
+  outline: none;
+}
+.calendar__dropdown select:hover { background-color: var(--color-surface-hover); }
+.calendar__dropdown select:focus-visible { box-shadow: var(--shadow-focus); }
+/* Chevron-down affordance; pointer-events:none so the click falls through to the
+   select underneath. */
+.calendar__dropdown svg {
+  position: absolute;
+  right: var(--space-2);
+  width: 0.75rem;                       /* 12px */
+  height: 0.75rem;
+  pointer-events: none;
+  color: var(--color-content-tertiary);
+}
+
+/* Grid — one 7-column track holding the weekday header + all 42 day cells. Day
+   columns touch (no column gap) so selection/range fills join; weeks breathe on
+   an 8px row gap (source: week rows get mt-2). */
 .calendar__grid {
   display: grid;
   grid-template-columns: repeat(7, var(--cell-size));
-  gap: 2px;
+  column-gap: 0;
+  row-gap: var(--space-2);              /* 8px */
 }
 
-/* Weekday header cell — small, semibold, letter-spaced, tertiary. */
+/* Weekday header cell — small, normal weight, tertiary (source: font-normal
+   text-muted-foreground). */
 .calendar__weekday {
   padding: 2px 0;
   color: var(--color-content-tertiary);   /* source text-muted-foreground */
   font-size: var(--text-xs);             /* 12px */
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font-weight: 400;
   text-align: center;
   user-select: none;
 }
@@ -1176,7 +1226,8 @@ body { margin: 0; }
   display: flex;
   align-items: center;
   justify-content: center;
-  height: var(--cell-size);               /* 32px */
+  width: var(--cell-size);                /* 32px — fills its (gapless) column */
+  height: var(--cell-size);
   border: none;
   border-radius: var(--cell-radius);
   background-color: transparent;
@@ -1197,49 +1248,75 @@ body { margin: 0; }
   background-color: var(--color-surface-hover);
 }
 
-/* Today — outlined cell: a line-strong outline + bold text, no fill. */
+/* Today — subtle filled cell (source: bg-accent text-accent-foreground); the
+   primary fill of --selected / range states overrides it when both apply. */
 .calendar__day--today {
-  outline: 1px solid var(--color-line-strong);
+  background-color: var(--color-surface-3);
   color: var(--color-content-primary);
-  font-weight: 700;
+  border-radius: var(--cell-radius);
+  font-weight: 400;
 }
 
-/* Selected single — primary fill; overrides the today outline/bold when both. */
+/* Selected single — primary fill; overrides the today fill when both. */
 .calendar__day--selected {
-  outline: none;
   background-color: var(--color-primary-700);
   color: var(--color-content-on-primary);
   font-weight: 400;
 }
 
-/* Range caps — primary fill; outer side rounded, inner side square. The
-   box-shadow bridges the 2px grid gap so the track stays continuous. */
-.calendar__day--range-start {
-  outline: none;
-  background-color: var(--color-primary-700);
-  color: var(--color-content-on-primary);
+/* Range — a continuous muted track (source bg-accent). Day columns are gapless,
+   so the cell backgrounds join into one bar per week row. The track is square
+   between days and rounds only at the range ends AND at each week-row's edges
+   (a stadium per row). Endpoints add a filled primary pill ON TOP of the track,
+   so a start/end day reads as a dark pill sitting on the muted bar — the
+   react-day-picker two-layer look (cell = track, button = pill). */
+.calendar__day--range-start,
+.calendar__day--range-middle,
+.calendar__day--range-end {
+  background-color: var(--color-surface-3);   /* the connecting track */
+  color: var(--color-content-primary);
   font-weight: 400;
-  border-start-end-radius: 0;
-  border-end-end-radius: 0;
-  box-shadow: 2px 0 0 var(--color-primary-700);
+  border-radius: 0;
+}
+/* Track rounds on the outer side of each endpoint … */
+.calendar__day--range-start {
+  border-start-start-radius: var(--cell-radius);
+  border-end-start-radius: var(--cell-radius);
 }
 .calendar__day--range-end {
-  outline: none;
-  background-color: var(--color-primary-700);
-  color: var(--color-content-on-primary);
-  font-weight: 400;
-  border-start-start-radius: 0;
-  border-end-start-radius: 0;
-  box-shadow: -2px 0 0 var(--color-primary-700);
+  border-start-end-radius: var(--cell-radius);
+  border-end-end-radius: var(--cell-radius);
 }
-
-/* Range middle — muted track, square corners; bridges both side gaps. */
-.calendar__day--range-middle {
-  outline: none;
-  background-color: var(--color-surface-3);   /* source bg-muted */
-  color: var(--color-content-primary);
-  border-radius: 0;
-  box-shadow: -2px 0 0 var(--color-surface-3), 2px 0 0 var(--color-surface-3);
+/* … and at the left / right edge of each week row. The 7 weekday header cells
+   fill the grid's first row, so day column 1 is nth-child(7n+1) and column 7 is
+   nth-child(7n). */
+.calendar__day--range-middle:nth-child(7n + 1),
+.calendar__day--range-end:nth-child(7n + 1) {
+  border-start-start-radius: var(--cell-radius);
+  border-end-start-radius: var(--cell-radius);
+}
+.calendar__day--range-middle:nth-child(7n),
+.calendar__day--range-start:nth-child(7n) {
+  border-start-end-radius: var(--cell-radius);
+  border-end-end-radius: var(--cell-radius);
+}
+/* Endpoint pill — a rounded primary fill behind the number. isolation + a
+   z-index:-1 ::before keep the pill above the track yet below the number, and let
+   the track stay visible on the endpoint's connecting side. */
+.calendar__day--range-start,
+.calendar__day--range-end {
+  position: relative;
+  isolation: isolate;
+  color: var(--color-content-on-primary);
+}
+.calendar__day--range-start::before,
+.calendar__day--range-end::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: var(--cell-radius);
+  background-color: var(--color-primary-700);
 }
 
 /* Outside (other-month) day — dimmed to tertiary. */
@@ -1260,11 +1337,11 @@ body { margin: 0; }
   visibility: hidden;
 }
 
-/* Focused day — ring lifts the cell above neighbors so the ring isn't clipped
-   (source group-data-focused: ring-2 ring-ring/50). */
+/* Focused day — 3px ring (source group-data-focused: ring-[3px] ring-ring); lifts
+   the cell above neighbors so the ring isn't clipped. */
 .calendar__day--focused {
   z-index: 1;
-  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-line-focus) 50%, transparent);
+  box-shadow: var(--shadow-focus);
 }
 
 /* Footer — optional Clear / Today action row. */

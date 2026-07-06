@@ -262,8 +262,8 @@
         A fully functional date picker: click the trigger to open the calendar
         popover, use the prev/next buttons to navigate months, click a day to
         select it (the popover closes and the value updates), and use the clear
-        button to reset. Today's date is outlined (<code>.calendar__day--today</code>)
-        and the selected day is filled (<code>.calendar__day--selected</code>).
+        button to reset. Today's date carries a subtle fill (<code>.calendar__day--today</code>)
+        and the selected day is filled with primary (<code>.calendar__day--selected</code>).
       </p>
 
       <div class="date-picker-wrapper" id="dp-interactive">
@@ -284,8 +284,9 @@
           </button>
         </div>
 
-        <!-- Popover -->
+        <!-- Popover — the .popover supplies the card chrome; the bare .calendar sits inside. -->
         <div class="date-picker__popover" id="dp-popover">
+          <div class="popover" style="width:auto;padding:0;">
           <div class="calendar" id="dp-calendar">
             <div class="calendar__header">
               <button class="calendar__nav-btn" type="button" id="dp-prev" aria-label="Previous month">
@@ -303,6 +304,7 @@
               <button class="calendar__link" type="button" id="dp-today-btn">Today</button>
               <button class="calendar__link" type="button" id="dp-clear-btn">Clear</button>
             </div>
+          </div>
           </div>
         </div>
       </div>
