@@ -51,6 +51,7 @@
     "promote": "node scripts/promote-version.mjs",
     "finalize": "node scripts/finalize-promoted-version.mjs",
     "apply-draft": "node scripts/apply-draft.mjs",
+    "materialize": "node scripts/materialize-version.mjs",
     "release": "node scripts/release.mjs",
     "release:status": "node scripts/release-status.mjs",
     "restore:source": "node scripts/restore-version-source.mjs"
