@@ -2344,6 +2344,15 @@
     },
     {
       "layer": "pattern",
+      "name": "gallery",
+      "title": "Pattern · Gallery",
+      "summary": "\"Browse a collection as a grid of tiles, not rows.\" A responsive grid of cards — each led by an image/visual — that you scan, filter, and open.",
+      "contract": "patterns/gallery.md",
+      "example": "patterns/gallery.html",
+      "classes": []
+    },
+    {
+      "layer": "pattern",
       "name": "list-page",
       "title": "Pattern · List page",
       "summary": "The default archetype for \"a collection you browse, filter, and act on\" (the most common portal screen).",

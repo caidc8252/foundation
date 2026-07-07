@@ -1,0 +1,306 @@
+<!--
+  Pattern · Gallery — copyable example
+  ─────────────────────────────────────────────────────────────────────────────
+  Companion to ./gallery.md (the contract — when the two disagree, the .md wins).
+  Copy this file and edit the markup to build a real gallery / catalog screen.
+
+  A product catalog: a page-header, a search/filter condition-band, a product-grid
+  of product-card tiles, and SCROLL-DRIVEN auto-load (infinite scroll) — the grid
+  appends the next batch as the bottom comes into view (the onReachEnd behavior
+  load-more.md points to for scroll loading, NOT a button), ending in the
+  load-more__end marker.
+
+  REQUIRED CORE — the tile grid (product-grid of product-card tiles).
+  OPTIONAL — the page-header, the search/filter condition-band, the footer
+  (scroll-load here; load-more button or rich-pagination are the alternatives), an
+  empty-state when a filter returns nothing.
+
+  HOW THE STYLES LOAD — LINKS the reference CSS (relative to patterns/); run
+  `pnpm build` after source edits. Order: tokens → primitives → composites. To ship
+  as a self-contained artifact, inline those three blocks into a <style>.
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pattern · Gallery — foundation example</title>
+
+<link rel="stylesheet" href="../release/tokens.inline.css">
+<link rel="stylesheet" href="../primitives/primitives.css">
+<link rel="stylesheet" href="../release/composites.css">
+
+<body>
+
+<div class="app-frame">
+  <div class="app-frame__col">
+    <main class="app-frame__main">
+
+      <!-- OPTIONAL — page-header band. A read-only catalog carries no primary (per
+           gallery.md); an admin/asset gallery would put a New verb here. -->
+      <header class="page-header">
+        <div class="page-header__bar">
+          <div class="page-header__titles">
+            <div class="page-header__heading">
+              <h1 class="page-header__title">Catalog</h1>
+            </div>
+            <p class="page-header__description">Browse terminals and accessories. Scroll to load more.</p>
+          </div>
+        </div>
+      </header>
+
+      <div class="page-body">
+
+        <!-- OPTIONAL — the SAME search/filter condition-band as list-page (the two
+             browse patterns share their results-region vocabulary). Search + a couple
+             of quick filters; scrolls with the body (not sticky). -->
+        <div class="condition-band">
+          <div class="condition-band__toolbar">
+            <div class="search-input">
+              <span class="search-input__icon">
+                <svg data-lucide="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+              </span>
+              <input class="input" type="search" placeholder="Search catalog…" aria-label="Search catalog">
+            </div>
+            <select class="select" aria-label="Category filter">
+              <option selected>All categories</option>
+              <option>Terminals</option>
+              <option>Readers</option>
+              <option>Accessories</option>
+              <option>Connectivity</option>
+            </select>
+            <select class="select" aria-label="Sort by">
+              <option selected>Most popular</option>
+              <option>Price: low to high</option>
+              <option>Price: high to low</option>
+              <option>Newest</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- REQUIRED CORE — the tile grid. product-grid lays out responsive auto-fill
+             columns following the CONTAINER width (never a hand-rolled repeat()); each
+             tile is a product-card whose whole surface is the click target to its
+             detail. Tiles past the first batch start hidden and reveal on scroll. -->
+        <div class="product-grid" id="gallery-grid">
+
+          <div class="product-card" tabindex="0">
+            <div class="product-card__image"><span class="product-card__placeholder">📟</span></div>
+            <div class="product-card__body">
+              <div class="product-card__name">Reader Pro X</div>
+              <div class="product-card__sku">SKU-RDR-PRO-X</div>
+              <div class="product-card__description">Contactless EMV reader with NFC and Bluetooth 5.2.</div>
+              <div class="product-card__price-row"><span class="product-card__price">1,299</span><span class="product-card__options">3 options</span></div>
+              <div class="product-card__cta">
+                <button class="btn btn--primary" type="button" onclick="event.stopPropagation()"><svg data-lucide="shopping-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>Add to cart</button>
+                <button class="product-card__add" type="button" onclick="event.stopPropagation()" aria-label="Quick add"><svg data-lucide="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card" tabindex="0">
+            <div class="product-card__image"><span class="product-card__placeholder">🔌</span><div class="product-card__ribbon product-card__ribbon--info">New</div></div>
+            <div class="product-card__body">
+              <div class="product-card__name">Cable, USB-C 2m</div>
+              <div class="product-card__sku">SKU-CBL-USBC-2M</div>
+              <div class="product-card__description">Braided USB-C cable, 100W PD, E-Marker chip.</div>
+              <div class="product-card__price-row"><span class="product-card__price">59</span></div>
+              <div class="product-card__cta">
+                <button class="btn btn--primary" type="button" onclick="event.stopPropagation()"><svg data-lucide="shopping-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>Add to cart</button>
+                <button class="product-card__add" type="button" onclick="event.stopPropagation()" aria-label="Quick add"><svg data-lucide="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card" tabindex="0">
+            <div class="product-card__image"><span class="product-card__placeholder">🖨️</span></div>
+            <div class="product-card__body">
+              <div class="product-card__name">Thermal Printer T2</div>
+              <div class="product-card__sku">SKU-PRN-T2</div>
+              <div class="product-card__description">80mm receipt printer, auto-cutter, USB + LAN.</div>
+              <div class="product-card__price-row"><span class="product-card__price">349</span></div>
+              <div class="product-card__cta">
+                <button class="btn btn--primary" type="button" onclick="event.stopPropagation()"><svg data-lucide="shopping-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>Add to cart</button>
+                <button class="product-card__add" type="button" onclick="event.stopPropagation()" aria-label="Quick add"><svg data-lucide="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card" tabindex="0">
+            <div class="product-card__image"><span class="product-card__placeholder">📱</span></div>
+            <div class="product-card__body">
+              <div class="product-card__name">Smart Terminal A920</div>
+              <div class="product-card__sku">SKU-TRM-A920</div>
+              <div class="product-card__description">Android smart terminal, 5.5″ HD, 4G + Wi-Fi.</div>
+              <div class="product-card__price-row"><span class="product-card__price">2,499</span><span class="product-card__options">5 options</span></div>
+              <div class="product-card__cta">
+                <button class="btn btn--primary" type="button" onclick="event.stopPropagation()"><svg data-lucide="shopping-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>Add to cart</button>
+                <button class="product-card__add" type="button" onclick="event.stopPropagation()" aria-label="Quick add"><svg data-lucide="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card" tabindex="0">
+            <div class="product-card__image"><span class="product-card__placeholder">🔋</span><div class="product-card__ribbon product-card__ribbon--warning">Sale</div></div>
+            <div class="product-card__body">
+              <div class="product-card__name">Battery Pack XL</div>
+              <div class="product-card__sku">SKU-BAT-XL</div>
+              <div class="product-card__description">Swappable 5200mAh pack for A-series terminals.</div>
+              <div class="product-card__price-row"><span class="product-card__price">89</span></div>
+              <div class="product-card__cta">
+                <button class="btn btn--primary" type="button" onclick="event.stopPropagation()"><svg data-lucide="shopping-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>Add to cart</button>
+                <button class="product-card__add" type="button" onclick="event.stopPropagation()" aria-label="Quick add"><svg data-lucide="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card" tabindex="0">
+            <div class="product-card__image"><span class="product-card__placeholder">🧾</span></div>
+            <div class="product-card__body">
+              <div class="product-card__name">Receipt Roll (50-pack)</div>
+              <div class="product-card__sku">SKU-ROL-80-50</div>
+              <div class="product-card__description">80mm × 40m thermal rolls, BPA-free.</div>
+              <div class="product-card__price-row"><span class="product-card__price">25</span></div>
+              <div class="product-card__cta">
+                <button class="btn btn--primary" type="button" onclick="event.stopPropagation()"><svg data-lucide="shopping-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>Add to cart</button>
+                <button class="product-card__add" type="button" onclick="event.stopPropagation()" aria-label="Quick add"><svg data-lucide="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card" tabindex="0">
+            <div class="product-card__image"><span class="product-card__placeholder">🎧</span></div>
+            <div class="product-card__body">
+              <div class="product-card__name">Headset Mono</div>
+              <div class="product-card__sku">SKU-HST-MONO</div>
+              <div class="product-card__description">Noise-cancelling mono headset for support desks.</div>
+              <div class="product-card__price-row"><span class="product-card__price">45</span></div>
+              <div class="product-card__cta">
+                <button class="btn btn--primary" type="button" onclick="event.stopPropagation()"><svg data-lucide="shopping-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>Add to cart</button>
+                <button class="product-card__add" type="button" onclick="event.stopPropagation()" aria-label="Quick add"><svg data-lucide="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card" tabindex="0">
+            <div class="product-card__image"><span class="product-card__placeholder">📡</span><div class="product-card__ribbon product-card__ribbon--warning">Low stock</div></div>
+            <div class="product-card__body">
+              <div class="product-card__name">4G Router R1</div>
+              <div class="product-card__sku">SKU-NET-R1</div>
+              <div class="product-card__description">Failover 4G router for always-on terminals.</div>
+              <div class="product-card__price-row"><span class="product-card__price">199</span></div>
+              <div class="product-card__cta">
+                <button class="btn btn--primary" type="button" onclick="event.stopPropagation()"><svg data-lucide="shopping-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>Add to cart</button>
+                <button class="product-card__add" type="button" onclick="event.stopPropagation()" aria-label="Quick add"><svg data-lucide="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card" tabindex="0">
+            <div class="product-card__image"><span class="product-card__placeholder">💳</span></div>
+            <div class="product-card__body">
+              <div class="product-card__name">Card Reader Mini</div>
+              <div class="product-card__sku">SKU-RDR-MINI</div>
+              <div class="product-card__description">Pocket Bluetooth reader, chip + contactless.</div>
+              <div class="product-card__price-row"><span class="product-card__price">699</span><span class="product-card__options">2 options</span></div>
+              <div class="product-card__cta">
+                <button class="btn btn--primary" type="button" onclick="event.stopPropagation()"><svg data-lucide="shopping-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>Add to cart</button>
+                <button class="product-card__add" type="button" onclick="event.stopPropagation()" aria-label="Quick add"><svg data-lucide="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card" tabindex="0">
+            <div class="product-card__image"><span class="product-card__placeholder">🖊️</span></div>
+            <div class="product-card__body">
+              <div class="product-card__name">Stylus Pen</div>
+              <div class="product-card__sku">SKU-ACC-STY</div>
+              <div class="product-card__description">Capacitive stylus for signature capture.</div>
+              <div class="product-card__price-row"><span class="product-card__price">15</span></div>
+              <div class="product-card__cta">
+                <button class="btn btn--primary" type="button" onclick="event.stopPropagation()"><svg data-lucide="shopping-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>Add to cart</button>
+                <button class="product-card__add" type="button" onclick="event.stopPropagation()" aria-label="Quick add"><svg data-lucide="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card" tabindex="0">
+            <div class="product-card__image"><span class="product-card__placeholder">🧩</span></div>
+            <div class="product-card__body">
+              <div class="product-card__name">Dock Station D3</div>
+              <div class="product-card__sku">SKU-DCK-D3</div>
+              <div class="product-card__description">Charging dock with Ethernet and 3× USB.</div>
+              <div class="product-card__price-row"><span class="product-card__price">179</span></div>
+              <div class="product-card__cta">
+                <button class="btn btn--primary" type="button" onclick="event.stopPropagation()"><svg data-lucide="shopping-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>Add to cart</button>
+                <button class="product-card__add" type="button" onclick="event.stopPropagation()" aria-label="Quick add"><svg data-lucide="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card" tabindex="0">
+            <div class="product-card__image"><span class="product-card__placeholder">🛡️</span></div>
+            <div class="product-card__body">
+              <div class="product-card__name">Screen Protector</div>
+              <div class="product-card__sku">SKU-ACC-SCR</div>
+              <div class="product-card__description">Tempered-glass protector for A920 / A920 Pro.</div>
+              <div class="product-card__price-row"><span class="product-card__price">12</span></div>
+              <div class="product-card__cta">
+                <button class="btn btn--primary" type="button" onclick="event.stopPropagation()"><svg data-lucide="shopping-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>Add to cart</button>
+                <button class="product-card__add" type="button" onclick="event.stopPropagation()" aria-label="Quick add"><svg data-lucide="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Scroll sentinel — the onReachEnd trigger. When it scrolls into view and
+             tiles remain hidden, the next batch reveals. Classless (no design vocab). -->
+        <div id="gallery-sentinel" aria-hidden="true"></div>
+
+        <!-- Footer — SCROLL-DRIVEN mode has no load-more BUTTON (auto-append). The
+             load-more composite appears only in its DONE state: the end marker, shown
+             once every tile is loaded. -->
+        <div class="load-more" id="gallery-end" hidden>
+          <span class="load-more__end">You've reached the end · 12 items</span>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  /* Scroll-driven auto-load (infinite scroll) — the onReachEnd behavior load-more.md
+     points to for scroll loading. Tiles past the first batch start hidden; when the
+     sentinel comes into view, reveal the next batch; when exhausted, show the
+     load-more__end marker and stop observing. (In @cloud/ui this is the list/grid's
+     onReachEnd wired to a data fetch.) */
+  (function () {
+    var grid = document.getElementById('gallery-grid');
+    var sentinel = document.getElementById('gallery-sentinel');
+    var endMarker = document.getElementById('gallery-end');
+    if (!grid || !sentinel) return;
+
+    var tiles = [].slice.call(grid.querySelectorAll('.product-card'));
+    var total = tiles.length;
+    var BATCH = 6;
+    var shown = 0;
+
+    function apply() {
+      tiles.forEach(function (t, i) { t.style.display = i < shown ? '' : 'none'; });
+      if (shown >= total) {
+        if (endMarker) endMarker.hidden = false;
+        if (observer) observer.disconnect();
+      }
+    }
+    function loadNext() { shown = Math.min(shown + BATCH, total); apply(); }
+
+    shown = BATCH;
+    apply();
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting && shown < total) loadNext(); });
+    }, { rootMargin: '300px' });
+    observer.observe(sentinel);
+  })();
+</script>
+</body>

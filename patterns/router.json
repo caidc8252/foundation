@@ -163,6 +163,29 @@
         "The request says manage X but does not say whether the record opens in place beside the list (master-detail) or on its own page (list-page then detail-page)."
       ]
     },
+    "gallery": {
+      "pattern": "gallery",
+      "builderPattern": "gallery",
+      "contract": "patterns/gallery.md",
+      "example": "patterns/gallery.html",
+      "intent": "Browse a collection as a responsive GRID OF TILES/CARDS led by each item's image — the tile counterpart to list-page. Products, images, models, templates, media; scroll/load-more/paginate below the grid.",
+      "chooseWhen": [
+        "The request asks to browse a catalog/storefront/gallery of items as CARDS or TILES with images (product catalog, image gallery, template/model picker), comparing items visually.",
+        "The item's picture is the primary thing to scan, and the whole tile opens its detail."
+      ],
+      "avoidWhen": [
+        "The collection is scanned/sorted by COLUMNS (dates, amounts, statuses) or needs bulk row-select — that is list-page (a data-table).",
+        "It is a fixed KPI/overview of a whole system (dashboard), not a browsable collection."
+      ],
+      "keywords": ["gallery", "catalog", "storefront", "product grid", "tile grid", "card grid", "browse products", "image gallery", "template picker", "画廊", "目录", "商品浏览", "卡片网格", "瓷砖网格", "图片库", "商城浏览"],
+      "exampleRequests": ["做一个商品目录/画廊浏览页（卡片网格）", "Build a product catalog / storefront browse page with image tiles", "做一个图片素材库的网格浏览页，滚动加载更多"],
+      "defaultTitle": "Gallery",
+      "outputNameHints": ["gallery", "catalog", "browse"],
+      "composites": ["page-header", "product-card", "list-filter", "rich-pagination", "load-more", "empty-state"],
+      "clarifyIf": [
+        "The request says browse products/items but does not say whether as a card GRID (gallery) or a data TABLE (list-page)."
+      ]
+    },
     "list-page": {
       "pattern": "list-page",
       "builderPattern": "list-page",
@@ -213,6 +236,7 @@
     "If the user explicitly asks for advanced filtering on a collection, choose list-page-advanced-filter.",
     "If the user asks for a dashboard, overview home, landing, or KPI summary of a whole system or fleet (not a single collection), choose dashboard.",
     "If the user asks to browse a bounded collection AND view/edit one record beside the list on the SAME screen (a left list rail + a right detail/editor, not a separate detail route), choose master-detail.",
+    "If the user asks to browse a collection as a GRID OF IMAGE TILES/CARDS where the picture is the primary thing to compare (a product catalog, storefront, image/asset gallery, template/model picker), choose gallery.",
     "If the user asks for many records, a management table, browsing, filtering, or search over a collection, choose list-page.",
     "If the user asks for one record's profile, detail, overview, or activity, choose detail-page.",
     "If the user asks for multi-step onboarding, setup, branching, or review-before-commit, choose create-wizard.",
