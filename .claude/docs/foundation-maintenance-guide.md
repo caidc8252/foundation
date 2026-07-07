@@ -138,7 +138,7 @@ in-repo example 过了一遍这道关。
 - `tokenOverrides`：token 值候选改动；
 - `classOverrides`：primitive/composite selector 的声明候选改动；
 - `classOverrideMeta` / `changes`：selector、prop、旧值、新值，以及它属于哪个 primitive/composite。
-- `elementOverrides`：实例级变体/尺寸切换（按 element path 记录 `classSwaps`）。归一化后随 manifest 走完整条链路，但本轮 foundation 侧**只记录、不自动回写页面 HTML**。
+- `elementOverrides`：composite 插槽规则（按 composite + 相对 path 记录 `{composite, rootClass, path, classSwaps}`）。归一化后随 manifest 走完整条链路；链路现为 `apply-draft → materialize → promote → finalize → release`，新增的 **`pnpm materialize <vN>`**（`node scripts/materialize-version.mjs`）会把这些规则**物化**进 `patterns/*.html` + `composites/*.html` 里所有匹配的实例（parse5 定位、按来源 class 守卫、幂等，支持 `--dry-run`），并写出 `versions/<vN>/materialize-report.json`（含 `stats` 与按 composite 分组的 `contractTodos`）。这修正了旧的「只记录、不回写 HTML」表述——但**仅限变体/尺寸插槽规则**；token/class override 不变，仍按下文流程走 promote。materialize 本身不改 `.md` 契约文案，`promote` 会在简报里追加「Contract prose TODO」段列出待手动同步的契约文件，`finalize` 在物化产生改动且 `contractTodos` 里还有条目未标 `done:true` 时会拒绝（契约漂移闸）。
 
 **这些 override 是候选事实，不是 foundation 合约。** 尤其是 composite class override：
 如果 `.stat-card` 的背景从 `success` 改到 `error`，但 `composites/stat-card.md`
@@ -226,8 +226,10 @@ source restore，然后再写 `release/`。
 §3.4 的 Agent flow 默认「带 override 的 promote」。落地一个 editor 版本前先做两件事，
 避免把一个设计决策拆成多个 PR：
 
-1. **先分诊 instance vs rule**：editor 的 `elementOverrides`（实例级变体/尺寸切换）本轮只
-   记录、不回写页面 HTML。判断这次到底是——
+1. **先分诊 instance vs rule**：editor 的 `elementOverrides`（composite 插槽变体/尺寸切换）现在会经
+   `pnpm materialize <vN>` 写回该 composite 下**所有匹配实例**的 `patterns/*.html` / `composites/*.html`（见
+   §3.4），但**不会自动改契约 `.md`**——只在 `promote.md` 里追加「Contract prose TODO」待办，`finalize`
+   遇到未 `done` 的待办会拒绝。判断这次到底是——
    - **一次性用词**（某实例选了另一个*已有*变体）→ 改对应 **example `.html`** 即可，patch
      级，**不是版本事件**；
    - **一条长期规矩**（"以后 X 都这么做"）→ 改 **合约 `.md`**（primitive/composite/pattern）
@@ -500,7 +502,7 @@ example；改了 composite 名（= `.md` 文件名）则 `check:patterns` 抓 ro
 source 打架。
 
 > 这条是 **foundation → maintain** 方向（下游 substrate 刷新），与 §3.4 的 **maintain → foundation**
-> （`manifest.json` 回流：`apply-draft → promote → finalize → release`）是两个相反方向，别混。加 / 删组件是
+> （`manifest.json` 回流：`apply-draft → materialize → promote → finalize → release`）是两个相反方向，别混。加 / 删组件是
 > **纯 foundation 源码编辑**，editor 表达不了"新增/删除一个组件"，所以它永远从这条下游同步得知闭合集变化，
 > 不是从 manifest 回流。
 
