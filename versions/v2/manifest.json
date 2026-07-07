@@ -14,21 +14,8 @@
     "elementPaths": 1
   },
   "changedTokens": [],
-  "changedDarkTokens": [],
-  "reviewSubject": {
-    "label": "“Reveal”按钮",
-    "visualName": "按钮",
-    "selector": ".btn",
-    "className": "btn",
-    "sourceFile": "primitives/primitives.css",
-    "owner": {
-      "layer": "primitive",
-      "name": "button",
-      "title": "Button"
-    }
-  },
+  "reviewSubject": null,
   "tokenOverrides": {},
-  "darkTokenOverrides": {},
   "classOverrides": {},
   "classOverrideMeta": {},
   "changes": {
@@ -46,5 +33,24 @@
     }
   },
   "conflicts": [],
-  "draftFrom": "foundation-maintain"
+  "skipped": {
+    "tokens": [],
+    "classOverrides": []
+  },
+  "sourceCommit": "3a6195dc807b0fea426139465f79f79338e53840",
+  "sourceDirty": false,
+  "sourceGit": {
+    "available": true,
+    "commit": "3a6195dc807b0fea426139465f79f79338e53840",
+    "shortCommit": "3a6195dc807b",
+    "dirty": false,
+    "dirtyPaths": [],
+    "restorePaths": [
+      "tokens",
+      "primitives",
+      "composites",
+      "patterns",
+      "governance"
+    ]
+  }
 }
