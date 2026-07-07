@@ -3,11 +3,17 @@
 "One record, read-mostly, with actions." The archetype you reach a list page's
 row into. Named structure, not implementation.
 
-> 📐 **Copyable example** · [`detail-page.html`](./detail-page.html) — the full anatomy
-> assembled from composites (detail-header band with back button + status chips + meta +
-> docked tabs → tab content: Overview KV grid, Activity timeline, empty states), ready to
-> copy and modify. It **links** the reference CSS so it never forks; inline the blocks to
-> ship it as an artifact. All examples: [`index.html`](./index.html).
+> 📐 **Copyable examples** — both **link** the reference CSS so they never fork; inline
+> the blocks to ship as an artifact. All examples: [`index.html`](./index.html).
+> - [`detail-page.html`](./detail-page.html) — the `tabbed` variant: detail-header band
+>   (back + status chips + meta + **docked tabs**) → tab content (Overview KV grid with a
+>   top KPI row + `.detail-split` main/aside, Team simple-tier collection, Orders
+>   rich-tier collection, Billing, Activity timeline, Settings empty state).
+> - [`detail-page-overview.html`](./detail-page-overview.html) — the `overview` variant:
+>   the **no-tabs** detail-header (identity + meta + actions, **no tab strip**), with the
+>   body's sections stacked directly in `page-body` (status banner `alert` → `.detail-split`
+>   Overview + a `progress` Health rail → a `accordion` Diagnostics section → a
+>   `list-row` + `switch` Preferences list).
 
 ## Anatomy
 
@@ -154,9 +160,13 @@ when this record's job calls for it.
 
 **Variants** — the layout decision for the body.
 
-- `overview` — 1–2 core blocks, laid out directly (no tabs).
+- `overview` — sections laid out directly, **no tabs** (the band drops its tab
+  strip). For when the sub-views are few and light enough to read on one scroll;
+  the body stacks its labelled sections directly in `page-body`. Example:
+  [`detail-page-overview.html`](./detail-page-overview.html).
 - `tabbed` — multiple peer blocks become a `Tabs` set (line variant). One page
   with tab state, not one route per tab (see **Tabs vs sections** in Rules).
+  Example: [`detail-page.html`](./detail-page.html).
 - `sub-route` — when a sub-view is heavy, has independent permissions, or needs a
   deep-link, split it into its own route and **record the reason**. This is the
   one case where a detail "tab" becomes a real route.
