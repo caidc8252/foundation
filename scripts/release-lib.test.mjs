@@ -5,6 +5,7 @@ import { join } from "node:path";
 import test from "node:test";
 
 import {
+  assertFinalizeOverrides,
   markReleasedVersions,
   normalizeElementOverrides,
   normalizeReviewSubject,
@@ -148,4 +149,69 @@ test("normalizeElementOverrides (foundation) keeps composite identity + composit
   });
   assert.deepEqual(Object.keys(out), ["page-header#2.0"]);
   assert.equal(out["page-header#2.0"].rootClass, ".page-header");
+});
+
+test("assertFinalizeOverrides throws when there are no token/class overrides and no materialized changes", () => {
+  assert.throws(
+    () => assertFinalizeOverrides("v9", { tokenOverrideCount: 0, classOverrideDeclarations: 0, report: null }),
+    /no draft overrides/,
+  );
+
+  assert.throws(
+    () =>
+      assertFinalizeOverrides("v9", {
+        tokenOverrideCount: 0,
+        classOverrideDeclarations: 0,
+        report: { stats: { changed: 0 }, contractTodos: [] },
+      }),
+    /no draft overrides/,
+  );
+});
+
+test("assertFinalizeOverrides gates on unfinished contract TODOs when the version has materialized changes", () => {
+  assert.throws(
+    () =>
+      assertFinalizeOverrides("v9", {
+        tokenOverrideCount: 0,
+        classOverrideDeclarations: 0,
+        report: {
+          stats: { changed: 2 },
+          contractTodos: [{ composite: "page-header", file: "composites/page-header.md", done: false }],
+        },
+      }),
+    /contract/i,
+  );
+
+  try {
+    assertFinalizeOverrides("v9", {
+      tokenOverrideCount: 0,
+      classOverrideDeclarations: 0,
+      report: {
+        stats: { changed: 2 },
+        contractTodos: [{ composite: "page-header", file: "composites/page-header.md", done: false }],
+      },
+    });
+    assert.fail("expected assertFinalizeOverrides to throw");
+  } catch (err) {
+    assert.match(err.message, /composites\/page-header\.md/);
+  }
+});
+
+test("assertFinalizeOverrides allows a materialized-only version once all contract TODOs are done", () => {
+  assert.doesNotThrow(() =>
+    assertFinalizeOverrides("v9", {
+      tokenOverrideCount: 0,
+      classOverrideDeclarations: 0,
+      report: {
+        stats: { changed: 2 },
+        contractTodos: [{ composite: "page-header", file: "composites/page-header.md", done: true }],
+      },
+    }),
+  );
+});
+
+test("assertFinalizeOverrides allows the existing token-override path regardless of report state", () => {
+  assert.doesNotThrow(() =>
+    assertFinalizeOverrides("v9", { tokenOverrideCount: 1, classOverrideDeclarations: 0, report: null }),
+  );
 });

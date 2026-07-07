@@ -615,6 +615,23 @@ export function publishSnapshot(payload, options = {}) {
   };
 }
 
+export function assertFinalizeOverrides(version, { tokenOverrideCount, classOverrideDeclarations, report }) {
+  const materializedChanges = report && report.stats ? report.stats.changed : 0;
+  if (!tokenOverrideCount && !classOverrideDeclarations && !materializedChanges) {
+    throw new Error(`version ${version} has no draft overrides to finalize`);
+  }
+  if (materializedChanges) {
+    const pending = (report.contractTodos || []).filter((t) => t.done !== true);
+    if (pending.length) {
+      throw new Error(
+        `version ${version} has ${pending.length} unfinished contract TODO(s) ` +
+          `(${pending.map((t) => t.file).join(", ")}). Update the contract prose and set done:true in ` +
+          `versions/${version}/materialize-report.json before finalizing.`,
+      );
+    }
+  }
+}
+
 export function finalizePromotedVersion(version, options = {}) {
   const repoRoot = options.repoRoot || ROOT;
   const versionRoot = options.versionRoot || VERSION_ROOT;
@@ -624,9 +641,9 @@ export function finalizePromotedVersion(version, options = {}) {
   const draftManifest = readVersionManifest(versionRoot, repoRoot, sourceVersion);
   const tokenOverrideCount = Object.keys(draftManifest.tokenOverrides || {}).length;
   const classOverrideDeclarations = classOverrideCount(draftManifest);
-  if (!tokenOverrideCount && !classOverrideDeclarations) {
-    throw new Error(`version ${sourceVersion} has no draft overrides to finalize`);
-  }
+  const reportPath = join(versionRoot, sourceVersion, "materialize-report.json");
+  const report = existsSync(reportPath) ? JSON.parse(readFileSync(reportPath, "utf8")) : null;
+  assertFinalizeOverrides(sourceVersion, { tokenOverrideCount, classOverrideDeclarations, report });
 
   const sourceGit = readSourceGitState(repoRoot);
   if (!sourceGit.commit) throw new Error("current source has no Git commit; commit promoted source before generating a clean version.");
