@@ -219,6 +219,32 @@ pnpm restore:source -- vN --build
 这类 workflow 文件。发布端在下拉框选择版本并 release 时也会执行同一类 Git
 source restore，然后再写 `release/`。
 
+### 3.5 一次 promote 收敛成一个 PR（先分诊 instance vs rule）
+
+§3.4 的 Agent flow 默认「带 override 的 promote」。落地一个 editor 版本前先做两件事，
+避免把一个设计决策拆成多个 PR：
+
+1. **先分诊 instance vs rule**：editor 的 `elementOverrides`（实例级变体/尺寸切换）本轮只
+   记录、不回写页面 HTML。判断这次到底是——
+   - **一次性用词**（某实例选了另一个*已有*变体）→ 改对应 **example `.html`** 即可，patch
+     级，**不是版本事件**；
+   - **一条长期规矩**（"以后 X 都这么做"）→ 改 **合约 `.md`**（primitive/composite/pattern）
+     并同步 example，按 §9.2 走，minor/major。
+
+   拿不准就问请求者"这是一次性还是标准规矩" —— 这一问决定后面是 1 个 PR 还是 3 个。
+
+2. **攒成一个 PR**：确定是规矩后，在本地把整条链路一次做完再开 PR —— example + 合约 `.md`
+   + `package.json` 版本号 + `versions/vN`（**已 `apply-draft` 盖好 sourceCommit**）+ 重生成的
+   `release/`/`build/current/`。一个自洽 PR 比拆成"实例交换 / 合约 / 固化"三个更好 review、
+   故事也完整。跨仓的 foundation-maintain substrate 同步（§10）是唯一必须分开的一步（不同仓库）。
+
+**零 override 版本的固化**：这种「实例升规矩」产出的 `versions/vN` 往往**没有任何 token/class
+override**。这类版本 `finalize` 会拒（`no draft overrides to finalize`）。要把它固化成可发布的
+clean 版本，用 **`node scripts/apply-draft.mjs vN`**（在 source 干净时跑）：`publishSnapshot` 会读
+当前 Git 状态、把缺失的 `sourceCommit` 盖进 manifest，于是 `versionSummary` 把它从
+`blocked（source commit missing）` 翻成 `clean / releaseable`。editor 保存时若已记 `sourceCommit`
+（v1 有、某些 editor 导出没有）则无需此步。
+
 ---
 
 ## 4. 添加 token

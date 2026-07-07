@@ -10,3 +10,4 @@ Quick map:
 - **The design law** → [`governance/principles.md`](governance/principles.md).
 - **How violations are caught** → [`governance/enforcement.md`](governance/enforcement.md) (+ `node scripts/check-artifact.mjs <file>`).
 - **Changing a token/contract** → [`governance/token-change.md`](governance/token-change.md). Edits to values go in `tokens/`, then `pnpm build`; never hand-edit `release/` or `build/current/`.
+- **Maintaining the foundation / promoting an editor version?** → [`.claude/docs/foundation-maintenance-guide.md`](.claude/docs/foundation-maintenance-guide.md). Land one design decision as **one PR** (example + contract + version bump + `apply-draft` stamp); first triage **instance vs rule** — a one-off variant choice is an example edit, a standing rule changes the contract (see §3.5).
