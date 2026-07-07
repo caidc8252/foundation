@@ -66,7 +66,8 @@ when this record's job calls for it.
 | meta row | no | id / region / dates / counts are useful at a glance |
 | header actions | no | a verb applies to this record (Edit / a single primary / overflow) |
 | tabs (the `tabbed` variant) | no | sub-views are genuinely independent and substantial; the `overview` variant omits them |
-| right rail (stat cards / amount summary) | no | the overview has key metrics or an order/invoice-style total to surface |
+| top KPI row (`.stat-grid`) | no | the overview has headline metrics worth surfacing full-width above the split |
+| right rail (`.card--elevation-0` secondary cards) | no | there are secondary facts (relationship, billing, an order/invoice total) that should sit beside — and quieter than — the main card |
 | status banner | no | a record-wide condition needs an inline callout (e.g. suspended, past-due) |
 
 ## Rules
@@ -162,8 +163,19 @@ when this record's job calls for it.
 
 **Overview structure** — `overview` = a **main card** (the KV grid — a left-right
 label → value list; a long value wraps inside its value column) **+ an
-optional right rail**. The rail stacks `stat-card`s (key metrics) for
-order/invoice-style records.
+optional right rail** of quiet secondary cards. **Hierarchy comes from
+elevation**: the main card keeps the default `elevation-1` so it reads as the
+protagonist; the rail's cards drop to **`.card--elevation-0`** (flat, no shadow)
+so they recede behind it. Don't lift the main to `elevation-2` — `card.md`
+reserves `2` for hover/overlay, so make the contrast by dropping the rail, not
+raising the main.
+
+**Headline metrics go in a top KPI row, not the rail** — when the record has key
+metrics, surface them in a **full-width `.stat-grid` row at the top of the panel**
+(`stat-grid--cols-N`, `repeat(N,1fr)` columns), above the `.detail-split`. A
+`stat-card` has a minimum height; stacked vertically in the 320px rail it reads
+short-and-wide. Use the KPI row **sparingly** — prefer no strip unless a metric
+genuinely earns the top spot (a table-only tab is often the right answer).
 
 **The main / aside split is `.detail-split`** — the closed-set layout utility
 (`composites.css`), **not** a page-local grid: a fluid `minmax(0,1fr)` main + a

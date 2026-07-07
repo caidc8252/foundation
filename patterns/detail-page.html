@@ -160,8 +160,10 @@
         <div class="detail-header__tabs">
           <div class="tabs__list tabs__list--line" role="tablist" aria-label="Customer detail sections">
             <button class="tabs__trigger tabs__trigger--active" type="button" role="tab" aria-selected="true"  aria-controls="panel-overview" data-tab="overview">Overview</button>
+            <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false" aria-controls="panel-team"     data-tab="team">Team</button>
             <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false" aria-controls="panel-orders"   data-tab="orders">Orders</button>
             <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false" aria-controls="panel-billing"  data-tab="billing">Billing</button>
+            <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false" aria-controls="panel-activity" data-tab="activity">Activity</button>
             <button class="tabs__trigger"                       type="button" role="tab" aria-selected="false" aria-controls="panel-settings" data-tab="settings">Settings</button>
           </div>
         </div>
@@ -178,9 +180,37 @@
              each with <dt> label + <dd> value; --full spans all columns. -->
         <!-- ── Overview tab ── -->
         <section class="tabs__content" role="tabpanel" id="panel-overview" data-panel="overview">
+
+          <!-- OPTIONAL — KPI row. Key metrics go in a FULL-WIDTH .stat-grid row at the
+               TOP of the panel (repeat(N,1fr) columns), NOT stacked into the narrow
+               rail (a stat-card has a min height — vertically stacked in a 320px rail it
+               reads short-and-wide). Use sparingly: prefer NO KPI strip unless a metric
+               genuinely earns the top spot. Delete this row if the record has no headline
+               metric. It is a top-level panel block, so it sits at space-6 above the split. -->
+          <div class="stat-grid stat-grid--cols-3">
+            <div class="stat-card">
+              <div class="stat-card__head"><span class="stat-card__label">Lifetime value</span></div>
+              <div class="stat-card__value stat-card__value--success">$48,200</div>
+              <p class="stat-card__description">All-time revenue</p>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card__head"><span class="stat-card__label">Orders placed</span></div>
+              <div class="stat-card__value">14</div>
+              <p class="stat-card__description">All time</p>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card__head"><span class="stat-card__label">Open tickets</span></div>
+              <div class="stat-card__value stat-card__value--warning">2</div>
+              <p class="stat-card__description">Awaiting response</p>
+            </div>
+          </div>
+
+          <!-- main / aside split (the .detail-split utility). Main carries the PROTAGONIST
+               (default elevation-1 card); the rail carries quiet secondary cards. -->
           <div class="detail-split">
 
-            <!-- Main card: KV grid (real composite — dl › .kv-grid__row › dt + dd) -->
+            <!-- MAIN — the Overview card (default elevation-1 so it reads as the primary
+                 surface). KV grid (real composite — dl › .kv-grid__row › dt + dd). -->
             <div class="card">
               <div class="card__header"><h2 class="card__title">Overview</h2></div>
               <div class="card__content">
@@ -220,47 +250,207 @@
                       <dd>APAC · Singapore</dd>
                     </div>
                     <div class="kv-grid__row">
-                      <dt>Renews</dt>
-                      <dd class="kv__value--mono">Jan 1, 2027</dd>
-                    </div>
-                    <!-- sensitive field: masked by default; reveal is an audited action -->
-                    <div class="kv-grid__row">
-                      <dt>Billing card</dt>
-                      <dd class="kv__value--reveal">
-                        <span class="kv__value--mono">•••• •••• •••• 4242</span>
-                        <button class="btn btn--link btn--xs" type="button">Reveal</button>
-                      </dd>
+                      <dt>Industry</dt>
+                      <dd>Robotics &amp; automation</dd>
                     </div>
                     <div class="kv-grid__row">
-                      <dt>Billing address</dt>
-                      <dd>2200 Mission St, Suite 4, San Francisco, CA 94110</dd>
+                      <dt>Employees</dt>
+                      <dd class="kv__value--mono">1,200</dd>
+                    </div>
+                    <div class="kv-grid__row">
+                      <dt>Website</dt>
+                      <dd>acme-robotics.example</dd>
                     </div>
                   </dl>
                 </div>
               </div>
             </div>
 
-            <!-- OPTIONAL right rail — stat-cards grouped in the aside column (DP4).
-                 .stack--4 gives the rail its own tighter in-column rhythm; the
-                 panel keeps space-6 between top-level blocks. Delete if no key metrics. -->
+            <!-- ASIDE — the rail. Two QUIET secondary cards grouped with .stack--4 (a
+                 tighter in-column rhythm than the panel's space-6). Each is a
+                 .card--elevation-0 (flat, no shadow) so the rail RECEDES behind the main
+                 Overview card — that contrast is what makes the main read as the
+                 protagonist (card.md reserves elevation-2 for hover/overlay, so hierarchy
+                 comes from dropping the rail to 0, not lifting the main to 2). -->
             <aside class="stack stack--4">
-              <div class="stat-card">
-                <div class="stat-card__head">
-                  <span class="stat-card__label">Lifetime value</span>
+
+              <!-- secondary: the account relationship -->
+              <div class="card card--elevation-0">
+                <div class="card__header"><h2 class="card__title">Relationship</h2></div>
+                <div class="card__content">
+                  <dl class="kv-grid">
+                    <div class="kv-grid__row">
+                      <dt>Account manager</dt>
+                      <dd>Priya Nair</dd>
+                    </div>
+                    <div class="kv-grid__row">
+                      <dt>Onboarded</dt>
+                      <dd class="kv__value--mono">Mar 2021</dd>
+                    </div>
+                    <div class="kv-grid__row">
+                      <dt>Health</dt>
+                      <dd><span class="badge badge--success"><span class="badge__dot"></span>Healthy</span></dd>
+                    </div>
+                  </dl>
                 </div>
-                <div class="stat-card__value stat-card__value--success">$48,200</div>
-                <p class="stat-card__description">All-time revenue</p>
               </div>
-              <div class="stat-card">
-                <div class="stat-card__head">
-                  <span class="stat-card__label">Orders placed</span>
+
+              <!-- secondary: billing summary (carries the masked-field + Reveal demo) -->
+              <div class="card card--elevation-0">
+                <div class="card__header"><h2 class="card__title">Billing</h2></div>
+                <div class="card__content">
+                  <dl class="kv-grid">
+                    <div class="kv-grid__row">
+                      <dt>Renews</dt>
+                      <dd class="kv__value--mono">Jan 1, 2027</dd>
+                    </div>
+                    <!-- sensitive field: masked by default; reveal is an audited action -->
+                    <div class="kv-grid__row">
+                      <dt>Card</dt>
+                      <dd class="kv__value--reveal">
+                        <span class="kv__value--mono">•••• 4242</span>
+                        <button class="btn btn--link btn--xs" type="button">Reveal</button>
+                      </dd>
+                    </div>
+                    <div class="kv-grid__row">
+                      <dt>Address</dt>
+                      <dd>2200 Mission St, Suite 4, San Francisco, CA 94110</dd>
+                    </div>
+                  </dl>
                 </div>
-                <div class="stat-card__value">14</div>
-                <p class="stat-card__description">All time</p>
               </div>
+
             </aside>
 
           </div>
+        </section>
+
+        <!-- OPTIONAL — Team tab (SIMPLE collection tier — the counterpart to Orders' RICH
+             tier). Delete with its tab trigger. Demonstrates the detail-page.md example
+             "Operators = an accounts card + a pending-invitations card": MULTIPLE
+             collection sections in one tab STACK vertically at the panel's own space-6
+             (no hand-rolled .stack wrapper — the panel provides the rhythm, §13), and
+             they never touch / 0-gap. Each is the SIMPLE tier: card › card__header
+             (a DISTINCT sub-section title — not the tab word "Team" — · at-most-one
+             action) › FLUSH card__content › data-table with ALWAYS-VISIBLE row actions.
+             NO summary-bar here (that is the RICH tier only, in Orders). -->
+        <!-- ── Team tab ── -->
+        <section class="tabs__content" role="tabpanel" id="panel-team" data-panel="team" hidden>
+
+          <!-- Section 1: accounts (simple tier). Header title is a distinct sub-section
+               name + the section's ONE action (Invite member). -->
+          <div class="card">
+            <div class="card__header">
+              <h2 class="card__title">Members</h2>
+              <div class="card__action">
+                <button class="btn btn--secondary btn--md" type="button">
+                  <svg data-lucide="user-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
+                  Invite member
+                </button>
+              </div>
+            </div>
+            <div class="card__content card__content--flush">
+              <div class="table-frame table-frame--flush">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Role</th>
+                      <th>Access</th>
+                      <th class="cell-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div class="cell-2line">
+                          <span class="cell-2line__main">Dana Okafor</span>
+                          <span class="cell-2line__sub">dana@acme-robotics.example</span>
+                        </div>
+                      </td>
+                      <td>Owner</td>
+                      <td><span class="badge badge--success"><span class="badge__dot" aria-hidden="true"></span>Active</span></td>
+                      <td class="row-actions">
+                        <div class="row-actions__inner">
+                          <button class="btn btn--ghost btn--icon-sm" type="button" aria-label="Edit" title="Edit"><svg data-lucide="square-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg></button>
+                          <button class="btn btn--ghost btn--icon-sm" type="button" aria-label="More actions"><svg data-lucide="ellipsis" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="cell-2line">
+                          <span class="cell-2line__main">Marcus Johnson</span>
+                          <span class="cell-2line__sub">m.johnson@acme-robotics.example</span>
+                        </div>
+                      </td>
+                      <td>Admin</td>
+                      <td><span class="badge badge--success"><span class="badge__dot" aria-hidden="true"></span>Active</span></td>
+                      <td class="row-actions">
+                        <div class="row-actions__inner">
+                          <button class="btn btn--ghost btn--icon-sm" type="button" aria-label="Edit" title="Edit"><svg data-lucide="square-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg></button>
+                          <button class="btn btn--ghost btn--icon-sm" type="button" aria-label="More actions"><svg data-lucide="ellipsis" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="cell-2line">
+                          <span class="cell-2line__main">Sofia Rossi</span>
+                          <span class="cell-2line__sub">s.rossi@acme-robotics.example</span>
+                        </div>
+                      </td>
+                      <td>Billing</td>
+                      <td><span class="badge badge--neutral">Read-only</span></td>
+                      <td class="row-actions">
+                        <div class="row-actions__inner">
+                          <button class="btn btn--ghost btn--icon-sm" type="button" aria-label="Edit" title="Edit"><svg data-lucide="square-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg></button>
+                          <button class="btn btn--ghost btn--icon-sm" type="button" aria-label="More actions"><svg data-lucide="ellipsis" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: pending invitations (simple tier). A DIFFERENT sub-section — its
+               own card, stacked below at the panel's space-6. Header carries only its
+               distinct title (no action needed). -->
+          <div class="card">
+            <div class="card__header">
+              <h2 class="card__title">Pending invitations</h2>
+            </div>
+            <div class="card__content card__content--flush">
+              <div class="table-frame table-frame--flush">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Email</th>
+                      <th>Role</th>
+                      <th>Invited</th>
+                      <th class="cell-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>j.tan@acme-robotics.example</td>
+                      <td>Developer</td>
+                      <td>3 days ago</td>
+                      <td class="row-actions">
+                        <div class="row-actions__inner">
+                          <button class="btn btn--ghost btn--sm" type="button">Resend</button>
+                          <button class="btn btn--ghost-danger btn--icon-sm" type="button" aria-label="Revoke invitation"><svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
         </section>
 
         <!-- OPTIONAL — Orders tab (RICH collection section). Delete with its tab trigger.
@@ -459,6 +649,83 @@
             </div>
           </div>
 
+        </section>
+
+        <!-- OPTIONAL — Activity tab (timeline composite). Delete with its tab trigger.
+             Activity = a chronological event log — the timeline composite (or feed-list
+             for a compact feed). HEADER-LESS card: the tab trigger already names the
+             section ("Activity"), so a card__title would only duplicate it — the flush
+             content just holds the timeline. The LAST item carries .timeline__item--last
+             (drops the connecting rail). -->
+        <!-- ── Activity tab ── -->
+        <section class="tabs__content" role="tabpanel" id="panel-activity" data-panel="activity" hidden>
+          <div class="card">
+            <div class="card__content">
+              <ul class="timeline">
+
+                <li class="timeline__item">
+                  <div class="timeline__marker timeline__marker--dot timeline__marker--success">
+                    <div class="timeline__marker-node"><div class="timeline__marker-dot"></div></div>
+                    <div class="timeline__rail"></div>
+                  </div>
+                  <div class="timeline__content">
+                    <div class="timeline__header">
+                      <span class="timeline__title">Order SO-2026-0184 delivered</span>
+                      <time class="timeline__time" datetime="2026-05-09T16:20:00Z">May 9, 2026</time>
+                    </div>
+                    <p class="timeline__description">5 terminals shipped to the Singapore site and marked delivered.</p>
+                    <span class="timeline__actor">fulfilment</span>
+                  </div>
+                </li>
+
+                <li class="timeline__item">
+                  <div class="timeline__marker timeline__marker--dot timeline__marker--primary">
+                    <div class="timeline__marker-node"><div class="timeline__marker-dot"></div></div>
+                    <div class="timeline__rail"></div>
+                  </div>
+                  <div class="timeline__content">
+                    <div class="timeline__header">
+                      <span class="timeline__title">Plan upgraded to Enterprise (annual)</span>
+                      <time class="timeline__time" datetime="2026-04-01T09:00:00Z">Apr 1, 2026</time>
+                    </div>
+                    <p class="timeline__description">Migrated from Growth to Enterprise; annual billing starts this cycle.</p>
+                    <span class="timeline__actor">Priya Nair</span>
+                  </div>
+                </li>
+
+                <li class="timeline__item">
+                  <div class="timeline__marker timeline__marker--dot timeline__marker--warning">
+                    <div class="timeline__marker-node"><div class="timeline__marker-dot"></div></div>
+                    <div class="timeline__rail"></div>
+                  </div>
+                  <div class="timeline__content">
+                    <div class="timeline__header">
+                      <span class="timeline__title">Support ticket opened</span>
+                      <time class="timeline__time" datetime="2026-03-22T11:30:00Z">Mar 22, 2026</time>
+                    </div>
+                    <p class="timeline__description">Terminal T-114 intermittently dropping its network connection.</p>
+                    <span class="timeline__actor">Dana Okafor</span>
+                  </div>
+                </li>
+
+                <li class="timeline__item timeline__item--last">
+                  <div class="timeline__marker timeline__marker--dot timeline__marker--neutral">
+                    <div class="timeline__marker-node"><div class="timeline__marker-dot"></div></div>
+                    <div class="timeline__rail"></div>
+                  </div>
+                  <div class="timeline__content">
+                    <div class="timeline__header">
+                      <span class="timeline__title">Customer onboarded</span>
+                      <time class="timeline__time" datetime="2021-03-15T08:00:00Z">Mar 15, 2021</time>
+                    </div>
+                    <p class="timeline__description">Account created and first two members invited.</p>
+                    <span class="timeline__actor">system</span>
+                  </div>
+                </li>
+
+              </ul>
+            </div>
+          </div>
         </section>
 
         <!-- OPTIONAL — Settings tab (empty state placeholder). Delete with its tab trigger. -->
