@@ -116,8 +116,12 @@ function normalizeClassOverrideMeta(input = {}) {
 
 export function normalizeElementOverrides(input = {}, ownerClassLookup = () => true) {
   const out = {};
-  for (const [path, entry] of Object.entries(input || {})) {
-    if (!ELEMENT_PATH_RE.test(path) || !entry || typeof entry !== "object") continue;
+  for (const entry of Object.values(input || {})) {
+    if (!entry || typeof entry !== "object") continue;
+    const composite = String(entry.composite || "").trim();
+    const rootClass = String(entry.rootClass || "").trim();
+    const path = String(entry.path || "").trim();
+    if (!composite || !rootClass.startsWith(".") || !ELEMENT_PATH_RE.test(path)) continue;
     const swaps = entry.classSwaps;
     if (!swaps || typeof swaps !== "object") continue;
     const cleanSwaps = {};
@@ -129,7 +133,7 @@ export function normalizeElementOverrides(input = {}, ownerClassLookup = () => t
       if (!ownerClassLookup(from) || !ownerClassLookup(to)) continue;
       cleanSwaps[group] = { from, to };
     }
-    if (Object.keys(cleanSwaps).length) out[path] = { classSwaps: cleanSwaps };
+    if (Object.keys(cleanSwaps).length) out[`${composite}#${path}`] = { composite, rootClass, path, classSwaps: cleanSwaps };
   }
   return out;
 }
@@ -611,6 +615,29 @@ export function publishSnapshot(payload, options = {}) {
   };
 }
 
+export function assertFinalizeOverrides(version, { tokenOverrideCount, classOverrideDeclarations, elementOverrideCount, report }) {
+  const materialized = elementOverrideCount > 0;
+  if (!tokenOverrideCount && !classOverrideDeclarations && !materialized) {
+    throw new Error(`version ${version} has no draft overrides to finalize`);
+  }
+  if (materialized) {
+    if (!report) {
+      throw new Error(
+        `version ${version} has element overrides but no materialize-report.json — ` +
+          `run \`node scripts/materialize-version.mjs ${version}\` before finalizing.`,
+      );
+    }
+    const pending = (report.contractTodos || []).filter((t) => t.done !== true);
+    if (pending.length) {
+      throw new Error(
+        `version ${version} has ${pending.length} unfinished contract TODO(s) ` +
+          `(${pending.map((t) => t.file).join(", ")}). Update the contract prose and set done:true in ` +
+          `versions/${version}/materialize-report.json before finalizing.`,
+      );
+    }
+  }
+}
+
 export function finalizePromotedVersion(version, options = {}) {
   const repoRoot = options.repoRoot || ROOT;
   const versionRoot = options.versionRoot || VERSION_ROOT;
@@ -620,9 +647,10 @@ export function finalizePromotedVersion(version, options = {}) {
   const draftManifest = readVersionManifest(versionRoot, repoRoot, sourceVersion);
   const tokenOverrideCount = Object.keys(draftManifest.tokenOverrides || {}).length;
   const classOverrideDeclarations = classOverrideCount(draftManifest);
-  if (!tokenOverrideCount && !classOverrideDeclarations) {
-    throw new Error(`version ${sourceVersion} has no draft overrides to finalize`);
-  }
+  const elementOverrideCount = Object.keys(draftManifest.elementOverrides || {}).length;
+  const reportPath = join(versionRoot, sourceVersion, "materialize-report.json");
+  const report = existsSync(reportPath) ? JSON.parse(readFileSync(reportPath, "utf8")) : null;
+  assertFinalizeOverrides(sourceVersion, { tokenOverrideCount, classOverrideDeclarations, elementOverrideCount, report });
 
   const sourceGit = readSourceGitState(repoRoot);
   if (!sourceGit.commit) throw new Error("current source has no Git commit; commit promoted source before generating a clean version.");
