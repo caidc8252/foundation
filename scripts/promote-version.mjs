@@ -417,6 +417,25 @@ function renderBrief(version, manifestPath, manifest) {
 
   lines.push(...renderCloudSyncSection(version, groups, tokens));
 
+  const reportPath = join(dirname(manifestPath), "materialize-report.json");
+  if (existsSync(reportPath)) {
+    const report = JSON.parse(readFileSync(reportPath, "utf8"));
+    if (report.contractTodos && report.contractTodos.length) {
+      lines.push(
+        "## Contract prose TODO",
+        "",
+        "Materialize already rewrote example/pattern HTML for this version; the contract prose below",
+        "must still be synced by hand, and every listed entry must be flipped to `done:true` in",
+        `\`${relative(root, reportPath).replace(/\\/g, "/")}\` before finalize:`,
+        "",
+      );
+      for (const todo of report.contractTodos) {
+        lines.push(`- [ ] ${todo.file} — ${todo.note}`);
+      }
+      lines.push("");
+    }
+  }
+
   lines.push("## Release gate", "");
   if (classRows.length || tokens.length) {
     lines.push(

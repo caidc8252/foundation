@@ -90,3 +90,107 @@ test("promote brief includes mandatory cloud-next-scaffold UI sync task", () => 
     rmSync(versionDir, { recursive: true, force: true });
   }
 });
+
+test("promote brief lists contract TODOs from the materialize report", () => {
+  const v = "v900002";
+  const vDir = join(root, "versions", v);
+  rmSync(vDir, { recursive: true, force: true });
+  mkdirSync(vDir, { recursive: true });
+  try {
+    writeFileSync(
+      join(vDir, "manifest.json"),
+      `${JSON.stringify(
+        {
+          version: v,
+          source: {
+            page: "settings.html",
+            title: "Settings",
+            href: "http://localhost:4177/settings.html",
+          },
+          publishedAt: "2026-06-30T00:00:00.000Z",
+          tokenOverrides: {},
+          classOverrides: {},
+          changes: {},
+        },
+        null,
+        2,
+      )}\n`,
+      "utf8",
+    );
+    writeFileSync(
+      join(vDir, "materialize-report.json"),
+      `${JSON.stringify(
+        {
+          version: v,
+          stats: 1,
+          dryRun: false,
+          files: [],
+          contractTodos: [
+            {
+              composite: "page-header",
+              file: "composites/page-header.md",
+              note: "example markup rewritten; sync prose",
+              done: false,
+            },
+          ],
+        },
+        null,
+        2,
+      )}\n`,
+      "utf8",
+    );
+
+    const run = spawnSync(
+      process.execPath,
+      [join(root, "scripts", "promote-version.mjs"), v, "--stdout"],
+      { cwd: root, encoding: "utf8" },
+    );
+
+    assert.equal(run.status, 0, run.stderr || run.stdout);
+    assert.match(run.stdout, /Contract prose TODO/);
+    assert.match(run.stdout, /composites\/page-header\.md/);
+    assert.match(run.stdout, /done:true/);
+  } finally {
+    rmSync(vDir, { recursive: true, force: true });
+  }
+});
+
+test("promote brief omits contract TODO section when no materialize report exists", () => {
+  const v = "v900003";
+  const vDir = join(root, "versions", v);
+  rmSync(vDir, { recursive: true, force: true });
+  mkdirSync(vDir, { recursive: true });
+  try {
+    writeFileSync(
+      join(vDir, "manifest.json"),
+      `${JSON.stringify(
+        {
+          version: v,
+          source: {
+            page: "settings.html",
+            title: "Settings",
+            href: "http://localhost:4177/settings.html",
+          },
+          publishedAt: "2026-06-30T00:00:00.000Z",
+          tokenOverrides: {},
+          classOverrides: {},
+          changes: {},
+        },
+        null,
+        2,
+      )}\n`,
+      "utf8",
+    );
+
+    const run = spawnSync(
+      process.execPath,
+      [join(root, "scripts", "promote-version.mjs"), v, "--stdout"],
+      { cwd: root, encoding: "utf8" },
+    );
+
+    assert.equal(run.status, 0, run.stderr || run.stdout);
+    assert.doesNotMatch(run.stdout, /Contract prose TODO/);
+  } finally {
+    rmSync(vDir, { recursive: true, force: true });
+  }
+});
