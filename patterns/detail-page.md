@@ -143,7 +143,9 @@ when this record's job calls for it.
   the updated values — no change-highlight, scroll-to, or flash. An edit launched
   from a tab **returns to that same tab** (tab state is preserved, never reset to
   Overview), so the user lands exactly where they left.
-- Sensitive fields render masked by default; reveal is an audited action.
+- Sensitive fields render masked by default; reveal is an audited action. The
+  reveal control is a **`link`-variant button** — a low-emphasis inline affordance
+  beside the masked value, not a `ghost` button.
 
 ## Variants & optional slots
 
