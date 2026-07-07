@@ -1,0 +1,4269 @@
+/* ─────────────────────────────────────────────────────────────
+   Foundation · Primitives · Reference CSS (artifact side)
+
+   This is the ARTIFACT-SIDE reference implementation of the primitive
+   design contracts in ./*.md. It is plain, framework-free CSS — no
+   Tailwind, no @apply, no build step, CSP-safe — meant to be inlined
+   into a self-contained HTML <style> AFTER ../release/tokens.inline.css.
+
+   It is drift-checked against the contract docs (button.md, input.md,
+   textarea.md, select.md, checkbox.md, radio-group.md, badge.md,
+   card.md): same variant/size vocabulary, same token recipe.
+
+   Tokens are the single source of truth. Every color / space / radius /
+   size below is a var(--token-name) referencing ../tokens/*. There are
+   ZERO hardcoded hex/px for anything that has a token. Dark mode needs
+   no handling here — the tokens flip via [data-theme="dark"], so var()
+   does it for free.
+
+   Ring colors (e.g. focus ring at reduced opacity) use color-mix() over
+   a token rather than a hardcoded rgba — still token-sourced, still
+   theme-aware.
+   ───────────────────────────────────────────────────────────── */
+
+/* ═══════════════════════════════ Baseline ═══════════════════════════════ */
+/* These primitives size with width/height AND padding together (.input /
+   .textarea are width:100% + inline padding; controls are fixed height +
+   padding). That only lays out correctly under border-box. The Next consumer
+   gets border-box from Tailwind Preflight; a self-contained artifact has no
+   other reset, so the reference layer must establish it here — otherwise the
+   host's content-box default makes a padded control overflow its track (a
+   width:100% search input spilling its padding OVER the filter beside it). This
+   is the one global rule the artifact side depends on: not a token, the box
+   model itself. */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* Flow-element margin reset. The Next consumer gets this from Tailwind
+   Preflight; a self-contained artifact otherwise inherits the UA defaults —
+   e.g. <dd> ships `margin-inline-start: 40px` (indenting KV values off their
+   labels), <h1>/<p>/<dl> ship block margins that leak into headers and cards,
+   and <form> ships `margin-block-end: 1em` that leaks below a `form.card`.
+   Foundation spaces with gap + explicit tokens, never per-element UA margins,
+   so zeroing these is safe. `:where()` keeps specificity at 0 — any component
+   or page-glue rule still wins (e.g. .page-header__description's margin-top). */
+:where(h1, h2, h3, h4, h5, h6, p, figure, blockquote, dl, dd, dt, ul, ol, form) {
+  margin: 0;
+  padding: 0;
+}
+
+/* UA body margin — browsers ship an 8px margin on <body>; zero it here so
+   pages / dialogs / sheets drawn on <body> don't get a stray outer gap. */
+body { margin: 0; }
+
+/* `[hidden]` hard reset. The UA `[hidden]{display:none}` loses to a composite's
+   own `display` — `.card` / `.tabs__content` and friends set `display:flex`, so
+   toggling a wizard step or tab panel by the `hidden` attribute would leave it
+   visible. The Next consumer never hits this (Tailwind Preflight + class-based
+   toggling); a self-contained artifact toggles `hidden` directly, so the
+   reference layer forces it here. `!important` because it must beat a
+   component's explicit `display`. */
+[hidden] { display: none !important; }
+
+/* Native <button> UA reset. The Next consumer gets this from Tailwind Preflight;
+   a self-contained artifact otherwise inherits UA button chrome — the ~1px block
+   padding nudges fixed-size icon buttons (.filter-chip__remove, .modal__close)
+   off-center, and the native border/background can flash through a bespoke ghost
+   button. Foundation buttons are always class-driven (.btn sets its own padding;
+   icon buttons set their own width/height), so shedding the UA defaults here is
+   safe. `:where()` keeps specificity 0 — any .btn / component padding still wins. */
+:where(button) { padding: 0; border: 0; background: none; }
+
+/* ═══════════════════════════ Screen-reader only ═══════════════════════════ */
+/* A11y utility (no contract / no @component — a behaviour helper like the baseline
+   resets, not a design component). Hides an element VISUALLY while keeping it in
+   the accessibility tree, so a read-only label / name is announced but not drawn:
+   the accessible name for an icon-only control, or a <label> for a control whose
+   text is otherwise visual. Pure geometry — no token, no design vocabulary. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ═══════════════════════════════ Button ═══════════════════════════════ */
+/* @component button */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: var(--spacing-control-md);
+  padding-inline: var(--spacing-cx-md);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  text-decoration: none; /* suppress anchor underline when .btn is on an <a> */
+  transition: background-color 0.12s, border-color 0.12s, color 0.12s, box-shadow 0.12s;
+  outline: none;
+}
+
+.btn:focus-visible {
+  box-shadow: var(--shadow-focus);
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Inline icon slots. Contract (button.md): "inline icons default to 14px
+   (size-3.5); an explicit size-* on the icon wins." @cloud/ui sets
+   [&_svg]:shrink-0 + that default size. The artifact reference omitted it, so a
+   no-dimension inline <svg> collapsed to 0×0 in the flex row and every button
+   icon went invisible. flex-shrink:0 keeps it from collapsing; an explicit
+   width/height on the svg still wins via specificity/inline style. 14px is the
+   size-3.5 idiom (half-step over the raw scale floor). */
+.btn svg {
+  width: calc(var(--space-4) - var(--space-1) / 2);   /* 14px = size-3.5 */
+  height: calc(var(--space-4) - var(--space-1) / 2);
+  flex-shrink: 0;
+}
+
+/* ── Button variants ── */
+.btn--primary {
+  background-color: var(--color-primary-700);
+  color: var(--color-content-on-primary);
+  box-shadow: var(--shadow-cta);
+}
+.btn--primary:hover:not(:disabled) { background-color: var(--color-primary-600); }
+.btn--primary:active:not(:disabled) { background-color: var(--color-primary-800); }
+
+.btn--secondary {
+  background-color: var(--color-surface-2);
+  color: var(--color-content-primary);
+  border-color: var(--color-line-default);
+  box-shadow: var(--shadow-1);
+}
+.btn--secondary:hover:not(:disabled) {
+  background-color: var(--color-surface-hover);
+  border-color: var(--color-line-strong);
+}
+
+.btn--ghost {
+  background-color: transparent;
+  color: var(--color-content-primary);
+}
+.btn--ghost:hover:not(:disabled) { background-color: var(--color-surface-hover); }
+.btn--ghost:active:not(:disabled) { background-color: var(--color-surface-active); }
+
+.btn--danger {
+  background-color: var(--color-error);
+  color: var(--color-content-inverse);
+  box-shadow: var(--shadow-cta);
+}
+.btn--danger:hover:not(:disabled) { background-color: var(--color-error-strong); }
+.btn--danger:active:not(:disabled) { background-color: var(--color-error-active); }
+
+.btn--ghost-danger {
+  background-color: transparent;
+  color: var(--color-error);
+}
+.btn--ghost-danger:hover:not(:disabled) {
+  background-color: var(--color-error-bg);
+  color: var(--color-error-strong);
+}
+
+.btn--link {
+  height: auto;
+  padding: 0;
+  border: 0;
+  background-color: transparent;
+  color: var(--color-primary-500);
+}
+.btn--link:hover:not(:disabled) { text-decoration: underline; }
+
+/* ── Button sizes ── */
+.btn--xs {
+  height: var(--spacing-control-xs);
+  padding-inline: var(--spacing-cx-sm);
+  font-size: var(--text-xs);
+}
+.btn--sm {
+  height: var(--spacing-control-sm);
+  padding-inline: var(--spacing-cx-sm);
+  font-size: var(--text-md);   /* DS 2.0: text-sm deprecated → text-md */
+}
+.btn--md {
+  height: var(--spacing-control-md);
+  padding-inline: var(--spacing-cx-md);
+}
+.btn--lg {
+  height: var(--spacing-control-lg);
+  padding-inline: var(--spacing-cx-lg);
+  font-size: var(--text-lg);
+}
+/* auto: content-driven height — a button hosting more than a text label (option
+   tile, clickable row, button-as-card). No fixed control height; block padding
+   instead. Mirrors @cloud/ui size="auto". Documented in button.md (Sizes). */
+.btn--auto {
+  height: auto;
+  padding-inline: var(--spacing-cx-md);
+  padding-block: var(--space-2);
+}
+
+/* ── Icon-only: square, no inline padding ── */
+.btn--icon {
+  padding-inline: 0;
+  width: var(--spacing-control-md);
+  aspect-ratio: 1 / 1;
+}
+.btn--icon.btn--xs { width: var(--spacing-control-xs); }
+.btn--icon.btn--sm { width: var(--spacing-control-sm); }
+.btn--icon.btn--lg { width: var(--spacing-control-lg); }
+
+/* Standalone icon-only size variants (enumerated in button.md). Use these when
+   the icon-button size is the only modifier needed (no separate size class).
+     icon-xs = 24px · icon-sm = 28px (control-sm) · icon-lg = 36px (control-md)
+   Each is equivalent to .btn--icon + the corresponding size class but avoids
+   the two-class requirement. */
+.btn--icon-xs {
+  padding-inline: 0;
+  width: var(--space-6);   /* 24px */
+  height: var(--space-6);
+  aspect-ratio: 1 / 1;
+  font-size: var(--text-xs);
+}
+.btn--icon-sm {
+  padding-inline: 0;
+  width: var(--spacing-control-sm);   /* 28px */
+  height: var(--spacing-control-sm);
+  aspect-ratio: 1 / 1;
+}
+.btn--icon-lg {
+  padding-inline: 0;
+  width: var(--spacing-control-md);   /* 36px — per button.md icon-lg */
+  height: var(--spacing-control-md);
+  aspect-ratio: 1 / 1;
+  font-size: var(--text-lg);
+}
+
+/* ═══════════════════════════════ Input ═══════════════════════════════ */
+/* @component input */
+
+.input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: var(--spacing-control-md);
+  padding-inline: var(--spacing-cx-md);
+  padding-block: var(--space-1);
+  border: 1px solid var(--color-line-default);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-2);
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  transition: border-color 0.12s, background-color 0.12s, box-shadow 0.12s;
+  outline: none;
+}
+.input::placeholder { color: var(--color-content-tertiary); }
+.input:focus-visible {
+  border-color: var(--color-line-focus);
+  box-shadow: var(--shadow-focus);   /* DS 2.0: unified focus ring */
+}
+.input:read-only {
+  background-color: var(--color-surface-3);
+  color: var(--color-content-secondary);
+}
+.input:disabled {
+  cursor: not-allowed;
+  background-color: var(--color-surface-3);
+  opacity: 0.5;
+}
+.input[aria-invalid="true"] {
+  border-color: var(--color-error-strong);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-error) 20%, transparent);
+}
+
+/* Input · filled variant */
+.input--filled {
+  background-color: var(--color-surface-3);
+  border-color: transparent;
+}
+.input--filled:hover { background-color: var(--color-surface-hover); }
+.input--filled:focus-visible { background-color: var(--color-surface-2); }
+
+/* Input · validation axis (overridden by aria-invalid) */
+.input--warn {
+  border-color: var(--color-warning-500);
+}
+.input--warn:focus-visible {
+  border-color: var(--color-warning-500);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-warning) 30%, transparent);
+}
+.input--ok {
+  border-color: var(--color-success-500);
+}
+.input--ok:focus-visible {
+  border-color: var(--color-success-500);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-success) 30%, transparent);
+}
+
+/* Input · sizes */
+.input--sm {
+  height: var(--spacing-control-sm);
+  padding-inline: var(--spacing-cx-sm);
+}
+.input--md {
+  height: var(--spacing-control-md);
+  padding-inline: var(--spacing-cx-md);
+}
+.input--lg {
+  height: var(--spacing-control-lg);
+  padding-inline: var(--spacing-cx-lg);
+  font-size: var(--text-lg);
+}
+
+/* ═══════════════════════════════ Textarea ═══════════════════════════════ */
+/* @component textarea */
+
+.textarea {
+  display: block;
+  width: 100%;
+  min-height: var(--space-16); /* 64px */
+  padding: var(--space-3);
+  border: 1px solid var(--color-line-default);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-2);
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  resize: vertical;
+  transition: border-color 0.12s, background-color 0.12s, box-shadow 0.12s;
+  outline: none;
+}
+.textarea::placeholder { color: var(--color-content-tertiary); }
+.textarea:focus-visible {
+  border-color: var(--color-line-focus);
+  box-shadow: var(--shadow-focus);   /* DS 2.0: unified focus ring */
+}
+.textarea:disabled {
+  cursor: not-allowed;
+  background-color: var(--color-surface-3);
+  opacity: 0.5;
+}
+.textarea[aria-invalid="true"] {
+  border-color: var(--color-error-strong);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-error) 20%, transparent);
+}
+
+/* ═══════════════════════════════ Select ═══════════════════════════════ */
+/* @component select */
+/* Styles a native <select> to match the SelectTrigger recipe. A native
+   select cannot reproduce the portalled popup or per-item check glyph. */
+
+.select {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  height: var(--spacing-control-md);
+  padding-inline: var(--spacing-cx-sm);
+  border: 1px solid var(--color-line-default);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-2);
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 0.12s, background-color 0.12s, box-shadow 0.12s;
+  outline: none;
+}
+.select:hover { border-color: var(--color-line-strong); }
+.select:focus-visible {
+  border-color: var(--color-line-focus);
+  box-shadow: var(--shadow-focus);   /* DS 2.0: unified focus ring */
+}
+.select:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.select[aria-invalid="true"] {
+  border-color: var(--color-error-strong);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-error) 20%, transparent);
+}
+.select--sm { height: var(--spacing-control-sm); }
+/* Inside a form field a select FILLS the field, like .input / .textarea — the
+   bare .select stays width:fit-content for compact toolbar / filter use. Without
+   this a native <select>'s shrink-to-fit width leaves it short of the full-width
+   inputs beside it (the classic "select doesn't stretch" raggedness). */
+.field .select { width: 100%; }
+
+/* ═══════════════════════════════ Checkbox ═══════════════════════════════ */
+/* @component checkbox */
+
+.checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  flex-shrink: 0;
+  width: var(--space-4);  /* 16px */
+  height: var(--space-4);
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-2);
+  cursor: pointer;
+  transition: background-color 0.12s, border-color 0.12s, box-shadow 0.12s;
+  outline: none;
+}
+.checkbox:focus-visible { box-shadow: var(--shadow-focus); }
+.checkbox:checked,
+.checkbox:indeterminate {
+  border-color: var(--color-primary-700);
+  background-color: var(--color-primary-700);
+}
+/* check glyph (drawn in content-on-primary via border edges) */
+.checkbox:checked::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: var(--space-1);   /* 4px */
+  height: var(--space-2);  /* 8px */
+  border: solid var(--color-content-on-primary);
+  border-width: 0 2px 2px 0;
+  transform: translate(-50%, -55%) rotate(45deg);
+}
+/* minus glyph for indeterminate */
+.checkbox:indeterminate::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--space-2);   /* 8px */
+  height: 2px;
+  background-color: var(--color-content-on-primary);
+  transform: translate(-50%, -50%);
+}
+.checkbox:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.checkbox[aria-invalid="true"] {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-error) 20%, transparent);
+}
+
+/* ═══════════════════════════════ Radio ═══════════════════════════════ */
+/* @component radio-group */
+
+.radio {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  flex-shrink: 0;
+  width: var(--space-4);  /* 16px */
+  height: var(--space-4);
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface-2);
+  cursor: pointer;
+  transition: background-color 0.12s, border-color 0.12s, box-shadow 0.12s;
+  outline: none;
+}
+.radio:focus-visible { box-shadow: var(--shadow-focus); }
+.radio:checked {
+  border-color: var(--color-primary-700);
+  background-color: var(--color-primary-700);
+}
+.radio:checked::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--space-2);   /* 8px ~ 6px dot rounded to scale */
+  height: var(--space-2);
+  border-radius: var(--radius-full);
+  background-color: var(--color-content-on-primary);
+  transform: translate(-50%, -50%) scale(0.75);
+}
+.radio:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.radio[aria-invalid="true"] {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-error) 20%, transparent);
+}
+
+/* ═══════════════════════════════ Badge ═══════════════════════════════ */
+/* @component badge */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  width: fit-content;
+  height: var(--space-5);   /* 20px */
+  padding-inline: var(--space-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* Badge · tonal (preferred for status) */
+.badge--neutral {
+  background-color: var(--color-surface-3);
+  color: var(--color-content-secondary);
+  border-color: var(--color-line-default);
+}
+.badge--success {
+  background-color: var(--color-success-bg);
+  color: var(--color-success-strong);
+  border-color: color-mix(in oklch, var(--color-success) 25%, transparent);
+}
+.badge--warning {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning-strong);
+  border-color: color-mix(in oklch, var(--color-warning) 25%, transparent);
+}
+.badge--error {
+  background-color: var(--color-error-bg);
+  color: var(--color-error-strong);
+  border-color: color-mix(in oklch, var(--color-error) 25%, transparent);
+}
+.badge--info {
+  background-color: var(--color-info-bg);
+  color: var(--color-info-strong);
+  border-color: color-mix(in oklch, var(--color-info) 25%, transparent);
+}
+
+/* Badge · tag shape (monospace, square corners) */
+.badge--tag {
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+}
+
+/* Badge · leading status dot (decorative; color follows text) */
+.badge__dot {
+  flex-shrink: 0;
+  width: var(--space-2);   /* ~6px at scale floor */
+  height: var(--space-2);
+  border-radius: var(--radius-full);
+  background-color: currentColor;
+  transform: scale(0.75);
+}
+
+/* Badge · focus (DS 2.0: unified shadow-focus ring) */
+.badge:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* ═══════════════════════════════ Card ═══════════════════════════════ */
+/* @component card */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--color-line-default);
+  border-radius: var(--radius-xl);   /* md default */
+  background-color: var(--color-surface-2);
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  box-shadow: var(--shadow-1);        /* elevation 1 default */
+}
+
+/* Card · sizes (radius). Slot padding keys off the size class below. */
+.card--sm { border-radius: var(--radius-lg); }
+.card--md { border-radius: var(--radius-xl); }
+.card--lg { border-radius: var(--radius-2xl); }
+
+/* Card · elevation */
+.card--elevation-0 { box-shadow: none; }
+.card--elevation-1 { box-shadow: var(--shadow-1); }
+.card--elevation-2 { box-shadow: var(--shadow-3); }
+
+/* Card · interactive */
+.card--interactive {
+  cursor: pointer;
+  transition: box-shadow 0.12s, border-color 0.12s;
+}
+.card--interactive:hover {
+  border-color: var(--color-line-strong);
+  box-shadow: var(--shadow-3);
+}
+
+/* Card slots — the root owns NO padding; slots do. Default = md rhythm.
+   Layout: grid (matches the contract + @cloud/ui CardHeader impl).
+   • Single-column by default; .card__action triggers 2-column grid
+   • Title + description stacked via row-gap; no forced row template
+   • action spans both rows, vertically centered */
+.card__header {
+  display: grid;
+  align-items: start;                      /* matches cloud/ui items-start */
+  gap: var(--space-1);                     /* 4px — title↔description row gap (gap-1) */
+  padding-inline: var(--space-5);
+  padding-block: calc((var(--space-3) + var(--space-4)) / 2); /* 14px — denser than content */
+  border-bottom: 1px solid var(--color-line-subtle);
+}
+/* 2-column grid + column gap ONLY when an action is present */
+.card__header:has(.card__action) {
+  grid-template-columns: 1fr auto;
+  column-gap: var(--space-3);
+}
+/* all header content sits in column 1 unless it's the action */
+.card__header > :not(.card__action) { grid-column: 1; }
+
+.card__content {
+  padding: var(--space-5);
+}
+.card__footer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border-top: 1px solid var(--color-line-subtle);
+}
+
+/* Card slot padding scales with size (apply size class to .card). */
+.card--sm .card__header,
+.card--sm .card__content,
+.card--sm .card__footer { padding: var(--space-3); }
+
+.card--lg .card__header,
+.card--lg .card__content,
+.card--lg .card__footer { padding: var(--space-6); }
+
+/* full-bleed slot (tables / row lists own their own padding) */
+.card__content--flush,
+.card__header--flush,
+.card__footer--flush { padding: 0; }
+
+/* Header title + description. Type per the Card contract. */
+.card__title {
+  font-size: var(--text-md);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-content-primary);
+}
+.card__description {
+  font-size: var(--text-xs);
+  line-height: 1.5;
+  color: var(--color-content-tertiary);
+}
+/* CardAction — header-right action slot (matches @cloud/ui CardAction:
+   col-start-2 justify-self-end). ALWAYS vertically centered against the
+   header content block, whether or not a CardDescription is present:
+   • + description → span both rows and self-center, so the action centers
+     against the full title + description block.
+   • title-only  → sit in row 1 only (NOT span 2). Spanning a phantom second
+     row would drop the action's center below the title's; header centers the
+     lone title row, and the action centers in that same track → they line up. */
+.card__action {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+.card__header:not(:has(.card__description)) { align-items: center; }
+.card__header:not(:has(.card__description)) .card__action { grid-row: 1; }
+/* Card — collapsible variant. The header becomes a full-width <button> toggle
+   with a trailing chevron. Set data-open="false" on .card to collapse. */
+.card--collapsible > .card__header { cursor: pointer; }
+.card__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  width: 100%;
+  border: 0;
+  background-color: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+.card__toggle:hover { background-color: var(--color-surface-hover); }
+.card__toggle:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
+.card__chevron {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: var(--space-6);
+  height: var(--space-6);
+  color: var(--color-content-tertiary);
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+.card__chevron svg { width: var(--space-4); height: var(--space-4); }
+/* closed state */
+.card[data-open="false"] .card__content { display: none; }
+.card[data-open="false"] .card__header { border-bottom-color: transparent; }
+.card[data-open="false"] .card__chevron { transform: rotate(-90deg); }
+@media (prefers-reduced-motion: reduce) {
+  .card__chevron { transition: none; }
+}
+/* ===== @cloud/ui coverage expansion (added below) ===== */
+/* Primitives: 39 components authored from @cloud/ui, token-only. */
+
+/* ═══════════════════════════════ Accordion ═══════════════════════════════ */
+/* @component accordion */
+/* Vertical stack of collapsible disclosure sections. The single-vs-multiple
+   open behavior, controlled value, and the panel height open/close animation
+   (--accordion-panel-height, animate-accordion-down/up) are React/base-ui
+   behaviors — out of scope for this static skin. The reference layer paints the
+   resting shell, the header triggers, and the revealed panel; mark an open item
+   with .accordion__item--open (rotates its arrow + shows its panel) — the skin
+   can't run the height transition. */
+
+.accordion {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--color-line-subtle);
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+}
+
+/* One disclosure section. Hairline divider sits BETWEEN items (not above the
+   first), matching the source's divide-y. */
+.accordion__item + .accordion__item {
+  border-top: 1px solid var(--color-line-subtle);
+}
+
+/* Header trigger — full-width button on the surface-2 ground. */
+.accordion__trigger {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding-block: var(--space-3);
+  padding-inline: var(--space-4);
+  border: 0;
+  background-color: var(--color-surface-2);
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color var(--duration-fast) var(--ease-standard);
+  outline: none;
+}
+.accordion__trigger:hover {
+  background-color: var(--color-surface-hover);
+}
+/* Inset ring so it doesn't bleed past the clipped root border. */
+.accordion__trigger:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--color-line-focus);
+}
+.accordion__trigger:disabled,
+.accordion__trigger[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Truncating label slot — fills the row, pushes the trailing arrow to the edge. */
+.accordion__label {
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Chevron — 14px (source size-3.5), non-interactive; rotates 180° when open. */
+.accordion__arrow {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--space-4) - var(--space-1) / 2);   /* 14px (size-3.5) */
+  height: calc(var(--space-4) - var(--space-1) / 2);
+  color: var(--color-content-tertiary);
+  pointer-events: none;
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+.accordion__item--open .accordion__arrow,
+.accordion__trigger[aria-expanded="true"] .accordion__arrow {
+  transform: rotate(180deg);
+}
+
+/* Collapsible panel — clips during animation; recessed surface-1 ground. */
+.accordion__content {
+  overflow: hidden;
+  background-color: var(--color-surface-1);
+  padding-block: var(--space-3);
+  padding-inline: var(--space-4);
+  font-size: var(--text-xs);
+  color: var(--color-content-secondary);
+}
+/* Static stand-in for the collapsed state (base-ui owns the height transition). */
+.accordion__item:not(.accordion__item--open) .accordion__content {
+  display: none;
+}
+
+/* ═══════════════════════════════ Alert ═══════════════════════════════ */
+/* @component alert */
+/* Inline status box. One form (tonal filled), tone selected via modifier.
+   The icon two-column layout is opt-in via .alert--with-icon — the React
+   source auto-applies it with has-[>svg], which a static skin can't observe. */
+
+.alert {
+  position: relative;
+  width: 100%;
+  padding-block: var(--space-3);
+  padding-inline: var(--space-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius-lg);
+  font-family: var(--font-sans);
+}
+
+/* Alert · tones — every alert carries a semantic tone (no neutral/un-toned box) */
+.alert--info {
+  background-color: var(--color-info-bg);
+  border-color: color-mix(in oklch, var(--color-info) 25%, transparent);
+  color: var(--color-info-strong);
+}
+.alert--success {
+  background-color: var(--color-success-bg);
+  border-color: color-mix(in oklch, var(--color-success) 25%, transparent);
+  color: var(--color-success-strong);
+}
+.alert--warning {
+  background-color: var(--color-warning-bg);
+  border-color: color-mix(in oklch, var(--color-warning) 25%, transparent);
+  color: var(--color-warning-strong);
+}
+.alert--error {
+  background-color: var(--color-error-bg);
+  border-color: color-mix(in oklch, var(--color-error) 25%, transparent);
+  color: var(--color-error-strong);
+}
+
+/* Two-column layout when a leading icon is present: icon | content. */
+.alert--with-icon {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: var(--space-2);
+}
+
+/* Leading status glyph — spans both rows, inherits the tone text color.
+   Source is size-3.5 (14px); the space scale has no 3.5 step, so nearest
+   --space-4 (16px). See alert.md notes for the token-scale gap. */
+.alert__icon {
+  grid-row: span 2;
+  flex-shrink: 0;
+  width: var(--space-4);
+  height: var(--space-4);
+  /* No top nudge: the 16px glyph's top aligns to the title's line-box top, which reads
+     optically centred on the title — for a title-only alert AND a title+description one.
+     (The old space-1 nudge pushed a title-only alert's icon ~4px low.) */
+  color: currentColor;
+}
+
+.alert__title {
+  font-size: var(--text-md);
+  font-weight: 600;
+  line-height: 1.1;
+}
+/* Source nudge is mt-0.5 (2px); nearest token step is --space-1 (4px). */
+.alert__description {
+  margin-top: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--color-content-secondary);
+}
+
+/* Pinned top-right affordance (Retry / Dismiss). Reuses .btn inside. */
+.alert__action {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+}
+
+/* ═══════════════════════════════ Alert Dialog ═══════════════════════════════ */
+/* @component alert-dialog */
+/* Forced-action confirm (base-ui AlertDialog) — a centered dialog with NO close
+   affordance that Escape and overlay-click can't dismiss; the user must pick
+   Cancel or Confirm. A destructive-or-consequential variant of Modal, sharing
+   its panel surface (rounded-xl / line-subtle / popover ground → surface-2 /
+   shadow-4). The no-dismiss rule, open/close keyframes, portalling, and focus
+   trap are React/base-ui behaviors — out of scope for this static skin; the
+   reference layer paints the resting OPEN dialog only, and the consumer drives
+   visibility. The 440px width cap, the mobile inset, and the centering
+   transform are viewport math, not token-expressible (same popup-sizing token
+   gap modal/hover-card/command flag). */
+
+/* Scrim — fixed full-viewport wash. Unlike .modal-overlay, clicking it does
+   NOT dismiss (behavior owned by the React side). */
+.alert-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;   /* modal z-layer — above sticky page chrome (z-index 10); z-index conventionally exempt */
+  background-color: var(--color-surface-overlay);
+}
+
+/* Panel — popover surface; a vertical stack with space-4 gap between header
+   and footer. Mirrors Modal's panel so both read as one dialog family. */
+.alert-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 50;   /* modal z-layer — panel is a fixed sibling of its scrim, so it needs the layer too; z-index conventionally exempt */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+  max-width: calc(100% - 2rem);   /* mobile floor — viewport math */
+  padding: var(--space-6);
+  border: 1px solid var(--color-line-subtle);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface-2);   /* source bg-popover */
+  color: var(--color-content-primary);        /* source text-popover-foreground */
+  font-family: var(--font-sans);
+  box-shadow: var(--shadow-4);
+  transform: translate(-50%, -50%);            /* centering — viewport math */
+  outline: none;
+}
+/* sm+ caps the width one notch under Modal's md (480px) — a confirm carries
+   less than a form. 440px: no popup-sizing token expresses this yet. */
+@media (min-width: 640px) {
+  .alert-dialog { max-width: 440px; }
+}
+
+/* Header — title + optional description stack. Center on mobile, left on sm+.
+   No border/fill of its own (leaner than Modal's bordered header). */
+.alert-dialog__header {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space-1) + var(--space-1) / 2);   /* 6px — source gap-1.5 */
+  text-align: center;
+}
+@media (min-width: 640px) {
+  .alert-dialog__header { text-align: left; }
+}
+
+.alert-dialog__title {
+  font-size: var(--text-md);
+  font-weight: 600;
+  line-height: 1.1;   /* leading-tight */
+  color: var(--color-content-primary);
+}
+
+.alert-dialog__description {
+  font-size: var(--text-xs);
+  line-height: 1.5;   /* leading-normal */
+  color: var(--color-content-secondary);
+}
+
+/* Footer — action shelf, no border/fill (sits flush in the panel padding).
+   Stacks reversed on mobile (Confirm on top so the safe Cancel sits nearest the
+   thumb); right-aligned row on sm+. Holds two .btn (.btn--secondary Cancel +
+   .btn--primary/.btn--danger Confirm). */
+.alert-dialog__footer {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--space-2);
+}
+@media (min-width: 640px) {
+  .alert-dialog__footer {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+}
+
+/* ═══════════════════════════════ Aspect Ratio ═══════════════════════════════ */
+/* @component aspect-ratio */
+/* Layout-only box: locks content to a width:height ratio. Holds NO token-bearing
+   visual props (no surface/border/radius/shadow/color/type) — it's pure layout,
+   so the only declarations are position + aspect-ratio. The ratio is a unitless
+   number the call site supplies via --ratio (conventionally exempt, like flex/grid
+   integers); there is no --aspect-* token and none is needed. position:relative
+   gives absolutely-positioned children (overlay captions, play buttons) an anchor. */
+
+.aspect-ratio {
+  position: relative;
+  aspect-ratio: var(--ratio);
+}
+
+/* ═══════════════════════════════ Avatar ═══════════════════════════════ */
+/* @component avatar */
+/* Circular identity chip: an image that clips to the circle, falling back to
+   initials. The image→fallback swap on load/error is a React/base-ui behavior;
+   this static skin renders whichever slot is present (image clips over the
+   fallback). Sizes pin to existing control tokens; xl uses the raw --space-12. */
+
+.avatar {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  width: var(--spacing-control-sm);   /* md default → 28px */
+  height: var(--spacing-control-sm);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  user-select: none;
+}
+
+/* Avatar · sizes */
+.avatar--sm {
+  width: var(--spacing-control-xs);   /* 22px */
+  height: var(--spacing-control-xs);
+}
+.avatar--md {
+  width: var(--spacing-control-sm);   /* 28px */
+  height: var(--spacing-control-sm);
+}
+.avatar--lg {
+  width: var(--spacing-control-md);   /* 36px */
+  height: var(--spacing-control-md);
+}
+.avatar--xl {
+  width: var(--space-12);             /* 48px */
+  height: var(--space-12);
+}
+
+/* Image slot — fills + clips to the circle. Shown when an image is present. */
+.avatar__image {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+}
+
+/* Fallback slot — initials on the neutral avatar ground (DS 2.0: avatar-bg/fg, not brand-mono). */
+.avatar__fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-full);
+  background-color: var(--color-avatar-bg);
+  color: var(--color-avatar-fg);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);          /* sm/md fallback type */
+  font-weight: 600;
+  line-height: 1;
+}
+/* Fallback type tracks the box for the larger sizes. */
+.avatar--lg .avatar__fallback { font-size: var(--text-md); }
+.avatar--xl .avatar__fallback { font-size: var(--text-lg); }
+
+/* Group — overlapping chips, each ringed in the page ground (surface-1). */
+.avatar-group {
+  display: inline-flex;
+  align-items: center;
+}
+.avatar-group .avatar {
+  margin-inline-start: calc(-1 * var(--space-2));   /* -8px overlap */
+  box-shadow: 0 0 0 2px var(--color-surface-1);     /* ring-background */
+}
+.avatar-group .avatar:first-child {
+  margin-inline-start: 0;
+}
+
+/* ═══════════════════════════════ Calendar ═══════════════════════════════ */
+/* @component calendar */
+/* The base month grid date pickers build their popup on: a flex header (prev /
+   caption / next), a single 7-column CSS grid that holds the weekday header row
+   PLUS the 6×7 day matrix — day columns sit edge-to-edge (no column gap) so
+   selection/range fills join into a continuous track, with an 8px row rhythm
+   between weeks — and an optional footer (Clear / Today). Month navigation,
+   day/range selection, the label-vs-dropdown caption, roving arrow-key focus, and
+   the RTL chevron flip are react-day-picker behaviors — out of scope for this
+   static skin. The reference layer paints the resting surface, the grid, and one
+   day in each state; mark days with .calendar__day--today / --selected /
+   --range-start / --range-end / --range-middle / --outside / --disabled /
+   --focused (the skin can't observe live selection/focus).
+
+   The root is a BARE surface (padding + type only, no border/shadow/background) —
+   the host paints the chrome: a .popover in the pickers, a bordered wrapper for a
+   standalone view. Two component-local customs key off tokens: --cell-size
+   (32px, --space-8) and --cell-radius (--radius-md, 10px — rounded-square day
+   cells, not circles). */
+
+.calendar {
+  --cell-size: var(--space-8);          /* 32px */
+  --cell-radius: var(--radius-md);      /* 10px — rounded-square day cells (not circles) */
+  width: fit-content;
+  padding: var(--space-3);              /* 12px */
+  background-color: transparent;        /* bare — host surface shows through */
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+}
+
+/* Header row — prev button · centered month/year caption · next button. */
+.calendar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);        /* 8px */
+}
+
+/* Prev / next — cell-size (32px) ghost icon button: no border/fill until hover. */
+.calendar__nav-btn {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--cell-size);              /* 32px */
+  height: var(--cell-size);
+  border: none;
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  color: var(--color-content-secondary);
+  font-size: var(--text-lg);            /* 16px chevron */
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.12s, color 0.12s;
+  outline: none;
+}
+.calendar__nav-btn:hover:not([aria-disabled="true"]) {
+  background-color: var(--color-surface-hover);
+}
+.calendar__nav-btn:focus-visible { box-shadow: var(--shadow-focus); }
+.calendar__nav-btn[aria-disabled="true"],
+.calendar__nav-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Month/year caption — centered between the nav buttons. */
+.calendar__caption {
+  font-size: var(--text-md);            /* 14px */
+  font-weight: 500;
+  color: var(--color-content-primary);
+  user-select: none;
+}
+
+/* Dropdown caption — the text label swapped for month + year <select>s so a
+   viewer can jump straight to any month/year (source captionLayout="dropdown").
+   Borderless ghost triggers: the label + a chevron, no box at rest, a subtle
+   surface-hover on hover. The native <select> carries the options; a chevron-down
+   icon overlays its trailing edge. */
+.calendar__dropdowns {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+.calendar__dropdown {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.calendar__dropdown select {
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);            /* 14px */
+  font-weight: 500;
+  line-height: 1;
+  padding-block: var(--space-1);
+  padding-inline: var(--space-2) calc(var(--space-4) + var(--space-2));  /* right room for the chevron */
+  cursor: pointer;
+  transition: background-color 0.12s;
+  outline: none;
+}
+.calendar__dropdown select:hover { background-color: var(--color-surface-hover); }
+.calendar__dropdown select:focus-visible { box-shadow: var(--shadow-focus); }
+/* Chevron-down affordance; pointer-events:none so the click falls through to the
+   select underneath. */
+.calendar__dropdown svg {
+  position: absolute;
+  right: var(--space-2);
+  width: 0.75rem;                       /* 12px */
+  height: 0.75rem;
+  pointer-events: none;
+  color: var(--color-content-tertiary);
+}
+
+/* Grid — one 7-column track holding the weekday header + all 42 day cells. Day
+   columns touch (no column gap) so selection/range fills join; weeks breathe on
+   an 8px row gap (source: week rows get mt-2). */
+.calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, var(--cell-size));
+  column-gap: 0;
+  row-gap: var(--space-2);              /* 8px */
+}
+
+/* Weekday header cell — small, normal weight, tertiary (source: font-normal
+   text-muted-foreground). */
+.calendar__weekday {
+  padding: 2px 0;
+  color: var(--color-content-tertiary);   /* source text-muted-foreground */
+  font-size: var(--text-xs);             /* 12px */
+  font-weight: 400;
+  text-align: center;
+  user-select: none;
+}
+
+/* Day cell — borderless ghost button; selection state via the --* modifiers. */
+.calendar__day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--cell-size);                /* 32px — fills its (gapless) column */
+  height: var(--cell-size);
+  border: none;
+  border-radius: var(--cell-radius);
+  background-color: transparent;
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);              /* 12px */
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.12s, color 0.12s, box-shadow 0.12s;
+  outline: none;
+}
+/* Hover must never repaint a committed cell — guard against the single
+   selection AND every range state (principle §16: committed state outranks hover). */
+.calendar__day:hover:not(.calendar__day--disabled):not(.calendar__day--selected):not(.calendar__day--range-start):not(.calendar__day--range-end):not(.calendar__day--range-middle) {
+  background-color: var(--color-surface-hover);
+}
+
+/* Today — subtle filled cell (source: bg-accent text-accent-foreground); the
+   primary fill of --selected / range states overrides it when both apply. */
+.calendar__day--today {
+  background-color: var(--color-surface-3);
+  color: var(--color-content-primary);
+  border-radius: var(--cell-radius);
+  font-weight: 400;
+}
+
+/* Selected single — primary fill; overrides the today fill when both. */
+.calendar__day--selected {
+  background-color: var(--color-primary-700);
+  color: var(--color-content-on-primary);
+  font-weight: 400;
+}
+
+/* Range — a continuous muted track (source bg-accent). Day columns are gapless,
+   so the cell backgrounds join into one bar per week row. The track is square
+   between days and rounds only at the range ends AND at each week-row's edges
+   (a stadium per row). Endpoints add a filled primary pill ON TOP of the track,
+   so a start/end day reads as a dark pill sitting on the muted bar — the
+   react-day-picker two-layer look (cell = track, button = pill). */
+.calendar__day--range-start,
+.calendar__day--range-middle,
+.calendar__day--range-end {
+  background-color: var(--color-surface-3);   /* the connecting track */
+  color: var(--color-content-primary);
+  font-weight: 400;
+  border-radius: 0;
+}
+/* Track rounds on the outer side of each endpoint … */
+.calendar__day--range-start {
+  border-start-start-radius: var(--cell-radius);
+  border-end-start-radius: var(--cell-radius);
+}
+.calendar__day--range-end {
+  border-start-end-radius: var(--cell-radius);
+  border-end-end-radius: var(--cell-radius);
+}
+/* … and at the left / right edge of each week row. The 7 weekday header cells
+   fill the grid's first row, so day column 1 is nth-child(7n+1) and column 7 is
+   nth-child(7n). */
+.calendar__day--range-middle:nth-child(7n + 1),
+.calendar__day--range-end:nth-child(7n + 1) {
+  border-start-start-radius: var(--cell-radius);
+  border-end-start-radius: var(--cell-radius);
+}
+.calendar__day--range-middle:nth-child(7n),
+.calendar__day--range-start:nth-child(7n) {
+  border-start-end-radius: var(--cell-radius);
+  border-end-end-radius: var(--cell-radius);
+}
+/* Endpoint pill — a rounded primary fill behind the number. isolation + a
+   z-index:-1 ::before keep the pill above the track yet below the number, and let
+   the track stay visible on the endpoint's connecting side. */
+.calendar__day--range-start,
+.calendar__day--range-end {
+  position: relative;
+  isolation: isolate;
+  color: var(--color-content-on-primary);
+}
+.calendar__day--range-start::before,
+.calendar__day--range-end::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: var(--cell-radius);
+  background-color: var(--color-primary-700);
+}
+
+/* Outside (other-month) day — dimmed to tertiary. */
+.calendar__day--outside {
+  color: var(--color-content-tertiary);   /* source text-muted-foreground */
+  opacity: 0.5;
+}
+
+/* Disabled day — tertiary + dimmed, not selectable. */
+.calendar__day--disabled {
+  color: var(--color-content-tertiary);
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Hidden day — holds the 7-column grid alignment without painting. */
+.calendar__day--hidden {
+  visibility: hidden;
+}
+
+/* Focused day — 3px ring (source group-data-focused: ring-[3px] ring-ring); lifts
+   the cell above neighbors so the ring isn't clipped. */
+.calendar__day--focused {
+  z-index: 1;
+  box-shadow: var(--shadow-focus);
+}
+
+/* Footer — optional Clear / Today action row. */
+.calendar__footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-line-default);
+}
+.calendar__link {
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--color-primary-700);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* ═══════════════════════════════ Carousel ═══════════════════════════════ */
+/* @component carousel */
+/* Scrollable track of equal-width slides with optional nav buttons + dots
+   (embla-carousel-react). The scroll engine, snap points, canScroll* flags,
+   dot count/selection sync, and ArrowKey handling are React behaviors — out of
+   scope for this static skin. The reference layer paints the resting shell:
+   clipping viewport, the negative-margin gutter, nav placement, dot fill. Mark
+   the current dot with .carousel__dot--active (the skin can't observe a live
+   snap). Add .carousel--vertical on the root to flip the axis. */
+
+.carousel {
+  position: relative;
+  font-family: var(--font-sans);
+}
+
+/* Clipping window — the embla ref attaches here. */
+.carousel__viewport {
+  overflow: hidden;
+}
+
+/* The sliding flex line. Negative leading margin + per-item padding net a
+   uniform --space-4 (16px) inter-slide gutter with no stray leading gap. */
+.carousel__track {
+  display: flex;
+  margin-left: calc(-1 * var(--space-4));   /* source -ml-4 (16px) */
+}
+.carousel--vertical .carousel__track {
+  flex-direction: column;
+  margin-left: 0;
+  margin-top: calc(-1 * var(--space-4));     /* source -mt-4 (16px) */
+}
+
+/* One slide — full-width by default; consumers re-basis for multi-up. */
+.carousel__item {
+  min-width: 0;
+  flex: 0 0 100%;   /* shrink-0 grow-0 basis-full */
+  padding-left: var(--space-4);   /* source pl-4 (16px) — the gutter */
+}
+.carousel--vertical .carousel__item {
+  padding-left: 0;
+  padding-top: var(--space-4);    /* source pt-4 (16px) */
+}
+
+/* Nav buttons — reuse .btn .btn--secondary .btn--icon .btn--sm (icon-sm = 28px);
+   .carousel__nav adds the round shape + absolute placement just outside the
+   viewport. Horizontal pins are the defaults; .carousel__prev / __next set the
+   side, and .carousel--vertical re-pins + rotates the chevron 90°. */
+.carousel__nav {
+  position: absolute;
+  border-radius: var(--radius-full);
+}
+.carousel__prev {
+  top: 50%;
+  left: calc(-1 * var(--space-12));   /* source -left-12 (48px) */
+  transform: translateY(-50%);
+}
+.carousel__next {
+  top: 50%;
+  right: calc(-1 * var(--space-12));  /* source -right-12 (48px) */
+  transform: translateY(-50%);
+}
+.carousel--vertical .carousel__prev {
+  top: calc(-1 * var(--space-12));    /* source -top-12 (48px) */
+  left: 50%;
+  transform: translateX(-50%) rotate(90deg);
+}
+.carousel--vertical .carousel__next {
+  top: auto;
+  bottom: calc(-1 * var(--space-12)); /* source -bottom-12 (48px) */
+  left: 50%;
+  transform: translateX(-50%) rotate(90deg);
+}
+
+/* Dots — centered row, one per scroll snap. */
+.carousel__dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--space-1) + var(--space-1) / 2);   /* 6px — source gap-1.5 */
+  margin-top: var(--space-3);   /* 12px — source mt-3 */
+}
+
+/* One dot — 6px round button; hollow until it's the current snap. */
+.carousel__dot {
+  flex-shrink: 0;
+  width: calc(var(--space-1) + var(--space-1) / 2);   /* 6px — source size-1.5 */
+  height: calc(var(--space-1) + var(--space-1) / 2);
+  padding: 0;
+  border: 1px solid var(--color-line-default);
+  border-radius: var(--radius-full);
+  background-color: transparent;
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-standard),
+              border-color var(--duration-fast) var(--ease-standard);
+  outline: none;
+}
+.carousel__dot:focus-visible { box-shadow: var(--shadow-focus); }
+/* Current snap fills solid (source bg-content-primary); the skin can't observe
+   a live snap, so mark it with --active. */
+.carousel__dot--active {
+  border-color: transparent;
+  background-color: var(--color-content-primary);
+}
+
+/* ═══════════════════════════════ Collapsible ═══════════════════════════════ */
+/* @component collapsible */
+/* Single show/hide disclosure (base-ui Collapsible). The @cloud/ui wrapper is
+   HEADLESS — "callers own all visual styling" — so there is no authored surface
+   to mirror. This bare skin governs only the disclosure mechanic + an optional
+   rotating chevron; the trigger is expected to be a composed control (a .btn
+   variant) that owns its own height/padding/type/focus. The panel height/width
+   animation (--collapsible-panel-height/-width, data-starting-style/
+   data-ending-style) is behavior owned by the React implementation — the static
+   skin just toggles visibility via display. */
+
+/* Root — transparent grouping wrapper; lay it out at the use site. */
+.collapsible {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-sans);
+}
+
+/* Trigger — no imposed chrome (compose a .btn for surface/height/states).
+   Standalone fallback exposes a focus ring so the control is never ring-less. */
+.collapsible__trigger {
+  cursor: pointer;
+  user-select: none;
+}
+.collapsible__trigger:focus-visible {
+  box-shadow: var(--shadow-focus);
+}
+.collapsible__trigger:disabled,
+.collapsible__trigger[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Optional decorative disclosure glyph — 14px (source size-3.5), rotates 180°
+   when the panel is open (keyed off the trigger's data-panel-open). */
+.collapsible__chevron {
+  flex-shrink: 0;
+  width: calc(var(--space-4) - var(--space-1) / 2);   /* 14px (size-3.5) */
+  height: calc(var(--space-4) - var(--space-1) / 2);
+  color: var(--color-content-tertiary);
+  pointer-events: none;
+  transition: transform var(--duration-normal) var(--ease-standard);
+}
+.collapsible__trigger[data-panel-open] .collapsible__chevron {
+  transform: rotate(180deg);
+}
+
+/* Panel — hidden when closed, shown when open. No imposed surface/padding;
+   the consumer adds those. Static stand-in for base-ui's height animation. */
+.collapsible__content {
+  display: none;
+}
+.collapsible__content--open,
+.collapsible__content[data-open] {
+  display: block;
+}
+
+/* ═══════════════════════════════ Combobox ═══════════════════════════════ */
+/* @component combobox */
+/* Searchable single-/multi-select (base-ui Combobox). The trigger sits in the
+   layout; the popup is portalled and holds a filter input + the option list.
+   Triggering, portalling, positioning, open/close keyframes, label-text
+   filtering, roaming focus, and single-vs-multi selection state are
+   React/base-ui behaviors — out of scope for this static skin. The reference
+   layer paints the resting trigger plus ONE open popup; mark the highlighted
+   row with .combobox__item--highlighted and selected rows with
+   .combobox__item--selected (the skin can't observe live focus/selection).
+   The list max-height (224px) is a raw value: no sizing token lands there
+   (see combobox.md notes). */
+
+/* The closed control — same recipe as .select, but a div with a trailing chevron. */
+.combobox__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--space-1) + var(--space-1) / 2);   /* 6px — source gap-1.5 */
+  width: 100%;
+  height: var(--spacing-control-md);
+  padding-inline-start: var(--spacing-cx-sm);   /* 10px — source pl-2.5 */
+  padding-inline-end: var(--space-2);           /* 8px — source pr-2 */
+  border: 1px solid var(--color-line-default);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-2);
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.12s, background-color 0.12s, box-shadow 0.12s;
+  outline: none;
+}
+.combobox__trigger:hover { border-color: var(--color-line-strong); }
+.combobox__trigger:focus-visible {
+  border-color: var(--color-line-focus);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-line-focus) 30%, transparent);
+}
+.combobox__trigger:disabled,
+.combobox__trigger[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.combobox__trigger[aria-invalid="true"] {
+  border-color: var(--color-error-strong);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-error) 20%, transparent);
+}
+.combobox__trigger--sm { height: var(--spacing-control-sm); }
+
+/* Truncating value span. Placeholder tone applies when nothing is selected. */
+.combobox__value {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+.combobox__value--placeholder { color: var(--color-content-tertiary); }
+
+/* Trailing chevron — 14px (source size-3.5), non-interactive. */
+.combobox__chevron {
+  flex-shrink: 0;
+  width: calc(var(--space-4) - var(--space-1) / 2);   /* 14px (size-3.5) */
+  height: calc(var(--space-4) - var(--space-1) / 2);
+  color: var(--color-content-tertiary);
+  pointer-events: none;
+}
+
+/* Open popup surface — width tracks the trigger; min-width floor 144px (min-w-36). */
+.combobox__content {
+  z-index: 60;   /* popover z-layer — above the dialog layer (z-index 50); inert until positioned; z-index conventionally exempt */
+  min-width: calc(var(--space-16) + var(--space-20));   /* 144px — source min-w-36 */
+  overflow: hidden;
+  border: 1px solid var(--color-line-default);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-2);
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  box-shadow: var(--shadow-4);
+}
+
+/* Search row — leading glyph + borderless input, bottom hairline above the list. */
+.combobox__search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-inline: var(--spacing-cx-sm);   /* 10px — source px-2.5 */
+  border-bottom: 1px solid var(--color-line-subtle);
+}
+.combobox__search svg {
+  flex-shrink: 0;
+  width: calc(var(--space-4) - var(--space-1) / 2);   /* 14px (size-3.5) */
+  height: calc(var(--space-4) - var(--space-1) / 2);
+  color: var(--color-content-tertiary);
+  pointer-events: none;
+}
+.combobox__input {
+  width: 100%;
+  height: var(--spacing-control-md);   /* 36px — source h-9 */
+  border: 0;
+  background-color: transparent;
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  outline: none;
+}
+.combobox__input::placeholder { color: var(--color-content-tertiary); }
+
+/* Scrollable option list. max-height 224px (source max-h-56) — no sizing token
+   lands there; raw value, flagged in combobox.md notes. */
+.combobox__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);   /* the list rows carry a real gap — highlight pills never touch */
+  max-height: 224px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: var(--space-1);
+}
+
+/* Option row — label + trailing room for the absolutely-pinned check glyph. */
+.combobox__item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-block: calc(var(--space-1) + var(--space-1) / 2);   /* 6px — source py-1.5 */
+  padding-inline-start: var(--spacing-cx-sm);   /* 10px — source pl-2.5 */
+  padding-inline-end: var(--space-8);           /* 32px — source pr-8, room for check */
+  border-radius: var(--radius-md);
+  font-size: var(--text-md);
+  color: var(--color-content-primary);
+  cursor: default;
+  user-select: none;
+  outline: none;
+}
+/* Highlight follows keyboard/pointer focus; static stand-in is --highlighted. */
+.combobox__item:hover,
+.combobox__item--highlighted {
+  background-color: var(--color-surface-hover);
+}
+.combobox__item[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Trailing check glyph — pinned right, 14px; shown only for the selected row. */
+.combobox__item-indicator {
+  position: absolute;
+  inset-inline-end: var(--space-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--space-4) - var(--space-1) / 2);   /* 14px (size-3.5) */
+  height: calc(var(--space-4) - var(--space-1) / 2);
+  pointer-events: none;
+}
+.combobox__item:not(.combobox__item--selected) .combobox__item-indicator { display: none; }
+
+/* Empty caption — only present when emptyText is set and the list is empty. */
+.combobox__empty {
+  padding-block: var(--space-4);
+  text-align: center;
+  font-size: var(--text-md);
+  color: var(--color-content-tertiary);
+}
+
+/* ═══════════════════════════════ Command ═══════════════════════════════ */
+/* @component command */
+/* Keyboard-driven command palette: a search input over a filtered, grouped
+   list of runnable items. Fuzzy filtering, the arrow-key roving `data-selected`
+   highlight, and (for the dialog form) base-ui open/close + focus trap are
+   React behaviors — out of scope for this static skin. The reference layer
+   paints the resting shell, its rows, and a single highlighted row; mark it
+   with .command__item--active (the skin can't observe live roving focus). The
+   list max-height (288px) and dialog max-width (460px) are raw px: no sizing
+   token expresses popup dimensions yet (see command.md notes). */
+
+.command {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--color-line-default);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface-2);
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  box-shadow: var(--shadow-5);
+}
+
+/* Dialog form — the same shell inside a centered, backdrop-dimmed popup. */
+.command-dialog__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;   /* modal z-layer — above sticky page chrome (z-index 10); z-index conventionally exempt */
+  background-color: var(--color-surface-overlay);
+}
+.command-dialog {
+  position: fixed;
+  top: 33%;   /* source top-1/3 */
+  left: 50%;
+  z-index: 50;   /* modal z-layer — panel is a fixed sibling of its backdrop; z-index conventionally exempt */
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 460px;   /* source max-w-[460px]; no sizing token expresses popup width yet */
+  overflow: hidden;
+  border: 1px solid var(--color-line-default);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface-2);
+  color: var(--color-content-primary);
+  box-shadow: var(--shadow-5);
+}
+/* Inside the dialog the shell is chromeless — the dialog owns the surface. */
+.command-dialog .command {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Search field row — wraps the chromeless input-group shell; only a bottom
+   hairline separates it from the list (source border-0 + border-b line-subtle). */
+.command__input-wrapper {
+  padding: var(--space-1);
+  padding-bottom: 0;
+}
+.command__input-wrapper .input-group {
+  height: var(--space-12);   /* 48px — source h-12 */
+  border: 0;
+  border-bottom: 1px solid var(--color-line-subtle);
+  border-radius: 0;
+  background-color: transparent;
+  box-shadow: none;
+}
+.command__input {
+  flex: 1 1 auto;
+  width: 100%;
+  border: 0;
+  background-color: transparent;
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  outline: none;
+}
+.command__input::placeholder { color: var(--color-content-tertiary); }
+.command__input:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Scroll viewport — capped height, hidden scrollbar, vertical scroll only. */
+.command__list {
+  max-height: 288px;   /* source max-h-72; no sizing token expresses this yet */
+  overflow-x: hidden;
+  overflow-y: auto;
+  scroll-padding-block: var(--space-1);
+  outline: none;
+}
+
+/* No-results message. */
+.command__empty {
+  padding-block: var(--space-6);
+  text-align: center;
+  font-size: var(--text-md);
+  color: var(--color-content-secondary);
+}
+
+/* A labeled section of items. */
+.command__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);   /* rows carry a real gap — see combobox__list */
+  overflow: hidden;
+  padding: var(--space-1);
+  color: var(--color-content-primary);
+}
+.command__group-heading {
+  padding-inline: var(--spacing-cx-md);   /* 14px — source px-3.5 */
+  padding-block: var(--space-1);
+  color: var(--color-content-tertiary);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;   /* tracking-wide */
+}
+
+/* Hairline between groups — bleeds past the list/group padding (source -mx-1). */
+.command__separator {
+  height: 1px;
+  margin-inline: calc(-1 * var(--space-1));
+  background-color: var(--color-line-default);
+}
+
+/* One runnable row — leading icon + label + trailing check / shortcut. */
+.command__item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-cx-sm);   /* 10px — source gap-2.5 */
+  padding-inline: var(--spacing-cx-md);   /* 14px — source px-3.5 */
+  padding-block: var(--space-2);
+  border-radius: var(--radius-md);
+  color: var(--color-content-primary);
+  font-size: var(--text-md);
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+}
+/* The keyboard-roving highlight (source data-selected) — the only "hover" a row
+   gets; static stand-in is --active. */
+.command__item:hover,
+.command__item--active {
+  background-color: var(--color-surface-hover);
+}
+.command__item[data-disabled="true"],
+.command__item[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+/* Leading icon default — 16px (source size-4). */
+.command__item svg {
+  flex-shrink: 0;
+  width: var(--space-4);
+  height: var(--space-4);
+  pointer-events: none;
+}
+
+/* Trailing keyboard-hint text — sits in the same trailing slot as the check. */
+.command__shortcut {
+  margin-inline-start: auto;
+  color: var(--color-content-tertiary);
+  font-size: var(--text-xs);
+  letter-spacing: 0.1em;   /* tracking-widest */
+}
+
+/* ═══════════════════════════════ Context Menu ═══════════════════════════════ */
+/* @component context-menu */
+/* Right-click action menu (base-ui ContextMenu). Open/close, pointer-position
+   anchoring, portalling, side/align positioning, keyboard roving, submenu timing,
+   and dismissal are React/base-ui behaviors; this static skin paints the resting
+   OPEN panel + its rows only — no enter/exit keyframes, no positioning. Shares the
+   row recipe with dropdown-menu (same tone/spacing, different trigger gesture). */
+
+.context-menu__content {
+  z-index: 60;   /* popover z-layer — above the dialog layer (z-index 50); inert until positioned; z-index conventionally exempt */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);   /* rows carry a real gap — see combobox__list */
+  min-width: 220px;   /* source min-w-[220px]; no sizing token expresses this yet */
+  overflow-x: hidden;
+  overflow-y: auto;   /* React caps height to --available-height, then this scrolls */
+  padding: var(--space-1);
+  border: 1px solid var(--color-line-default);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface-2);
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  box-shadow: var(--shadow-4);
+  outline: none;
+}
+
+/* Group heading — uppercase, low-emphasis. */
+.context-menu__label {
+  padding-inline: var(--spacing-cx-sm);   /* px-2.5 = 10px */
+  padding-block: var(--space-1);
+  color: var(--color-content-tertiary);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;   /* tracking-wide */
+  user-select: none;
+}
+
+/* Hairline group divider, bled to the panel edges (source -mx-1). */
+.context-menu__separator {
+  height: 1px;
+  margin-inline: calc(-1 * var(--space-1));
+  margin-block: 0;   /* the content's flex gap spaces it now */
+  background-color: var(--color-line-default);
+}
+
+/* ── Action row (shared shape for item / sub-trigger) ── */
+.context-menu__item,
+.context-menu__sub-trigger {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--space-1) + var(--space-1) / 2);   /* gap-1.5 = 6px */
+  border-radius: var(--radius-md);
+  padding-inline: var(--spacing-cx-sm);   /* px-2.5 = 10px */
+  padding-block: var(--space-2);
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  cursor: pointer;
+  user-select: none;
+  outline: none;   /* focused row shown by its fill, not a ring */
+}
+/* Leading-icon slot defaults to 14px; an explicit size on the icon wins. */
+.context-menu__item > svg,
+.context-menu__item--checkbox > svg,
+.context-menu__item--radio > svg,
+.context-menu__sub-trigger > svg {
+  flex-shrink: 0;
+  width: calc(var(--space-4) - var(--space-1) / 2);   /* size-3.5 = 14px */
+  height: calc(var(--space-4) - var(--space-1) / 2);
+  pointer-events: none;
+}
+/* Focus / hover fill (base-ui roving focus + pointer hover). */
+.context-menu__item:hover,
+.context-menu__item:focus-visible,
+.context-menu__sub-trigger:hover,
+.context-menu__sub-trigger:focus-visible,
+.context-menu__sub-trigger[data-open] {
+  background-color: var(--color-surface-hover);
+}
+/* Disabled row. */
+.context-menu__item[data-disabled],
+.context-menu__item:disabled,
+.context-menu__sub-trigger[data-disabled] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Destructive tone — error text, error-bg on focus. */
+.context-menu__item--destructive {
+  color: var(--color-error-strong);
+}
+.context-menu__item--destructive:hover,
+.context-menu__item--destructive:focus-visible {
+  background-color: var(--color-error-bg);
+}
+
+/* Inset rows reserve a leading gutter so iconless rows align under iconed ones. */
+.context-menu__item--inset,
+.context-menu__sub-trigger--inset,
+.context-menu__label--inset {
+  padding-inline-start: calc(var(--space-6) + var(--space-1));   /* pl-7 = 28px */
+}
+
+/* Submenu trigger trailing chevron. */
+.context-menu__sub-trigger > svg:last-child {
+  margin-inline-start: auto;
+}
+
+/* ── Checkbox / radio rows: trailing indicator gutter, slightly larger type ── */
+.context-menu__item--checkbox,
+.context-menu__item--radio {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--space-1) + var(--space-1) / 2);   /* 6px */
+  border-radius: var(--radius-md);
+  padding-block: var(--space-1);
+  padding-inline-start: calc(var(--space-1) + var(--space-1) / 2);   /* pl-1.5 = 6px */
+  padding-inline-end: var(--space-8);   /* pr-8 = 32px indicator gutter */
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+}
+.context-menu__item--checkbox:hover,
+.context-menu__item--checkbox:focus-visible,
+.context-menu__item--radio:hover,
+.context-menu__item--radio:focus-visible {
+  background-color: var(--color-surface-hover);
+  color: var(--color-content-primary);
+}
+.context-menu__item--checkbox[data-disabled],
+.context-menu__item--radio[data-disabled] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+/* Trailing check glyph slot (right-2); shown when the row is selected. */
+.context-menu__indicator {
+  position: absolute;
+  right: var(--space-2);
+  display: inline-flex;
+  pointer-events: none;
+}
+.context-menu__indicator > svg {
+  width: var(--space-4);   /* size-4 = 16px */
+  height: var(--space-4);
+}
+
+/* Trailing keyboard-shortcut hint, pushed to the row edge. */
+.context-menu__shortcut {
+  margin-inline-start: auto;
+  color: var(--color-content-tertiary);
+  font-size: var(--text-xs);
+  letter-spacing: 0.1em;   /* tracking-widest */
+}
+.context-menu__item:hover .context-menu__shortcut,
+.context-menu__item:focus-visible .context-menu__shortcut {
+  color: var(--color-content-primary);
+}
+
+/* ═══════════════════════════════ Date Pickers ═══════════════════════════════ */
+/* @component date-picker date-range-picker date-time-picker */
+/* The four-sibling date-picker family (date / date-range / date-time / time).
+   Every variant is an input-styled TRIGGER that opens a
+   .popover holding the .calendar skin (+ optional presets rail / time row). The
+   popover open/close + positioning is base-ui behavior and the month grid is the
+   react-day-picker .calendar skin — both out of scope here; this block owns the
+   shared TRIGGER chrome + the in-popover presets rail and time row only. The
+   trigger recipe is identical to .input/.select (one borderless positioning div
+   wraps it, so a single ring shows — no double-ring problem). w-32 presets rail
+   (128px) has no sizing token (see notes); time-picker adds no block of its own
+   (it is an .input with affix slots). */
+
+/* Positioning shell — the trigger + absolutely-pinned clear live in here. */
+.date-picker {
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+}
+
+/* Input-styled trigger (mirrors .input/.select). md default. */
+.date-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  height: var(--spacing-control-md);
+  padding-inline: var(--spacing-cx-md);
+  border: 1px solid var(--color-line-default);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-2);
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.12s, background-color 0.12s, box-shadow 0.12s;
+  outline: none;
+}
+.date-trigger:hover { border-color: var(--color-line-strong); }
+.date-trigger:focus-visible {
+  border-color: var(--color-line-focus);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-line-focus) 30%, transparent);
+}
+.date-trigger:disabled,
+.date-trigger[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.date-trigger[aria-invalid="true"],
+.date-trigger--invalid {
+  border-color: var(--color-error-strong);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-error) 20%, transparent);
+}
+/* Make room for the absolutely-pinned clear button (source pr-7 = 28px). */
+.date-trigger--clearable { padding-inline-end: var(--spacing-control-sm); }
+
+/* Date-trigger sizes. */
+.date-trigger--sm {
+  height: var(--spacing-control-sm);
+  padding-inline: var(--spacing-cx-sm);
+  font-size: var(--text-xs);
+}
+.date-trigger--md {
+  height: var(--spacing-control-md);
+  padding-inline: var(--spacing-cx-md);
+  font-size: var(--text-md);
+}
+.date-trigger--lg {
+  height: var(--spacing-control-lg);
+  padding-inline: var(--spacing-cx-lg);
+  font-size: var(--text-lg);   /* 16px — source text-base */
+}
+
+/* Leading calendar/clock glyph — 16px, non-interactive, tertiary tone. */
+.date-trigger__icon {
+  flex-shrink: 0;
+  width: var(--space-4);   /* 16px — source size-4 */
+  height: var(--space-4);
+  color: var(--color-content-tertiary);
+  pointer-events: none;
+}
+
+/* Truncating value span; placeholder tone when empty. */
+.date-trigger__value {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+.date-trigger__value--placeholder { color: var(--color-content-tertiary); }
+
+/* Trailing clear ✕ — pinned right, NOT a tab stop. Shared by every sibling
+   (time-picker drops it in the .input suffix slot). 14px glyph (source size-3.5). */
+.date-trigger__clear {
+  position: absolute;
+  inset-inline-end: var(--space-2);   /* 8px — source right-2 */
+  top: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--space-4) - var(--space-1) / 2);   /* 14px (size-3.5) */
+  height: calc(var(--space-4) - var(--space-1) / 2);
+  border: 0;
+  background-color: transparent;
+  color: var(--color-content-tertiary);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: color 0.12s;
+  outline: none;
+}
+.date-trigger__clear:hover { color: var(--color-content-primary); }
+
+/* ── Presets rail (date-range + date-time-range) ──
+   Fixed-width left rail of quick-range buttons, hairline-separated from the
+   calendar. 128px (source w-32): no sizing token expresses popup-rail width yet. */
+.date-presets {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space-1) / 2);   /* 2px — source gap-0.5, half-step over the raw scale */
+  width: 128px;   /* source w-32; no sizing token expresses this yet */
+  padding: var(--space-2);
+  border-inline-end: 1px solid var(--color-line-default);
+}
+.date-presets__item {
+  width: 100%;
+  padding-inline: var(--space-2);
+  padding-block: calc(var(--space-1) + var(--space-1) / 2);   /* 6px — source py-1.5 */
+  border: 0;
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  color: var(--color-content-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  text-align: left;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.12s, color 0.12s;
+  outline: none;
+}
+.date-presets__item:hover {
+  background-color: var(--color-surface-hover);
+  color: var(--color-content-primary);
+}
+.date-presets__item:focus-visible { box-shadow: var(--shadow-focus); }
+
+/* ── Time row (date-time) ──
+   Bottom row under a top hairline; holds a native time .input + a .btn OK in a
+   single space-between row. A date-time RANGE is composed from two separate
+   date-time pickers (a Start field + an End field), not one dual-time control. */
+.date-time-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--spacing-cx-sm);   /* 10px — source p-2.5 */
+  border-top: 1px solid var(--color-line-default);
+}
+
+/* Fixed-width row caption (source w-9 = 36px). */
+.date-time-row__label {
+  flex-shrink: 0;
+  width: var(--spacing-control-md);   /* 36px — source w-9 */
+  color: var(--color-content-secondary);
+  font-size: var(--text-xs);
+}
+
+/* ═══════════════════════════════ Dropdown Menu ═══════════════════════════════ */
+/* @component dropdown-menu */
+/* Triggered overlay of grouped actions (base-ui Menu). Triggering, portalling,
+   side/align positioning, open/close keyframes, roaming focus, type-ahead, and
+   checkbox/radio/sub-menu state are React/base-ui behaviors — out of scope for
+   this static skin. The reference layer paints the resting OPEN popup surface
+   and its rows; mark the highlighted row with .dropdown-menu__item--active
+   (the skin can't observe live keyboard focus). min-widths are raw px: no token
+   expresses popup width yet (see dropdown-menu.md notes). */
+
+.dropdown-menu {
+  z-index: 60;   /* popover z-layer — above the dialog layer (z-index 50) so a menu opened inside a dialog clears it; inert until positioned; z-index conventionally exempt */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);   /* rows carry a real gap — see combobox__list */
+  min-width: 240px;   /* source min-w-[240px]; no sizing token expresses this yet */
+  max-height: 80vh;   /* viewport-capped, like .modal/.sheet — NOT 100%. A % max-height resolves against the containing block, so when a static artifact positions this popup `position:absolute` inside a trigger-sized `.overflow-wrap` (the taught detail-header pattern), `100%` collapsed to the trigger's height and clipped the menu. vh is containing-block-independent, so it works whether the popup is absolute-in-wrapper or portalled+fixed. */
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: var(--space-1);
+  border: 1px solid var(--color-line-default);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface-2);
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  box-shadow: var(--shadow-4);
+}
+
+/* Group caption — uppercase, tertiary, non-interactive. */
+.dropdown-menu__label {
+  padding-inline: var(--spacing-cx-sm);   /* 10px — source px-2.5 */
+  padding-block: var(--space-1);
+  color: var(--color-content-tertiary);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;   /* tracking-wide */
+}
+
+/* Action row — flex, leading icon + label + trailing affix. */
+.dropdown-menu__item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--space-1) + var(--space-1) / 2);   /* 6px — source gap-1.5 */
+  padding-inline: var(--spacing-cx-sm);   /* 10px — source px-2.5 */
+  padding-block: var(--space-2);
+  border-radius: var(--radius-md);
+  color: var(--color-content-primary);
+  font-size: var(--text-md);
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+}
+/* Rows span the full popup width. A menu row is a <button> (form control): even in
+   a definite-width popup it shrink-wraps to its content, so the highlight + hit
+   target stop short of the row edge and narrower rows look ragged. width:100% (with
+   the global border-box) makes every row fill the popup regardless of its sizing —
+   min-width or definite. Covers the standalone checkbox/radio rows too (they don't
+   carry the __item base). */
+.dropdown-menu__item,
+.dropdown-menu__sub-trigger,
+.dropdown-menu__checkbox-item,
+.dropdown-menu__radio-item {
+  width: 100%;
+}
+/* Highlight follows keyboard/pointer focus; static stand-in is --active. */
+.dropdown-menu__item:hover,
+.dropdown-menu__item:focus-visible,
+.dropdown-menu__item--active {
+  background-color: var(--color-surface-hover);
+}
+.dropdown-menu__item[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Destructive tone — error text, error-tinted highlight. */
+.dropdown-menu__item--destructive {
+  color: var(--color-error-strong);
+}
+.dropdown-menu__item--destructive:hover,
+.dropdown-menu__item--destructive:focus-visible,
+.dropdown-menu__item--destructive.dropdown-menu__item--active {
+  background-color: var(--color-error-bg);
+}
+
+/* Leading icon default — 14px (source size-3.5; nearest raw step is 16px, so
+   pin to size-3.5 via a half-step calc over the scale floor). */
+.dropdown-menu__item svg,
+.dropdown-menu__sub-trigger svg {
+  flex-shrink: 0;
+  width: calc(var(--space-4) - var(--space-1) / 2);   /* 14px (size-3.5) */
+  height: calc(var(--space-4) - var(--space-1) / 2);
+  pointer-events: none;
+}
+
+/* Inset — align under siblings that carry a leading icon. */
+.dropdown-menu__label--inset,
+.dropdown-menu__item--inset,
+.dropdown-menu__sub-trigger--inset { padding-inline-start: calc(var(--space-6) + var(--space-1)); }   /* 28px */
+
+/* Trailing keyboard-hint text. */
+.dropdown-menu__shortcut {
+  margin-inline-start: auto;
+  color: var(--color-content-tertiary);
+  font-size: var(--text-xs);
+  letter-spacing: 0.1em;   /* tracking-widest */
+}
+
+/* Sub-trigger — item recipe + trailing chevron; holds highlight when open. */
+.dropdown-menu__sub-trigger {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--space-1) + var(--space-1) / 2);   /* 6px */
+  padding-inline: var(--spacing-cx-sm);
+  padding-block: var(--space-2);
+  border-radius: var(--radius-md);
+  color: var(--color-content-primary);
+  font-size: var(--text-md);
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+}
+.dropdown-menu__sub-trigger:hover,
+.dropdown-menu__sub-trigger:focus-visible,
+.dropdown-menu__sub-trigger--open {
+  background-color: var(--color-surface-hover);
+}
+.dropdown-menu__sub-trigger__chevron { margin-inline-start: auto; }
+
+/* Nested sub-menu popup — content recipe, narrower min-width. */
+.dropdown-menu__sub-content {
+  z-index: 60;   /* popover z-layer — matches its parent menu; inert until positioned; z-index conventionally exempt */
+  min-width: 160px;   /* source min-w-[160px]; no sizing token yet */
+}
+
+/* Toggle rows (checkbox / radio) — item recipe at sm type, trailing check slot. */
+.dropdown-menu__checkbox-item,
+.dropdown-menu__radio-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--space-1) + var(--space-1) / 2);   /* 6px */
+  padding-block: var(--space-1);
+  padding-inline-start: calc(var(--space-1) + var(--space-1) / 2);   /* 6px — source pl-1.5 */
+  padding-inline-end: var(--space-8);   /* 32px — source pr-8, room for the check */
+  border-radius: var(--radius-md);
+  font-size: var(--text-md);
+  color: var(--color-content-primary);
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+}
+.dropdown-menu__checkbox-item:hover,
+.dropdown-menu__checkbox-item:focus-visible,
+.dropdown-menu__checkbox-item--active,
+.dropdown-menu__radio-item:hover,
+.dropdown-menu__radio-item:focus-visible,
+.dropdown-menu__radio-item--active {
+  background-color: var(--color-surface-hover);
+}
+.dropdown-menu__checkbox-item[aria-disabled="true"],
+.dropdown-menu__radio-item[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Trailing check glyph — pinned right, 16px, shown only when checked. */
+.dropdown-menu__item-indicator {
+  position: absolute;
+  inset-inline-end: var(--space-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-4);   /* 16px — source size-4 */
+  height: var(--space-4);
+  pointer-events: none;
+}
+
+/* Hairline divider between groups. */
+.dropdown-menu__separator {
+  height: 1px;
+  margin-block: 0;   /* the menu's flex gap spaces it now */
+  margin-inline: calc(-1 * var(--space-1));   /* source -mx-1, bleed past popup padding */
+  background-color: var(--color-line-default);
+}
+
+/* ═══════════════════════════════ Field ═══════════════════════════════ */
+/* @component field */
+/* Form-row wrapper: stacks label → control → hint/error. Pure layout +
+   caption tones; draws no border/background/shadow of its own. Compose with
+   .label (+ .label--disabled) for the caption. */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.field__required {
+  color: var(--color-error);
+}
+.field__hint {
+  font-size: var(--text-xs);
+  color: var(--color-content-tertiary);
+}
+.field__error {
+  font-size: var(--text-xs);
+  color: var(--color-error);
+}
+
+/* ═══════════════════════════════ Hover Card ═══════════════════════════════ */
+/* @component hover-card */
+/* Rich hover popover (base-ui PreviewCard). A floating content panel — heavier
+   elevation than the tooltip. Open/close (fade + zoom-95 + directional slide),
+   portalling, and side/align positioning are React/base-ui behaviors; this
+   static skin paints the resting OPEN popup surface only — the consumer
+   positions it. Width is a fixed 280px with no token (see hover-card.md notes:
+   token-change wish for a popup-width sizing token); everything else is a token. */
+
+.hover-card {
+  z-index: 60;   /* popover z-layer — above the dialog layer (z-index 50); inert until positioned; z-index conventionally exempt */
+  width: 280px;   /* source w-[280px]; no sizing token expresses this yet */
+  padding: var(--spacing-cx-md);   /* 14px — source p-3.5 */
+  border: 1px solid var(--color-line-default);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface-2);
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  box-shadow: var(--shadow-4);
+}
+
+/* ═══════════════════════════════ Initials Tile ═══════════════════════════════ */
+/* Square, decorative identity mark that shows initials derived from a name.
+   Uses dedicated avatar tokens (NOT surface-3) so dark mode stays distinct from
+   cards. Static, non-interactive, aria-hidden — no hover/focus/disabled states.
+   The artifact author writes the already-derived initials as text content (first
+/* Input Group */
+/* A single-border shell that fuses an .input/.textarea with addons (icons, text
+   affixes, .btn actions, kbd hints). The group owns the border / radius / focus
+   ring / invalid / disabled; the inner control wears .input + .input-group__control
+   to strip its own chrome so only ONE ring shows. Focus & invalid are read off the
+   control via :has() — mirroring the source's has-[...] selectors. Click-to-focus,
+   source-order swapping, and combobox-popover ring deferral are JS behaviors owned
+   by the React implementation and are out of scope for this static skin. */
+
+.input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  height: var(--spacing-control-md);
+  border: 1px solid var(--color-line-default);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-2);
+  transition: border-color 0.12s, background-color 0.12s, box-shadow 0.12s;
+  outline: none;
+}
+/* Height collapses to auto when the group wraps a textarea or stacks a block addon. */
+.input-group:has(.textarea),
+.input-group--block { height: auto; }
+.input-group--block { flex-direction: column; }
+
+/* Group-owned focus ring (the inner control is borderless, so its focus lifts here). */
+.input-group:has(.input-group__control:focus-visible) {
+  border-color: var(--color-line-focus);
+  box-shadow: var(--shadow-focus);   /* DS 2.0: unified focus ring */
+}
+/* Group-owned invalid ring. */
+.input-group:has(.input-group__control[aria-invalid="true"]),
+.input-group--invalid {
+  border-color: var(--color-error-strong);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-error) 20%, transparent);
+}
+/* Group-owned disabled dim. */
+.input-group:has(.input-group__control:disabled),
+.input-group--disabled {
+  background-color: var(--color-surface-3);
+  opacity: 0.5;
+}
+
+/* The control: lay .input-group__control alongside .input/.textarea to strip
+   its border/fill/ring so the group's single border shows. */
+.input-group__control {
+  flex: 1 1 auto;
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+  box-shadow: none;
+}
+.input-group__control:focus-visible {
+  border-color: transparent;
+  box-shadow: none;
+}
+.input-group__control[aria-invalid="true"] {
+  border-color: transparent;
+  box-shadow: none;
+}
+.input-group__control:disabled { background-color: transparent; }
+
+/* Addon slot — wraps icon / text / button / kbd content inside the group. */
+.input-group__addon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding-block: var(--space-1);
+  color: var(--color-content-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  font-weight: 500;
+  white-space: nowrap; /* a text affix ("% off", "USD") stays on one line — never wraps when the field is narrow */
+  cursor: text;
+  user-select: none;
+}
+
+/* Inline addons sit at the row edges; block addons span full width and stack. */
+.input-group__addon--inline-start {
+  order: -1;
+  padding-inline-start: var(--space-2);
+}
+.input-group__addon--inline-end {
+  order: 1;
+  padding-inline-end: var(--space-2);
+}
+.input-group__addon--block-start {
+  order: -1;
+  width: 100%;
+  justify-content: flex-start;
+  padding-inline: var(--space-2);
+  padding-top: var(--space-2);
+}
+.input-group__addon--block-end {
+  order: 1;
+  width: 100%;
+  justify-content: flex-start;
+  padding-inline: var(--space-2);
+  padding-bottom: var(--space-2);
+}
+
+/* Non-interactive text/icon affix (currency symbol, unit suffix). */
+.input-group__text {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-content-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+}
+
+/* Action button inside the group reuses .btn (.btn--ghost .btn--xs / .btn--icon);
+   it only drops the .btn shadow so it reads flat against the field. kbd hints get
+   a tighter corner than the field. */
+.input-group .btn { box-shadow: none; }
+.input-group kbd { border-radius: var(--radius-sm); }
+
+/* ═══════════════════════════════ InputOTP ═══════════════════════════════ */
+/* @component input-otp */
+/* Segmented verification-code input. The active-slot highlight + fake caret +
+   focus traversal are owned by the React `input-otp` library; this layer is the
+   static skin only. The ERROR ring is drawn by the GROUP (via :has), never by an
+   individual slot — one slot ring + one group ring would double the outline. */
+
+.input-otp {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+/* In React, focus lives on a hidden <input>; a static-HTML artifact instead makes
+   this container focusable (tabindex) to capture typing — which would paint a UA
+   focus ring around the whole group. Suppress it: the active-slot ring below is
+   the focus indicator, so a11y is preserved. */
+.input-otp:focus,
+.input-otp:focus-visible { outline: none; }
+/* dims when the underlying control is disabled */
+.input-otp:has(:disabled),
+.input-otp[aria-disabled="true"] {
+  opacity: 0.5;
+}
+
+.input-otp__group {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);   /* 8px — separate the slots */
+  border-radius: var(--radius-md);
+}
+/* Unified error treatment: any aria-invalid slot inside the group draws one
+   border + ring around the whole group. */
+.input-otp__group:has([aria-invalid="true"]) {
+  border: 1px solid var(--color-error);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-error) 20%, transparent);
+}
+
+.input-otp__slot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-10);   /* 40px */
+  height: var(--space-12);  /* 48px */
+  border: 1px solid var(--color-line-default);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-2);
+  color: var(--color-content-primary);
+  font-family: var(--font-mono);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  transition: border-color 0.12s, box-shadow 0.12s;
+  outline: none;
+}
+/* active = the slot the caret is in. Raised above neighbours so the ring is
+   not clipped by the next slot's border. */
+.input-otp__slot--active {
+  z-index: 10;
+  border-color: var(--color-primary-700);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-primary-700) 25%, transparent);
+}
+
+/* fake blinking caret — shown in the active empty slot (animation owned by the
+   React impl; reference shows the static bar). */
+.input-otp__caret {
+  position: absolute;
+  width: 1px;
+  height: var(--space-4);   /* 16px */
+  background-color: var(--color-content-primary);
+  pointer-events: none;
+}
+
+.input-otp__separator {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-content-tertiary);
+}
+.input-otp__separator svg {
+  width: var(--space-4);    /* 16px */
+  height: var(--space-4);
+}
+
+/* Label */
+.label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  font-weight: 500;
+  line-height: 1;
+  /* Primitive sets no color (it inherits). This bakes in the Field
+     form-caption tone for the artifact side. */
+  color: var(--color-content-secondary);
+  user-select: none;
+}
+/* Static stand-in for the React group-disabled / peer-disabled variants,
+   which need live control state the artifact can't observe. */
+.label--disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ═══════════════════════════════ Modal ═══════════════════════════════ */
+/* @component modal */
+/* Centered dialog over a dimmed scrim (base-ui Dialog). Open/close lifecycle,
+   portalling, focus trap, Escape/overlay dismissal gating, and the fade+zoom
+   keyframes are React/base-ui behaviors — out of scope for this static skin.
+   The reference layer paints the resting OPEN dialog (scrim + panel + slots);
+   the consumer drives visibility. Width presets (360/480/640/880px) and the
+   fullscreen 64px frame are raw px — no sizing token expresses popup dimensions
+   yet (see modal.md notes). The max-height, mobile width floor, and centering
+   transform are viewport math (calc/percent), conventionally exempt. */
+
+/* Scrim — fixed full-viewport wash; centers the panel and floors mobile width. */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;   /* modal z-layer — must sit above sticky page chrome (summary-bar/table head at z-index 10); z-index conventionally exempt */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);   /* keeps the panel off the edges (≈ source max-w 100%-2rem) */
+  background-color: var(--color-surface-overlay);
+}
+
+/* Panel — popover surface, clipped so slot edges meet the rounded corner. */
+.modal {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 480px;   /* md default; size modifiers override. No popup-width token yet */
+  max-height: calc(100vh - 96px);   /* source max-h-[calc(100vh-96px)] */
+  overflow: hidden;
+  border: 1px solid var(--color-line-subtle);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface-2);   /* source bg-popover */
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  box-shadow: var(--shadow-1);
+  outline: none;
+}
+
+/* Modal · width presets (raw px; no sizing token expresses popup width yet). */
+.modal--sm { max-width: 360px; }
+.modal--md { max-width: 480px; }
+.modal--lg { max-width: 640px; }
+.modal--xl { max-width: 880px; }
+.modal--fullscreen {
+  max-width: none;
+  width: calc(100vw - 64px);   /* 32px frame each side */
+  height: calc(100vh - 64px);
+  max-height: calc(100vh - 64px);
+}
+
+/* Header — title/description stack + pinned close, under a bottom hairline.
+   Omit the slot entirely when there's no title/description/close. */
+.modal__header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding-inline: var(--space-5);
+  padding-block: calc(var(--space-3) + var(--space-1) / 2);   /* 14px — source py-3.5 */
+  border-bottom: 1px solid var(--color-line-subtle);
+}
+
+/* Title/description column — truncates rather than crowding the close button. */
+.modal__heading {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.modal__title {
+  font-size: var(--text-md);
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--color-content-primary);
+}
+.modal__description {
+  font-size: var(--text-xs);
+  line-height: 1.4;
+  color: var(--color-content-secondary);
+}
+
+/* Close — 24px ghost icon button, part of the shell (not a .btn). */
+.modal__close {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-6);   /* 24px — source size-6 */
+  height: var(--space-6);
+  border: 0;
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  color: var(--color-content-tertiary);
+  cursor: pointer;
+  transition: background-color 0.12s, color 0.12s;
+  outline: none;
+}
+.modal__close:hover {
+  background-color: var(--color-surface-hover);
+  color: var(--color-content-primary);
+}
+.modal__close:focus-visible { box-shadow: var(--shadow-focus); }
+
+/* Body — the scrolling region between pinned header/footer. */
+.modal__body {
+  flex: 1 1 auto;
+  overflow: auto;
+  padding: var(--space-5);
+  font-size: var(--text-xs);
+  line-height: 1.4;
+  color: var(--color-content-secondary);
+}
+
+/* Footer — action shelf on a muted ground, under a top hairline. Stacks
+   reversed on mobile; right-aligned row at sm+. Holds .btn actions. */
+.modal__footer {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column-reverse;
+  gap: var(--space-2);
+  padding-inline: var(--space-4);
+  padding-block: var(--space-3);
+  border-top: 1px solid var(--color-line-subtle);
+  background-color: var(--color-surface-3);   /* source bg-muted */
+}
+@media (min-width: 640px) {
+  .modal__footer {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+}
+
+/* ═══════════════════════════════ Navigation Menu ═══════════════════════════════ */
+/* Top-level site-header nav: a horizontal bar of triggers/links where an open
+   trigger reveals a portalled content panel beneath the bar. Triggering,
+   portalling, positioning, the animated positioner/viewport that tracks the
+   active trigger, open/close keyframes (directional slide + fade + zoom), and
+   roaming focus are React/base-ui behaviors — out of scope for this static skin.
+   The reference layer paints the resting bar plus one open panel; mark the open
+   trigger with .nav-menu__trigger--open and the current link with
+   .nav-menu__link--active (the skin can't observe live state). */
+
+.nav-menu {
+  position: relative;
+  display: inline-flex;
+  flex: 1 1 0;
+  max-width: max-content;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+}
+
+/* The horizontal row of items; items abut (source gap-0). */
+.nav-menu__list {
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* One slot in the bar (wraps a trigger or a bar link). */
+.nav-menu__item {
+  position: relative;
+}
+
+/* Bar trigger — md-height button that opens a content panel. */
+.nav-menu__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  width: max-content;
+  height: var(--spacing-control-md);   /* 36px — source h-9 */
+  padding-inline: var(--spacing-cx-sm);   /* 10px — source px-2.5 */
+  border: 0;
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.12s, box-shadow 0.12s;
+  outline: none;
+}
+.nav-menu__trigger:hover,
+.nav-menu__trigger:focus,
+.nav-menu__trigger--open {
+  background-color: var(--color-surface-hover);
+}
+.nav-menu__trigger:focus-visible {
+  box-shadow: var(--shadow-focus);
+}
+.nav-menu__trigger:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Trailing chevron — 14px (source size-3.5); rotates 180° when the panel is open. */
+.nav-menu__trigger__chevron {
+  width: calc(var(--space-4) - var(--space-1) / 2);   /* 14px (size-3.5) */
+  height: calc(var(--space-4) - var(--space-1) / 2);
+  transition: transform 0.3s var(--ease-standard);
+}
+.nav-menu__trigger--open .nav-menu__trigger__chevron {
+  transform: rotate(180deg);
+}
+
+/* Floating content panel an open trigger reveals (popover surface). */
+.nav-menu__content {
+  padding: var(--space-1);
+  border: 1px solid var(--color-line-default);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface-2);
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  box-shadow: var(--shadow-4);
+}
+
+/* Navigable row — in the bar or inside a content panel. */
+.nav-menu__link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  color: var(--color-content-primary);
+  font-size: var(--text-md);
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.12s;
+  outline: none;
+}
+/* Hover/focus guard against --active so the current page keeps its darker fill
+   (principle §16: committed state outranks hover). */
+.nav-menu__link:hover:not(.nav-menu__link--active),
+.nav-menu__link:focus:not(.nav-menu__link--active) {
+  background-color: var(--color-surface-hover);
+}
+/* Current page (source data-active) — a step darker than hover. */
+.nav-menu__link--active {
+  background-color: var(--color-surface-active);
+}
+/* Leading icon default — 16px (source size-4). */
+.nav-menu__link svg {
+  flex-shrink: 0;
+  width: var(--space-4);   /* 16px */
+  height: var(--space-4);
+}
+
+/* Directional arrow pointing from the bar to the open panel — a rotated nub. */
+.nav-menu__indicator {
+  width: var(--space-2);   /* 8px — source h-2 w-2 */
+  height: var(--space-2);
+  border-top-left-radius: var(--radius-sm);
+  background-color: var(--color-line-default);
+  box-shadow: var(--shadow-3);
+  transform: rotate(45deg);
+}
+
+/* ═══════════════════════════════ Popover ═══════════════════════════════ */
+/* @component popover */
+/* Elevated floating panel anchored to a trigger. Open/close, portalling,
+   positioning, focus return, and dismissal are React/base-ui behaviors; this
+   static skin renders a single OPEN panel (default bottom placement) — no
+   enter/exit keyframes. The panel paints on surface-1 with the overlay-elevation
+   shadow (shadow-3) and a 1px hairline ring. MenuItem rows (the dropdown-list
+   shape) are shared — .menu-item is intentionally NOT namespaced under
+   .popover__ so any list-shaped overlay can reuse it. */
+
+.popover {
+  z-index: 60;   /* popover z-layer — above the dialog layer (z-index 50) so it clears a modal it opens within; inert until the consumer positions this surface; z-index conventionally exempt */
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-cx-sm);            /* 10px (source gap-2.5) */
+  width: 18rem;                          /* 288px (source w-72); no token — see popover.md notes */
+  max-width: 100%;
+  padding: var(--spacing-cx-sm);         /* 10px (source p-2.5) */
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface-1);
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  box-shadow: var(--shadow-3);           /* source shadow-md → overlay elevation */
+  /* 1px hairline ring (source ring-1 ring-foreground/10) */
+  outline: 1px solid color-mix(in oklch, var(--color-content-primary) 10%, transparent);
+  outline-offset: -1px;
+}
+
+/* Heading slots — tight gap-0.5 (2px) half-step over the raw scale. */
+.popover__header {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space-1) / 2);         /* 2px (source gap-0.5) */
+  font-size: var(--text-md);
+}
+.popover__title {
+  font-weight: 500;                      /* source font-medium */
+}
+.popover__description {
+  color: var(--color-content-secondary); /* source text-muted-foreground */
+}
+
+/* ── MenuItem row (shared by popover-menus + dropdown menus) ── */
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding-inline: var(--space-2);
+  padding-block: calc(var(--space-1) + var(--space-1) / 2);  /* 6px (source py-1.5) */
+  border: 0;
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  text-align: left;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color var(--duration-fast), color var(--duration-fast);
+  outline: none;
+}
+.menu-item:hover:not(:disabled) { background-color: var(--color-surface-hover); }
+.menu-item:focus-visible { box-shadow: var(--shadow-focus); }
+.menu-item:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Destructive row — delete-style actions. */
+.menu-item--destructive { color: var(--color-error-strong); }
+.menu-item--destructive:hover:not(:disabled) { background-color: var(--color-error-bg); }
+
+/* Leading icon — 14px (size-3.5), matching .dropdown-menu__item svg. Without
+   this, a raw <svg> (no width/height) in a .menu-item blows up to its intrinsic
+   size; the row sets a gap FOR an icon, so it must constrain it too. */
+.menu-item svg {
+  flex-shrink: 0;
+  width: calc(var(--space-4) - var(--space-1) / 2);   /* 14px (size-3.5) */
+  height: calc(var(--space-4) - var(--space-1) / 2);
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════ Progress ═══════════════════════════════ */
+/* @component progress */
+/* Determinate completion bar. No variant/size/state axis — the only visual
+   axis is tone, which swaps the indicator fill. The fill % is static inline
+   markup on the artifact side (width: <n>%); base-ui's value plumbing is owned
+   by the React implementation. Track height 6px (source h-1.5) has no space
+   token — nearest --space-2 (8px); see progress.md notes. */
+
+.progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+  font-family: var(--font-sans);
+}
+
+/* Optional caption / readout slots above the track. */
+.progress__label {
+  font-size: var(--text-xs);
+  color: var(--color-content-secondary);
+}
+.progress__value {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-content-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Track — fixed-height rail that clips the rounded indicator. */
+.progress__track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: var(--space-2);   /* 6px source (h-1.5); no token at 6px — nearest --space-2 (8px) */
+  overflow-x: hidden;
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface-3);
+}
+
+/* Indicator — fill whose width = value%; set inline (e.g. style="width:64%"). */
+.progress__indicator {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary-700);
+  transition: width var(--duration-normal);
+}
+
+/* Tone — swaps the indicator fill only (track stays surface-3). */
+.progress__indicator--success { background-color: var(--color-success); }
+.progress__indicator--warning { background-color: var(--color-warning); }
+.progress__indicator--error   { background-color: var(--color-error); }
+.progress__indicator--info    { background-color: var(--color-info); }
+
+/* ═══════════════════════════════ Resizable ═══════════════════════════════ */
+/* @component resizable */
+/* Draggable split-pane layout: flex panels separated by a hairline handle. Drag
+   math, min/max/collapse, keyboard nudging, and the orientation flip are owned
+   by the React impl (react-resizable-panels) — this skin paints the static
+   handle only (track, widened hit strip, optional grip, hover/focus). The
+   artifact side cannot drag. See resizable.md for the focus-ring divergence
+   (source uses ring-1 line-focus, not shadow-focus). */
+
+.resizable-group {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+/* Stacked panels (a horizontal divider separates them). */
+.resizable-group--vertical {
+  flex-direction: column;
+}
+
+/* Panels are pure layout — their content owns any surface/padding. */
+.resizable-panel {
+  flex: 1 1 0;
+  overflow: hidden;
+}
+
+/* The divider: a near-invisible 1px rule with a forgiving invisible hit strip. */
+.resizable-handle {
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1px;            /* hairline track — conventionally exempt */
+  background-color: var(--color-line-subtle);
+  cursor: col-resize;
+  transition: background-color 0.12s, box-shadow 0.12s;
+  outline: none;
+}
+.resizable-handle:hover {
+  background-color: var(--color-line-default);
+}
+.resizable-handle:focus-visible {
+  /* Source ring-1 ring-line-focus — a thin token-sourced rule, not shadow-focus. */
+  box-shadow: 0 0 0 1px var(--color-line-focus);
+}
+/* Invisible widened hit strip, centered over the track (source ::after). */
+.resizable-handle::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: 50%;
+  width: var(--space-1);   /* 4px hit strip */
+  transform: translateX(-50%);
+}
+
+/* Horizontal divider (group is a column): track becomes a full-width bar. */
+.resizable-handle--horizontal {
+  width: 100%;
+  height: 1px;            /* hairline track — conventionally exempt */
+  cursor: row-resize;
+}
+.resizable-handle--horizontal::after {
+  inset-block: auto;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: var(--space-1);   /* 4px hit strip */
+  transform: translateY(-50%);
+}
+
+/* Optional grip nub (withHandle) — explicit drag affordance, decorative. */
+.resizable-handle__grip {
+  z-index: 10;
+  flex-shrink: 0;
+  width: var(--space-2);    /* 8px (source w-2) */
+  height: var(--space-6);   /* 24px (source h-6) */
+  border-radius: var(--radius-sm);
+  background-color: var(--color-line-strong);
+}
+/* Nub rotates to stay perpendicular to the drag axis on a horizontal divider. */
+.resizable-handle--horizontal .resizable-handle__grip {
+  transform: rotate(90deg);
+}
+
+/* ═══════════════════════════════ Scroll Area ═══════════════════════════════ */
+/* @component scroll-area */
+/* Styled overflow container that swaps the OS scrollbar for a thin, token-skinned
+   one. In the React source, scroll detection, the scrollbar fade-in/out on
+   interaction, pointer-drag, and the corner where two bars meet are base-ui
+   behaviors — out of scope for this static skin. The reference layer paints the
+   resting shell: the viewport clip + focus ring and the resting thin thumb. A
+   native scrollbar can't fade on interaction, so we skin ::-webkit-scrollbar to
+   the same line-strong/70 thumb on a 4px track (source: w-1/h-1 + bg-line-strong
+   opacity-70). The 1px track padding/gutter is hairline-exempt. */
+
+.scroll-area {
+  position: relative;
+}
+
+/* Viewport — clips + scrolls; inherits the host radius; focus ring when scrollable. */
+.scroll-area__viewport {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  overflow: auto;
+  outline: none;
+  /* Firefox: thin bar, thumb on a transparent track (matches the webkit skin). */
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklch, var(--color-line-strong) 70%, transparent) transparent;
+}
+.scroll-area__viewport:focus-visible {
+  box-shadow: var(--shadow-focus);
+}
+
+/* WebKit/Blink native scrollbar — the thin track + rounded thumb skin. */
+.scroll-area__viewport::-webkit-scrollbar {
+  width: var(--space-1);    /* 4px — source w-1 (vertical bar) */
+  height: var(--space-1);   /* 4px — source h-1 (horizontal bar) */
+}
+.scroll-area__viewport::-webkit-scrollbar-track,
+.scroll-area__viewport::-webkit-scrollbar-corner {
+  background-color: transparent;   /* the gutter is the transparent track */
+}
+.scroll-area__viewport::-webkit-scrollbar-thumb {
+  border-radius: var(--radius-full);
+  background-color: color-mix(in oklch, var(--color-line-strong) 70%, transparent);  /* line-strong @ opacity-70 */
+}
+
+/* Explicit slot classes for the artifact side / overlay scrollbar markup, mirroring
+   the base-ui Scrollbar + Thumb skin (the track hugs one edge per orientation). */
+.scroll-area__scrollbar {
+  display: flex;
+  touch-action: none;
+  user-select: none;
+  padding: 1px;   /* source p-px — hairline gutter, conventionally exempt */
+}
+.scroll-area__scrollbar[data-orientation="vertical"] {
+  width: var(--space-1);   /* 4px */
+  height: 100%;
+  border-left: 1px solid transparent;
+}
+.scroll-area__scrollbar[data-orientation="horizontal"] {
+  flex-direction: column;
+  height: var(--space-1);   /* 4px */
+  border-top: 1px solid transparent;
+}
+.scroll-area__thumb {
+  flex: 1 1 0;
+  border-radius: var(--radius-full);
+  background-color: color-mix(in oklch, var(--color-line-strong) 70%, transparent);  /* line-strong @ opacity-70 */
+}
+
+/* ═══════════════════════════════ Separator ═══════════════════════════════ */
+/* @component separator */
+/* A 1px hairline divider. Plain form delegates to base-ui's Separator (role +
+   aria-orientation) in the Next consumer; this static skin draws the shell only.
+   1px is a conventionally-exempt hairline (no token expresses sub-spacing-step
+   line thickness). */
+
+.separator {
+  flex-shrink: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-line-subtle);
+  border: 0;
+}
+/* Vertical: 1px wide, stretches to the flex parent's cross height. */
+.separator--vertical {
+  width: 1px;
+  height: auto;
+  align-self: stretch;
+}
+
+/* Labeled form — NOT base-ui; a flex row of [line] label [line]. The two
+   flanking hairlines are drawn as ::before/::after, each taking equal
+   remaining width. Horizontal only. */
+.separator-labeled {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.separator-labeled::before,
+.separator-labeled::after {
+  content: "";
+  flex: 1 1 auto;
+  height: 1px;
+  background-color: var(--color-line-subtle);
+}
+.separator-labeled__label {
+  flex-shrink: 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  color: var(--color-content-tertiary);
+}
+
+/* ═══════════════════════════════ Sheet ═══════════════════════════════ */
+/* @component sheet */
+/* Edge-docked side panel over a dimmed scrim (base-ui Dialog), docked to
+   right (default) / left / top / bottom, with a built-in close button and
+   square corners (docks flush to the edge; no drag-to-dismiss). Open/close (fade + ~40px edge
+   slide), portalling, focus trap, and Escape/scrim dismissal are React/base-ui
+   behaviors — out of scope for this static skin, which paints the resting OPEN
+   panel only; the consumer drives visibility. The scrim uses the shared
+   `--color-surface-overlay` token (same as Modal/AlertDialog) — the source's
+   lighter `bg-black/10` wash was folded onto the one governed overlay token. The
+   60%/75% widths and auto heights are viewport math (conventionally exempt). */
+
+.sheet-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;   /* modal z-layer — z-index is conventionally exempt */
+  background-color: var(--color-surface-overlay);   /* shared scrim, aligned with Modal/AlertDialog */
+  backdrop-filter: blur(2px);   /* source supports-backdrop-filter:backdrop-blur-xs — progressive enhancement, no token */
+  transition: opacity 0.15s;
+}
+
+.sheet {
+  position: fixed;
+  z-index: 50;   /* modal z-layer */
+  display: flex;
+  flex-direction: column;
+  border: 0;
+  border-color: var(--color-line-default);
+  background-color: var(--color-surface-3);
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  box-shadow: var(--shadow-4);
+  transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+}
+
+/* Sheet · sides — inset, size axis, and the single divider border on the docked edge. */
+.sheet--right {
+  inset-block: 0;
+  right: 0;
+  height: 100%;
+  width: min(560px, 90vw);   /* DS 2.0: readable side cap (≤560px, else 90vw) */
+  border-left: 1px solid var(--color-line-default);
+}
+.sheet--left {
+  inset-block: 0;
+  left: 0;
+  height: 100%;
+  width: min(560px, 90vw);   /* DS 2.0: readable side cap (≤560px, else 90vw) */
+  border-right: 1px solid var(--color-line-default);
+}
+.sheet--top {
+  inset-inline: 0;
+  top: 0;
+  height: auto;
+  border-bottom: 1px solid var(--color-line-default);
+}
+.sheet--bottom {
+  inset-inline: 0;
+  bottom: 0;
+  height: auto;
+  border-top: 1px solid var(--color-line-default);
+}
+
+/* Header — title + description stack; tight 2px gap (half-step over the raw scale). */
+.sheet__header {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space-1) / 2);   /* 2px — source gap-0.5 */
+  padding: var(--space-4);
+}
+.sheet__title {
+  color: var(--color-content-primary);
+  font-size: var(--text-lg);
+  font-weight: 500;
+}
+.sheet__description {
+  color: var(--color-content-secondary);
+  font-size: var(--text-md);
+}
+
+/* Close — a real ghost icon button (compose .btn .btn--ghost .btn--icon .btn--sm);
+   this only pins it to the top-right corner of the panel. */
+.sheet__close {
+  position: absolute;
+  top: var(--space-3);   /* 12px — source top-3 */
+  right: var(--space-3);
+}
+
+/* Footer — action shelf pinned to the panel bottom; stacks .btn actions. */
+.sheet__footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+}
+
+/* ═══════════════════════════════ Slider ═══════════════════════════════ */
+/* @component slider */
+/* Static skin only — drag / keyboard / value mapping are owned by the React
+   (base-ui) implementation. In an artifact, set the indicator width and thumb
+   left/top inline to depict a chosen value. */
+
+.slider {
+  position: relative;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  touch-action: none;
+  user-select: none;
+}
+.slider[aria-disabled="true"],
+.slider:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* rail — grows along the main axis, fixed 6px cross-axis (off-grid, see notes) */
+.slider__track {
+  position: relative;
+  flex-grow: 1;
+  height: 6px;
+  overflow: hidden;
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface-3);
+}
+
+/* filled portion from start to the thumb */
+.slider__indicator {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  height: 100%;
+  background-color: var(--color-primary-700);
+}
+
+/* thumb — fixed 14px circle (off-grid, see notes), enlarged invisible hit area */
+.slider__thumb {
+  position: relative;
+  display: block;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface-2);
+  box-shadow: var(--shadow-1);
+  cursor: pointer;
+  transition: box-shadow 0.12s;
+  outline: none;
+}
+.slider__thumb::after {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--space-2)); /* 8px enlarged hit target */
+}
+.slider__thumb:hover,
+.slider__thumb:focus-visible,
+.slider__thumb:active {
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-primary-700) 30%, transparent);
+}
+.slider__thumb:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* vertical orientation */
+.slider--vertical {
+  width: auto;
+  height: 100%;
+  min-height: calc(var(--space-20) * 2); /* 160px = source min-h-40 floor; see notes */
+  flex-direction: column;
+}
+.slider--vertical .slider__track {
+  width: 6px;
+  height: 100%;
+}
+.slider--vertical .slider__indicator {
+  inset-inline: 0;
+  inset-block-end: 0;
+  inset-block-start: auto;
+  width: 100%;
+  height: auto;
+}
+
+/* ═══════════════════════════════ Spinner ═══════════════════════════════ */
+/* @component spinner */
+/* Circular indeterminate loading glyph: one bordered circle whose top edge is
+   the accent "head" and other 3 edges the neutral "track", spun 360°. role=
+   "status" lives on the element. The 750ms spin period is not a token (source
+   pins it inline); see spinner.md notes for the --duration-spin wish. Reduced
+   motion stops the rotation. The 2px ring weight is the glyph's fixed stroke,
+   carried through every size — not a hairline. */
+
+.spinner {
+  display: inline-block;
+  flex-shrink: 0;
+  border: 2px solid var(--color-line-default);
+  border-top-color: var(--color-primary-700);
+  border-radius: var(--radius-full);
+  animation: spinner-spin 750ms linear infinite;
+}
+
+/* Spinner · sizes (diameter) */
+.spinner--sm {
+  width: 14px;   /* no --space-3.5 token; see spinner.md notes */
+  height: 14px;
+}
+.spinner--md {
+  width: var(--space-4);   /* 16px */
+  height: var(--space-4);
+}
+.spinner--lg {
+  width: var(--space-5);   /* 20px */
+  height: var(--space-5);
+}
+.spinner--xl {
+  width: var(--space-8);   /* 32px */
+  height: var(--space-8);
+}
+
+@keyframes spinner-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner { animation: none; }
+}
+
+/* ═══════════════════════════════ Switch ═══════════════════════════════ */
+/* @component switch */
+/* Binary on/off toggle: a radius-full pill track with a sliding thumb. No
+   native HTML switch element — the artifact drives state via a [data-checked]
+   / [aria-checked="true"] attribute rather than :checked. Toggle behavior is
+   owned by the React/base-ui impl on the Next side; this is the static skin. */
+
+.switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  height: var(--space-5);   /* 20px */
+  width: 36px;              /* token gap: no --space-9; switch-specific */
+  padding: 2px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  background-color: var(--color-line-strong);
+  cursor: pointer;
+  transition: background-color 0.12s, border-color 0.12s, box-shadow 0.12s;
+  outline: none;
+}
+.switch:hover:not(:disabled):not([aria-disabled="true"]) {
+  background-color: var(--color-content-disabled);
+}
+.switch:focus-visible { box-shadow: var(--shadow-focus); }
+.switch:disabled,
+.switch[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.switch[aria-invalid="true"] {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-error) 20%, transparent);
+}
+
+/* checked track */
+.switch[data-checked],
+.switch[aria-checked="true"] {
+  background-color: var(--color-primary-700);
+  box-shadow: var(--shadow-cta);
+}
+.switch[data-checked]:hover:not(:disabled):not([aria-disabled="true"]),
+.switch[aria-checked="true"]:hover:not(:disabled):not([aria-disabled="true"]) {
+  background-color: var(--color-primary-600);
+}
+
+/* thumb */
+.switch__thumb {
+  pointer-events: none;
+  display: block;
+  width: var(--space-4);    /* 16px */
+  height: var(--space-4);
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface-1);
+  box-shadow: var(--shadow-1);   /* token gap: bespoke 2-layer thumb shadow in impl */
+  transition: transform 0.12s;
+  transform: translateX(0);
+}
+.switch[data-checked] .switch__thumb,
+.switch[aria-checked="true"] .switch__thumb {
+  transform: translateX(var(--space-4));   /* 16px travel */
+}
+
+/* ── Switch · sm size ── */
+.switch--sm {
+  height: 14px;             /* token gap: no --space-3-5; switch-specific */
+  width: var(--space-6);    /* 24px */
+}
+.switch--sm .switch__thumb {
+  width: var(--space-3);    /* 12px */
+  height: var(--space-3);
+}
+.switch--sm[data-checked] .switch__thumb,
+.switch--sm[aria-checked="true"] .switch__thumb {
+  transform: translateX(10px);   /* token gap: no --space-2-5; switch-specific */
+}
+
+/* ═══════════════════════════════ Tabs ═══════════════════════════════ */
+/* @component tabs */
+/* Tabbed control: a bar of triggers switching content panels. Selection,
+   roving arrow-key focus, panel wiring, and the active-trigger state are
+   React/base-ui behaviors — out of scope for this static skin. The reference
+   layer paints the resting bar and panels; mark the open trigger with
+   .tabs__trigger--active (the skin can't observe live selection). Variant
+   lives on the list; the trigger adapts via the list modifier class. */
+
+.tabs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-family: var(--font-sans);
+}
+
+/* The trigger bar. Holds the variant. */
+.tabs__list {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* line (default) — minimal, bottom hairline the active underline overlaps. */
+.tabs__list--line {
+  box-shadow: inset 0 -1px 0 var(--color-line-default);
+}
+
+/* default — pill tabs inside a filled tray. */
+.tabs__list--default {
+  height: var(--spacing-control-sm);   /* 28px */
+  padding: var(--space-1);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-3);
+}
+
+/* One tab opener. Shared base; per-variant skin keys off the list modifier. */
+.tabs__trigger {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  border: 0;
+  background-color: transparent;
+  color: var(--color-content-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition: color var(--duration-fast) var(--ease-standard),
+              background-color var(--duration-fast) var(--ease-standard);
+  outline: none;
+}
+.tabs__trigger:focus-visible {
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-focus);
+}
+.tabs__trigger:disabled,
+.tabs__trigger[aria-disabled="true"] {
+  cursor: not-allowed;
+  color: var(--color-content-disabled);
+}
+/* Inline icon default — 16px (source size-4). */
+.tabs__trigger svg {
+  flex-shrink: 0;
+  width: var(--space-4);
+  height: var(--space-4);
+  pointer-events: none;
+}
+
+/* ── line variant trigger — underline indicator ── */
+.tabs__list--line .tabs__trigger {
+  height: var(--spacing-control-lg);   /* DS 2.0: fixed 44px (spec ~42 snapped to control scale) */
+  padding-inline: var(--spacing-cx-sm);   /* 12px-ish (source px-3) */
+  margin-bottom: -1px;   /* overlap the list hairline */
+  border-top-left-radius: var(--radius-md);
+  border-top-right-radius: var(--radius-md);
+}
+/* Underline — inset to the label box, scales in when active. */
+.tabs__list--line .tabs__trigger::after {
+  content: "";
+  position: absolute;
+  inset-inline: var(--spacing-cx-sm);   /* matches the 12px inline padding */
+  bottom: 0;
+  height: 2px;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+  background-color: var(--color-primary-700);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform var(--duration-normal) var(--ease-emphasized);
+}
+.tabs__list--line .tabs__trigger--active {
+  color: var(--color-content-primary);
+  font-weight: 600;
+}
+.tabs__list--line .tabs__trigger--active::after {
+  transform: scaleX(1);
+}
+
+/* ── default variant trigger — raised pill ── */
+.tabs__list--default .tabs__trigger {
+  height: calc(100% - 2px);
+  padding-inline: var(--spacing-cx-sm);   /* 12px-ish (source px-3) */
+  border-radius: var(--radius-md);
+}
+.tabs__list--default .tabs__trigger:not(.tabs__trigger--active):not(:disabled):hover {
+  color: var(--color-content-primary);
+}
+.tabs__list--default .tabs__trigger--active {
+  background-color: var(--color-surface-2);
+  color: var(--color-content-primary);
+  box-shadow: var(--shadow-1);
+}
+
+/* ── Vertical orientation — the trigger rail sits beside the panel ──
+   Put .tabs--vertical on the root and .tabs__list--vertical on the list; the
+   variant (line / default) is unchanged. Triggers stretch to the rail width and
+   left-align; for the line variant the hairline + active bar move to the rail's
+   inline-end edge (a vertical bar), and the pill tray becomes a column. */
+.tabs--vertical {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+.tabs__list--vertical {
+  flex-direction: column;
+  align-items: stretch;
+}
+.tabs__list--vertical .tabs__trigger {
+  width: 100%;
+  justify-content: flex-start;
+}
+/* line: hairline on the rail's inline-end edge; underline becomes a side bar. */
+.tabs__list--vertical.tabs__list--line {
+  /* a real border, not an inset box-shadow: a 1px inset shadow at a fractional-
+     pixel rail edge antialiases away at 1x; the border is robust. */
+  box-shadow: none;
+  border-inline-end: 1px solid var(--color-line-default);
+}
+.tabs__list--vertical.tabs__list--line .tabs__trigger {
+  height: auto;
+  padding-block: var(--space-2);
+  margin-bottom: 0;
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+.tabs__list--vertical.tabs__list--line .tabs__trigger::after {
+  inset-block: var(--spacing-cx-sm);   /* top + bottom → the bar stretches between them */
+  inset-inline: auto -1px;   /* pin to the inline-end edge, straddling the rail border */
+  width: 2px;
+  height: auto;
+  border-radius: 2px 0 0 2px;
+  transform: scaleY(0);
+}
+.tabs__list--vertical.tabs__list--line .tabs__trigger--active::after {
+  transform: scaleY(1);
+}
+/* default (pill): the tray stacks; pills stretch to the rail width, natural height. */
+.tabs__list--vertical.tabs__list--default {
+  height: auto;
+}
+.tabs__list--vertical.tabs__list--default .tabs__trigger {
+  height: auto;
+  padding-block: var(--space-2);
+}
+
+/* The panel for the active trigger. */
+.tabs__content {
+  flex: 1 1 auto;
+  outline: none;
+}
+
+/* ═══════════════════════════════ Toast ═══════════════════════════════ */
+/* @component toast */
+/* Transient auto-dismissing notification (sonner). Showing, stacking, dismissal,
+   position, aria-live, and the real countdown timer are React/sonner behaviors —
+   out of scope for this static skin. The reference layer paints ONE resting toast
+   card: neutral surface in every tone (the tone lives in the leading icon color,
+   not the surface — default sonner, no richColors), its content stack, optional
+   close, and the draining countdown bar. The card width (340px) is a raw value —
+   no sizing token expresses toast/popup width yet (see toast.md notes). The
+   countdown bar's length is driven by a per-toast --toast-duration custom property
+   the consumer sets (the 2500ms default auto-dismiss is a deployment constant, not
+   a token — no motion token expresses a multi-second toast lifetime; the UI-motion
+   --duration-* tokens cap at 320ms). */
+
+.toast {
+  position: relative;
+  z-index: 80;   /* toast z-layer — top of the stack, above tooltip (70)/popover (60)/dialog (50); z-index conventionally exempt */
+  display: flex;
+  align-items: flex-start;   /* items-start — icon top-aligns with the title */
+  gap: var(--space-2);
+  width: 340px;   /* source --width: 340px; no sizing token expresses toast width yet */
+  padding-inline: var(--space-3);
+  padding-block: calc(var(--space-2) + var(--space-1) / 2);   /* 10px — source py-2.5 */
+  overflow: hidden;   /* clips the countdown bar to the rounded corner */
+  border: 1px solid var(--color-line-default);   /* source --normal-border */
+  border-radius: var(--radius-lg);                /* source --border-radius */
+  background-color: var(--color-surface-2);       /* source --normal-bg */
+  color: var(--color-content-primary);            /* source --normal-text */
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  box-shadow: var(--shadow-3);
+}
+
+/* Leading tone glyph — 14px, top-aligned, never shrinks. */
+.toast__icon {
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: 1px;   /* source mt-px — hairline nudge, conventionally exempt */
+  display: inline-flex;
+}
+.toast__icon svg {
+  width: calc(var(--space-4) - var(--space-1) / 2);   /* 14px (size-3.5) */
+  height: calc(var(--space-4) - var(--space-1) / 2);
+}
+/* Tone = icon color only; the card surface stays neutral in every tone. */
+.toast__icon--success { color: var(--color-success); }
+.toast__icon--info    { color: var(--color-info); }
+.toast__icon--warning { color: var(--color-warning); }
+.toast__icon--error   { color: var(--color-error); }
+.toast__icon--loading { color: var(--color-content-tertiary); }
+
+/* Content column — title over optional description, tight stack. */
+.toast__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);   /* source gap-0.5 → nearest scale step */
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.toast__title {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  line-height: 1.3;   /* leading-snug */
+  color: var(--color-content-primary);
+}
+.toast__description {
+  font-size: var(--text-xs);
+  line-height: 1.3;   /* leading-snug */
+  color: var(--color-content-tertiary);
+}
+
+/* Close — borderless tertiary glyph, top-right; quiets to primary on hover. */
+.toast__close {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background-color: transparent;
+  color: var(--color-content-tertiary);
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-standard);
+  outline: none;
+}
+.toast__close:hover { color: var(--color-content-primary); }
+.toast__close:focus-visible { box-shadow: var(--shadow-focus); }
+
+/* Countdown bar — 2px primary-400 track pinned to the bottom edge, draining
+   left→right over the toast's real duration. Length is driven by --toast-duration
+   set per-toast by the consumer (loading/Infinity skip the bar — drop the
+   .toast--countdown class). Pauses on hover (source pauses ALL timers on region
+   hover; standalone artifact has no region, so we scope the pause to the card). */
+/* Variant: toast with a leading icon — reserves the icon column and aligns the
+   content next to it. Pair with .toast__icon for the icon slot. The base .toast
+   already uses flex + gap, so this modifier simply signals intent and preserves
+   the icon alignment contract for artifact-side consumers. */
+.toast--with-icon {
+  align-items: flex-start; /* ensure icon top-aligns even on taller toasts */
+}
+
+.toast--countdown::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--color-primary-400);
+  transform-origin: left;
+  animation: toast-countdown var(--toast-duration) linear forwards;
+  z-index: 1;
+}
+.toast--countdown:hover::after { animation-play-state: paused; }
+
+@keyframes toast-countdown {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0); }
+}
+
+/* ═══════════════════════════════ Toggle ═══════════════════════════════ */
+/* @component toggle */
+/* A press-toggle BUTTON (not a switch): shares button interaction tokens, the
+   on state is aria-pressed="true" (static stand-in for base-ui data-pressed).
+   This is the STANDALONE single toggle. Grouped / segmented looks live entirely
+   in the .toggle-group component below (.toggle-group + .toggle-group__item) —
+   one owner, no duplicate group skins here. */
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  height: var(--spacing-control-md);
+  padding-inline: var(--spacing-cx-md);
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-2);
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.12s, border-color 0.12s, color 0.12s, box-shadow 0.12s;
+  outline: none;
+}
+.toggle:focus-visible { box-shadow: var(--shadow-focus); }
+.toggle:hover:not(:disabled) { background-color: var(--color-surface-hover); }
+.toggle[aria-pressed="true"]:not(:disabled) { background-color: var(--color-surface-active); }
+.toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ── Toggle variants ── */
+.toggle--default { background-color: var(--color-surface-2); }
+.toggle--outline { background-color: transparent; }
+
+/* ── Toggle sizes ── */
+.toggle--sm {
+  height: var(--spacing-control-sm);
+  padding-inline: var(--spacing-cx-sm);
+  font-size: var(--text-xs);
+}
+.toggle--md {
+  height: var(--spacing-control-md);
+  padding-inline: var(--spacing-cx-md);
+  font-size: var(--text-md);
+}
+.toggle--auto {
+  height: auto;
+  padding-inline: var(--spacing-cx-md);
+  padding-block: var(--space-2);
+  font-size: var(--text-md);
+}
+
+/* ═══════════════════════════════ Toggle Group ═══════════════════════════════ */
+/* @component toggle-group */
+/* A set of press-toggle items acting as one control. The container variant
+   drives the look; items react via .toggle-group--<variant> .toggle-group__item.
+   Roving focus / selection / keyboard nav are owned by the React (base-ui)
+   implementation — this is the static skin only. Mark selected items with
+   aria-pressed="true". */
+
+.toggle-group {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-sans);
+}
+
+/* outline (default): connected segments sharing one rounded outer border */
+.toggle-group--outline {
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-2);
+  overflow: hidden; /* clips item corners to the rounded track */
+}
+
+/* segmented: tinted recessed track; items float as pills on top */
+.toggle-group--segmented {
+  gap: var(--space-1); /* 4px pill separation on the recessed track */
+  padding: var(--space-1); /* nearest token to the 2px React inset (see notes) */
+  border: 1px solid var(--color-line-subtle);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-3);
+}
+
+/* cloud: free-wrapping standalone chips, no track */
+.toggle-group--cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+/* plain: bare container; items own their own selected look */
+.toggle-group--plain {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* ── Item base (shared press-toggle button) ── */
+.toggle-group__item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  height: var(--spacing-control-md);
+  padding-inline: var(--spacing-cx-md);
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-2);
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.12s, border-color 0.12s, color 0.12s, box-shadow 0.12s;
+  outline: none;
+}
+.toggle-group__item:hover:not(:disabled):not([aria-pressed="true"]) { background-color: var(--color-surface-hover); }
+.toggle-group__item[aria-pressed="true"] { background-color: var(--color-surface-active); }
+.toggle-group__item:focus-visible { box-shadow: var(--shadow-focus); }
+.toggle-group__item:disabled,
+.toggle-group__item[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Item sizes (control scale, shared with .btn) */
+.toggle-group__item--sm {
+  height: var(--spacing-control-sm);
+  padding-inline: var(--spacing-cx-sm);
+  font-size: var(--text-xs);
+}
+.toggle-group__item--md {
+  height: var(--spacing-control-md);
+  padding-inline: var(--spacing-cx-md);
+  font-size: var(--text-md);
+}
+.toggle-group__item--auto {
+  height: auto;
+  padding-inline: var(--spacing-cx-md);
+  padding-block: var(--space-2);
+  font-size: var(--text-md);
+}
+
+/* ── outline group: flatten item edges into one segmented border ── */
+.toggle-group--outline .toggle-group__item {
+  border-radius: 0;
+  border-width: 0 1px 0 0;
+  border-right-color: var(--color-line-strong);
+}
+.toggle-group--outline .toggle-group__item:last-child { border-right-width: 0; }
+
+/* ── segmented group: borderless transparent items; pressed lifts to a pill ── */
+.toggle-group--segmented .toggle-group__item {
+  height: var(--spacing-control-md);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background-color: transparent;
+  color: var(--color-content-secondary);
+}
+.toggle-group--segmented .toggle-group__item:hover:not(:disabled):not([aria-pressed="true"]) {
+  background-color: transparent;
+  color: var(--color-content-primary);
+}
+.toggle-group--segmented .toggle-group__item[aria-pressed="true"] {
+  background-color: var(--color-surface-2);
+  color: var(--color-content-primary);
+  box-shadow: var(--shadow-1);
+}
+
+/* ── cloud group: standalone rounded-full chips; pressed tints primary ── */
+.toggle-group--cloud .toggle-group__item {
+  height: auto;
+  padding-inline: var(--spacing-cx-sm);
+  padding-block: var(--space-1);
+  border: 1px solid var(--color-line-default);
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface-2);
+  color: var(--color-content-secondary);
+  font-size: var(--text-xs);
+  font-weight: 400;
+}
+.toggle-group--cloud .toggle-group__item:hover:not(:disabled):not([aria-pressed="true"]) {
+  background-color: var(--color-surface-2);
+  border-color: var(--color-line-strong);
+}
+.toggle-group--cloud .toggle-group__item[aria-pressed="true"] {
+  border-color: var(--color-primary-500);
+  background-color: var(--color-primary-50);
+  color: var(--color-primary-700);
+  font-weight: 500;
+}
+
+/* ═══════════════════════════════ Tooltip ═══════════════════════════════ */
+/* @component tooltip */
+/* Inverted hint bubble with a directional arrow. Open/close, portalling, and
+   side/arrow positioning are React/base-ui behaviors; this static skin renders
+   a single OPEN bubble (default top placement) — no enter/exit keyframes. The
+   bubble is the only primitive that paints on content-primary as a SURFACE
+   (the inverted pair flips with the theme, staying readable in both modes). */
+
+.tooltip {
+  position: relative;
+  z-index: 70;   /* tooltip z-layer — above popover (60) and dialog (50) layers; z-index conventionally exempt */
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  width: fit-content;
+  max-width: 20rem;   /* source max-w-xs cap so long hints wrap */
+  padding-inline: var(--spacing-cx-sm);
+  padding-block: calc(var(--space-1) + var(--space-1) / 2);  /* 6px (space-1.5) */
+  border-radius: var(--radius-md);
+  background-color: var(--color-content-primary);
+  color: var(--color-content-inverse);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  line-height: 1.3;
+}
+
+/* Inline kbd shortcut chip tightens the trailing padding (source has-data-kbd). */
+.tooltip:has(kbd) { padding-inline-end: calc(var(--space-1) + var(--space-1) / 2); }  /* 6px (source pr-1.5), tighter than the 10px base */
+.tooltip kbd { border-radius: var(--radius-sm); }
+
+/* Pointer — a rotated square matching the bubble fill. Pinned bottom-center
+   for the default top placement; the React side repositions it per resolved
+   side. 10px (size-2.5) via a half-step calc over the raw scale. */
+.tooltip__arrow {
+  position: absolute;
+  left: 50%;
+  bottom: calc(-1 * var(--space-1));
+  width: calc(var(--space-2) + var(--space-1) / 2);   /* 10px (size-2.5) */
+  height: calc(var(--space-2) + var(--space-1) / 2);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-content-primary);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+/* ═══════════════════════════════ Dropzone ═══════════════════════════════ */
+/* @component dropzone */
+/* Presentation-only file-select zone with drag-and-drop affordance. Emits
+   picked files; never performs the upload — the host wires @cloud/storage and
+   feeds per-file status/progress back via FileRow. CSP-safe; no network code. */
+
+.dropzone {
+  display: flex;
+  min-height: 128px;   /* layout constant — no sizing token expresses a drop-zone floor */
+  cursor: pointer;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border-radius: var(--radius-xl);
+  border: 1px dashed var(--color-line-default);
+  background-color: var(--color-surface-2);
+  padding-inline: var(--space-6);
+  padding-block: var(--space-8);
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  color: var(--color-content-tertiary);
+  transition: border-color var(--duration-fast) var(--ease-standard),
+              background-color var(--duration-fast) var(--ease-standard);
+  outline: none;
+}
+.dropzone:hover { background-color: var(--color-surface-hover); }
+
+/* Drag-active: primary accent border + primary-50 tint */
+.dropzone--drag {
+  border-color: var(--color-primary-500);
+  background-color: var(--color-primary-50);
+}
+
+.dropzone--disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.dropzone--disabled:hover { background-color: var(--color-surface-2); }
+
+/* File list — the <ul> container that holds FileRow items below the zone. */
+.file-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+/* Single file row — surface-2 card with icon / name / size / status / remove. */
+.file-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-line-subtle);
+  background-color: var(--color-surface-2);
+  padding-inline: var(--space-3);
+  padding-block: var(--space-2);
+}
+
+/* Generic file glyph — leading icon slot */
+.file-row__icon {
+  flex-shrink: 0;
+  color: var(--color-content-tertiary);
+  width: var(--space-4);
+  height: var(--space-4);
+}
+
+/* Body: name row + optional progress/error */
+.file-row__body {
+  min-width: 0;
+  flex: 1;
+}
+.file-row__name-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.file-row__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--text-md);
+  color: var(--color-content-primary);
+}
+.file-row__size {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-content-tertiary);
+}
+.file-row__error {
+  margin-top: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--color-error-strong);
+}
+
+/* Trailing status glyph */
+.file-row__status {
+  flex-shrink: 0;
+  width: var(--space-4);
+  height: var(--space-4);
+}
+.file-row__status--done  { color: var(--color-success-strong); }
+.file-row__status--error { color: var(--color-error-strong); }
+
+/* ═══════════════════════════════ Object Tile ═══════════════════════════════ */
+/* @component object-tile */
+/* Square, filled entity/object identity mark — for companies, apps, device
+   models, etc. Consolidates the old InitialsTile + ColorTile: one tile that
+   shows a glyph icon, name-derived initials, or a short code, on a neutral
+   avatar surface or a categorical content-hashed tint. Always square + radius-lg.
+   Distinct from Avatar (circular, image-based). aria-hidden by design. */
+
+.object-tile {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-line-subtle);
+  font-family: var(--font-sans);
+  font-weight: 600;
+}
+
+/* sizes — sm 32 / md 40 (default) / lg 48 */
+.object-tile--sm { width: var(--space-8);  height: var(--space-8);  font-size: var(--text-xs); }
+.object-tile--md { width: var(--space-10); height: var(--space-10); font-size: var(--text-md); }
+.object-tile--lg { width: var(--space-12); height: var(--space-12); font-size: var(--text-lg); }
+
+/* neutral tone — avatar surface + subtle border */
+.object-tile--neutral {
+  background-color: var(--color-avatar-bg);
+  color: var(--color-avatar-fg);
+  border-color: var(--color-line-subtle);
+}
+
+/* categorical tones — content-hashed from the cat-1..6 palette */
+.object-tile--cat-1 { background-color: var(--color-cat-1); color: var(--color-cat-1-fg); border-color: var(--color-cat-line); }
+.object-tile--cat-2 { background-color: var(--color-cat-2); color: var(--color-cat-2-fg); border-color: var(--color-cat-line); }
+.object-tile--cat-3 { background-color: var(--color-cat-3); color: var(--color-cat-3-fg); border-color: var(--color-cat-line); }
+.object-tile--cat-4 { background-color: var(--color-cat-4); color: var(--color-cat-4-fg); border-color: var(--color-cat-line); }
+.object-tile--cat-5 { background-color: var(--color-cat-5); color: var(--color-cat-5-fg); border-color: var(--color-cat-line); }
+.object-tile--cat-6 { background-color: var(--color-cat-6); color: var(--color-cat-6-fg); border-color: var(--color-cat-line); }
+
+/* Icon slot — a glyph node centered in the tile; sizes step with the tile. */
+.object-tile__icon {
+  display: grid;
+  place-items: center;
+}
+.object-tile--sm .object-tile__icon { width: var(--space-4);  height: var(--space-4); }
+.object-tile--md .object-tile__icon { width: var(--space-5);  height: var(--space-5); }
+.object-tile--lg .object-tile__icon { width: var(--space-6);  height: var(--space-6); }

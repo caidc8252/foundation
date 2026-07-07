@@ -1,0 +1,50 @@
+{
+  "version": "v2",
+  "baseVersion": "v1",
+  "publishedAt": "2026-07-07T02:55:24.789Z",
+  "source": {
+    "page": "detail-page.html",
+    "title": "Foundation review",
+    "href": "http://127.0.0.1:4177/detail-page.html"
+  },
+  "counts": {
+    "tokens": 0,
+    "compositeDeclarations": 0,
+    "selectors": 0,
+    "elementPaths": 1
+  },
+  "changedTokens": [],
+  "changedDarkTokens": [],
+  "reviewSubject": {
+    "label": "“Reveal”按钮",
+    "visualName": "按钮",
+    "selector": ".btn",
+    "className": "btn",
+    "sourceFile": "primitives/primitives.css",
+    "owner": {
+      "layer": "primitive",
+      "name": "button",
+      "title": "Button"
+    }
+  },
+  "tokenOverrides": {},
+  "darkTokenOverrides": {},
+  "classOverrides": {},
+  "classOverrideMeta": {},
+  "changes": {
+    "tokens": [],
+    "composites": []
+  },
+  "elementOverrides": {
+    "1.0.1.1.1.0.0.0.1.0.1.2.1.1": {
+      "classSwaps": {
+        "variant": {
+          "from": "btn--ghost",
+          "to": "btn--link"
+        }
+      }
+    }
+  },
+  "conflicts": [],
+  "draftFrom": "foundation-maintain"
+}
