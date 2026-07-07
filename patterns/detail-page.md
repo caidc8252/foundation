@@ -112,9 +112,11 @@ when this record's job calls for it.
     tier has none; the summary-bar's count carries the quantity). A `card__header`
     earns its place only when it says something the tab label does *not* (a distinct
     sub-section title, a description, or the simple tier's one action).
-  Multiple collection sections in one tab **stack vertically in a `.stack--5`** (the
-  sibling-card rung, principles §13 — they **never touch / 0-gap**; e.g. Operators =
-  an accounts `card` + a pending-invitations `card`).
+  Multiple collection sections in one tab **stack vertically at `space-6`** — the
+  panel provides that rhythm itself (`.page-body > .tabs__content`; principles §13 —
+  a tab panel is navigation, not nesting, so it matches page-body's own rhythm and
+  needs no hand-rolled `.stack--N` wrapper), and they **never touch / 0-gap**; e.g.
+  Operators = an accounts `card` + a pending-invitations `card`.
 - **At most one primary action**, rightmost (mirrors `detail-header` /
   `page-header`) — a read-only record may have none, never two; everything else is
   `secondary` / `ghost`.

@@ -33,7 +33,9 @@ top of its anatomy; [`create-form`](../patterns/create-form.md) and
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-- **Back** — icon-only ghost button (`.btn--ghost` at icon size), first in the
+- **Back** — icon-only ghost button (`.btn--ghost`; its `chevron-left` glyph is
+  **16px** / `--space-4`, one step over the 14px button default so the page-level
+  back reads with a little more weight — matches `@cloud/ui`'s detail back), first in the
   bar. Returns to the place it was reached from. On a **detail** screen it is
   optional (present when the record was reached from a list); on a **create / edit
   / wizard** page it is **required** and is an **exit-without-committing**

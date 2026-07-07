@@ -290,7 +290,8 @@ modifier, e.g. `.card__content--flush`).
 | between | token |
 |---|---|
 | `page-body` direct children (cards / bands / rows) | `space-6` (24px) — auto by `page-body` |
-| sibling block-cards you stack yourself (tab panel, wrapper) | `space-5` (20px) |
+| tab content docked in `page-body` (the active panel's sections) | `space-6` (24px) — auto by the panel; **not** a rung down |
+| sibling block-cards inside a hand-authored wrapper / sub-group | `space-5` (20px) |
 | condition band ↔ list card | `space-4` (16px) sticky · `space-6` (24px) short / embedded |
 | main card ↔ a tightly-bound sub-card | 14px (React `gap-3.5`; no raw token — artifacts approximate) |
 | **in-card stacked elements** (header ↔ alert ↔ body ↔ sub-section) | **`space-3` (12px)** |
@@ -298,9 +299,15 @@ modifier, e.g. `.card__content--flush`).
 | tight pair (title ↔ description, label ↔ control) | `space-1` / `space-2` (4 / 8px) |
 
 - **Compose stacked blocks with the `.stack` / `.stack--N` utility** (`flex-col` +
-  the rung's gap): `.stack--5` for sibling cards, `.stack--3` for in-card elements.
-  A stacked group then never falls back to 0-gap — spacing is a composition choice,
-  not a margin you can forget.
+  the rung's gap): `.stack--3` for in-card elements, `.stack--5` for a hand-authored
+  sub-group of sibling cards inside a wrapper. A stacked group then never falls back
+  to 0-gap — spacing is a composition choice, not a margin you can forget.
+- **A tab panel is navigation, not nesting.** Tab content docked in `page-body`
+  stands in for page-body's content slot — it draws no frame, so it is not a level
+  of visual nesting and does **not** drop a rung. The panel PROVIDES its sections'
+  rhythm at `space-6` (same as page-body's direct children, `.page-body > .tabs__content`
+  in the artifact skin), so a detail tab's sections read at the same rhythm whether
+  or not the record uses tabs — and never hand-roll a `.stack--N` wrapper.
 - **Two stacked blocks never touch.** A 0-gap stack (or a `p-0` hack to flush a slot)
   is a defect: the checker warns on inline `style` padding/margin hacks, and review
   fails any two blocks that touch.

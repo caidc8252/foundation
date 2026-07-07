@@ -2038,7 +2038,8 @@
       "contract": "composites/page-body.md",
       "example": null,
       "classes": [
-        ".page-body"
+        ".page-body",
+        ".tabs__content"
       ]
     },
     {

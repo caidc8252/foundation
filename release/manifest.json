@@ -1,17 +1,17 @@
 {
   "version": "v2",
-  "baseVersion": "v1",
-  "publishedAt": "2026-07-07T02:55:24.789Z",
+  "baseVersion": "current",
+  "publishedAt": "2026-07-07T11:03:39.921Z",
   "source": {
     "page": "detail-page.html",
-    "title": "Foundation review",
-    "href": "http://127.0.0.1:4177/detail-page.html"
+    "title": "Foundation",
+    "href": ""
   },
   "counts": {
     "tokens": 0,
     "compositeDeclarations": 0,
     "selectors": 0,
-    "elementPaths": 1
+    "elementPaths": 0
   },
   "changedTokens": [],
   "reviewSubject": null,
@@ -22,27 +22,18 @@
     "tokens": [],
     "composites": []
   },
-  "elementOverrides": {
-    "1.0.1.1.1.0.0.0.1.0.1.2.1.1": {
-      "classSwaps": {
-        "variant": {
-          "from": "btn--ghost",
-          "to": "btn--link"
-        }
-      }
-    }
-  },
+  "elementOverrides": {},
   "conflicts": [],
   "skipped": {
     "tokens": [],
     "classOverrides": []
   },
-  "sourceCommit": "3a6195dc807b0fea426139465f79f79338e53840",
+  "sourceCommit": "93db6d2e60a92ba14f6c5b8c9309fe9427d893b4",
   "sourceDirty": false,
   "sourceGit": {
     "available": true,
-    "commit": "3a6195dc807b0fea426139465f79f79338e53840",
-    "shortCommit": "3a6195dc807b",
+    "commit": "93db6d2e60a92ba14f6c5b8c9309fe9427d893b4",
+    "shortCommit": "93db6d2e60a9",
     "dirty": false,
     "dirtyPaths": [],
     "restorePaths": [
@@ -53,7 +44,7 @@
       "governance"
     ]
   },
-  "releasedAt": "2026-07-07T04:03:56.343Z",
+  "releasedAt": "2026-07-07T11:04:03.449Z",
   "release": {
     "version": "v2",
     "structure": [
@@ -67,8 +58,8 @@
   },
   "sourceRestore": {
     "applied": true,
-    "commit": "3a6195dc807b0fea426139465f79f79338e53840",
-    "shortCommit": "3a6195dc807b",
+    "commit": "93db6d2e60a92ba14f6c5b8c9309fe9427d893b4",
+    "shortCommit": "93db6d2e60a9",
     "paths": [
       "tokens",
       "primitives",

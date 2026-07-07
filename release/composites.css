@@ -42,12 +42,27 @@
   padding-block: var(--space-6) var(--space-8); /* 24 top, 32 bottom */
 }
 
+/* Tab content docked in page-body carries page-body's OWN rhythm: the active
+   panel stacks its blocks at space-6 — the same rung as page-body's direct
+   children — because a tab panel is navigation, not a level of visual nesting
+   (it draws no frame; it stands in for page-body's content slot). So the panel
+   PROVIDES the rhythm, exactly like page-body, and its sections never hand-roll
+   a .stack--N wrapper. Hidden panels stay hidden via the [hidden] !important
+   reset. See principles §13. */
+.page-body > .tabs__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
 /* ═══════════════════════════════ Stack ═══════════════════════════════ */
-/* Vertical rhythm for block groups you compose by hand — sibling cards in a tab
-   panel, stacked sub-sections inside a card. page-body auto-stacks ITS direct
-   children at space-6; .stack brings the same rhythm anywhere else so a stacked
-   group never falls back to 0-gap. Rung per the spacing ladder (principles §13):
-   --5 sibling cards · --4 condition↔list · --3 in-card elements / stat grids.
+/* Vertical rhythm for block groups you compose by hand — stacked sub-sections
+   inside a card, a hand-authored sub-group wrapper. page-body auto-stacks ITS
+   direct children at space-6, and a tab panel docked in page-body does the same
+   for its sections (see .page-body > .tabs__content above); .stack brings that
+   rhythm anywhere else so a stacked group never falls back to 0-gap. Rung per
+   the spacing ladder (principles §13): --4 condition↔list · --3 in-card
+   elements / stat grids (--5 / --6 remain for hand-stacked sub-groups).
    Don't hand-roll margins between blocks; don't p-0 a slot (use its --flush). */
 .stack { display: flex; flex-direction: column; }
 .stack--6 { gap: var(--space-6); }
@@ -1604,6 +1619,11 @@
 .detail-header__back {
   flex-shrink: 0;
 }
+/* Glyph is 16px (--space-4), one step over the 14px .btn default — matches
+   @cloud/ui's detail-header back (ChevronLeft size-4). The extra step gives the
+   page-level "leave" affordance a little more weight against the 56px logo /
+   two-line identity block. */
+.detail-header__back svg { width: var(--space-4); height: var(--space-4); }
 .detail-header__logo {
   display: grid;
   place-items: center;
@@ -2638,6 +2658,6 @@
 /* Prototype published overrides
    Version: v2
    Source page: detail-page.html
-   Published: 2026-07-07T02:55:24.789Z
+   Published: 2026-07-07T11:03:39.921Z
 */
 /* No composite class overrides in this snapshot. */
