@@ -22,7 +22,8 @@
 7. [添加 pattern](#7-添加-pattern)
 8. [删除](#8-删除)
 9. [修改](#9-修改)
-10. [附录：文件地图与关键事实](#10-附录文件地图与关键事实)
+10. [同步 editor substrate（foundation-maintain）](#10-同步-editor-substratefoundation-maintain)
+11. [附录：文件地图与关键事实](#11-附录文件地图与关键事实)
 
 ---
 
@@ -64,6 +65,8 @@
 > `check:release` = `node scripts/check-release.mjs`，
 > `check:examples` = `node scripts/check-examples.mjs`，`check:patterns` = `node scripts/check-pattern-router.mjs`。
 > 一次跑全部：`pnpm check:all`（= `check:build && check:promote && check-release && check-examples --strict && check-pattern-router`）。
+
+> **别忘了下游**：上表任一操作改动了闭合集（加 / 删 / 改契约 / 重命名 class）后，除了同步两个消费者，还要把新 catalog 重新导出给可视化 editor —— 见 [§10 同步 editor substrate](#10-同步-editor-substratefoundation-maintain)。
 
 ---
 
@@ -450,7 +453,47 @@ example；改了 composite 名（= `.md` 文件名）则 `check:patterns` 抓 ro
 
 ---
 
-## 10. 附录：文件地图与关键事实
+## 10. 同步 editor substrate（foundation-maintain）
+
+加 / 删 / 重命名任何 token · primitive · composite · pattern 都会改变 `release/catalog.json`。
+可视化 editor 住在独立仓库 [`foundation-maintain`](https://github.com/Newland-Payment-Technology-US-Co-Ltd/foundation-maintain)，
+它**不读 foundation 源码**，而是对着一份从本仓库导出的静态 catalog + 每版预览 CSS 做预览。所以闭合集一变，
+**不重新导出，editor 就停在旧闭合集** —— 新组件它看不到、已删组件它还列着，基于旧目录做的可视化编辑会和真实
+source 打架。
+
+> 这条是 **foundation → maintain** 方向（下游 substrate 刷新），与 §3.4 的 **maintain → foundation**
+> （`manifest.json` 回流：`apply-draft → promote → finalize → release`）是两个相反方向，别混。加 / 删组件是
+> **纯 foundation 源码编辑**，editor 表达不了"新增/删除一个组件"，所以它永远从这条下游同步得知闭合集变化，
+> 不是从 manifest 回流。
+
+**什么时候跑**：任何改动了闭合集的 PR 落地后 —— 即 §4–§9 里加 / 删 / 改契约 / 重命名 class 的任何一种；
+以及每次 `pnpm release` 让版本集变化之后。纯 token 值微调即便没改 catalog 名字集，每版预览 CSS 也变了，
+仍应重导出。
+
+**怎么跑**（在 foundation 仓库根目录）：
+
+```bash
+node scripts/export-maintain-assets.mjs ../foundation-maintain/carbon
+```
+
+它往 maintain 仓的 `carbon/` 写三样，然后**到 `foundation-maintain` 仓库把它们 commit + push**：
+
+| 产物 | 内容 |
+|------|------|
+| `catalog.json` | `release/catalog.json` 的副本（新组件在此；删掉的从此消失）|
+| `versions.json` | 版本索引（current + 全部 `versions/vN` + 已发布版本标记）|
+| `versions/<vN>/{tokens.inline.css, primitives.css, composites.css}` | 每个版本的预览 CSS |
+
+> 路径参数指向与 foundation **平级**的 `../foundation-maintain/carbon`（当前 checkout 布局即如此，可直接照抄）；
+> 若目录布局变了就把参数改成实际位置。这与 [`governance/release-workflow.md`](../../governance/release-workflow.md)
+> §3「Refresh the editor's substrate」是同一步。
+
+**守卫**：此步没有 foundation 侧 CI 守卫（它写的是**另一个仓库**），靠维护者记得跑。判断"是否漏同步"的信号：
+在 editor 里新组件缺席 / 已删组件仍出现在 catalog 面板。
+
+---
+
+## 11. 附录：文件地图与关键事实
 
 ### 源与生成物
 
@@ -479,6 +522,7 @@ scripts/
   check-release.mjs · check-examples.mjs · check-pattern-router.mjs   # 守卫
   check-artifact.mjs            # 产物侧闭合集校验（example 守卫复用它）
   build-artifact.mjs            # 从 pattern.html 生成产物骨架
+  export-maintain-assets.mjs    # 把 catalog + 每版 CSS 导出给 foundation-maintain editor（§10）
 governance/
   principles.md · enforcement.md · token-change.md · composition.md
 .github/workflows/checks.yml    # CI：三道守卫
@@ -491,7 +535,8 @@ governance/
 
 ### 一句话记牢
 
-> 改源 → `pnpm build` → 跑 `pnpm check:all` → 提交含重生成的 `release/` → 加是 minor、改值/破坏是 major、
-> 契约永远赢。**永不手编 `release/`，永不在消费者侧分叉一份值。**
+> 改源 → `pnpm build` → 跑 `pnpm check:all` → 提交含重生成的 `release/` → 闭合集变了再
+> `node scripts/export-maintain-assets.mjs ../foundation-maintain/carbon` 同步 editor（§10）→ 加是 minor、
+> 改值/破坏是 major、契约永远赢。**永不手编 `release/`，永不在消费者侧分叉一份值。**
 </content>
 </invoke>
