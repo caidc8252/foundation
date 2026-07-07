@@ -28,10 +28,13 @@ why it is a shared composite, not re-declared per pattern.
 - **The page-header band is full-bleed and lives OUTSIDE page-body** — it draws
   its own bottom hairline edge-to-edge. page-body holds everything below it.
 - **One vertical rhythm** — direct children stack with a `space-6` (24px) gap;
-  no child adds its own top/bottom margin to compensate. Block groups nested
-  *deeper* than page-body's direct children (sibling cards in a tab panel,
-  sub-sections inside a card) take their own rung from the spacing ladder
-  (principles §13) via `.stack--N` — never a 0-gap fallback.
+  no child adds its own top/bottom margin to compensate. A **tab panel** docked in
+  page-body carries this *same* rhythm — it is navigation, not a level of nesting,
+  so the active panel stacks its sections at `space-6` too (provided by the panel,
+  `.page-body > .tabs__content`; never a hand-rolled `.stack--N` wrapper). Block
+  groups genuinely nested *deeper* — sub-sections inside a card, a hand-authored
+  sub-group of cards — take their own tighter rung from the spacing ladder
+  (principles §13) via `.stack--N`; never a 0-gap fallback.
 - **Page gutters** — `space-6` inline padding, `space-6` top, `space-8` bottom
   (a little extra at the foot so the last card doesn't kiss the viewport edge).
 - **Width is the shell's job, not page-body's** — centering to
