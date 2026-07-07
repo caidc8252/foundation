@@ -500,6 +500,36 @@ export function markReleasedVersions(versions, releaseInfo = readReleaseInfo()) 
   });
 }
 
+const versionNumber = (version) => {
+  const match = /^v(\d+)$/.exec(version || "");
+  return match ? Number(match[1]) : 0;
+};
+
+/* Flags the gap that let v2 sit `releaseable: true` yet unreleased: a clean
+   snapshot NEWER than the released version means someone finalized but never
+   ran `release`. Pure over already-marked versions so it is trivially testable
+   and reused by `scripts/release-status.mjs`. */
+export function pendingReleaseSummary(markedVersions, releaseInfo = readReleaseInfo()) {
+  const releasedVersion = releaseInfo.version || "";
+  const releasedNum = versionNumber(releasedVersion);
+  const pending = (markedVersions || [])
+    .filter((v) => v.releaseable && !v.released && versionNumber(v.version) > releasedNum)
+    .map((v) => v.version)
+    .sort((a, b) => versionNumber(a) - versionNumber(b));
+  const releaseableNums = (markedVersions || [])
+    .filter((v) => v.releaseable)
+    .map((v) => versionNumber(v.version));
+  const latestNum = releaseableNums.length ? Math.max(...releaseableNums) : 0;
+  return {
+    releasedVersion,
+    releasedAt: releaseInfo.releasedAt || "",
+    pending,
+    hasPending: pending.length > 0,
+    next: pending.length ? pending[pending.length - 1] : "",
+    latestReleaseable: latestNum ? `v${latestNum}` : "",
+  };
+}
+
 export function publishSnapshot(payload, options = {}) {
   const repoRoot = options.repoRoot || ROOT;
   const versionRoot = options.versionRoot || VERSION_ROOT;

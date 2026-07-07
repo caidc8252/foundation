@@ -197,7 +197,9 @@ in-repo example 过了一遍这道关。
    `node scripts/promote-version.mjs vN`。promotion 后用 `pnpm build`
    刷新 `build/current/` 和 `release/`，把同一个 `vN` finalize 成干净版本后再发布。
    发布完成的定义还包括 companion cloud UI PR 已合并，或 PR/brief 明确记录本次无
-   `packages/ui` 改动。
+   `packages/ui` 改动。发布后跑 **`pnpm release:status`** 自证收尾：它比对「最高 releaseable
+   版本」与 `release/manifest.json` 的 `release.version`，只要还有更新的 clean 版本没发布就 warn
+   —— 就是当初漏掉 v2 release 时缺的那个提示（`--strict` 可让发布 checklist / CI gate 直接 fail）。
 
 `promote-version.mjs` 只生成 handoff brief，不自动改 `.md`，也不自动改
 `cloud-next-scaffold/packages/ui`。这是刻意的边界：editor 负责记录“发生了什么”，
@@ -244,6 +246,16 @@ clean 版本，用 **`node scripts/apply-draft.mjs vN`**（在 source 干净时�
 当前 Git 状态、把缺失的 `sourceCommit` 盖进 manifest，于是 `versionSummary` 把它从
 `blocked（source commit missing）` 翻成 `clean / releaseable`。editor 保存时若已记 `sourceCommit`
 （v1 有、某些 editor 导出没有）则无需此步。
+
+> **`releaseable: true` ≠ 已发布 —— 别在这里停。** `apply-draft` / `finalize` 只把 `versions/vN`
+> 固化成**可发布**，它没有把 `vN` 写进 `release/`；对外契约的发布闸门是 `release/manifest.json` 的
+> `releasedAt`（与 `versions/vN` 里那个"编辑保存时间"`publishedAt` 是**两个文件、两个时间戳**，别混）。
+> 所以零 override 路径的**最后一跳仍然是 §3.4 step 8 的 `node scripts/release.mjs vN`**，跑完 `pnpm build`
+> 提交、再按 §10 同步 editor substrate。v2 就是在这里停在了 `releaseable` 却没 `release` —— 因为固化
+> 那一步的措辞（solidify / clean / releaseable / published）全都散发完成感，而 release 是个手动、带外、
+> **无守卫**的步骤。发布后用 **`pnpm release:status`** 自证收尾：它比对「最高 releaseable 版本」与
+> `release/manifest.json` 的 `release.version`，只要有更新的 clean 版本还没发布就 warn（加 `--strict`
+> 可让发布 checklist / CI release gate 直接 fail）。
 
 ---
 
