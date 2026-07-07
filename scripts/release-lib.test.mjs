@@ -6,6 +6,7 @@ import test from "node:test";
 
 import {
   markReleasedVersions,
+  normalizeElementOverrides,
   normalizeReviewSubject,
   pendingReleaseSummary,
   readReleaseInfo,
@@ -139,4 +140,12 @@ test("normalizeReviewSubject keeps only safe visible review target fields", () =
   );
 
   assert.equal(normalizeReviewSubject({ selector: "body", sourceFile: "release/composites.css" }), null);
+});
+
+test("normalizeElementOverrides (foundation) keeps composite identity + composite#path key", () => {
+  const out = normalizeElementOverrides({
+    any: { composite: "page-header", rootClass: ".page-header", path: "2.0", classSwaps: { variant: { from: "btn--secondary", to: "btn--primary" } } },
+  });
+  assert.deepEqual(Object.keys(out), ["page-header#2.0"]);
+  assert.equal(out["page-header#2.0"].rootClass, ".page-header");
 });

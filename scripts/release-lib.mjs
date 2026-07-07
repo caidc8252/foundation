@@ -116,8 +116,12 @@ function normalizeClassOverrideMeta(input = {}) {
 
 export function normalizeElementOverrides(input = {}, ownerClassLookup = () => true) {
   const out = {};
-  for (const [path, entry] of Object.entries(input || {})) {
-    if (!ELEMENT_PATH_RE.test(path) || !entry || typeof entry !== "object") continue;
+  for (const entry of Object.values(input || {})) {
+    if (!entry || typeof entry !== "object") continue;
+    const composite = String(entry.composite || "").trim();
+    const rootClass = String(entry.rootClass || "").trim();
+    const path = String(entry.path || "").trim();
+    if (!composite || !rootClass.startsWith(".") || !ELEMENT_PATH_RE.test(path)) continue;
     const swaps = entry.classSwaps;
     if (!swaps || typeof swaps !== "object") continue;
     const cleanSwaps = {};
@@ -129,7 +133,7 @@ export function normalizeElementOverrides(input = {}, ownerClassLookup = () => t
       if (!ownerClassLookup(from) || !ownerClassLookup(to)) continue;
       cleanSwaps[group] = { from, to };
     }
-    if (Object.keys(cleanSwaps).length) out[path] = { classSwaps: cleanSwaps };
+    if (Object.keys(cleanSwaps).length) out[`${composite}#${path}`] = { composite, rootClass, path, classSwaps: cleanSwaps };
   }
   return out;
 }
