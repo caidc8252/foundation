@@ -3,11 +3,17 @@
 "One record, read-mostly, with actions." The archetype you reach a list page's
 row into. Named structure, not implementation.
 
-> 📐 **Copyable example** · [`detail-page.html`](./detail-page.html) — the full anatomy
-> assembled from composites (detail-header band with back button + status chips + meta +
-> docked tabs → tab content: Overview KV grid, Activity timeline, empty states), ready to
-> copy and modify. It **links** the reference CSS so it never forks; inline the blocks to
-> ship it as an artifact. All examples: [`index.html`](./index.html).
+> 📐 **Copyable examples** — both **link** the reference CSS so they never fork; inline
+> the blocks to ship as an artifact. All examples: [`index.html`](./index.html).
+> - [`detail-page.html`](./detail-page.html) — the `tabbed` variant: detail-header band
+>   (back + status chips + meta + **docked tabs**) → tab content (Overview KV grid with a
+>   top KPI row + `.detail-split` main/aside, Team simple-tier collection, Orders
+>   rich-tier collection, Billing, Activity timeline, Settings empty state).
+> - [`detail-page-overview.html`](./detail-page-overview.html) — the `overview` variant:
+>   the **no-tabs** detail-header (identity + meta + actions, **no tab strip**), with the
+>   body's sections stacked directly in `page-body` (status banner `alert` → `.detail-split`
+>   Overview + a `progress` Health rail → a `accordion` Diagnostics section → a
+>   `list-row` + `switch` Preferences list).
 
 ## Anatomy
 
@@ -66,7 +72,8 @@ when this record's job calls for it.
 | meta row | no | id / region / dates / counts are useful at a glance |
 | header actions | no | a verb applies to this record (Edit / a single primary / overflow) |
 | tabs (the `tabbed` variant) | no | sub-views are genuinely independent and substantial; the `overview` variant omits them |
-| right rail (stat cards / amount summary) | no | the overview has key metrics or an order/invoice-style total to surface |
+| top KPI row (`.stat-grid`) | no | the overview has headline metrics worth surfacing full-width above the split |
+| right rail (`.card--elevation-0` secondary cards) | no | there are secondary facts (relationship, billing, an order/invoice total) that should sit beside — and quieter than — the main card |
 | status banner | no | a record-wide condition needs an inline callout (e.g. suspended, past-due) |
 
 ## Rules
@@ -153,17 +160,43 @@ when this record's job calls for it.
 
 **Variants** — the layout decision for the body.
 
-- `overview` — 1–2 core blocks, laid out directly (no tabs).
+- `overview` — sections laid out directly, **no tabs** (the band drops its tab
+  strip). For when the sub-views are few and light enough to read on one scroll;
+  the body stacks its labelled sections directly in `page-body`. Example:
+  [`detail-page-overview.html`](./detail-page-overview.html).
 - `tabbed` — multiple peer blocks become a `Tabs` set (line variant). One page
   with tab state, not one route per tab (see **Tabs vs sections** in Rules).
+  Example: [`detail-page.html`](./detail-page.html).
 - `sub-route` — when a sub-view is heavy, has independent permissions, or needs a
   deep-link, split it into its own route and **record the reason**. This is the
   one case where a detail "tab" becomes a real route.
 
 **Overview structure** — `overview` = a **main card** (the KV grid — a left-right
 label → value list; a long value wraps inside its value column) **+ an
-optional right rail**. The rail stacks `stat-card`s (key metrics) for
-order/invoice-style records.
+optional right rail** of quiet secondary cards. **Hierarchy comes from
+elevation**: the main card keeps the default `elevation-1` so it reads as the
+protagonist; the rail's cards drop to **`.card--elevation-0`** (flat, no shadow)
+so they recede behind it. Don't lift the main to `elevation-2` — `card.md`
+reserves `2` for hover/overlay, so make the contrast by dropping the rail, not
+raising the main.
+
+**Headline metrics go in a top KPI row, not the rail** — when the record has key
+metrics, surface them in a **full-width `.stat-grid` row at the top of the panel**
+(`stat-grid--cols-N`, `repeat(N,1fr)` columns), above the `.detail-split`. A
+`stat-card` has a minimum height; stacked vertically in the 320px rail it reads
+short-and-wide. Use the KPI row **sparingly** — prefer no strip unless a metric
+genuinely earns the top spot (a table-only tab is often the right answer).
+
+**The main / aside split is `.detail-split`** — the closed-set layout utility
+(`composites.css`), **not** a page-local grid: a fluid `minmax(0,1fr)` main + a
+**fixed 320px rail** (a rail sized by its content, never a percentage that
+balloons into whitespace on a wide viewport), collapsing to one column below
+68rem. It is **not Overview-only** — every tab body that wants a main + aside
+reuses the same `.detail-split`, so the tab outline stays put across tabs instead
+of jumping between a 2-column overview and full-bleed collection tabs. **Group the
+cards within each column** with a `.stack--N` (main `--5`, aside `--4`); the tab
+panel itself keeps its `space-6` rhythm between top-level blocks (§13). A
+collection tab whose aside would be empty simply omits it (the main spans the row).
 
 **Detail head** — the **title/name** is the only required slot. An OPTIONAL
 leading **back button** (ghost icon + a left chevron, `aria-label` required,
@@ -190,6 +223,8 @@ status + meta + tab-strip band at the top), [`kv-grid`](../composites/kv-grid.md
 [`page-body`](../composites/page-body.md) (the guttered content region),
 [`stat-card`](../composites/stat-card.md) (headline metrics), and
 [`empty-state`](../composites/empty-state.md) (empty activity / sections).
+Layout utilities (pure geometry, no contract): **`.detail-split`** (the main +
+320px-aside split reused by every tab body) and `.stack--N` (in-column grouping).
 For a **rich collection section** (a search/paginated tab), it also reaches for the
 list-page results composites: [`summary-bar`](../composites/summary-bar.md)
 (count + the section's primary), the search

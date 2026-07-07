@@ -1,0 +1,335 @@
+<!--
+  Pattern · Detail page — `overview` variant (NO TABS) — copyable example
+  ─────────────────────────────────────────────────────────────────────────────
+  Sibling of ./detail-page.html (which shows the `tabbed` variant). Companion to
+  ./detail-page.md (the contract — when the two disagree, the .md wins).
+
+  WHAT THIS SHOWS — the OTHER detail-header shape: identity + meta + actions with
+  NO tab strip. Use it when the record's sub-views are few and light enough to
+  read on ONE scroll (detail-page.md §Variants → `overview`): the band is just
+  identity + meta + actions (NO .detail-header__tabs), and the body stacks its
+  labelled sections DIRECTLY in .page-body (no .tabs__content panels) — the panel
+  auto-stacks its children at space-6. Reach for ./detail-page.html (the `tabbed`
+  variant) instead once the sub-views become independent + substantial.
+
+  It also demonstrates composites the tabbed example does not: a record-wide status
+  banner (alert), progress bars (progress), disclosures (accordion), and a
+  settings-style control list (list-row + switch).
+
+  HOW THE STYLES LOAD — LINKS the reference CSS (relative to patterns/); run
+  `pnpm build` after source edits. Order: tokens → primitives → composites. To
+  ship as an artifact, inline those three blocks into a <style>.
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pattern · Detail page (overview, no tabs) — foundation example</title>
+
+<link rel="stylesheet" href="../release/tokens.inline.css">
+<link rel="stylesheet" href="../primitives/primitives.css">
+<link rel="stylesheet" href="../release/composites.css">
+
+<style>
+  /* Page-local composition — NOT new design vocabulary. All values are tokens. */
+  .kv__value--mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .kv__value--reveal { display: inline-flex; align-items: center; gap: var(--space-2); }
+
+  /* Two label→value columns inside the main Overview card (same helper as the
+     tabbed example). Collapses to one column when narrow. */
+  .overview-facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-5) var(--space-8);
+  }
+  @media (max-width: 40rem) { .overview-facts { grid-template-columns: minmax(0, 1fr); } }
+
+  /* Progress label row — label left, value right (matches primitives/progress.html). */
+  .prog-row { display: flex; align-items: center; width: 100%; }
+
+  /* Meta-row icon sizing (dot separators come from .detail-header__meta itself). */
+  .detail-header__meta svg { width: var(--space-3); height: var(--space-3); vertical-align: -1px; }
+  .detail-header__meta .meta-item { display: inline-flex; align-items: center; gap: var(--space-1); }
+</style>
+<body>
+
+<div class="app-frame">
+  <div class="app-frame__col">
+    <main class="app-frame__main">
+
+      <!-- detail-header BAND — the `overview` variant: identity + meta + actions, and
+           NO .detail-header__tabs block on the bottom edge. NOT --sticky here: with no
+           tab strip to keep in view and a short body, the band scrolls with the page. -->
+      <header class="detail-header">
+        <div class="detail-header__bar">
+
+          <!-- OPTIONAL back button (icon-only ghost, first in the bar). -->
+          <button class="btn btn--ghost btn--icon detail-header__back" type="button" aria-label="Back to devices">
+            <svg data-lucide="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+
+          <!-- device glyph -->
+          <span class="detail-header__logo">
+            <svg data-lucide="smartphone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+          </span>
+
+          <!-- REQUIRED CORE — identity. name is the only required slot. -->
+          <div class="detail-header__main">
+            <div class="detail-header__title">
+              <span class="detail-header__name kv__value--mono">SN-8842-01F3</span>
+              <!-- status badge(s) — SHOWN not editable -->
+              <span class="badge badge--success"><span class="badge__dot"></span>Online</span>
+              <span class="badge badge--info"><span class="badge__dot"></span>Secured</span>
+              <!-- category chip (model line) — neutral, no dot -->
+              <span class="badge badge--neutral">A920 Pro</span>
+            </div>
+            <div class="detail-header__meta">
+              <span class="meta-item">
+                <svg data-lucide="cpu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v2"/><path d="M12 2v2"/><path d="M17 20v2"/><path d="M17 2v2"/><path d="M2 12h2"/><path d="M2 17h2"/><path d="M2 7h2"/><path d="M20 12h2"/><path d="M20 17h2"/><path d="M20 7h2"/><path d="M7 20v2"/><path d="M7 2v2"/><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg>
+                Firmware v3.8.1
+              </span>
+              <span class="meta-item">Store #SG-014</span>
+              <span class="meta-item">Last seen 4 min ago</span>
+            </div>
+          </div>
+
+          <!-- header actions — a secondary + one primary; no destructive verbs here, so
+               NO ⋯ overflow (never render an empty ⋯). -->
+          <div class="detail-header__actions">
+            <button class="btn btn--secondary" type="button">
+              <svg data-lucide="rotate-ccw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              Reboot
+            </button>
+            <button class="btn btn--primary" type="button">
+              <svg data-lucide="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+              New ticket
+            </button>
+          </div>
+        </div>
+        <!-- NO .detail-header__tabs — this is the `overview` (no-tabs) variant. -->
+      </header>
+
+      <!-- REQUIRED CORE — the body. No tab panels: sections stack DIRECTLY in
+           .page-body, which auto-stacks its children at space-6 (§13). -->
+      <div class="page-body">
+
+        <!-- OPTIONAL status banner (alert) — a record-wide condition surfaced inline.
+             The detail-page.md slot table lists this; delete when the record is nominal. -->
+        <div class="alert alert--warning alert--with-icon" role="alert">
+          <svg data-lucide="triangle-alert" class="alert__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+          <div>
+            <div class="alert__title">Firmware update available</div>
+            <p class="alert__description">v3.8.2 is ready to install — includes a security patch for the card reader.</p>
+          </div>
+          <div class="alert__action">
+            <button class="btn btn--ghost btn--xs" type="button">Update</button>
+          </div>
+        </div>
+
+        <!-- Overview — the same .detail-split as the tabbed example, here as a
+             top-level section of a no-tabs page. Main card = identity facts; the
+             320px rail carries a quiet elevation-0 "Health" card of progress bars. -->
+        <div class="detail-split">
+
+          <div class="card">
+            <div class="card__header"><h2 class="card__title">Overview</h2></div>
+            <div class="card__content">
+              <div class="overview-facts">
+                <dl class="kv-grid">
+                  <div class="kv-grid__row">
+                    <dt>Serial</dt>
+                    <dd class="kv__value--reveal">
+                      <span class="kv__value--mono">SN-8842-01F3</span>
+                      <button class="btn btn--ghost btn--sm btn--icon" type="button" aria-label="Copy serial">
+                        <svg data-lucide="clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+                      </button>
+                    </dd>
+                  </div>
+                  <div class="kv-grid__row"><dt>Model</dt><dd>A920 Pro</dd></div>
+                  <div class="kv-grid__row"><dt>Firmware</dt><dd class="kv__value--mono">v3.8.1</dd></div>
+                  <div class="kv-grid__row"><dt>OS</dt><dd>Android 11 (PAX)</dd></div>
+                </dl>
+                <dl class="kv-grid">
+                  <div class="kv-grid__row"><dt>Region</dt><dd>APAC · Singapore</dd></div>
+                  <div class="kv-grid__row"><dt>Store</dt><dd>#SG-014 · Orchard</dd></div>
+                  <div class="kv-grid__row"><dt>Merchant</dt><dd>Acme Robotics</dd></div>
+                  <div class="kv-grid__row"><dt>Enrolled</dt><dd class="kv__value--mono">Feb 2, 2024</dd></div>
+                </dl>
+              </div>
+            </div>
+          </div>
+
+          <aside class="stack stack--4">
+            <div class="card card--elevation-0">
+              <div class="card__header"><h2 class="card__title">Health</h2></div>
+              <div class="card__content">
+                <div class="stack stack--4">
+                  <div class="progress">
+                    <div class="prog-row">
+                      <span class="progress__label">Storage</span>
+                      <span class="progress__value">72%</span>
+                    </div>
+                    <div class="progress__track"><div class="progress__indicator" style="width:72%"></div></div>
+                  </div>
+                  <div class="progress">
+                    <div class="prog-row">
+                      <span class="progress__label">Battery</span>
+                      <span class="progress__value">88%</span>
+                    </div>
+                    <div class="progress__track"><div class="progress__indicator progress__indicator--success" style="width:88%"></div></div>
+                  </div>
+                  <div class="progress">
+                    <div class="prog-row">
+                      <span class="progress__label">Signal</span>
+                      <span class="progress__value">45%</span>
+                    </div>
+                    <div class="progress__track"><div class="progress__indicator progress__indicator--warning" style="width:45%"></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+        </div>
+
+        <!-- Diagnostics — a labelled section whose sub-groups are disclosures. Uses the
+             accordion primitive (self-chromed: bordered stack, own trigger padding, arrow
+             that rotates via .accordion__item--open). One item open, one closed on load.
+             HEADER-LESS would duplicate nothing here — the card__title names the section,
+             the accordion labels name each sub-group. -->
+        <div class="card">
+          <div class="card__header"><h2 class="card__title">Diagnostics</h2></div>
+          <div class="card__content">
+            <div class="accordion">
+
+              <div class="accordion__item accordion__item--open">
+                <button class="accordion__trigger" type="button" aria-expanded="true" aria-controls="diag-network">
+                  <span class="accordion__label">Network</span>
+                  <span class="accordion__arrow" aria-hidden="true">
+                    <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                  </span>
+                </button>
+                <div class="accordion__content" id="diag-network">
+                  <dl class="kv-grid">
+                    <div class="kv-grid__row"><dt>Connection</dt><dd>Wi-Fi · store-ap-02</dd></div>
+                    <div class="kv-grid__row"><dt>IP address</dt><dd class="kv__value--mono">10.20.14.88</dd></div>
+                    <div class="kv-grid__row"><dt>Latency</dt><dd class="kv__value--mono">42 ms</dd></div>
+                  </dl>
+                </div>
+              </div>
+
+              <div class="accordion__item">
+                <button class="accordion__trigger" type="button" aria-expanded="false" aria-controls="diag-peripherals">
+                  <span class="accordion__label">Peripherals</span>
+                  <span class="accordion__arrow" aria-hidden="true">
+                    <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                  </span>
+                </button>
+                <div class="accordion__content" id="diag-peripherals">
+                  <dl class="kv-grid">
+                    <div class="kv-grid__row"><dt>Card reader</dt><dd><span class="badge badge--success"><span class="badge__dot"></span>OK</span></dd></div>
+                    <div class="kv-grid__row"><dt>Printer</dt><dd><span class="badge badge--warning"><span class="badge__dot"></span>Low paper</span></dd></div>
+                    <div class="kv-grid__row"><dt>Scanner</dt><dd>Not fitted</dd></div>
+                  </dl>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Preferences — a settings-style control list (list-row + switch trailing).
+             Each row: leading icon + title/sub + a trailing switch. -->
+        <div class="card">
+          <div class="card__header"><h2 class="card__title">Preferences</h2></div>
+          <div class="card__content">
+            <div class="list-rows">
+
+              <div class="list-row">
+                <div class="list-row__icon" aria-hidden="true">
+                  <svg data-lucide="refresh-cw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+                </div>
+                <div class="list-row__main">
+                  <div class="list-row__title"><span class="list-row__name">Auto-update firmware</span></div>
+                  <div class="list-row__sub">Install approved updates overnight</div>
+                </div>
+                <div class="list-row__trailing">
+                  <button class="switch" role="switch" aria-checked="true" data-checked aria-label="Auto-update firmware" type="button"><span class="switch__thumb"></span></button>
+                </div>
+              </div>
+
+              <div class="list-row">
+                <div class="list-row__icon" aria-hidden="true">
+                  <svg data-lucide="monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+                </div>
+                <div class="list-row__main">
+                  <div class="list-row__title"><span class="list-row__name">Remote access</span></div>
+                  <div class="list-row__sub">Allow support to view this device</div>
+                </div>
+                <div class="list-row__trailing">
+                  <button class="switch" role="switch" aria-checked="true" data-checked aria-label="Remote access" type="button"><span class="switch__thumb"></span></button>
+                </div>
+              </div>
+
+              <div class="list-row">
+                <div class="list-row__icon" aria-hidden="true">
+                  <svg data-lucide="activity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg>
+                </div>
+                <div class="list-row__main">
+                  <div class="list-row__title"><span class="list-row__name">Usage telemetry</span></div>
+                  <div class="list-row__sub">Share anonymous performance data</div>
+                </div>
+                <div class="list-row__trailing">
+                  <button class="switch" role="switch" aria-checked="false" aria-label="Usage telemetry" type="button"><span class="switch__thumb"></span></button>
+                </div>
+              </div>
+
+              <div class="list-row">
+                <div class="list-row__icon" aria-hidden="true">
+                  <svg data-lucide="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+                <div class="list-row__main">
+                  <div class="list-row__title"><span class="list-row__name">Kiosk mode</span></div>
+                  <div class="list-row__sub">Lock the device to a single app</div>
+                </div>
+                <div class="list-row__trailing">
+                  <button class="switch" role="switch" aria-checked="false" aria-label="Kiosk mode" type="button"><span class="switch__thumb"></span></button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  /* Accordion disclosures — toggle the item open/closed on trigger click. The
+     .accordion__item--open class shows the panel + rotates the arrow (closed-set
+     CSS). In @cloud/ui this is the Accordion primitive's base-ui behavior. */
+  (function () {
+    document.querySelectorAll('.accordion__trigger').forEach(function (trigger) {
+      trigger.addEventListener('click', function () {
+        var item = trigger.closest('.accordion__item');
+        var open = trigger.getAttribute('aria-expanded') === 'true';
+        trigger.setAttribute('aria-expanded', open ? 'false' : 'true');
+        if (item) item.classList.toggle('accordion__item--open', !open);
+      });
+    });
+  })();
+
+  /* Switches — flip aria-checked + the data-checked style hook on click. In
+     @cloud/ui this is the Switch primitive. Immediate state change, no confirm. */
+  (function () {
+    document.querySelectorAll('.switch[role="switch"]').forEach(function (sw) {
+      sw.addEventListener('click', function () {
+        var on = sw.getAttribute('aria-checked') === 'true';
+        sw.setAttribute('aria-checked', on ? 'false' : 'true');
+        if (on) { sw.removeAttribute('data-checked'); } else { sw.setAttribute('data-checked', ''); }
+      });
+    });
+  })();
+</script>
+</body>

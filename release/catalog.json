@@ -433,6 +433,7 @@
     "detail-header__name",
     "detail-header__tabs",
     "detail-header__title",
+    "detail-split",
     "diff",
     "diff--inline",
     "diff__arrow",
@@ -574,6 +575,7 @@
     "log-console__time",
     "log-console__toolbar",
     "log-console__viewport",
+    "master-detail",
     "menu-item",
     "menu-item--destructive",
     "modal",
@@ -2342,11 +2344,29 @@
     },
     {
       "layer": "pattern",
+      "name": "gallery",
+      "title": "Pattern · Gallery",
+      "summary": "\"Browse a collection as a grid of tiles, not rows.\" A responsive grid of cards — each led by an image/visual — that you scan, filter, and open.",
+      "contract": "patterns/gallery.md",
+      "example": "patterns/gallery.html",
+      "classes": []
+    },
+    {
+      "layer": "pattern",
       "name": "list-page",
       "title": "Pattern · List page",
       "summary": "The default archetype for \"a collection you browse, filter, and act on\" (the most common portal screen).",
       "contract": "patterns/list-page.md",
       "example": "patterns/list-page.html",
+      "classes": []
+    },
+    {
+      "layer": "pattern",
+      "name": "master-detail",
+      "title": "Pattern · Master–detail",
+      "summary": "\"Scan a collection and work one record beside it — on one screen.\" A left list rail of records paired with a right detail / editor pane that swaps to the selected record.",
+      "contract": "patterns/master-detail.md",
+      "example": "patterns/master-detail.html",
       "classes": []
     },
     {

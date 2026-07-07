@@ -107,6 +107,58 @@
   .form-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
+/* ═══════════════════════════ Detail split ═══════════════════════════ */
+/* Main / aside split for a detail-page tab body. A pure layout utility (like
+   Stack, the auto-fit grids, and Form grid above) — NO @component marker, NO
+   contract: it carries only column geometry, no anatomy or semantics. Promotes
+   the page-local .overview-cols that detail-page.html re-invented into the closed
+   set so every tab body — not just Overview — shares ONE split shape (the tab
+   outline stops jumping between 2-col and full-bleed as you switch tabs).
+     - main column FLUIDLY fills the row (minmax(0,1fr) so a wide table/kv can't
+       overflow the track); the aside is a FIXED 320px rail — a rail sized by its
+       content, not a percentage that balloons into whitespace on wide viewports.
+       320px is a layout measure named by use (like .grid-auto-fit-kv's 22rem),
+       not a token.
+     - collapses to one column below 68rem so the rail drops under the main.
+   Group the cards WITHIN each column with a .stack--N (main --5, aside --4);
+   the panel itself keeps its space-6 rhythm between top-level blocks. */
+.detail-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: var(--space-5);
+  align-items: start;
+}
+@media (max-width: 68rem) {
+  .detail-split { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ═══════════════════════════ Master–detail ═══════════════════════════ */
+/* The two-pane geometry of the master-detail PATTERN (patterns/master-detail.md):
+   a FIXED-width list rail on the LEFT + a FLUID detail/editor pane on the right.
+   A pure layout utility (like Stack / the auto-fit grids / Form grid / Detail split
+   above) — NO @component marker, NO contract: it carries only column geometry. The
+   PATTERN contract owns the anatomy + interaction (select a rail row → the pane
+   swaps to that record); this class only stops the pattern's screens (firmware
+   versions, roles, categories, …) from each hand-rolling the split.
+     - the rail is a FIXED 260px column — a record list sized by its rows, not a
+       percentage; 260px is a layout measure named by use (like .detail-split's
+       320px), not a token.
+     - the pane FLUIDLY fills the rest (minmax(0,1fr) so a wide table/form can't
+       overflow the track).
+     - collapses to one column below 60rem, dropping the rail above the pane.
+   Mirror of settings' page-local rail-split, promoted so master-detail screens
+   share ONE shape. Make each pane independently scrollable at the use site if the
+   record list is long (position: sticky on the rail, or a scroll container). */
+.master-detail {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: var(--space-6);
+  align-items: start;
+}
+@media (max-width: 60rem) {
+  .master-detail { grid-template-columns: minmax(0, 1fr); }
+}
+
 /* ═══════════════════════════ Page header ═══════════════════════════ */
 /* @component page-header */
 /* Mirrors @cloud/ui layout/page-header. Full-bleed band flush under the
