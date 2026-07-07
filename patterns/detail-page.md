@@ -165,6 +165,17 @@ label → value list; a long value wraps inside its value column) **+ an
 optional right rail**. The rail stacks `stat-card`s (key metrics) for
 order/invoice-style records.
 
+**The main / aside split is `.detail-split`** — the closed-set layout utility
+(`composites.css`), **not** a page-local grid: a fluid `minmax(0,1fr)` main + a
+**fixed 320px rail** (a rail sized by its content, never a percentage that
+balloons into whitespace on a wide viewport), collapsing to one column below
+68rem. It is **not Overview-only** — every tab body that wants a main + aside
+reuses the same `.detail-split`, so the tab outline stays put across tabs instead
+of jumping between a 2-column overview and full-bleed collection tabs. **Group the
+cards within each column** with a `.stack--N` (main `--5`, aside `--4`); the tab
+panel itself keeps its `space-6` rhythm between top-level blocks (§13). A
+collection tab whose aside would be empty simply omits it (the main spans the row).
+
 **Detail head** — the **title/name** is the only required slot. An OPTIONAL
 leading **back button** (ghost icon + a left chevron, `aria-label` required,
 sharing the head's baseline with the right-side actions) precedes it **when the
@@ -190,6 +201,8 @@ status + meta + tab-strip band at the top), [`kv-grid`](../composites/kv-grid.md
 [`page-body`](../composites/page-body.md) (the guttered content region),
 [`stat-card`](../composites/stat-card.md) (headline metrics), and
 [`empty-state`](../composites/empty-state.md) (empty activity / sections).
+Layout utilities (pure geometry, no contract): **`.detail-split`** (the main +
+320px-aside split reused by every tab body) and `.stack--N` (in-column grouping).
 For a **rich collection section** (a search/paginated tab), it also reaches for the
 list-page results composites: [`summary-bar`](../composites/summary-bar.md)
 (count + the section's primary), the search

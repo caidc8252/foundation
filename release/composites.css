@@ -107,6 +107,31 @@
   .form-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
+/* ═══════════════════════════ Detail split ═══════════════════════════ */
+/* Main / aside split for a detail-page tab body. A pure layout utility (like
+   Stack, the auto-fit grids, and Form grid above) — NO @component marker, NO
+   contract: it carries only column geometry, no anatomy or semantics. Promotes
+   the page-local .overview-cols that detail-page.html re-invented into the closed
+   set so every tab body — not just Overview — shares ONE split shape (the tab
+   outline stops jumping between 2-col and full-bleed as you switch tabs).
+     - main column FLUIDLY fills the row (minmax(0,1fr) so a wide table/kv can't
+       overflow the track); the aside is a FIXED 320px rail — a rail sized by its
+       content, not a percentage that balloons into whitespace on wide viewports.
+       320px is a layout measure named by use (like .grid-auto-fit-kv's 22rem),
+       not a token.
+     - collapses to one column below 68rem so the rail drops under the main.
+   Group the cards WITHIN each column with a .stack--N (main --5, aside --4);
+   the panel itself keeps its space-6 rhythm between top-level blocks. */
+.detail-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: var(--space-5);
+  align-items: start;
+}
+@media (max-width: 68rem) {
+  .detail-split { grid-template-columns: minmax(0, 1fr); }
+}
+
 /* ═══════════════════════════ Page header ═══════════════════════════ */
 /* @component page-header */
 /* Mirrors @cloud/ui layout/page-header. Full-bleed band flush under the

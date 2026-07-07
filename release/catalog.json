@@ -433,6 +433,7 @@
     "detail-header__name",
     "detail-header__tabs",
     "detail-header__title",
+    "detail-split",
     "diff",
     "diff--inline",
     "diff__arrow",

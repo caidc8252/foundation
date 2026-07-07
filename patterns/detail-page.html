@@ -38,17 +38,10 @@
   .kv__value--mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
   .kv__value--reveal { display: inline-flex; align-items: center; gap: var(--space-2); }
 
-  /* Overview layout — full-bleed (fills the page-body width, no max-width cap), split
-     main:rail = 7:3 so the rail carries real weight. Collapses to one column on narrow. */
-  .overview-cols {
-    display: grid;
-    grid-template-columns: minmax(0, 7fr) minmax(0, 3fr); /* 7:3, full width */
-    gap: var(--space-6);
-    align-items: start;
-  }
-  @media (max-width: 68rem) {
-    .overview-cols { grid-template-columns: minmax(0, 1fr); }
-  }
+  /* Overview layout — the main / aside split is the real .detail-split composite
+     utility (1fr main + fixed 320px rail; collapses to one column below 68rem).
+     No page-local split here — every tab body reuses .detail-split so the outline
+     stays put across tabs. */
   /* KV facts flow into two label→value columns so the main fills its width instead
      of one column trailing empty value space. Each column is a real .kv-grid dl. */
   .overview-facts {
@@ -185,7 +178,7 @@
              each with <dt> label + <dd> value; --full spans all columns. -->
         <!-- ── Overview tab ── -->
         <section class="tabs__content" role="tabpanel" id="panel-overview" data-panel="overview">
-          <div class="overview-cols">
+          <div class="detail-split">
 
             <!-- Main card: KV grid (real composite — dl › .kv-grid__row › dt + dd) -->
             <div class="card">
@@ -247,8 +240,10 @@
               </div>
             </div>
 
-            <!-- OPTIONAL right rail — stat-cards stacked (DP4). Delete if no key metrics. -->
-            <div style="display:flex; flex-direction:column; gap:var(--space-3);">
+            <!-- OPTIONAL right rail — stat-cards grouped in the aside column (DP4).
+                 .stack--4 gives the rail its own tighter in-column rhythm; the
+                 panel keeps space-6 between top-level blocks. Delete if no key metrics. -->
+            <aside class="stack stack--4">
               <div class="stat-card">
                 <div class="stat-card__head">
                   <span class="stat-card__label">Lifetime value</span>
@@ -263,7 +258,7 @@
                 <div class="stat-card__value">14</div>
                 <p class="stat-card__description">All time</p>
               </div>
-            </div>
+            </aside>
 
           </div>
         </section>
