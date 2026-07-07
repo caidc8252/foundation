@@ -20,7 +20,7 @@ DS 2.0 canonical set — six variants only.
 | `ghost` | toolbar / icon actions, no chrome until hover | hover bg `surface-hover` · active `surface-active` |
 | `danger` | destructive primary (Delete, Terminate) | bg `error` · text `content-inverse` · `shadow-cta` · hover `error-strong` · active `error-active` |
 | `ghost-danger` | destructive icon/low-emphasis action | text `error` · hover bg `error-bg` + text `error-strong` |
-| `link` | inline text link styled as a button | text `primary-500` · hover underline · no height/padding |
+| `link` | inline text link styled as a button — e.g. the reveal control on a masked/sensitive value | text `primary-500` · hover underline · no height/padding |
 
 > Removed in DS 2.0 (v1) — no longer part of the closed set: `.btn--tertiary`,
 > `.btn--outline`, `.btn--soft` (use `.btn--secondary`).
