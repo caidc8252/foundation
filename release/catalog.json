@@ -575,6 +575,7 @@
     "log-console__time",
     "log-console__toolbar",
     "log-console__viewport",
+    "master-detail",
     "menu-item",
     "menu-item--destructive",
     "modal",
@@ -2348,6 +2349,15 @@
       "summary": "The default archetype for \"a collection you browse, filter, and act on\" (the most common portal screen).",
       "contract": "patterns/list-page.md",
       "example": "patterns/list-page.html",
+      "classes": []
+    },
+    {
+      "layer": "pattern",
+      "name": "master-detail",
+      "title": "Pattern · Master–detail",
+      "summary": "\"Scan a collection and work one record beside it — on one screen.\" A left list rail of records paired with a right detail / editor pane that swaps to the selected record.",
+      "contract": "patterns/master-detail.md",
+      "example": "patterns/master-detail.html",
       "classes": []
     },
     {

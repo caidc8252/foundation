@@ -1,0 +1,337 @@
+<!--
+  Pattern · Master–detail — copyable example
+  ─────────────────────────────────────────────────────────────────────────────
+  Companion to ./master-detail.md (the contract — when the two disagree, the .md wins).
+  Copy this file and edit the markup to build a real master-detail screen.
+
+  A Roles screen: a LEFT list rail of roles (the master) beside a RIGHT pane (the
+  detail) that swaps to the SELECTED role's identity + permissions. Selecting a rail
+  row updates the pane IN PLACE — it never navigates to a separate route.
+
+  REQUIRED CORE — the two panes: a list rail + a detail pane, with exactly one rail
+  row selected and the pane mirroring it.
+  OPTIONAL — the page-header (+ New), a rail search, per-record pane actions, an
+  empty-state when nothing is selected.
+
+  HOW THE STYLES LOAD — LINKS the reference CSS (relative to patterns/); run
+  `pnpm build` after source edits. Order: tokens → primitives → composites. To ship
+  as a self-contained artifact, inline those three blocks into a <style>.
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pattern · Master–detail — foundation example</title>
+
+<link rel="stylesheet" href="../release/tokens.inline.css">
+<link rel="stylesheet" href="../primitives/primitives.css">
+<link rel="stylesheet" href="../release/composites.css">
+
+<style>
+  /* Page-local composition — NOT new design vocabulary. All values are tokens. */
+
+  /* Sticky rail — the list rail stays in view while the pane scrolls (master-detail.md
+     §"Make the panes independently scrollable"). Docks below the page-header band. */
+  .md-rail { position: sticky; top: var(--space-6); }
+
+  /* Pane — the detail column. min-width:0 lets a wide table/kv shrink instead of
+     blowing out the .master-detail grid track. */
+  .md-pane { min-width: 0; }
+
+  /* Permission row — a label on the left, a switch on the right; hairline between rows. */
+  .perm-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); padding-block: var(--space-3); }
+  .perm-row + .perm-row { border-top: 1px solid var(--color-line-subtle); }
+  .perm-row__label { font-size: var(--text-sm); color: var(--color-content-primary); }
+
+  .kv__value--mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+</style>
+<body>
+
+<div class="app-frame">
+  <div class="app-frame__col">
+    <main class="app-frame__main">
+
+      <!-- OPTIONAL — page-header band: a title + the collection's New primary. Delete
+           the band for a bare master-detail embedded in a larger screen. -->
+      <header class="page-header">
+        <div class="page-header__bar">
+          <div class="page-header__titles">
+            <div class="page-header__heading">
+              <h1 class="page-header__title">Roles</h1>
+            </div>
+            <p class="page-header__description">Pick a role to view and edit its permissions.</p>
+          </div>
+          <div class="page-header__actions">
+            <button class="btn btn--primary" type="button">
+              <svg data-lucide="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+              New role
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div class="page-body">
+
+        <!-- REQUIRED CORE — the two panes on the .master-detail grid (fixed 260px rail
+             + fluid pane; collapses to one column below 60rem). -->
+        <div class="master-detail">
+
+          <!-- ── MASTER — the list rail. Its rows ARE the collection (list-row
+               --interactive); exactly one is --selected (+ aria-current). Clicking a
+               row swaps the pane, it does NOT navigate. A rail search is OPTIONAL
+               (omitted here — four roles need no finding). ── -->
+          <aside class="md-rail">
+            <div class="list-rows" role="tablist" aria-label="Roles" aria-orientation="vertical">
+
+              <button class="list-row list-row--interactive list-row--selected" type="button" role="tab" aria-selected="true" aria-current="true" data-record="owner">
+                <div class="list-row__icon" aria-hidden="true">
+                  <svg data-lucide="crown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/><path d="M5 21h14"/></svg>
+                </div>
+                <div class="list-row__main">
+                  <div class="list-row__title"><span class="list-row__name">Owner</span></div>
+                  <div class="list-row__sub">3 members</div>
+                </div>
+                <div class="list-row__trailing">
+                  <div class="list-row__chevron" aria-hidden="true">
+                    <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                  </div>
+                </div>
+              </button>
+
+              <button class="list-row list-row--interactive" type="button" role="tab" aria-selected="false" data-record="admin">
+                <div class="list-row__icon" aria-hidden="true">
+                  <svg data-lucide="shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
+                </div>
+                <div class="list-row__main">
+                  <div class="list-row__title"><span class="list-row__name">Admin</span></div>
+                  <div class="list-row__sub">5 members</div>
+                </div>
+                <div class="list-row__trailing">
+                  <div class="list-row__chevron" aria-hidden="true">
+                    <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                  </div>
+                </div>
+              </button>
+
+              <button class="list-row list-row--interactive" type="button" role="tab" aria-selected="false" data-record="developer">
+                <div class="list-row__icon" aria-hidden="true">
+                  <svg data-lucide="code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></svg>
+                </div>
+                <div class="list-row__main">
+                  <div class="list-row__title"><span class="list-row__name">Developer</span></div>
+                  <div class="list-row__sub">8 members</div>
+                </div>
+                <div class="list-row__trailing">
+                  <div class="list-row__chevron" aria-hidden="true">
+                    <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                  </div>
+                </div>
+              </button>
+
+              <button class="list-row list-row--interactive" type="button" role="tab" aria-selected="false" data-record="readonly">
+                <div class="list-row__icon" aria-hidden="true">
+                  <svg data-lucide="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
+                </div>
+                <div class="list-row__main">
+                  <div class="list-row__title"><span class="list-row__name">Read-only</span></div>
+                  <div class="list-row__sub">2 members</div>
+                </div>
+                <div class="list-row__trailing">
+                  <div class="list-row__chevron" aria-hidden="true">
+                    <svg data-lucide="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                  </div>
+                </div>
+              </button>
+
+            </div>
+          </aside>
+
+          <!-- ── DETAIL — the pane. One panel per record; the SELECTED one shows, the
+               rest are hidden. Each panel = the selected role's identity card + its
+               permissions card (grouped in a .stack--5, like a detail-split column).
+               The pane mutates the record (Rename launches a create-form); the rail
+               only navigates between records. ── -->
+          <section class="md-pane">
+
+            <!-- Owner (selected on load) -->
+            <div class="stack stack--5" role="tabpanel" data-panel="owner">
+              <div class="card">
+                <div class="card__header">
+                  <h2 class="card__title">Owner</h2>
+                  <div class="card__action">
+                    <button class="btn btn--secondary btn--md" type="button">
+                      <svg data-lucide="square-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
+                      Rename
+                    </button>
+                  </div>
+                </div>
+                <div class="card__content">
+                  <dl class="kv-grid">
+                    <div class="kv-grid__row"><dt>Members</dt><dd class="kv__value--mono">3</dd></div>
+                    <div class="kv-grid__row"><dt>Created</dt><dd class="kv__value--mono">Jan 2021</dd></div>
+                    <div class="kv-grid__row"><dt>Base scope</dt><dd>Full access</dd></div>
+                  </dl>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card__header"><h2 class="card__title">Permissions</h2></div>
+                <div class="card__content">
+                  <div class="perm-row"><span class="perm-row__label">Manage billing</span><button class="switch" role="switch" aria-checked="true" data-checked aria-label="Manage billing" type="button"><span class="switch__thumb"></span></button></div>
+                  <div class="perm-row"><span class="perm-row__label">Manage devices</span><button class="switch" role="switch" aria-checked="true" data-checked aria-label="Manage devices" type="button"><span class="switch__thumb"></span></button></div>
+                  <div class="perm-row"><span class="perm-row__label">Manage users</span><button class="switch" role="switch" aria-checked="true" data-checked aria-label="Manage users" type="button"><span class="switch__thumb"></span></button></div>
+                  <div class="perm-row"><span class="perm-row__label">Delete workspace</span><button class="switch" role="switch" aria-checked="true" data-checked aria-label="Delete workspace" type="button"><span class="switch__thumb"></span></button></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Admin -->
+            <div class="stack stack--5" role="tabpanel" data-panel="admin" hidden>
+              <div class="card">
+                <div class="card__header">
+                  <h2 class="card__title">Admin</h2>
+                  <div class="card__action">
+                    <button class="btn btn--secondary btn--md" type="button">
+                      <svg data-lucide="square-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
+                      Rename
+                    </button>
+                  </div>
+                </div>
+                <div class="card__content">
+                  <dl class="kv-grid">
+                    <div class="kv-grid__row"><dt>Members</dt><dd class="kv__value--mono">5</dd></div>
+                    <div class="kv-grid__row"><dt>Created</dt><dd class="kv__value--mono">Mar 2021</dd></div>
+                    <div class="kv-grid__row"><dt>Base scope</dt><dd>Workspace admin</dd></div>
+                  </dl>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card__header"><h2 class="card__title">Permissions</h2></div>
+                <div class="card__content">
+                  <div class="perm-row"><span class="perm-row__label">Manage billing</span><button class="switch" role="switch" aria-checked="true" data-checked aria-label="Manage billing" type="button"><span class="switch__thumb"></span></button></div>
+                  <div class="perm-row"><span class="perm-row__label">Manage devices</span><button class="switch" role="switch" aria-checked="true" data-checked aria-label="Manage devices" type="button"><span class="switch__thumb"></span></button></div>
+                  <div class="perm-row"><span class="perm-row__label">Manage users</span><button class="switch" role="switch" aria-checked="true" data-checked aria-label="Manage users" type="button"><span class="switch__thumb"></span></button></div>
+                  <div class="perm-row"><span class="perm-row__label">Delete workspace</span><button class="switch" role="switch" aria-checked="false" aria-label="Delete workspace" type="button"><span class="switch__thumb"></span></button></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Developer -->
+            <div class="stack stack--5" role="tabpanel" data-panel="developer" hidden>
+              <div class="card">
+                <div class="card__header">
+                  <h2 class="card__title">Developer</h2>
+                  <div class="card__action">
+                    <button class="btn btn--secondary btn--md" type="button">
+                      <svg data-lucide="square-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
+                      Rename
+                    </button>
+                  </div>
+                </div>
+                <div class="card__content">
+                  <dl class="kv-grid">
+                    <div class="kv-grid__row"><dt>Members</dt><dd class="kv__value--mono">8</dd></div>
+                    <div class="kv-grid__row"><dt>Created</dt><dd class="kv__value--mono">Jun 2021</dd></div>
+                    <div class="kv-grid__row"><dt>Base scope</dt><dd>Deploy &amp; monitor</dd></div>
+                  </dl>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card__header"><h2 class="card__title">Permissions</h2></div>
+                <div class="card__content">
+                  <div class="perm-row"><span class="perm-row__label">Manage billing</span><button class="switch" role="switch" aria-checked="false" aria-label="Manage billing" type="button"><span class="switch__thumb"></span></button></div>
+                  <div class="perm-row"><span class="perm-row__label">Manage devices</span><button class="switch" role="switch" aria-checked="true" data-checked aria-label="Manage devices" type="button"><span class="switch__thumb"></span></button></div>
+                  <div class="perm-row"><span class="perm-row__label">Manage users</span><button class="switch" role="switch" aria-checked="false" aria-label="Manage users" type="button"><span class="switch__thumb"></span></button></div>
+                  <div class="perm-row"><span class="perm-row__label">Delete workspace</span><button class="switch" role="switch" aria-checked="false" aria-label="Delete workspace" type="button"><span class="switch__thumb"></span></button></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Read-only -->
+            <div class="stack stack--5" role="tabpanel" data-panel="readonly" hidden>
+              <div class="card">
+                <div class="card__header">
+                  <h2 class="card__title">Read-only</h2>
+                  <div class="card__action">
+                    <button class="btn btn--secondary btn--md" type="button">
+                      <svg data-lucide="square-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
+                      Rename
+                    </button>
+                  </div>
+                </div>
+                <div class="card__content">
+                  <dl class="kv-grid">
+                    <div class="kv-grid__row"><dt>Members</dt><dd class="kv__value--mono">2</dd></div>
+                    <div class="kv-grid__row"><dt>Created</dt><dd class="kv__value--mono">Sep 2022</dd></div>
+                    <div class="kv-grid__row"><dt>Base scope</dt><dd>View only</dd></div>
+                  </dl>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card__header"><h2 class="card__title">Permissions</h2></div>
+                <div class="card__content">
+                  <div class="perm-row"><span class="perm-row__label">Manage billing</span><button class="switch" role="switch" aria-checked="false" aria-label="Manage billing" type="button"><span class="switch__thumb"></span></button></div>
+                  <div class="perm-row"><span class="perm-row__label">Manage devices</span><button class="switch" role="switch" aria-checked="false" aria-label="Manage devices" type="button"><span class="switch__thumb"></span></button></div>
+                  <div class="perm-row"><span class="perm-row__label">Manage users</span><button class="switch" role="switch" aria-checked="false" aria-label="Manage users" type="button"><span class="switch__thumb"></span></button></div>
+                  <div class="perm-row"><span class="perm-row__label">Delete workspace</span><button class="switch" role="switch" aria-checked="false" aria-label="Delete workspace" type="button"><span class="switch__thumb"></span></button></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- OPTIONAL empty-state — render THIS (instead of a panel) when nothing is
+                 selected or the collection is empty:
+            <div class="empty-state">
+              <div class="empty-state__icon">
+                <svg data-lucide="shield" …></svg>
+              </div>
+              <div class="empty-state__title">No role selected</div>
+              <p class="empty-state__description">Pick a role on the left to view its permissions.</p>
+            </div>
+            -->
+
+          </section>
+
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  /* Master–detail selection — click a rail row to swap the pane. Pure presentation
+     (in @cloud/ui this is component state driving which record renders). The row is
+     the master; the matching [data-panel] is the detail. */
+  (function () {
+    var rows = document.querySelectorAll('.list-row[data-record]');
+    var panels = document.querySelectorAll('.md-pane [data-panel]');
+
+    function select(record) {
+      rows.forEach(function (r) {
+        var on = r.getAttribute('data-record') === record;
+        r.classList.toggle('list-row--selected', on);
+        r.setAttribute('aria-selected', on ? 'true' : 'false');
+        if (on) { r.setAttribute('aria-current', 'true'); } else { r.removeAttribute('aria-current'); }
+      });
+      panels.forEach(function (p) {
+        var on = p.getAttribute('data-panel') === record;
+        p.style.display = on ? '' : 'none';
+        if (on) { p.removeAttribute('hidden'); } else { p.setAttribute('hidden', ''); }
+      });
+    }
+
+    rows.forEach(function (r) {
+      r.addEventListener('click', function () { select(r.getAttribute('data-record')); });
+    });
+  })();
+
+  /* Switches — flip aria-checked + the data-checked style hook on click (immediate
+     state change, no confirm). In @cloud/ui this is the Switch primitive. */
+  (function () {
+    document.querySelectorAll('.switch[role="switch"]').forEach(function (sw) {
+      sw.addEventListener('click', function () {
+        var on = sw.getAttribute('aria-checked') === 'true';
+        sw.setAttribute('aria-checked', on ? 'false' : 'true');
+        if (on) { sw.removeAttribute('data-checked'); } else { sw.setAttribute('data-checked', ''); }
+      });
+    });
+  })();
+</script>
+</body>

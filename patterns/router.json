@@ -140,6 +140,29 @@
         "The request says customer page but does not say whether it is a list or one customer's profile."
       ]
     },
+    "master-detail": {
+      "pattern": "master-detail",
+      "builderPattern": "master-detail",
+      "contract": "patterns/master-detail.md",
+      "example": "patterns/master-detail.html",
+      "intent": "One screen where a left list rail of records sits beside a right pane that shows/edits the selected record — the list and the record being worked stay visible together; selecting a rail row swaps the pane in place, never navigating away.",
+      "chooseWhen": [
+        "The request asks to browse a bounded set AND view/edit one record beside the list on the SAME screen (a left list + a right detail/editor), not navigating away to a separate detail route.",
+        "Roles & permissions, firmware versions per hardware, a category editor, admin users — pick one on the left, edit it on the right."
+      ],
+      "avoidWhen": [
+        "A row should navigate to its own detail route/page (use list-page then detail-page).",
+        "There is no persistent list beside the record (use detail-page), or the left rail is anchor-nav within one long page (use settings)."
+      ],
+      "keywords": ["master-detail", "master detail", "split view", "two-pane", "side-by-side editor", "list and editor", "roles and permissions", "主从", "分栏编辑", "并排编辑", "左列表右详情", "双栏", "列表加编辑器"],
+      "exampleRequests": ["做一个角色权限管理页，左边角色列表，右边编辑权限", "Build a roles and permissions screen with a list and an editor side by side", "左侧固件版本列表，右侧版本详情的主从页面"],
+      "defaultTitle": "Master–detail",
+      "outputNameHints": ["master-detail", "roles", "manager"],
+      "composites": ["page-header", "list-row", "kv-grid", "empty-state"],
+      "clarifyIf": [
+        "The request says manage X but does not say whether the record opens in place beside the list (master-detail) or on its own page (list-page then detail-page)."
+      ]
+    },
     "list-page": {
       "pattern": "list-page",
       "builderPattern": "list-page",
@@ -189,6 +212,7 @@
   "decisionOrder": [
     "If the user explicitly asks for advanced filtering on a collection, choose list-page-advanced-filter.",
     "If the user asks for a dashboard, overview home, landing, or KPI summary of a whole system or fleet (not a single collection), choose dashboard.",
+    "If the user asks to browse a bounded collection AND view/edit one record beside the list on the SAME screen (a left list rail + a right detail/editor, not a separate detail route), choose master-detail.",
     "If the user asks for many records, a management table, browsing, filtering, or search over a collection, choose list-page.",
     "If the user asks for one record's profile, detail, overview, or activity, choose detail-page.",
     "If the user asks for multi-step onboarding, setup, branching, or review-before-commit, choose create-wizard.",
