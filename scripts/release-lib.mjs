@@ -615,12 +615,18 @@ export function publishSnapshot(payload, options = {}) {
   };
 }
 
-export function assertFinalizeOverrides(version, { tokenOverrideCount, classOverrideDeclarations, report }) {
-  const materializedChanges = report && report.stats ? report.stats.changed : 0;
-  if (!tokenOverrideCount && !classOverrideDeclarations && !materializedChanges) {
+export function assertFinalizeOverrides(version, { tokenOverrideCount, classOverrideDeclarations, elementOverrideCount, report }) {
+  const materialized = elementOverrideCount > 0;
+  if (!tokenOverrideCount && !classOverrideDeclarations && !materialized) {
     throw new Error(`version ${version} has no draft overrides to finalize`);
   }
-  if (materializedChanges) {
+  if (materialized) {
+    if (!report) {
+      throw new Error(
+        `version ${version} has element overrides but no materialize-report.json — ` +
+          `run \`node scripts/materialize-version.mjs ${version}\` before finalizing.`,
+      );
+    }
     const pending = (report.contractTodos || []).filter((t) => t.done !== true);
     if (pending.length) {
       throw new Error(
@@ -641,9 +647,10 @@ export function finalizePromotedVersion(version, options = {}) {
   const draftManifest = readVersionManifest(versionRoot, repoRoot, sourceVersion);
   const tokenOverrideCount = Object.keys(draftManifest.tokenOverrides || {}).length;
   const classOverrideDeclarations = classOverrideCount(draftManifest);
+  const elementOverrideCount = Object.keys(draftManifest.elementOverrides || {}).length;
   const reportPath = join(versionRoot, sourceVersion, "materialize-report.json");
   const report = existsSync(reportPath) ? JSON.parse(readFileSync(reportPath, "utf8")) : null;
-  assertFinalizeOverrides(sourceVersion, { tokenOverrideCount, classOverrideDeclarations, report });
+  assertFinalizeOverrides(sourceVersion, { tokenOverrideCount, classOverrideDeclarations, elementOverrideCount, report });
 
   const sourceGit = readSourceGitState(repoRoot);
   if (!sourceGit.commit) throw new Error("current source has no Git commit; commit promoted source before generating a clean version.");
