@@ -197,7 +197,9 @@ in-repo example 过了一遍这道关。
    `node scripts/promote-version.mjs vN`。promotion 后用 `pnpm build`
    刷新 `build/current/` 和 `release/`，把同一个 `vN` finalize 成干净版本后再发布。
    发布完成的定义还包括 companion cloud UI PR 已合并，或 PR/brief 明确记录本次无
-   `packages/ui` 改动。
+   `packages/ui` 改动。发布后跑 **`pnpm release:status`** 自证收尾：它比对「最高 releaseable
+   版本」与 `release/manifest.json` 的 `release.version`，只要还有更新的 clean 版本没发布就 warn
+   —— 就是当初漏掉 v2 release 时缺的那个提示（`--strict` 可让发布 checklist / CI gate 直接 fail）。
 
 `promote-version.mjs` 只生成 handoff brief，不自动改 `.md`，也不自动改
 `cloud-next-scaffold/packages/ui`。这是刻意的边界：editor 负责记录“发生了什么”，
