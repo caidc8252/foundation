@@ -120,7 +120,7 @@ const readLayer = (path) => {
   return readFileSync(file, "utf8");
 };
 const tokens = readLayer("release/tokens.inline.css");
-const primitives = readLayer("primitives/primitives.css");
+const primitives = readLayer("release/primitives.css");
 const composites = readLayer("release/composites.css");
 const releaseManifest = JSON.parse(readLayer("release/manifest.json"));
 const releaseVersion = releaseManifest.release?.version || releaseManifest.version || "unknown";
@@ -132,7 +132,7 @@ ${FONT_CSS}
 /* 2/5 release/tokens.inline.css */
 ${tokens}
 
-/* 3/5 primitives/primitives.css */
+/* 3/5 release/primitives.css */
 ${primitives}
 
 /* 4/5 release/composites.css */

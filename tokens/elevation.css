@@ -6,7 +6,7 @@
    ───────────────────────────────────────────────────────────── */
 @theme {
   /* ─── Radius ─── */
-  /* DS 2.0 ladder — control 10 < inner/icon 12 < card 16 < modal 20 */
+  /* ladder — control 10 < inner/icon 12 < card 16 < modal 20 */
   --radius-sm:   4px;
   --radius-md:   10px;
   --radius-lg:   12px;
