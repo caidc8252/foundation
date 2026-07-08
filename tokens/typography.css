@@ -8,9 +8,9 @@
    ───────────────────────────────────────────────────────────── */
 @theme {
   /* ─── Type scale ─── */
-  /* xs: overline / sub-caption size (DS 2.0: even steps, no 11 / 10) */
+  /* xs: overline / sub-caption size (even steps, no 11 / 10) */
   --text-xs:  12px;
-  --text-sm:  14px; /* DS 2.0: 13px step removed; aliases text-md for compat */
+  --text-sm:  14px; /* aliases text-md for compat */
   --text-md:  14px;
   --text-lg:  16px;
   --text-xl:  18px;

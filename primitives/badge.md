@@ -85,7 +85,7 @@ v5.2.14         ← tag   : a verbatim token (mono, boxy; no dot, no icon)
 
 ## Notes
 
-- **Use `tone` for color — there is no `variant`.** The previous `variant` axis (`default`/`secondary`/`destructive`/`outline`/`ghost`/`link`) was removed in DS 2.0, and the compat stubs have now been dropped from the stylesheet too — the skin is tone-only. Migrating old usage: `secondary`→`neutral`, `destructive`→`error`; `default`/`outline`/`ghost`/`link` have no tonal equivalent, so pick the tone that matches the status/category the badge conveys (or `neutral` for a plain label).
+- **Use `tone` for color — there is no `variant`.** There is no `variant` axis (`default`/`secondary`/`destructive`/`outline`/`ghost`/`link`) — the skin is tone-only. Migrating old usage: `secondary`→`neutral`, `destructive`→`error`; `default`/`outline`/`ghost`/`link` have no tonal equivalent, so pick the tone that matches the status/category the badge conveys (or `neutral` for a plain label).
 - **Semantic `tone` is for status / severity only.** Informational / category / plain-display fields (plan tier, type, category, a bare label) use `tone="neutral"` — never borrow a semantic tone (or a categorical color) to tint or distinguish a non-status field. (See `principles.md` §10.)
 - **Form follows the value, not taste** (§The three signals): colour = *what it means*, shape = *is it a literal token?* (`tag`), leading adornment = *live state* (`dot`) / *recognizable type* (`icon`) / *plain* (none). Answer the three from the data and the badge is fully specified.
 - `shape="tag"` switches to monospace + `radius-sm` — code-like tokens/IDs only, never prose labels, and it never carries a dot or an icon.

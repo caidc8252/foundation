@@ -202,7 +202,7 @@
 .page-header__description {
   margin-top: var(--space-1);
   max-width: 48rem; /* layout measure (~prose width), no token */
-  font-size: var(--text-md);   /* DS 2.0: text-sm deprecated → text-md */
+  font-size: var(--text-md);
   color: var(--color-content-tertiary);
 }
 .page-header__actions {
@@ -403,9 +403,9 @@
   padding-block: var(--space-3);
   border-bottom: 1px solid var(--color-line-default);
   font-size: var(--text-xs);
-  font-weight: 500;              /* DS 2.0: semibold → medium */
-  text-transform: uppercase;     /* DS 2.0: added */
-  letter-spacing: 0.04em;        /* DS 2.0: table header uses `wide` tracking (0.04em),
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;        /* table header uses `wide` tracking (0.04em),
                                     NOT the 0.06em overline tracking — em metric, no token */
   text-align: left;
   color: var(--color-content-tertiary);
@@ -1826,8 +1826,8 @@
 .kv-grid__row dt {
   font-size: var(--text-xs);
   font-weight: 500;
-  text-transform: uppercase;     /* DS 2.0: overline label */
-  letter-spacing: 0.06em;        /* DS 2.0: tracking-overline (em metric, no token) */
+  text-transform: uppercase;     /* overline label */
+  letter-spacing: 0.06em;        /* tracking-overline (em metric, no token) */
   color: var(--color-content-tertiary);
 }
 .kv-grid__row dd {

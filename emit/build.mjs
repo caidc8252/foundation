@@ -60,6 +60,14 @@ const stripComments = (css) =>
     .replace(/\r\n?/g, "\n")
     .replace(/\/\*[\s\S]*?\*\//g, "")
     .replace(/\n{3,}/g, "\n\n");
+// release/composites.css is inlined verbatim into every artifact, so its body
+// comments are dead weight there — the design rationale lives in composites/*.md,
+// which is what a builder reads. Strip them for the inline copy (source keeps them
+// for maintainers), mirroring the stripComments treatment tokens.inline.css gets.
+const COMPOSITE_INLINE_HEADER =
+  "/* @cloud/foundation · composites (generated — comments stripped for inline size)\n" +
+  "   Source of truth: foundation/composites/composites.css. Re-run `pnpm build`.\n" +
+  "   Inline this whole block into a self-contained artifact's <style>, after primitives. */\n\n";
 const themeToRoot = (css) => css.replace(/@theme\s+static\s*\{/g, ":root {").replace(/@theme\s*\{/g, ":root {");
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -418,8 +426,8 @@ export function refreshReleaseMetadata(root) {
   const catalog = emitCatalog(root);
   const releaseVersion = manifest.release?.version || manifest.version || CURRENT_VERSION;
   const tokenCss = applyTokenCssOverrides(emitInlineCss(root), manifest.tokenOverrides || {});
-  const compositeCss = appendCompositeOverrides(
-    readFileSync(join(root, "composites", "composites.css"), "utf8"),
+  const compositeCss = COMPOSITE_INLINE_HEADER + appendCompositeOverrides(
+    stripComments(readFileSync(join(root, "composites", "composites.css"), "utf8")),
     manifest.classOverrides || {},
     {
       version: releaseVersion,

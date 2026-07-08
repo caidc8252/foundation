@@ -11,7 +11,7 @@ A clickable action. The primary way to trigger a mutation, submit, or navigate-a
 
 ## Variants
 
-DS 2.0 canonical set — six variants only.
+Canonical set — six variants only.
 
 | variant | use | token recipe |
 |---|---|---|
@@ -22,7 +22,7 @@ DS 2.0 canonical set — six variants only.
 | `ghost-danger` | destructive icon/low-emphasis action | text `error` · hover bg `error-bg` + text `error-strong` |
 | `link` | inline text link styled as a button — e.g. the reveal control on a masked/sensitive value | text `primary-500` · hover underline · no height/padding |
 
-> Removed in DS 2.0 (v1) — no longer part of the closed set: `.btn--tertiary`,
+> Not part of the closed set — do not use: `.btn--tertiary`,
 > `.btn--outline`, `.btn--soft` (use `.btn--secondary`).
 
 ## Sizes

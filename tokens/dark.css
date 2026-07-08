@@ -58,7 +58,7 @@
   --color-violet-500: oklch(70% 0.12 280);
   --color-violet-700: oklch(80% 0.10 280);
 
-  /* DS 2.0 dark: deeper surfaces, dimmer text, hue 260 (was 270) */
+  /* dark: deeper surfaces, dimmer text, hue 260 (was 270) */
   --color-surface-1:       oklch(14% 0.003 260);
   --color-surface-2:       oklch(17% 0.004 260);
   --color-surface-3:       oklch(11% 0.003 260);
