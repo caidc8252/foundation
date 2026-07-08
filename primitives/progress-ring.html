@@ -1,0 +1,157 @@
+<!--
+  progress-ring.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Progress Ring primitive in the foundation design system.
+  Covers:
+    - Default + tones (success / warning / error / info)
+    - Sizes (sm / default / lg)
+    - Progress driven by the --progress custom property (0..100)
+  For a single bounded value shown as a dial. Multi-series composition uses
+  the chart donut/radial, not this primitive.
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Progress Ring · foundation primitive</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../release/composites.css">
+  <style>
+    body {
+      margin: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+      color: var(--color-content-primary);
+    }
+    .demo-page {
+      padding: var(--space-6) var(--space-8);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-6);
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Tones
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Progress Ring · tones</h2>
+      <p class="demo-section__desc">
+        A single bounded value as a dial. Progress is the <code>--progress</code>
+        custom property (0–100) on <code>.progress-ring__fill</code>; tone swaps the
+        arc stroke.
+      </p>
+      <div class="demo-row">
+        <span class="progress-ring" role="progressbar" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100" aria-label="Quota used">
+          <svg class="progress-ring__svg" viewBox="0 0 36 36">
+            <circle class="progress-ring__track" cx="18" cy="18" r="16" pathLength="100"></circle>
+            <circle class="progress-ring__fill" cx="18" cy="18" r="16" pathLength="100" style="--progress: 72"></circle>
+          </svg>
+          <span class="progress-ring__label">72%</span>
+        </span>
+
+        <span class="progress-ring progress-ring--success" role="progressbar" aria-valuenow="96" aria-valuemin="0" aria-valuemax="100" aria-label="Approval rate">
+          <svg class="progress-ring__svg" viewBox="0 0 36 36">
+            <circle class="progress-ring__track" cx="18" cy="18" r="16" pathLength="100"></circle>
+            <circle class="progress-ring__fill" cx="18" cy="18" r="16" pathLength="100" style="--progress: 96"></circle>
+          </svg>
+          <span class="progress-ring__label">96%</span>
+        </span>
+
+        <span class="progress-ring progress-ring--warning" role="progressbar" aria-valuenow="58" aria-valuemin="0" aria-valuemax="100" aria-label="Storage used">
+          <svg class="progress-ring__svg" viewBox="0 0 36 36">
+            <circle class="progress-ring__track" cx="18" cy="18" r="16" pathLength="100"></circle>
+            <circle class="progress-ring__fill" cx="18" cy="18" r="16" pathLength="100" style="--progress: 58"></circle>
+          </svg>
+          <span class="progress-ring__label">58%</span>
+        </span>
+
+        <span class="progress-ring progress-ring--error" role="progressbar" aria-valuenow="23" aria-valuemin="0" aria-valuemax="100" aria-label="Battery health">
+          <svg class="progress-ring__svg" viewBox="0 0 36 36">
+            <circle class="progress-ring__track" cx="18" cy="18" r="16" pathLength="100"></circle>
+            <circle class="progress-ring__fill" cx="18" cy="18" r="16" pathLength="100" style="--progress: 23"></circle>
+          </svg>
+          <span class="progress-ring__label">23%</span>
+        </span>
+
+        <span class="progress-ring progress-ring--info" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" aria-label="Sync progress">
+          <svg class="progress-ring__svg" viewBox="0 0 36 36">
+            <circle class="progress-ring__track" cx="18" cy="18" r="16" pathLength="100"></circle>
+            <circle class="progress-ring__fill" cx="18" cy="18" r="16" pathLength="100" style="--progress: 40"></circle>
+          </svg>
+          <span class="progress-ring__label">40%</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Sizes
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Progress Ring · sizes</h2>
+      <p class="demo-section__desc">
+        <code>.progress-ring--sm</code> (40px) · default (64px) · <code>.progress-ring--lg</code> (80px).
+        The label steps with the diameter.
+      </p>
+      <div class="demo-row">
+        <span class="progress-ring progress-ring--sm" role="progressbar" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100" aria-label="Small ring">
+          <svg class="progress-ring__svg" viewBox="0 0 36 36">
+            <circle class="progress-ring__track" cx="18" cy="18" r="16" pathLength="100"></circle>
+            <circle class="progress-ring__fill" cx="18" cy="18" r="16" pathLength="100" style="--progress: 66"></circle>
+          </svg>
+          <span class="progress-ring__label">66%</span>
+        </span>
+
+        <span class="progress-ring" role="progressbar" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100" aria-label="Default ring">
+          <svg class="progress-ring__svg" viewBox="0 0 36 36">
+            <circle class="progress-ring__track" cx="18" cy="18" r="16" pathLength="100"></circle>
+            <circle class="progress-ring__fill" cx="18" cy="18" r="16" pathLength="100" style="--progress: 66"></circle>
+          </svg>
+          <span class="progress-ring__label">66%</span>
+        </span>
+
+        <span class="progress-ring progress-ring--lg" role="progressbar" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100" aria-label="Large ring">
+          <svg class="progress-ring__svg" viewBox="0 0 36 36">
+            <circle class="progress-ring__track" cx="18" cy="18" r="16" pathLength="100"></circle>
+            <circle class="progress-ring__fill" cx="18" cy="18" r="16" pathLength="100" style="--progress: 66"></circle>
+          </svg>
+          <span class="progress-ring__label">66%</span>
+        </span>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

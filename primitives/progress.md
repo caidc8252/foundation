@@ -29,20 +29,34 @@ The **track** color does not change with tone — it is always `surface-3`.
 
 ## Sizes
 
-No size variants — a single fixed-height bar: track height **6px**, full width
-(`w-full`), both track and indicator pill-rounded (`radius-full`). See Notes for
-the 6px token-scale gap.
+The size axis swaps the **track height** only (full width and `radius-full` are
+constant). Token-pure ladder on the space scale:
+
+| size | class | track height | use |
+|---|---|---|---|
+| `xs` | `.progress--xs` | `space-1` (4px) | dense inline / in-row meters |
+| *(default)* | — | `space-2` (8px) | standard |
+| `lg` | `.progress--lg` | `space-3` (12px) | prominent single-metric bar |
+
+There is no `sm` between `xs` and default: no token expresses 5–6px (see Notes),
+so the ladder skips it rather than hardcode a raw px.
 
 ## States
 
 Progress is a display primitive, not an interactive control — no hover / active /
-focus / disabled / invalid states. The only thing that moves is the indicator
-**width**, driven by `value`:
+focus / disabled / invalid states. What moves is the indicator **width**, plus an
+optional striped-motion affordance:
 
 - **indicator width** — `value%` of the track; the fill animates width changes
   over `duration-normal` with no easing curve override.
 - **0%** — indicator collapses to zero width (track shows through fully).
 - **100%** — indicator fills the track.
+- **striped (active)** — `.progress--striped` overlays the indicator with moving
+  diagonal stripes to signal work in flight. This is the one **functional**
+  gradient allowed beyond the loading-skeleton shimmer (principle #1): the stripes
+  are an activity affordance, not decoration. Stripe ink is `content-on-primary`
+  at low alpha so it reads on any tone fill; reduced-motion stops the travel (the
+  static stripes remain). It composes with any `tone` and any size.
 
 ## Anatomy
 
@@ -74,10 +88,15 @@ itself to the row end with `ml-auto`. The track always clips its indicator
 
 - **6px track height has no space token.** The source is `h-1.5` (6px); the raw
   space scale jumps `--space-1` (4px) → `--space-2` (8px), so no token expresses
-  6px. Reference CSS picks `--space-2` (8px, nearest-up) for a bar with visible
-  presence. Token-change wish: a `--space-1_5` (6px) step, or a dedicated
-  `--size-track` token. Until then the artifact bar runs 2px thicker than the
-  Next bar.
+  6px. The default track picks `--space-2` (8px, nearest-up) for a bar with visible
+  presence, and the `xs`/`lg` sizes step to `--space-1` (4px) / `--space-3` (12px).
+  The absent 5–6px step is why there is no `sm` size. Token-change wish: a
+  `--space-1_5` (6px) step, or a dedicated `--size-track` token. Until then the
+  default artifact bar runs 2px thicker than the Next bar.
+- **Circular progress is a separate primitive** — for a single bounded value shown
+  as a ring, use [`progress-ring`](./progress-ring.md), not this bar. The chart
+  donut / radial gauge (`composites/chart`) is multi-series data-viz, a third,
+  distinct thing.
 - The indicator tone shortcuts map to tokens: `bg-primary` → `--color-primary-700`
   (foundation defines no bare `--color-primary` shortcut — primary is a ramp, so the
   default brand fill uses the same `-700` step as `.btn--primary`), while
@@ -95,8 +114,9 @@ itself to the row end with `ml-auto`. The track always clips its indicator
   details: the `ui` skill.
 - **Artifact (self-contained HTML)** — use `.progress` (root) wrapping a
   `.progress__track` whose child `.progress__indicator` has an inline
-  `width: <n>%`; add `.progress__indicator--<tone>` to swap the fill. Optional
-  `.progress__label` / `.progress__value` slots sit above the track. Styled by
-  `./primitives.css` on top of the inlined `release/tokens.inline.css`. Same track/
-  indicator recipe and tone names. The fill % is static markup here — there is no
-  base-ui value plumbing on the artifact side.
+  `width: <n>%`; add `.progress__indicator--<tone>` to swap the fill, `.progress--xs`
+  / `.progress--lg` on the root for size, and `.progress--striped` on the root for
+  the active-motion fill. Optional `.progress__label` / `.progress__value` slots sit
+  above the track. Styled by `./primitives.css` on top of the inlined
+  `release/tokens.inline.css`. Same track/indicator recipe and tone names. The fill
+  % is static markup here — there is no base-ui value plumbing on the artifact side.

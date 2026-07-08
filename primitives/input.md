@@ -30,6 +30,7 @@ Body text is `text-md`; the `lg` size bumps to `text-lg`. Horizontal padding fol
 - **invalid** (`invalid` prop or `aria-invalid`) — border `error-strong` + 2px ring `error`/20. Sets `aria-invalid`; takes priority over `validation`.
 - **validation `warn`** — border `warning-500` + focus ring `warning`/30.
 - **validation `ok`** — border `success-500` + focus ring `success`/30.
+- **loading** (`loading` prop / `.input--loading`) — async validation or a fetch is in flight: the field goes non-interactive (`pointer-events: none`) and a `primary-500` shimmer sweeps the bottom edge. The shimmer is the one allowed animated gradient (loading, principle #1); reduced-motion stops it. Drawn as an animated background because pseudo-elements don't render on `<input>`.
 
 ## Anatomy
 
@@ -45,8 +46,9 @@ Body text is `text-md`; the `lg` size bumps to `text-lg`. Horizontal padding fol
 
 - The `className` prop lands on the inner `<input>`, not the outer flex container, when `prefix`/`suffix` are set. Layout classes (margin/width/self-align) applied via `className` will silently no-op in that case — wrap in your own `div` or use `InputGroup` for outer-container control.
 - `inputSize` is distinct from the HTML `size` attribute.
+- The `loading` shimmer period is pinned inline (`1.4s`), not a token — same call as the spinner's `750ms`; a `--duration-*` for indeterminate loops is a recorded wish.
 
 ## Implementations
 
 - **Next / @cloud/ui** — `import { Input } from "@cloud/ui"`. base-ui `Input` under the hood; props `inputSize` `variant` `invalid` `validation` `prefix` `suffix`. API details: the `ui` skill. Do not re-skin via `className`; pick a variant/size.
-- **Artifact (self-contained HTML)** — use the `.input` class (plus size/state modifiers) in `./primitives.css`, on top of the inlined `release/tokens.inline.css`. Same token recipe, same names.
+- **Artifact (self-contained HTML)** — use the `.input` class (plus size/state modifiers `.input--sm/--md/--lg`, `.input--filled`, `.input--warn/--ok`, `.input--loading`) in `./primitives.css`, on top of the inlined `release/tokens.inline.css`. Invalid is `aria-invalid="true"`; read-only/disabled are the native attributes. Same token recipe, same names.

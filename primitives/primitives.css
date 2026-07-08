@@ -328,6 +328,32 @@ body { margin: 0; }
   font-size: var(--text-lg);
 }
 
+/* Input · loading — async validation / fetch in flight. Non-interactive while
+   busy, with a shimmer sweeping the bottom edge. Pseudo-elements don't render on
+   <input>, so this is an animated background, not an ::after. The shimmer is the
+   one allowed gradient (loading, principle #1); the 2px bar is a fixed stroke,
+   not a hairline, and the 1.4s period is pinned inline like the spinner's 750ms
+   (see input.md notes for the --duration wish). */
+.input--loading {
+  pointer-events: none;
+  background-image: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklch, var(--color-primary-500) 60%, transparent),
+    transparent
+  );
+  background-repeat: no-repeat;
+  background-size: 35% 2px;
+  background-position: -35% 100%;
+  animation: input-loading 1.4s linear infinite;
+}
+@keyframes input-loading {
+  to { background-position: 135% 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .input--loading { animation: none; }
+}
+
 /* ═══════════════════════════════ Textarea ═══════════════════════════════ */
 /* @component textarea */
 
@@ -3013,11 +3039,11 @@ body { margin: 0; }
 
 /* ═══════════════════════════════ Progress ═══════════════════════════════ */
 /* @component progress */
-/* Determinate completion bar. No variant/size/state axis — the only visual
-   axis is tone, which swaps the indicator fill. The fill % is static inline
-   markup on the artifact side (width: <n>%); base-ui's value plumbing is owned
-   by the React implementation. Track height 6px (source h-1.5) has no space
-   token — nearest --space-2 (8px); see progress.md notes. */
+/* Determinate completion bar. Axes: tone (swaps the indicator fill), size (swaps
+   the track height), and an optional striped active-motion fill. The fill % is
+   static inline markup on the artifact side (width: <n>%); base-ui's value
+   plumbing is owned by the React implementation. Default track height 6px (source
+   h-1.5) has no space token — nearest --space-2 (8px); see progress.md notes. */
 
 .progress {
   display: flex;
@@ -3065,6 +3091,35 @@ body { margin: 0; }
 .progress__indicator--warning { background-color: var(--color-warning); }
 .progress__indicator--error   { background-color: var(--color-error); }
 .progress__indicator--info    { background-color: var(--color-info); }
+
+/* Sizes — swap the track height only. Token-pure ladder on the space scale
+   (default = --space-2, 8px). No token expresses 5–6px, so there is no `sm`
+   between xs and default — see progress.md notes. */
+.progress--xs .progress__track { height: var(--space-1); }  /* 4px */
+.progress--lg .progress__track { height: var(--space-3); }  /* 12px */
+
+/* Striped (active) — moving diagonal stripes signal work in flight. The one
+   functional gradient exception beyond the loading shimmer (principle #1): it is
+   an activity affordance, not decoration; see progress.md. Stripe ink is the
+   on-primary tone at low alpha so it reads on any tone fill; reduced motion stops
+   the travel (the static stripes remain). */
+.progress--striped .progress__indicator {
+  background-image: repeating-linear-gradient(
+    45deg,
+    color-mix(in oklch, var(--color-content-on-primary) 22%, transparent) 0,
+    color-mix(in oklch, var(--color-content-on-primary) 22%, transparent) var(--space-2),
+    transparent var(--space-2),
+    transparent var(--space-4)
+  );
+  background-size: var(--space-4) var(--space-4);
+  animation: progress-stripes 1s linear infinite;
+}
+@keyframes progress-stripes {
+  to { background-position: var(--space-4) 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .progress--striped .progress__indicator { animation: none; }
+}
 
 /* ═══════════════════════════════ Resizable ═══════════════════════════════ */
 /* @component resizable */
@@ -4267,3 +4322,181 @@ body { margin: 0; }
 .object-tile--sm .object-tile__icon { width: var(--space-4);  height: var(--space-4); }
 .object-tile--md .object-tile__icon { width: var(--space-5);  height: var(--space-5); }
 .object-tile--lg .object-tile__icon { width: var(--space-6);  height: var(--space-6); }
+
+/* ═══════════════════════════════ Split Button ═══════════════════════════════ */
+/* @component split-button */
+/* A primary action fused with an adjacent menu/chevron trigger — two `.btn`s that
+   read as one control. The segments share a straightened seam: outer corners keep
+   `radius-md`, inner corners go square, and the trigger overlaps the seam by 1px
+   so a single divider shows. Reuses `.btn` entirely — this layer only fuses the
+   geometry; pick the segment variant/size with the usual `.btn--*` classes. */
+
+.split-button {
+  display: inline-flex;
+}
+.split-button > .btn {
+  border-radius: 0;
+}
+.split-button > .btn:first-child {
+  border-start-start-radius: var(--radius-md);
+  border-end-start-radius: var(--radius-md);
+}
+.split-button > .btn:last-child {
+  border-start-end-radius: var(--radius-md);
+  border-end-end-radius: var(--radius-md);
+  margin-inline-start: -1px;
+}
+/* Seam divider on filled variants (primary/danger carry no border of their own):
+   a translucent line off the on-primary ink reads on the fill. Secondary/ghost
+   segments show the seam through the trigger's own 1px border, so no extra rule. */
+.split-button > .btn--primary + .btn--primary,
+.split-button > .btn--danger + .btn--danger {
+  border-inline-start: 1px solid color-mix(in oklch, var(--color-content-on-primary) 22%, transparent);
+}
+
+/* ═══════════════════════════════ Tags Input ═══════════════════════════════ */
+/* @component tags-input */
+/* Free-text token entry: a bordered field that wraps entered values as removable
+   chips ahead of a bare text input. The CONTAINER owns the border, focus ring,
+   and invalid/disabled skin (like the adorned Input); the inner <input> is
+   borderless and transparent so only one ring shows. Distinct from Combobox
+   (which picks from a known list) — here the user types arbitrary tokens. */
+
+.tags-input {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  width: 100%;
+  min-height: var(--spacing-control-md);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-line-default);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-2);
+  transition: border-color 0.12s, box-shadow 0.12s;
+}
+.tags-input:focus-within {
+  border-color: var(--color-line-focus);
+  box-shadow: var(--shadow-focus);
+}
+.tags-input--invalid,
+.tags-input[aria-invalid="true"] {
+  border-color: var(--color-error-strong);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-error) 20%, transparent);
+}
+.tags-input--disabled {
+  cursor: not-allowed;
+  background-color: var(--color-surface-3);
+  opacity: 0.5;
+}
+
+/* Tag chip — a removable token */
+.tags-input__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: var(--spacing-control-sm);
+  padding-inline: var(--space-2);
+  border: 1px solid var(--color-line-subtle);
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface-3);
+  color: var(--color-content-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  white-space: nowrap;
+}
+.tags-input__remove {
+  display: inline-grid;
+  place-items: center;
+  width: var(--space-4);
+  height: var(--space-4);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-content-tertiary);
+  cursor: pointer;
+}
+.tags-input__remove:hover {
+  background-color: var(--color-surface-hover);
+  color: var(--color-content-primary);
+}
+.tags-input__remove svg {
+  width: var(--space-3);
+  height: var(--space-3);
+}
+
+/* The bare text input — grows to fill the row */
+.tags-input__field {
+  flex: 1 1 auto;
+  min-width: var(--space-16);
+  height: var(--spacing-control-sm);
+  border: 0;
+  background: transparent;
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  outline: none;
+}
+.tags-input__field::placeholder { color: var(--color-content-tertiary); }
+.tags-input__field:disabled { cursor: not-allowed; }
+
+/* ═══════════════════════════════ Progress Ring ═══════════════════════════════ */
+/* @component progress-ring */
+/* Circular determinate progress for a single bounded value — battery, quota, a
+   p95 gauge. Sibling of the linear Progress bar; NOT the chart donut/gauge (that
+   is multi-series data-viz). Drawn as an SVG stroke-dasharray arc over a full-
+   circle track: the circles carry pathLength="100" so `--progress` (0..100) maps
+   straight to dash length; the arc is rotated to start at 12 o'clock. Tone swaps
+   the arc stroke only. A centred label overlays via grid. */
+
+.progress-ring {
+  display: inline-grid;
+  place-items: center;
+  width: var(--space-16);   /* 64px default */
+  height: var(--space-16);
+}
+.progress-ring__svg {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);   /* 0% starts at 12 o'clock */
+}
+.progress-ring__track {
+  fill: none;
+  stroke: var(--color-surface-3);
+  stroke-width: 3.5;   /* SVG user units (viewBox 36), not px */
+}
+.progress-ring__fill {
+  fill: none;
+  stroke: var(--color-primary-700);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-dasharray: calc(var(--progress, 0) * 1) 100;   /* pathLength=100 → value% */
+  transition: stroke-dasharray var(--duration-normal) var(--ease-standard);
+}
+.progress-ring__label {
+  grid-area: 1 / 1;
+  font-family: var(--font-mono);
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--color-content-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Tone — swaps the arc stroke only (track stays surface-3), same vocabulary as
+   the linear Progress bar. */
+.progress-ring--success .progress-ring__fill { stroke: var(--color-success); }
+.progress-ring--warning .progress-ring__fill { stroke: var(--color-warning); }
+.progress-ring--error   .progress-ring__fill { stroke: var(--color-error); }
+.progress-ring--info    .progress-ring__fill { stroke: var(--color-info); }
+
+/* Sizes — diameter + label step. Default (no modifier) = --space-16 (64px). */
+.progress-ring--sm { width: var(--space-10); height: var(--space-10); }  /* 40px */
+.progress-ring--sm .progress-ring__label { font-size: var(--text-xs); }
+.progress-ring--lg { width: var(--space-20); height: var(--space-20); }  /* 80px */
+.progress-ring--lg .progress-ring__label { font-size: var(--text-lg); }
+
+@media (prefers-reduced-motion: reduce) {
+  .progress-ring__fill { transition: none; }
+}

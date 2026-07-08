@@ -204,6 +204,65 @@
       </div>
     </div>
 
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: Sizes
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Progress · sizes</h2>
+      <p class="demo-section__desc">
+        <code>.progress--xs</code> (4px) · default (8px) · <code>.progress--lg</code> (12px)
+        on the root swaps the track height. No <code>sm</code> — no token expresses 5–6px.
+      </p>
+
+      <div class="progress progress--xs">
+        <div class="progress__track">
+          <div class="progress__indicator" style="width:64%"></div>
+        </div>
+      </div>
+      <div class="progress">
+        <div class="progress__track">
+          <div class="progress__indicator" style="width:64%"></div>
+        </div>
+      </div>
+      <div class="progress progress--lg">
+        <div class="progress__track">
+          <div class="progress__indicator" style="width:64%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 5: Striped (active)
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Progress · striped (active)</h2>
+      <p class="demo-section__desc">
+        <code>.progress--striped</code> on the root overlays moving diagonal stripes
+        to signal work in flight — a functional activity affordance. Composes with
+        any tone and size; reduced-motion stops the travel.
+      </p>
+
+      <div class="progress progress--striped">
+        <div style="display:flex;align-items:center;width:100%;">
+          <span class="progress__label">Restoring backup</span>
+          <span class="progress__value">45%</span>
+        </div>
+        <div class="progress__track">
+          <div class="progress__indicator" style="width:45%"></div>
+        </div>
+      </div>
+
+      <div class="progress progress--striped progress--lg">
+        <div style="display:flex;align-items:center;width:100%;">
+          <span class="progress__label">Deploying</span>
+          <span class="progress__value">80%</span>
+        </div>
+        <div class="progress__track">
+          <div class="progress__indicator progress__indicator--info" style="width:80%"></div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </body>
 </html>
