@@ -109,7 +109,7 @@ const TOKENS = new Set(catalog.tokens);
 const CLASSES = new Set(catalog.classes);
 const FOUNDATION_LAYERS = [
   ["release/tokens.inline.css", requireFoundationFile("release/tokens.inline.css")],
-  ["primitives/primitives.css", requireFoundationFile("primitives/primitives.css")],
+  ["release/primitives.css", requireFoundationFile("release/primitives.css")],
   ["release/composites.css", requireFoundationFile("release/composites.css")],
 ];
 // All foundation CSS bodies, for checks that must know which foundation classes
