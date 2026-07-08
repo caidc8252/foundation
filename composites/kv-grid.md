@@ -8,6 +8,12 @@ is the "Overview (KV grid)" the
 forbids a hand-written `repeat(auto-fit,…)` and names the column behavior; this
 composite gives the pairs their typography and semantics on top of it.
 
+**A record's own numbers stay here — even numeric ones.** Price, counts,
+quantities that belong to THIS record are attributes, not headline metrics; they
+render as kv rows (or a lead fact in the identity band), **not** promoted to
+[`stat-card`](./stat-card.md) KPI tiles. Reserve `stat-card` for an aggregate the
+screen is *about* (see its "Metric vs attribute").
+
 > **Contract scope.** The cross-consumer design contract: anatomy, the
 > label/value recipe, the column rule, tokens. NOT the React prop types — those
 > live with `@cloud/ui` + the `ui` skill. When an implementation disagrees with

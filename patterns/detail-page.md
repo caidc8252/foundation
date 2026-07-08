@@ -25,9 +25,9 @@ row into. Named structure, not implementation.
 │ │ Overview   Activity   Orders   Settings                              │  │
 │ └────────────────────────────────────────────────────────────────────────┘  │
 ╞ page-body (gutters + stack) ══════════════════════════════════════════════╡
-│ tabbed → the ACTIVE tab's content (Overview = a KV grid, label→value      │
-│          left-right; other tabs hold sections / timeline / empty).        │
-│ no tabs → the body's sections stacked directly (Overview KV grid first).  │
+│ tabbed → the ACTIVE tab's content: a full page-body canvas — any          │
+│ composite, a composition, or a whole nested pattern (Overview = kv-grid). │
+│ no tabs → the body's sections stack directly in page-body.                │
 └────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -66,7 +66,7 @@ when this record's job calls for it.
 |---|---|---|
 | detail-header band | **yes** | always — the page begins with the head band |
 | → title / name (within the head) | **yes** | always — the only required slot inside the head |
-| body (Overview kv-grid **or** a tab-set) | **yes** | always — an Overview block (its required main is a kv-grid) or a tab-set |
+| body ([`page-body`](../composites/page-body.md)) | **yes** | always — the content region beneath the head band; the SAME `page-body` any screen uses, its content recursing into the full closed set. Convention: an Overview block opens it (main = a `kv-grid`). `.tabs__content` is only page-body's panel-partition in the tabbed variant — never a required wrapper. |
 | back button | no | the record was reached from a list to return to; else the shell carries navigation |
 | status badge(s) | no | the record has a status worth surfacing up top (shown, not editable) |
 | meta row | no | id / region / dates / counts are useful at a glance |
@@ -84,6 +84,36 @@ when this record's job calls for it.
   and each is substantial; otherwise stack labelled sections on one page. A detail
   screen is ONE page with tab state, not one route per tab. When tabs are used,
   they dock in the **`detail-header` band** (below the name), not in `page-body`.
+  *"Not one route per tab" constrains URL / navigation — not the choice of a tab's
+  body; each tab's content still goes through the same content→composite decision a
+  standalone screen does.*
+- **The tab set is entity-derived, not master-derived.** The tabbed
+  [`detail-page.html`](./detail-page.html) shows an *illustrative* set of tabs
+  (Overview / Team / Orders / Billing / Activity / Settings) — a gallery of what a
+  tab CAN be, **not a required set**. Which tabs exist, and what each holds, are
+  derived from THIS record's spec (its related collections, lifecycle facets, and
+  sub-resources) — the same way a list-page derives its columns from the entity.
+  Cloning the master's tabs onto a different record is the failure mode, not the goal.
+- **A tab body is a recursive canvas.** Below the head band the body is just
+  [`page-body`](../composites/page-body.md), so a tab draws on the **whole closed
+  set** and may nest a full pattern (a records tab can *be* a list-page inside the
+  tab). This is where you create UE — row-expand → sub-table, click-to-modal, a
+  per-row drill into a timeline are all legitimate. The only fixed chrome a detail
+  guarantees is the `detail-header` identity; from `page-body` down a tab has the
+  same latitude as any screen.
+- **Derive the body, don't port it — the Overview included.** The master is one
+  *example sentence*, not a template: port its **frame** (detail-header + page-body
+  + the tab mechanism) and write the body fresh for THIS record. Classify each
+  piece of data and pick its composite — a record's **attributes** → `kv-grid` (or
+  a lead fact in the identity band); a **related collection** → `data-table`;
+  **history** → `timeline`; **only a headline aggregate the screen is about** →
+  `stat-card` ([Metric vs attribute](../composites/stat-card.md)). A single
+  record's own price / counts / images are attributes — **never a padded KPI
+  strip** (the master's Overview KPI row is *illustrative*, not a required
+  ingredient). Before composing, name the record's **protagonist** — what this
+  detail is *for* (a buy page's protagonist is ordering → a buy panel; an admin
+  record's is its key attributes + relations) — and lead with that, instead of
+  defaulting to KPI + kv-grid + aside.
 - **Overview is a key-value grid** ([`kv-grid`](../composites/kv-grid.md)):
   a left-right label → value list, labels `text-content-tertiary`, values
   `content-primary`. Short values sit beside their label; a long / multi-line

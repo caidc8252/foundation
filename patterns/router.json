@@ -135,7 +135,7 @@
       "exampleRequests": ["做一个客户详情页", "Create an account profile page", "Build an order detail page"],
       "defaultTitle": "Record detail",
       "outputNameHints": ["detail", "profile", "overview"],
-      "composites": ["detail-header", "page-body", "kv-grid", "stat-card", "timeline", "data-table", "empty-state", "diff"],
+      "composites": ["detail-header", "page-body"],
       "clarifyIf": [
         "The request says customer page but does not say whether it is a list or one customer's profile."
       ]
