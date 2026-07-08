@@ -134,7 +134,9 @@ when this record's job calls for it.
     rows when empty). The action lives in the **card header**, *not* a `summary-bar`.
   - **Rich** (a collection large enough to need search / pagination) — the section
     **mirrors the list-page results region**: an OPTIONAL search
-    [`condition-band`](../composites/list-filter.md) above, then a **header-less**
+    [`condition-band`](../composites/list-filter.md) above — **bound to the results
+    card at `space-4` via a `.stack--4` wrapper** (principles §13; the bound unit
+    then sits in the panel's `space-6` rhythm) — then a **header-less**
     `card` whose `.card__content--flush` frame holds a
     [`summary-bar`](../composites/summary-bar.md) (count on the left · the section's
     **single** add / primary verb on the right), the `data-table`, and a
