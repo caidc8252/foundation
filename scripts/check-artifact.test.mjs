@@ -288,6 +288,70 @@ test("check-artifact flags a .theme-toggle in a frameless page, not in a full sh
   }
 });
 
+test("check-artifact rejects a fused card stack (hard), but not spaced or hidden-sibling stacks", () => {
+  const dir = mkdtempSync(join(tmpdir(), "foundation-artifact-"));
+  try {
+    // BAD: a bare block wrapper stacks 3 visible cards with no gap and no card
+    // margin — they fuse into one slab (the hand-rolled step/section wrapper that
+    // forgot its .stack--N rhythm).
+    const bad = join(dir, "fused-cards.html");
+    writeFileSync(
+      bad,
+      `<!doctype html>
+<style>.co-step { display: block; }</style>
+<div class="co-step">
+  <div class="card"><div class="card__content">A</div></div>
+  <div class="card"><div class="card__content">B</div></div>
+  <div class="card"><div class="card__content">C</div></div>
+</div>
+`,
+      "utf8",
+    );
+    // GOOD: three legit rhythms, none should trip —
+    //   1. a .stack--N rung,
+    //   2. a hand-rolled flex-column + gap wrapper (a working stack; policing FORM
+    //      would false-positive here — the check is outcome-based),
+    //   3. a wizard step-switcher whose cards are mutually exclusive (2 hidden), so
+    //      only one renders at rest and they never fuse.
+    const good = join(dir, "spaced-cards.html");
+    writeFileSync(
+      good,
+      `<!doctype html>
+<style>.mywrap { display: flex; flex-direction: column; gap: var(--space-6); }</style>
+<div class="stack stack--6">
+  <div class="card"><div class="card__content">A</div></div>
+  <div class="card"><div class="card__content">B</div></div>
+</div>
+<div class="mywrap">
+  <div class="card"><div class="card__content">C</div></div>
+  <div class="card"><div class="card__content">D</div></div>
+</div>
+<div class="wizard-grid"><div>
+  <div class="card wz-step"><div class="card__content">1</div></div>
+  <div class="card wz-step is-hidden"><div class="card__content">2</div></div>
+  <div class="card wz-step is-hidden"><div class="card__content">3</div></div>
+</div></div>
+`,
+      "utf8",
+    );
+
+    const bin = join(root, "scripts", "check-artifact.mjs");
+    const runBad = spawnSync(process.execPath, [bin, bad], { cwd: root, encoding: "utf8" });
+    const runGood = spawnSync(process.execPath, [bin, good], { cwd: root, encoding: "utf8" });
+
+    // Hard violation: non-zero exit, names the fused wrapper + the rhythm to use.
+    assert.notEqual(runBad.status, 0, runBad.stdout);
+    assert.match(runBad.stdout, /fused card stack/i);
+    assert.match(runBad.stdout, /\.stack--N/);
+    assert.match(runBad.stdout, /co-step/);
+    // The spaced / hand-rolled-stack / hidden-sibling structures raise no violation.
+    assert.equal(runGood.status, 0, runGood.stdout);
+    assert.match(runGood.stdout, /block rhythm: ok/i);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test("check-artifact rejects native date/time inputs (hard), but not plain text inputs", () => {
   const dir = mkdtempSync(join(tmpdir(), "foundation-artifact-"));
   try {
