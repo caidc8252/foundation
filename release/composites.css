@@ -303,7 +303,7 @@
 
 .data-table .cell-2line { display: flex; flex-direction: column; min-width: 0; }
 .data-table .cell-2line__main {
-  font-size: var(--text-lg); font-weight: 500; color: var(--color-content-primary);
+  font-size: var(--text-md); font-weight: 500; color: var(--color-content-primary);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .data-table .cell-2line__sub {

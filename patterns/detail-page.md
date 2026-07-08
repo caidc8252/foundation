@@ -40,7 +40,7 @@ row into. Named structure, not implementation.
   present**, the tab strip docks flush on the band's bottom edge **below** the
   name + meta — never as a separate block in `page-body`; `Overview` is the first
   tab and tab *content* renders in `page-body`.
-- **A back button is OPTIONAL** — an icon-only ghost button (`‹`), first in the
+- **A back button is OPTIONAL** — an icon-only ghost sm button (`‹`), first in the
   bar when present, returning to the list the record was reached from. Include it
   when the record was reached from a list; otherwise the app shell carries
   navigation and the band opens straight on the identity (matches

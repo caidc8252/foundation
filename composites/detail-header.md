@@ -33,10 +33,10 @@ top of its anatomy; [`create-form`](../patterns/create-form.md) and
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-- **Back** — icon-only ghost button (`.btn--ghost`; its `chevron-left` glyph is
-  **16px** / `--space-4`, one step over the 14px button default so the page-level
-  back reads with a little more weight — matches `@cloud/ui`'s detail back), first in the
-  bar. Returns to the place it was reached from. On a **detail** screen it is
+- **Back** — small icon-only ghost button (`.btn--ghost.btn--icon.btn--sm`; its
+  `chevron-left` glyph is **16px** / `--space-4`, one step over the 14px button default
+  so the page-level back reads with a little more weight — matches `@cloud/ui`'s detail
+  back), first in the bar. Returns to the place it was reached from. On a **detail** screen it is
   optional (present when the record was reached from a list); on a **create / edit
   / wizard** page it is **required** and is an **exit-without-committing**
   affordance. Neither a **wizard** nor a single-step **create / edit** page carries a
@@ -150,7 +150,7 @@ Cross-consumer guards:
   the strip; this contract names the shared structure those parts assemble into.
   See the `ui` skill (layout reference).
 - **Artifact** — `.detail-header` (+ `--sticky`) → `.detail-header__bar`
-  (holding `.btn--ghost.detail-header__back`, `.detail-header__logo`,
+  (holding `.btn--ghost.btn--icon.btn--sm.detail-header__back`, `.detail-header__logo`,
   `.detail-header__main` → `.detail-header__title` [contains `.detail-header__name`
   + status `.badge`(s) + `.detail-header__chips`] / `.detail-header__meta`
   (or, in the reduced form, `.detail-header__description`), then
