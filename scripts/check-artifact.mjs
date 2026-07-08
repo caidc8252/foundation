@@ -22,6 +22,19 @@
                                      the interactive swap must hide one (`.is-hidden` /
                                      `hidden` / display:none). Statically decidable, so it
                                      fails the build.
+     ✗ fused card stack           — a wrapper with ≥2 DIRECT `.card` children that render
+                                     at rest but have NO gap between them (the wrapper
+                                     carries no `gap` — foundation or page-local — and is
+                                     not page-body / .tabs__content / .stack--N, and the
+                                     cards have no vertical margin). The cards collapse into
+                                     one slab — the hand-rolled step/section wrapper that
+                                     forgot its rhythm. Outcome-based, not form-based: a
+                                     hand-rolled flex-column+gap wrapper is a working stack
+                                     and passes; mutually-exclusive hidden siblings (a wizard
+                                     step, an inactive tab) don't count. Scans the static
+                                     tree, so a JS-hidden step is checked too; card groups a
+                                     script BUILDS at runtime are the known residual. See
+                                     scripts/lib/block-rhythm.mjs.
      ⚠ .label outside a Field      — a foundation `.label` wired to a control (`for=`) but
                                      not wrapped in a `.field`. The "hand-rolled form row"
                                      escape (principle 5 · create-form.md · field.md). A
@@ -74,6 +87,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { hasIcon, bodyMatches, VERSION as ICON_VERSION } from "./icon/registry.mjs";
+import { findFusedCardStacks } from "./lib/block-rhythm.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const requireFoundationFile = (path) => {
@@ -98,6 +112,10 @@ const FOUNDATION_LAYERS = [
   ["primitives/primitives.css", requireFoundationFile("primitives/primitives.css")],
   ["release/composites.css", requireFoundationFile("release/composites.css")],
 ];
+// All foundation CSS bodies, for checks that must know which foundation classes
+// carry a rhythm (a gap) — the block-rhythm check resolves gap sources across
+// both foundation and page-local CSS.
+const FOUNDATION_CSS = FOUNDATION_LAYERS.map(([, body]) => body).join("\n");
 
 const usage = () => {
   console.error("usage: node scripts/check-artifact.mjs [--strict] <file.html> […]");
@@ -605,6 +623,14 @@ for (const file of files) {
   // JS-templated inputs count too.
   const nativeDateInputs = nativeDateInputsFromHtml(html);
 
+  // 7. Fused card stack: a wrapper with ≥2 direct `.card` children that resolves
+  // to NO gap between them (no gap on the wrapper — foundation or page-local — and
+  // no vertical margin on the cards). The cards collapse into one slab. A hard,
+  // statically-decidable layout defect (the hand-rolled step/section wrapper that
+  // forgot its `.stack--N` rhythm). Uses the static tree, so a JS-hidden wizard
+  // step or inactive tab is checked too.
+  const fusedCardStacks = findFusedCardStacks({ markup, css: `${FOUNDATION_CSS}\n${pageCss}` });
+
   // Advisory: inline padding/margin layout hacks (never affects exit code).
   const layoutHacks = inlineLayoutHacksFromMarkup(markup);
 
@@ -639,6 +665,7 @@ for (const file of files) {
     structure.cellTagsOnTableCells.length +
     nativeDateInputs.length +
     fieldFindings.captionConflict.length +
+    fusedCardStacks.length +
     (strict ? offSetClasses.length + icons.mismatch.length : 0);
   hardTotal += hard;
 
@@ -674,6 +701,9 @@ for (const file of files) {
   console.log(`  field captions: ${captionBad === 0 ? "ok" : `${captionBad} issue(s)`}`);
   if (captionBad)
     console.log(`    ✗ .field shows a hint AND an error at once — they are mutually exclusive (field.md); hide one at rest (.is-hidden) and let the swap reveal it: ${fieldFindings.captionConflict.join(" · ")}`);
+  console.log(`  block rhythm: ${fusedCardStacks.length === 0 ? "ok" : `${fusedCardStacks.length} fused card stack(s)`}`);
+  if (fusedCardStacks.length)
+    console.log(`    ✗ a wrapper stacks ${fusedCardStacks.map((f) => `${f.count} cards`).join(", ")} with no gap between them — the cards fuse into one slab; give the wrapper a rhythm (.stack--N / page-body / .tabs__content) instead of a bare block wrapper: ${fusedCardStacks.map((f) => f.label).join(" · ")}`);
   if (structure.chevronAsCell.length)
     console.log(`  ⚠ review: ${structure.chevronAsCell.length} .cell-chevron on a table cell — the chevron is no longer its own cell; move it inside the trailing .row-actions cell as the last child of .row-actions__inner, verbs first (data-table.md): ${structure.chevronAsCell.join(" · ")}`);
   if (layoutHacks.length)

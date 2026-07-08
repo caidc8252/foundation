@@ -5,6 +5,16 @@ description — surfaced above a list (style-spec §4). Pure display, or an
 interactive quick-filter synced to the list toolbar's applied state. Composes a
 `card`-like surface + a `label` + a `value` + a `delta`.
 
+**Metric vs attribute — when NOT to use.** A stat card is a **headline aggregate
+the screen is ABOUT** — a KPI computed over a *set* (a dashboard total, a
+count / sum / rate across records). It is **not** for a single record's own
+numbers. On a detail screen, that record's price, SKU count, image count, etc.
+are **attributes** → they belong in [`kv-grid`](./kv-grid.md) or the identity
+band, **never dressed as a KPI strip**. Padding a `stat-grid` with a record's
+attributes (the giveaway: an "Images 2/3" tile) is the mark of a *cloned*
+Overview, not a *designed* one — see [`detail-page`](../patterns/detail-page.md)
+→ "Derive the body, don't port it".
+
 > **Contract scope.** Cross-consumer contract: the surface recipe, the
 > rest/selected/hover states, the value tone + trend vocabulary, anatomy, a11y.
 > React prop *types* (`label` / `value` / `description` / `trend` / `icon` /
