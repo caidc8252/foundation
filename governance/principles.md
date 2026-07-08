@@ -292,16 +292,19 @@ modifier, e.g. `.card__content--flush`).
 | `page-body` direct children (cards / bands / rows) | `space-6` (24px) — auto by `page-body` |
 | tab content docked in `page-body` (the active panel's sections) | `space-6` (24px) — auto by the panel; **not** a rung down |
 | sibling block-cards inside a hand-authored wrapper / sub-group | `space-5` (20px) |
-| condition band ↔ list card | `space-4` (16px) sticky · `space-6` (24px) short / embedded |
+| condition band ↔ results region (list card / product grid) | `space-4` (16px) — bind the two in a `.stack--4` wrapper |
 | main card ↔ a tightly-bound sub-card | 14px (React `gap-3.5`; no raw token — artifacts approximate) |
 | **in-card stacked elements** (header ↔ alert ↔ body ↔ sub-section) | **`space-3` (12px)** |
 | stat-card grid | `space-3` (12px) |
 | tight pair (title ↔ description, label ↔ control) | `space-1` / `space-2` (4 / 8px) |
 
 - **Compose stacked blocks with the `.stack` / `.stack--N` utility** (`flex-col` +
-  the rung's gap): `.stack--3` for in-card elements, `.stack--5` for a hand-authored
-  sub-group of sibling cards inside a wrapper. A stacked group then never falls back
-  to 0-gap — spacing is a composition choice, not a margin you can forget.
+  the rung's gap): `.stack--3` for in-card elements, `.stack--4` to bind a condition
+  band to its results region (list card or product grid), `.stack--5` for a
+  hand-authored sub-group of sibling cards inside a wrapper. A stacked group then
+  never falls back to 0-gap — spacing is a composition choice, not a margin you can
+  forget. The bound condition↔results unit is then ONE block in `page-body`'s
+  `space-6` rhythm — the tight `space-4` lives only inside the wrapper.
 - **A tab panel is navigation, not nesting.** Tab content docked in `page-body`
   stands in for page-body's content slot — it draws no frame, so it is not a level
   of visual nesting and does **not** drop a rung. The panel PROVIDES its sections'

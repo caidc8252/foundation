@@ -47,6 +47,12 @@ them. See "Required core / optional slots" below for the exact split.
    ■ required core   ○ optional — included per business need
 ```
 
+The condition band and the results card are **bound together in a `.stack--4`
+wrapper** — they sit `space-4` (16px) apart, tighter than `page-body`'s `space-6`
+rhythm, because the band conditions *that* card (principles §13). The bound unit is
+then one block in `page-body`'s stack; drop the wrapper if this list omits the
+condition band (a lone results card sits directly in `page-body`).
+
 ## Required core / optional slots
 
 A list page is a **framework**, not a filled-in screen (governance principle
