@@ -2818,141 +2818,6 @@ body { margin: 0; }
   }
 }
 
-/* ═══════════════════════════════ Navigation Menu ═══════════════════════════════ */
-/* Top-level site-header nav: a horizontal bar of triggers/links where an open
-   trigger reveals a portalled content panel beneath the bar. Triggering,
-   portalling, positioning, the animated positioner/viewport that tracks the
-   active trigger, open/close keyframes (directional slide + fade + zoom), and
-   roaming focus are React/base-ui behaviors — out of scope for this static skin.
-   The reference layer paints the resting bar plus one open panel; mark the open
-   trigger with .nav-menu__trigger--open and the current link with
-   .nav-menu__link--active (the skin can't observe live state). */
-
-.nav-menu {
-  position: relative;
-  display: inline-flex;
-  flex: 1 1 0;
-  max-width: max-content;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-sans);
-}
-
-/* The horizontal row of items; items abut (source gap-0). */
-.nav-menu__list {
-  display: flex;
-  flex: 1 1 0;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-/* One slot in the bar (wraps a trigger or a bar link). */
-.nav-menu__item {
-  position: relative;
-}
-
-/* Bar trigger — md-height button that opens a content panel. */
-.nav-menu__trigger {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-1);
-  width: max-content;
-  height: var(--spacing-control-md);   /* 36px — source h-9 */
-  padding-inline: var(--spacing-cx-sm);   /* 10px — source px-2.5 */
-  border: 0;
-  border-radius: var(--radius-md);
-  background-color: transparent;
-  color: var(--color-content-primary);
-  font-family: var(--font-sans);
-  font-size: var(--text-md);
-  font-weight: 500;
-  white-space: nowrap;
-  cursor: pointer;
-  user-select: none;
-  transition: background-color 0.12s, box-shadow 0.12s;
-  outline: none;
-}
-.nav-menu__trigger:hover,
-.nav-menu__trigger:focus,
-.nav-menu__trigger--open {
-  background-color: var(--color-surface-hover);
-}
-.nav-menu__trigger:focus-visible {
-  box-shadow: var(--shadow-focus);
-}
-.nav-menu__trigger:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-/* Trailing chevron — 14px (source size-3.5); rotates 180° when the panel is open. */
-.nav-menu__trigger__chevron {
-  width: calc(var(--space-4) - var(--space-1) / 2);   /* 14px (size-3.5) */
-  height: calc(var(--space-4) - var(--space-1) / 2);
-  transition: transform 0.3s var(--ease-standard);
-}
-.nav-menu__trigger--open .nav-menu__trigger__chevron {
-  transform: rotate(180deg);
-}
-
-/* Floating content panel an open trigger reveals (popover surface). */
-.nav-menu__content {
-  padding: var(--space-1);
-  border: 1px solid var(--color-line-default);
-  border-radius: var(--radius-lg);
-  background-color: var(--color-surface-2);
-  color: var(--color-content-primary);
-  font-family: var(--font-sans);
-  box-shadow: var(--shadow-4);
-}
-
-/* Navigable row — in the bar or inside a content panel. */
-.nav-menu__link {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2);
-  border-radius: var(--radius-md);
-  color: var(--color-content-primary);
-  font-size: var(--text-md);
-  text-decoration: none;
-  cursor: pointer;
-  user-select: none;
-  transition: background-color 0.12s;
-  outline: none;
-}
-/* Hover/focus guard against --active so the current page keeps its darker fill
-   (principle §16: committed state outranks hover). */
-.nav-menu__link:hover:not(.nav-menu__link--active),
-.nav-menu__link:focus:not(.nav-menu__link--active) {
-  background-color: var(--color-surface-hover);
-}
-/* Current page (source data-active) — a step darker than hover. */
-.nav-menu__link--active {
-  background-color: var(--color-surface-active);
-}
-/* Leading icon default — 16px (source size-4). */
-.nav-menu__link svg {
-  flex-shrink: 0;
-  width: var(--space-4);   /* 16px */
-  height: var(--space-4);
-}
-
-/* Directional arrow pointing from the bar to the open panel — a rotated nub. */
-.nav-menu__indicator {
-  width: var(--space-2);   /* 8px — source h-2 w-2 */
-  height: var(--space-2);
-  border-top-left-radius: var(--radius-sm);
-  background-color: var(--color-line-default);
-  box-shadow: var(--shadow-3);
-  transform: rotate(45deg);
-}
-
 /* ═══════════════════════════════ Popover ═══════════════════════════════ */
 /* @component popover */
 /* Elevated floating panel anchored to a trigger. Open/close, portalling,
@@ -4499,4 +4364,29 @@ body { margin: 0; }
 
 @media (prefers-reduced-motion: reduce) {
   .progress-ring__fill { transition: none; }
+}
+
+/* ═══════════════════════════════ Kbd ═══════════════════════════════ */
+/* @component kbd */
+/* A keyboard key cap for shortcut hints — one glyph/word per cap, chained for
+   chords (⌘ K). Quiet by default (surface-2 + hairline border, mono, xs); it is a
+   presentational hint, not interactive. Distinct from the menu `__shortcut` slots,
+   which render the same idea inline inside a menu row. */
+
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  min-width: var(--space-5);   /* 20px — square-ish for single keys */
+  height: var(--space-5);
+  padding-inline: var(--space-1);
+  border: 1px solid var(--color-line-default);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-2);
+  color: var(--color-content-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  line-height: 1;
 }

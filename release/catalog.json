@@ -534,6 +534,7 @@
     "input-otp__slot",
     "input-otp__slot--active",
     "is-clickable",
+    "kbd",
     "kv-grid",
     "kv-grid__row",
     "label",
@@ -593,16 +594,6 @@
     "modal__header",
     "modal__heading",
     "modal__title",
-    "nav-menu",
-    "nav-menu__content",
-    "nav-menu__indicator",
-    "nav-menu__item",
-    "nav-menu__link",
-    "nav-menu__link--active",
-    "nav-menu__list",
-    "nav-menu__trigger",
-    "nav-menu__trigger--open",
-    "nav-menu__trigger__chevron",
     "object-tile",
     "object-tile--cat-1",
     "object-tile--cat-2",
@@ -1398,6 +1389,17 @@
         ".input--ok",
         ".input--sm",
         ".input--warn"
+      ]
+    },
+    {
+      "layer": "primitive",
+      "name": "kbd",
+      "title": "Kbd",
+      "summary": "A keyboard key cap for shortcut hints — one glyph or word per cap (⌘, K, esc), chained side by side for chords (⌘ ⇧ P).",
+      "contract": "primitives/kbd.md",
+      "example": "primitives/kbd.html",
+      "classes": [
+        ".kbd"
       ]
     },
     {

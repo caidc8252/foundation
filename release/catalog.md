@@ -39,7 +39,7 @@ Every icon carries `data-lucide="<name>"` as its first attribute. The checker
 rejects unknown names and altered paths; that same attribute is the Next.js
 `lucide-react` bridge. Rules + React mapping: [`primitives/icon.md`](../primitives/icon.md).
 
-## L2 · Primitives (50) - atoms
+## L2 · Primitives (51) - atoms
 
 Classes in `primitives/primitives.css` (on top of the inlined tokens).
 
@@ -71,6 +71,7 @@ Classes in `primitives/primitives.css` (on top of the inlined tokens).
 | `input-group` | A single-border container that fuses an Input/Textarea with leading/trailing addons (icons, text affixes, action buttons, keyboard hints). | `.input-group` `.input-group--block` `.input-group--disabled` `.input-group--invalid` `.input-group__addon` `.input-group__addon--block-end` `.input-group__addon--block-start` `.input-group__addon--inline-end` `.input-group__addon--inline-start` `.input-group__control` `.input-group__text` | [contract](../primitives/input-group.md) · [example](../primitives/input-group.html) |
 | `input-otp` | A segmented one-time-code / verification-code input: a row of single-character slots the user types a PIN/OTP into, optionally split into groups by a separator. | `.input-otp` `.input-otp__caret` `.input-otp__group` `.input-otp__separator` `.input-otp__slot` `.input-otp__slot--active` `.label` `.label--disabled` | [contract](../primitives/input-otp.md) · [example](../primitives/input-otp.html) |
 | `input` | A single-line text field. | `.input` `.input--filled` `.input--lg` `.input--loading` `.input--md` `.input--ok` `.input--sm` `.input--warn` | [contract](../primitives/input.md) · [example](../primitives/input.html) |
+| `kbd` | A keyboard key cap for shortcut hints — one glyph or word per cap (⌘, K, esc), chained side by side for chords (⌘ ⇧ P). | `.kbd` | [contract](../primitives/kbd.md) · [example](../primitives/kbd.html) |
 | `label` | The caption for a form control. | `.label` `.label--disabled` | [contract](../primitives/label.md) · [example](../primitives/label.html) |
 | `modal` | A centered dialog over a dimmed scrim. | `.modal` `.modal--fullscreen` `.modal--lg` `.modal--md` `.modal--sm` `.modal--xl` `.modal-overlay` `.modal__body` `.modal__close` `.modal__description` `.modal__footer` `.modal__header` `.modal__heading` `.modal__title` | [contract](../primitives/modal.md) · [example](../primitives/modal.html) |
 | `object-tile` | Square, filled entity/object identity mark for companies, apps, device models, etc. | `.object-tile` `.object-tile--cat-1` `.object-tile--cat-2` `.object-tile--cat-3` `.object-tile--cat-4` `.object-tile--cat-5` `.object-tile--cat-6` `.object-tile--lg` `.object-tile--md` `.object-tile--neutral` `.object-tile--sm` `.object-tile__icon` | [contract](../primitives/object-tile.md) · [example](../primitives/object-tile.html) |
