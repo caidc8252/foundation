@@ -564,6 +564,16 @@ body {
   transition: background-color 0.12s, border-color 0.12s, box-shadow 0.12s;
   outline: none;
 }
+/* Enlarged invisible hit target — see the note on .radio::before. 16px box, 24px target. */
+.checkbox::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--space-6);   /* 24px */
+  height: var(--space-6);
+  transform: translate(-50%, -50%);
+}
 .checkbox:focus-visible { box-shadow: var(--shadow-focus); }
 .checkbox:checked,
 .checkbox:indeterminate {
@@ -601,9 +611,22 @@ body {
   border-color: var(--color-error);
   box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-error) 20%, transparent);
 }
+/* Invalid AND checked/indeterminate — border returns to primary-700 so the fill still
+   reads; the error ring carries the invalid signal. Same (0,2,0) tie as .radio. */
+.checkbox[aria-invalid="true"]:checked,
+.checkbox[aria-invalid="true"]:indeterminate { border-color: var(--color-primary-700); }
 
 /* ═══════════════════════════════ Radio ═══════════════════════════════ */
 /* @component radio-group */
+
+/* Group container — layout only (radio-group.md §Notes): spacing and columns are the
+   group's job, the circle is the item's. A full-width vertical grid; a consumer that
+   wants a row supplies its own layout. */
+.radio-group {
+  display: grid;
+  gap: var(--space-2);
+  width: 100%;
+}
 
 .radio {
   appearance: none;
@@ -618,6 +641,20 @@ body {
   cursor: pointer;
   transition: background-color 0.12s, border-color 0.12s, box-shadow 0.12s;
   outline: none;
+}
+/* Enlarged invisible hit target. The visual circle is 16px — under the 24px WCAG 2.5.8
+   minimum — so an overlay extends the clickable area without moving the paint. The
+   contracts name the `after` pseudo, which is free in React (the mark is an inner
+   <span>); an artifact's <input> cannot hold children, so here `after` paints the mark
+   and `before` is the target. Which pseudo carries it is an implementation detail. */
+.radio::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--space-6);   /* 24px */
+  height: var(--space-6);
+  transform: translate(-50%, -50%);
 }
 .radio:focus-visible { box-shadow: var(--shadow-focus); }
 .radio:checked {
@@ -643,6 +680,11 @@ body {
   border-color: var(--color-error);
   box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-error) 20%, transparent);
 }
+/* Invalid AND checked — the border returns to primary-700 so the selection still reads;
+   the error ring alone carries the invalid signal. This needs its own rule: :checked and
+   [aria-invalid="true"] are both (0,2,0) and the invalid rule comes later, so without it
+   the checked border would be overwritten. */
+.radio[aria-invalid="true"]:checked { border-color: var(--color-primary-700); }
 
 /* ═══════════════════════════════ Badge ═══════════════════════════════ */
 /* @component badge */

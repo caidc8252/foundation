@@ -693,6 +693,7 @@
     "progress__track",
     "progress__value",
     "radio",
+    "radio-group",
     "resizable-group",
     "resizable-group--vertical",
     "resizable-handle",
@@ -1547,7 +1548,8 @@
       "contract": "primitives/radio-group.md",
       "example": "primitives/radio-group.html",
       "classes": [
-        ".radio"
+        ".radio",
+        ".radio-group"
       ]
     },
     {

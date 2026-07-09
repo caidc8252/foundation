@@ -401,6 +401,16 @@ body {
   transition: background-color 0.12s, border-color 0.12s, box-shadow 0.12s;
   outline: none;
 }
+
+.checkbox::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--space-6);   
+  height: var(--space-6);
+  transform: translate(-50%, -50%);
+}
 .checkbox:focus-visible { box-shadow: var(--shadow-focus); }
 .checkbox:checked,
 .checkbox:indeterminate {
@@ -439,6 +449,15 @@ body {
   box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-error) 20%, transparent);
 }
 
+.checkbox[aria-invalid="true"]:checked,
+.checkbox[aria-invalid="true"]:indeterminate { border-color: var(--color-primary-700); }
+
+.radio-group {
+  display: grid;
+  gap: var(--space-2);
+  width: 100%;
+}
+
 .radio {
   appearance: none;
   -webkit-appearance: none;
@@ -452,6 +471,16 @@ body {
   cursor: pointer;
   transition: background-color 0.12s, border-color 0.12s, box-shadow 0.12s;
   outline: none;
+}
+
+.radio::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--space-6);   
+  height: var(--space-6);
+  transform: translate(-50%, -50%);
 }
 .radio:focus-visible { box-shadow: var(--shadow-focus); }
 .radio:checked {
@@ -477,6 +506,8 @@ body {
   border-color: var(--color-error);
   box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-error) 20%, transparent);
 }
+
+.radio[aria-invalid="true"]:checked { border-color: var(--color-primary-700); }
 
 .badge {
   display: inline-flex;

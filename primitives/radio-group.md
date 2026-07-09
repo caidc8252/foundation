@@ -16,7 +16,7 @@ Two slots: `RadioGroup` (the container) and `RadioGroupItem` (each circle). Sing
 
 ## Sizes
 
-No size variants — fixed `size-4` (16px) circle with a `size-1.5` (6px) center dot. The hit target is enlarged via an invisible `after` overlay beyond the visual circle.
+No size variants — fixed `size-4` (16px) circle with a `size-1.5` (6px) center dot. The hit target is enlarged to **24px** (WCAG 2.5.8 *Target Size (Minimum)*) via an invisible pseudo-element overlay beyond the visual circle. Which pseudo carries it is an implementation detail: React's mark is an inner `<span>`, leaving `after` free; an artifact's `<input>` cannot hold children, so `after` paints the dot and `before` is the target.
 
 ## States
 
@@ -27,7 +27,9 @@ No size variants — fixed `size-4` (16px) circle with a `size-1.5` (6px) center
 
 ## Anatomy
 
-`RadioGroup` is a vertical grid of items. Each `RadioGroupItem` is a circle whose `Indicator` holds a small centered dot, shown only when checked. The enlarged invisible hit area (`after` pseudo-element) makes the small circle easy to click.
+`RadioGroup` is a vertical grid of items (`.radio-group` — `display:grid`, `gap-2`, full width). Each `RadioGroupItem` is a circle whose `Indicator` holds a small centered dot, shown only when checked. The enlarged invisible hit area (a pseudo-element overlay) makes the small circle easy to click.
+
+A horizontal or multi-column arrangement is **the consumer's own layout**, not a group variant — there is no `.radio-group--horizontal`.
 
 ## Accessibility
 
@@ -43,4 +45,4 @@ No size variants — fixed `size-4` (16px) circle with a `size-1.5` (6px) center
 ## Implementations
 
 - **Next / @cloud/ui** — `import { RadioGroup, RadioGroupItem } from "@cloud/ui"`. base-ui radio under the hood. API details: the `ui` skill. For labeled options use `ToggleRadioGroup`/`ToggleRadio`.
-- **Artifact (self-contained HTML)** — use `<input type="radio" class="radio">` styled by `./primitives.css`, on top of the inlined `release/tokens.inline.css`. Same checked recipe (`primary-700` fill, `content-on-primary` dot).
+- **Artifact (self-contained HTML)** — wrap the options in `<div class="radio-group">` and use `<input type="radio" class="radio">` for each, styled by `./primitives.css`, on top of the inlined `release/tokens.inline.css`. Same checked recipe (`primary-700` fill, `content-on-primary` dot). The invalid state is the `aria-invalid="true"` attribute, not a class. Bare radios carry no label — supply your own label row.
