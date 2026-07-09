@@ -46,9 +46,23 @@
   padding: 0;
 }
 
+/* Mobile Safari inflates text in some rotated layouts unless told not to. */
+:where(html) { -webkit-text-size-adjust: 100%; tab-size: 4; }
+
 /* UA body margin — browsers ship an 8px margin on <body>; zero it here so
-   pages / dialogs / sheets drawn on <body> don't get a stray outer gap. */
-body { margin: 0; }
+   pages / dialogs / sheets drawn on <body> don't get a stray outer gap.
+   The font-family is the token, never a literal stack: every consumer resolves
+   --font-sans to Geist (the face itself ships in assets/fonts.inline.css). Set
+   it on <body> so text with no component class still inherits the design font
+   instead of the UA serif. Note this rule does NOT set line-height — the UA
+   `normal` is deliberate. A global `line-height: 1.5` would grow every
+   content-driven box (it adds 8px to .page-header, which patterns pin sticky
+   offsets against); components declare their own leading where it matters. */
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
 
 /* `[hidden]` hard reset. The UA `[hidden]{display:none}` loses to a composite's
    own `display` — `.card` / `.tabs__content` and friends set `display:flex`, so
@@ -67,6 +81,92 @@ body { margin: 0; }
    icon buttons set their own width/height), so shedding the UA defaults here is
    safe. `:where()` keeps specificity 0 — any .btn / component padding still wins. */
 :where(button) { padding: 0; border: 0; background: none; }
+
+/* Form-control inheritance. UA controls opt OUT of the document font (they ship
+   a 13px system stack) and out of the document color. Foundation controls are
+   class-driven and set their own type, but a bare <input> in a page-glue slot
+   would render in the UA font beside a .input that renders in Geist. `font`
+   (shorthand) and `color` inherit them back. Buttons are covered above; this
+   adds the type/color half for every control. */
+:where(button, input, textarea, select, optgroup) {
+  margin: 0;
+  font: inherit;
+  color: inherit;
+}
+
+:where(input, textarea, select, optgroup) { padding: 0; }
+
+/* Cursor affordance — the UA gives <button> a default arrow; a control that
+   does something should say so. Disabled buttons opt back out (.btn:disabled
+   further upgrades this to not-allowed). */
+:where(button, [type="button"], [type="submit"], [type="reset"]) { cursor: pointer; }
+:where(button:disabled) { cursor: default; }
+
+/* Textareas grow down, never sideways — horizontal resize breaks any layout
+   that sized the field's track. */
+:where(textarea) { resize: vertical; }
+
+/* <fieldset>/<legend> ship UA border + padding that no foundation form wants;
+   field grouping is drawn with .card / .field, never with native chrome. */
+:where(fieldset) { margin: 0; padding: 0; border: 0; }
+:where(legend) { padding: 0; }
+
+/* Monospace runs use the token, not a literal stack — --font-mono resolves to
+   Geist Mono (face in assets/fonts.inline.css). Without this, an unclassed
+   <code> in prose falls back to the UA monospace and reads as a different
+   typeface from the .kbd / .log-console beside it. */
+:where(pre, code, kbd, samp) { font-family: var(--font-mono); }
+:where(pre) { overflow: auto; }
+
+/* Links inherit. Foundation colors links per component (.link, .breadcrumb__item
+   and friends); the UA blue + underline is never the design intent, and it leaks
+   into anchors used as rows, cards, or tabs. Same as Tailwind Preflight, so the
+   Next consumer already behaves this way. */
+:where(a) { color: inherit; text-decoration: inherit; }
+
+/* Lists are layout, not bullets. Every list in the foundation (nav, menu, feed,
+   option groups) is a flex/grid stack; the UA marker + indent is chrome to shed.
+   The indent is already zeroed by the flow-margin reset above. */
+:where(li) { list-style: none; }
+
+/* Media are blocks. An inline <img>/<svg> sits on the text baseline and ships a
+   phantom descender gap under it (the classic few-px gap below an image in a
+   card). max-width keeps an oversized asset from widening its column. */
+:where(img, picture, video, canvas, svg) { display: block; max-width: 100%; }
+:where(img) { height: auto; border-style: none; }
+
+/* Tables collapse. .data-table already declares this; doing it in the baseline
+   means a bare <table> in a page-glue slot lines up with the composite instead
+   of inheriting the UA's 2px border-spacing. */
+:where(table) { border-collapse: collapse; border-spacing: 0; }
+:where(th, td) { padding: 0; }
+
+/* <hr> as a hairline. Foundation draws rules with .separator; this keeps a raw
+   <hr> from rendering as the UA's inset 3D groove. */
+:where(hr) { height: 0; color: inherit; border: 0; border-top: 1px solid currentColor; }
+
+/* <sub>/<sup> without the line-box growth — the UA's vertical-align: super/sub
+   pushes the line box taller, so a footnote marker in a table cell silently
+   changes the row height. */
+:where(sub, sup) { position: relative; vertical-align: baseline; font-size: 75%; line-height: 0; }
+:where(sub) { bottom: -0.25em; }
+:where(sup) { top: -0.5em; }
+
+/* Focus is never invisible. Components draw their own ring (a token box-shadow,
+   with `outline: none` to suppress the UA's) — but anything focusable WITHOUT a
+   component class (a tabindex'd row, a bare <a>) must still show one. `:where()`
+   keeps specificity 0, so every component's own ring still wins. */
+:where(:focus-visible) { outline: auto; }
+
+/* Flex/grid children may shrink below their content. The default `min-width:
+   auto` on a flex item is what makes a long unbroken string (an id, an email)
+   blow out its column instead of truncating — foundation truncates with
+   text-overflow, which cannot fire while the item refuses to shrink. Specificity
+   0 (the universal selector), so any explicit min-width still wins. */
+* { min-width: 0; }
+
+/* Long words wrap rather than overflow their box. */
+:where(p, h1, h2, h3, h4, h5, h6) { overflow-wrap: break-word; }
 
 /* ═══════════════════════════ Screen-reader only ═══════════════════════════ */
 /* A11y utility (no contract / no @component — a behaviour helper like the baseline
