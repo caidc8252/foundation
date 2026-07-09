@@ -40,7 +40,7 @@ where order is recency, not a connected sequence, and rows can carry actions.
 ## Rules
 
 - **Rows are hairline-separated, not carded** — the list sits inside one frame
-  (a `section-card`'s flush content or a `table-frame`), rows divide with a
+  (a `.card__content--flush` region or a `table-frame`), rows divide with a
   `line-subtle` rule, last row drops it. Don't box each row.
 - **Tone lives on the icon only** — the row body stays neutral; the icon tile
   carries the success/warning/info hue. (Same tone tokens as `timeline`.)

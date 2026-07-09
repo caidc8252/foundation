@@ -41,7 +41,7 @@ Every icon carries `data-lucide="<name>"` as its first attribute. The checker
 rejects unknown names and altered paths; that same attribute is the Next.js
 `lucide-react` bridge. Rules + React mapping: [`primitives/icon.md`](../primitives/icon.md).
 
-## L2 · Primitives (51) - atoms
+## L2 · Primitives (52) - atoms
 
 Classes in `primitives/primitives.css` (on top of the inlined tokens).
 
@@ -89,6 +89,7 @@ Classes in `primitives/primitives.css` (on top of the inlined tokens).
 | `slider` | A draggable track-and-thumb input for selecting a numeric value, or a range (two thumbs) along a continuous scale. | `.slider` `.slider--vertical` `.slider__indicator` `.slider__thumb` `.slider__track` | [contract](../primitives/slider.md) · [example](../primitives/slider.html) |
 | `spinner` | A circular, indeterminate loading indicator — a spinning ring shown while content or an action is in flight (in-button loading, inline "fetching", small section busy state). | `.spinner` `.spinner--lg` `.spinner--md` `.spinner--sm` `.spinner--xl` | [contract](../primitives/spinner.md) · [example](../primitives/spinner.html) |
 | `split-button` | A primary action fused with an adjacent menu trigger — one control that runs a default action on the left and opens a menu of related actions from a chevron on the right. | `.btn` `.btn--danger` `.btn--primary` `.split-button` | [contract](../primitives/split-button.md) · [example](../primitives/split-button.html) |
+| `sr-only` | Visually hides text while keeping it in the accessibility tree. | `.sr-only` | [contract](../primitives/sr-only.md) |
 | `switch` | A binary on/off toggle for an immediate state change (enable/disable, light/dark). | `.switch` `.switch--sm` `.switch__thumb` | [contract](../primitives/switch.md) · [example](../primitives/switch.html) |
 | `tabs` | A tabbed control: a horizontal bar of triggers that switch which content panel is shown. | `.tabs` `.tabs--vertical` `.tabs__content` `.tabs__list` `.tabs__list--default` `.tabs__list--line` `.tabs__list--vertical` `.tabs__trigger` `.tabs__trigger--active` | [contract](../primitives/tabs.md) · [example](../primitives/tabs.html) |
 | `tags-input` | A free-text token field: the user types arbitrary values that become removable chips, ahead of a bare text input. | `.tags-input` `.tags-input--disabled` `.tags-input--invalid` `.tags-input__field` `.tags-input__remove` `.tags-input__tag` | [contract](../primitives/tags-input.md) · [example](../primitives/tags-input.html) |
@@ -140,7 +141,7 @@ A pattern is a named structure built from composites; copy its `example` and edi
 
 | pattern | use | composites used (see contract) | links |
 |---|---|---|---|
-| `actions` | The recurring verbs a portal screen offers — confirm-a-delete, export, bulk-act, flip-a-status, relate, edit-in-place, copy-an-id. | - | [contract](../patterns/actions.md) · [example](../patterns/actions.html) |
+| `actions` | The recurring verbs a portal screen offers — confirm-a-delete, export, bulk-act, flip-a-status, relate, launch-edit, copy-an-id. | - | [contract](../patterns/actions.md) · [example](../patterns/actions.html) |
 | `create-form` | "Capture or change a record." The single-step form — one card of fields, one commit. | - | [contract](../patterns/create-form.md) · [example](../patterns/create-form.html) |
 | `create-wizard` | "多步向导新增页（有阶段依赖/分支/复核）" — a multi-step create flow for records that have stage dependencies, branching, or a review-before-commit step. | - | [contract](../patterns/create-wizard.md) · [example](../patterns/create-wizard.html) |
 | `dashboard` | "The overview home." A read-mostly landing that answers is the fleet healthy, and what needs attention at a glance — a KPI metric strip over optional charts and an activity / alert feed. | - | [contract](../patterns/dashboard.md) · [example](../patterns/dashboard.html) |

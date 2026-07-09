@@ -1693,6 +1693,17 @@
     },
     {
       "layer": "primitive",
+      "name": "sr-only",
+      "title": "Screen-reader only",
+      "summary": "Visually hides text while keeping it in the accessibility tree.",
+      "contract": "primitives/sr-only.md",
+      "example": null,
+      "classes": [
+        ".sr-only"
+      ]
+    },
+    {
+      "layer": "primitive",
       "name": "switch",
       "title": "Switch",
       "summary": "A binary on/off toggle for an immediate state change (enable/disable, light/dark).",
@@ -2423,7 +2434,7 @@
       "layer": "pattern",
       "name": "actions",
       "title": "Pattern · Actions",
-      "summary": "The recurring verbs a portal screen offers — confirm-a-delete, export, bulk-act, flip-a-status, relate, edit-in-place, copy-an-id.",
+      "summary": "The recurring verbs a portal screen offers — confirm-a-delete, export, bulk-act, flip-a-status, relate, launch-edit, copy-an-id.",
       "contract": "patterns/actions.md",
       "example": "patterns/actions.html",
       "classes": []

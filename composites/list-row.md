@@ -41,7 +41,7 @@ A non-tabular interactive list row — a leading visual, a title line that can c
 ## Rules
 
 - **Rows are hairline-separated, not carded** — the list sits inside one frame (a
-  `section-card`'s flush content, or a `card`), rows divide with a `line-subtle`
+  `.card__content--flush` region, or a `card`), rows divide with a `line-subtle`
   rule, the last row drops it. Don't box each row. (Same framing rule as
   `feed-list`.)
 - **Rows share a uniform height** — the title is one line (the `__name` truncates;

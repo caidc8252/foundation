@@ -172,11 +172,10 @@ body {
 :where(p, h1, h2, h3, h4, h5, h6) { overflow-wrap: break-word; }
 
 /* ═══════════════════════════ Screen-reader only ═══════════════════════════ */
-/* A11y utility (no contract / no @component — a behaviour helper like the baseline
-   resets, not a design component). Hides an element VISUALLY while keeping it in
-   the accessibility tree, so a read-only label / name is announced but not drawn:
-   the accessible name for an icon-only control, or a <label> for a control whose
-   text is otherwise visual. Pure geometry — no token, no design vocabulary. */
+/* @component sr-only */
+/* Hides an element visually while keeping it in the accessibility tree: the
+   accessible name for an icon-only control, chart title/description, or a label
+   whose text should be announced but not drawn. */
 .sr-only {
   position: absolute;
   width: 1px;

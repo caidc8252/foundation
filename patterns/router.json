@@ -9,14 +9,14 @@
       "example": "patterns/dashboard.html",
       "intent": "Read-mostly overview home: a KPI metric strip over optional charts and an activity/alert feed, answering 'is the system healthy and what needs attention' at a glance.",
       "chooseWhen": [
-        "The request says dashboard, overview, home, landing, console home, or KPI summary.",
+        "The request says dashboard, overview home, home, landing, console home, system overview, fleet overview, or KPI summary.",
         "The page summarizes the health/activity of a whole system or fleet, not one collection or one record."
       ],
       "avoidWhen": [
         "The request is a browsable/filterable collection (use list-page).",
         "The request is one record's detail/profile (use detail-page)."
       ],
-      "keywords": ["dashboard", "overview", "home", "landing", "kpi", "metrics", "summary", "fleet health", "概览", "首页", "仪表盘", "总览", "看板", "驾驶舱"],
+      "keywords": ["dashboard", "overview home", "system overview", "fleet overview", "home", "landing", "kpi", "metrics", "summary", "fleet health", "首页", "仪表盘", "总览看板", "看板", "驾驶舱"],
       "exampleRequests": ["做一个概览首页", "Create a fleet overview dashboard", "Build a metrics home page", "做一个设备总览看板"],
       "defaultTitle": "Overview",
       "outputNameHints": ["dashboard", "overview", "home"],
@@ -75,16 +75,17 @@
       "example": "patterns/create-form.html",
       "intent": "Single-step form for creating, registering, editing, or capturing one record.",
       "chooseWhen": [
-        "The request says register, sign up, create account, create record, new record, edit, settings form, profile form, or a simple form.",
+        "The request says register, sign up, create account, create record, new record, edit, profile form, or a simple form.",
         "The flow has one step or two simple sections and no branching or review-before-commit requirement.",
         "The user asks for a registration interface without saying multi-step onboarding."
       ],
       "avoidWhen": [
         "There are three or more steps.",
         "The flow has branching, staged dependencies, or a required review step.",
-        "The user asks to browse or manage a collection."
+        "The user asks to browse or manage a collection.",
+        "The user asks for settings, preferences, or configuration."
       ],
-      "keywords": ["register", "registration", "sign up", "signup", "create account", "create", "new", "edit", "form", "profile", "settings", "注册", "注册界面", "报名", "创建", "新增", "编辑", "表单"],
+      "keywords": ["register", "registration", "sign up", "signup", "create account", "create", "new", "edit", "form", "profile", "注册", "注册界面", "报名", "创建", "新增", "编辑", "表单"],
       "exampleRequests": ["请帮我做一个注册界面", "Create a user registration page", "做一个新增客户表单", "Build an edit profile form"],
       "defaultTitle": "Create record",
       "outputNameHints": ["register", "signup", "create", "new-record", "edit"],
@@ -124,7 +125,7 @@
       "example": "patterns/detail-page.html",
       "intent": "Read-mostly page for one record with identity, metadata, overview fields, activity, tabs, and record-level actions.",
       "chooseWhen": [
-        "The request asks for profile, detail, overview, record page, account page, customer detail, order detail, or read-only facts about one entity.",
+        "The request asks for profile, detail, one-record overview, record page, account page, customer detail, order detail, or read-only facts about one entity.",
         "The page is reached from a list row and actions mutate that one record."
       ],
       "avoidWhen": [
@@ -234,7 +235,7 @@
   },
   "decisionOrder": [
     "If the user explicitly asks for advanced filtering on a collection, choose list-page-advanced-filter.",
-    "If the user asks for a dashboard, overview home, landing, or KPI summary of a whole system or fleet (not a single collection), choose dashboard.",
+    "If the user asks for a dashboard, overview home, landing, or KPI summary of a whole system or fleet (not a single collection or single record), choose dashboard.",
     "If the user asks to browse a bounded collection AND view/edit one record beside the list on the SAME screen (a left list rail + a right detail/editor, not a separate detail route), choose master-detail.",
     "If the user asks to browse a collection as a GRID OF IMAGE TILES/CARDS where the picture is the primary thing to compare (a product catalog, storefront, image/asset gallery, template/model picker), choose gallery.",
     "If the user asks for many records, a management table, browsing, filtering, or search over a collection, choose list-page.",
@@ -245,7 +246,8 @@
     "If the user asks to demonstrate page actions themselves, choose actions."
   ],
   "aiFlow": [
-    "Read this router and choose one route.",
+    "Read this router and choose one route by decisionOrder.",
+    "Before building, evaluate the chosen route's clarifyIf entries. If one matches, resolve it from the request or ask instead of guessing.",
     "Use route.builderPattern with scripts/build-artifact.mjs.",
     "Read route.contract and route.composites; configure each composite from its .md contract and .html sample.",
     "Edit the generated artifact for business content.",

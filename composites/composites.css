@@ -5,7 +5,7 @@
    page-header, data-table, the list-filter family (search / chips /
    applied / band / summary bar), pagination, empty-state, skeleton — plus the
    detail-archetype + admin-shell set lifted from the carbon-admin portal:
-   detail-header, kv-grid, section-card, option-card, feed-list, diff,
+   detail-header, kv-grid, option-card, feed-list, diff,
    plus the storefront catalog tile product-card (+ product-grid).
    Atoms live in ../primitives/primitives.css; whole-screen archetypes live in
    ../patterns/*.md. A composite composes primitives + tokens; a pattern
@@ -802,17 +802,6 @@
 }
 /* THE scroll root — full-width, unpadded; pages own padding (full-bleed bands touch edges). */
 .app-frame__main { flex: 1; overflow-y: auto; background-color: var(--color-surface-1); }
-
-/* ═══════════════════════════ Step indicator ═══════════════════════════ */
-/* @component step-indicator */
-/* Mirrors @cloud/ui ui/StepIndicator: a horizontal wizard rail of numbered
-   dots joined by connectors. State (completed / active / upcoming) is DERIVED
-   in the React source from each step's index vs. `current`; the skin can't
-   observe that, so set the per-item modifier by hand. The dot glyph swap
-   (number → step icon → check once completed) and which steps are clickable
-   buttons are React behaviors — out of scope here. Renders bare; wrap it
-/* ===== @cloud/ui coverage expansion (added below) ===== */
-/* Composites: 7 components authored from @cloud/ui, token-only. */
 
 /* ═══════════════════════════ Chart ═══════════════════════════ */
 /* @component chart */
@@ -1640,11 +1629,11 @@
 /* ===== Portal-derived composites (carbon-admin coverage) ===== */
 /* The detail-archetype + admin-shell building blocks the TOMS Customer Admin
    portal assembles its pages from, lifted to the shared layer: detail-header,
-   kv-grid, section-card, option-card, feed-list, diff, product-card. Same law —
+   kv-grid, option-card, feed-list, diff, product-card. Same law —
    every value a var(--token-*); flagged layout literals only. Several REUSE
    existing parts rather than re-skin: detail-header docks a .tabs--line strip,
-   section-card extends .card + collapsible, option-card's indicator reuses the
-   .radio recipe, feed-list empties reuse .empty-state. */
+   option-card's indicator reuses the .radio recipe, feed-list empties reuse
+   .empty-state. */
 
 /* ═══════════════════════════ Detail header ═══════════════════════════ */
 /* @component detail-header */
@@ -1858,9 +1847,6 @@
   overflow-wrap: break-word;
 }
 
-/* ═══════════════════════════ Section card ═══════════════════════════ */
-/* A titled, optionally-collapsible content panel — the block a detail/settings
-   page divides into. Pure composition over .card (surface + header rule + slot
 /* ═══════════════════════════ Option card ═══════════════════════════ */
 /* @component option-card */
 /* A large clickable card that IS a radio/checkbox: the card is a <label> over a
@@ -1984,8 +1970,8 @@
 /* A flat, hairline-separated inbox of event rows (notifications / approvals):
    tone-coded icon | main (overline · title · body · actions) | trailing time.
    The list cousin of the timeline — order is recency, not a connected rail, and
-   rows can carry actions. Sits inside one frame (a section-card's flush content
-   or a table-frame); empties render an .empty-state. Tone lives on the icon only
+   rows can carry actions. Sits inside one frame (a card's flush content or a
+   table-frame); empties render an .empty-state. Tone lives on the icon only
    (same tone tokens as the timeline). */
 
 .feed-list { display: flex; flex-direction: column; }
@@ -2447,7 +2433,7 @@
    NOT a table row (data-table). A 3-column grid — leading visual | main (a title
    line that may carry inline .badge-s + an optional sub) | trailing (a control,
    an action cluster, or a value + chevron). Rows are hairline-separated inside
-   one frame (a section-card's flush content / a card); the last row drops the
+   one frame (a card's flush content); the last row drops the
    rule. Make the whole row a navigation target with --interactive. Lifted from
    the carbon-admin portal's settings / account / contract list rows. */
 

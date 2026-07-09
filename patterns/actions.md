@@ -1,7 +1,7 @@
 # Pattern · Actions
 
 The recurring **verbs** a portal screen offers — confirm-a-delete, export, bulk-act,
-flip-a-status, relate, edit-in-place, copy-an-id. The page archetypes
+flip-a-status, relate, launch-edit, copy-an-id. The page archetypes
 ([list](./list-page.md), [detail](./detail-page.md), [create-form](./create-form.md))
 fix the *slots*; this reference fixes what lands **in** them. An action is named by
 its intent, and each intent carries a fixed **carrier** (which button variant, and any
