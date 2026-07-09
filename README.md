@@ -74,6 +74,9 @@ foundation/
                        option-card · product-card (+ product-grid) (contracts) + composites.css
   patterns/          L3 — list-page · detail-page · create-form (archetypes)
   governance/        L4 — principles · token-change · enforcement
+  assets/            shared CSS the examples <link> and the artifact builder inlines
+    fonts.inline.css   the one @font-face block (Geist, base64 woff2) — inlined into artifacts
+    example-page.css   example-page shell (html/body) — examples only, never inlined
 ```
 
 ## How each consumer uses it
@@ -95,6 +98,7 @@ the primitive reference classes:
 
 ```html
 <style>
+  /* paste assets/fonts.inline.css      here — Geist @font-face, or type falls back */
   /* paste release/tokens.inline.css    here — token values first */
   /* paste primitives/primitives.css    here — atoms next */
   /* paste release/composites.css       here — building blocks last (reuse atoms) */
@@ -102,7 +106,15 @@ the primitive reference classes:
 ```
 
 Order matters: composites reuse primitive classes (`.btn`, `.input`), so the
-primitive CSS must come first.
+primitive CSS must come first. `scripts/build-artifact.mjs` does all of this for
+you and adds the `html`/`body` page shell.
+
+**Example pages** (`primitives/*.html`, `composites/*.html`, `patterns/*.html`) —
+`<link>` the same layers instead of pasting them, so they can never drift from
+`release/`. They add `assets/example-page.css`, the linked twin of the shell the
+builder inlines; that is what makes an example render as the artifact it seeds.
+`<link>` tags are dropped when the builder ports a pattern, so the shell stays
+out of artifacts.
 
 For pattern-based pages, start with the builder instead of copying by hand:
 

@@ -16,9 +16,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pattern · List page — advanced filter variant</title>
 
+<link rel="stylesheet" href="../assets/fonts.inline.css">
 <link rel="stylesheet" href="../release/tokens.inline.css">
 <link rel="stylesheet" href="../primitives/primitives.css">
 <link rel="stylesheet" href="../release/composites.css">
+<link rel="stylesheet" href="../assets/example-page.css">
 
 <style>
 
@@ -36,13 +38,13 @@
         • summary-bar  → top: page-header height
         • thead th     → top: page-header + summary-bar height
      page-header height is CONTENT-DRIVEN — no clean token. → MEASURE your page's rendered
-     .page-header and set --lp-header-h to it. Here it is 81px (title + one-line description at
-     1280w); change the header and you MUST re-measure. summary-bar height is a token (48px).
+     .page-header and set --lp-header-h to it. Here it is 86px (title + one-line description at
+     1280w, in Geist); change the header and you MUST re-measure. summary-bar height is a token (48px).
      Also load-bearing: .table-scroll drops its h-scroll (overflow-x: clip) so the thead sticks
      to the outer root, not to .table-scroll (the sticky-head trap; data-table.md §Sticky-head
      trap + build-guide §6). h-scroll XOR outer-root sticky-head — can't have both.
      Regression: `node scripts/visual/sticky-check.mjs patterns/list-page-advanced-filter.html`. */
-  :root { --lp-header-h: 81px; } /* MEASURE per page — = rendered .page-header height */
+  :root { --lp-header-h: 86px; } /* MEASURE per page — = rendered .page-header height */
   .table-scroll { overflow-x: clip; }
   .summary-bar--sticky { top: var(--lp-header-h); }
   .data-table--sticky-head thead th { top: calc(var(--lp-header-h) + var(--space-12)); }

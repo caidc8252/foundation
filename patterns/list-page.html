@@ -20,9 +20,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pattern · List page — foundation example</title>
 
+<link rel="stylesheet" href="../assets/fonts.inline.css">
 <link rel="stylesheet" href="../release/tokens.inline.css">
 <link rel="stylesheet" href="../primitives/primitives.css">
 <link rel="stylesheet" href="../release/composites.css">
+<link rel="stylesheet" href="../assets/example-page.css">
 
 <style>
 
@@ -49,16 +51,16 @@
      The condition band is NOT in the stack — it scrolls away under the header.
      page-header height is CONTENT-DRIVEN (title + optional description + padding),
      so there is no clean token for it. → MEASURE your page's rendered .page-header
-     and set --lp-header-h to that px value. Here it is 81px (title + one-line
-     description at 1280w); if you change the header (drop the description, wrap the
-     title, add/remove actions) you MUST re-measure and update it. The summary bar's
+     and set --lp-header-h to that px value. Here it is 86px (title + one-line
+     description at 1280w, in Geist); if you change the header (drop the description, wrap
+     the title, add/remove actions) you MUST re-measure and update it. The summary bar's
      own height IS a token (48px = --space-12).
      Also load-bearing: .table-scroll drops its h-scroll (overflow-x: clip) so the
      thead sticks to the outer root, not to .table-scroll (the sticky-head trap; see
      composites/data-table.md §Sticky-head trap + build-guide §6). h-scroll XOR
      outer-root sticky-head — can't have both; this 7-column list is narrow enough
      to forgo it. Regression: `node scripts/visual/sticky-check.mjs patterns/list-page.html`. */
-  :root { --lp-header-h: 81px; } /* MEASURE per page — = rendered .page-header height */
+  :root { --lp-header-h: 86px; } /* MEASURE per page — = rendered .page-header height */
   .table-scroll { overflow-x: clip; }
   .summary-bar--sticky { top: var(--lp-header-h); }
   .data-table--sticky-head thead th { top: calc(var(--lp-header-h) + var(--space-12)); }

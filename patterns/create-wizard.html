@@ -23,9 +23,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pattern · Create wizard — foundation example</title>
 
+<link rel="stylesheet" href="../assets/fonts.inline.css">
 <link rel="stylesheet" href="../release/tokens.inline.css">
 <link rel="stylesheet" href="../primitives/primitives.css">
 <link rel="stylesheet" href="../release/composites.css">
+<link rel="stylesheet" href="../assets/example-page.css">
 
 <style>
 
@@ -62,7 +64,7 @@
      pins exactly at its natural resting line (seamless). --wizard-header-h is MEASURED
      per page = the rendered .detail-header height (same convention as list-page's
      --lp-header-h / settings' --settings-header-h). */
-  :root { --wizard-header-h: 81px; }
+  :root { --wizard-header-h: 86px; }
   .summary-rail { min-width: 0; position: sticky; top: calc(var(--wizard-header-h) + var(--space-6)); }
 
   /* Narrow: rail drops below the form and the columns stack full-width

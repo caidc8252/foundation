@@ -10,6 +10,7 @@
   "exports": {
     "./tokens": "./tokens/index.css",
     "./tokens/*": "./tokens/*.css",
+    "./fonts.inline.css": "./assets/fonts.inline.css",
     "./tokens.inline.css": "./release/tokens.inline.css",
     "./tokens.json": "./release/tokens.json",
     "./primitives.css": "./primitives/primitives.css",
@@ -19,6 +20,7 @@
     "./catalog.md": "./release/catalog.md"
   },
   "files": [
+    "assets",
     "tokens",
     "release",
     "versions",

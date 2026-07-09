@@ -1,0 +1,23 @@
+/* Example-page shell — for the browsable primitives/ · composites/ · patterns/
+   pages only, never for artifacts.
+
+   It is the linked twin of layer 5/5 in scripts/build-artifact.mjs: the page
+   boilerplate an artifact gets inlined, an example page gets by <link>. Keeping
+   the two in step is what makes an example render as the artifact it seeds —
+   most visibly the type, since without a body font-family every unclassed run of
+   text falls back to the browser serif.
+
+   Artifacts never carry this file: build-artifact.mjs inlines the three
+   foundation layers plus the page's own <style>, and discards <link> tags. Put
+   page boilerplate here; put page-local composition in the page's <style>. */
+
+html {
+  background-color: var(--color-surface-1);
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-surface-1);
+  color: var(--color-content-primary);
+  font-family: var(--font-sans);
+}

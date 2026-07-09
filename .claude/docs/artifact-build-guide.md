@@ -114,7 +114,7 @@ artifact 渲染出的一切只能来自这 **4 层闭合集 + 图标**，没有�
      （"frameless" 即指此 —— 一个无侧栏无顶栏、内容铺满视口的独立功能页）。
      `app-frame__main` 类与角色**不变**：`.app-frame--frameless` 上的 `height:100vh + overflow:hidden`
      仍把它兜成真正的滚动根（`overflow-y:auto`），所以页面滚动与 sticky 行为和生产一致；
-  3. 按顺序内联 5 段 CSS 进一个 `<style>`：① 内嵌 Geist 字体层 → ② `release/tokens.inline.css` → ③ `primitives/primitives.css` → ④ `composites/composites.css` → ⑤ 页面样板（`html`/`body` 背景 + `[hidden]{display:none!important}` 守卫 + 样例自带的页面局部 `<style>`）。**primitives 必须在 composites 之前**（composites 复用 `.btn`/`.input`）；
+  3. 按顺序内联 5 段 CSS 进一个 `<style>`：① 内嵌 Geist 字体层（`assets/fonts.inline.css`，样例页 `<link>` 的同一份） → ② `release/tokens.inline.css` → ③ `primitives/primitives.css` → ④ `composites/composites.css` → ⑤ 页面样板（`html`/`body` 背景 + `[hidden]{display:none!important}` 守卫 + 样例自带的页面局部 `<style>`；样例页里这层是 `assets/example-page.css`，`<link>` 会被丢弃，不进 artifact）。**primitives 必须在 composites 之前**（composites 复用 `.btn`/`.input`）；
   4. 顶部盖 `<!-- foundation: vX -->` 版本戳；
   5. 除非 `--no-check`，**自动跑 `check-artifact.mjs --strict`** 对产物兜底。
 - **产出**: 一个能直接打开、且已通过 strict 的自包含 HTML（此时还只是 pattern 的占位内容）。
