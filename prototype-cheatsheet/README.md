@@ -2,6 +2,8 @@
 
 > 为下游 `pep-webapp-docs` 的 `prototype-design` skill 生成"组件用法速查"+ 档位清单,产出落 `release/`、随 tag 发布。下游只读、不再自己生成。
 
+> **省事跑法**：用 `.claude/skills/prototype-cheatsheet/` 这个 skill——说「刷新原型速查」它就把下面的 ①check-staleness → 蒸馏被点名骨架(按 `rules/skeleton-format.md` 契约)→ ②refresh 一条龙跑完(蒸后给你预览确认;不 commit/tag)。下面是它内部等价的手动命令。
+
 ## 何时跑
 **打 release tag 之前,手动触发一次**（组件/CSS/范例有变时）。这是 foundation 发布流程里加的一步;发布逻辑其余不变。
 
