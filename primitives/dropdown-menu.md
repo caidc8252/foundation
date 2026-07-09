@@ -15,13 +15,13 @@ A dropdown menu is a composed set of slots, not a single element. The popup is t
 
 | part | role | token recipe |
 |---|---|---|
-| `content` (popup) | the floating surface that holds the rows | bg `surface-2` · border `line-default` · radius `radius-lg` · `shadow-4` · text `content-primary` · padding `--space-1` · min-width 240px *(no token — see notes)* |
+| `content` (popup) | the floating surface that holds the rows | bg `surface-2` · border `line-default` · radius `radius-lg` · `shadow-4` · text `content-primary` · padding `--space-1` · min-width 240px (`--spacing-popup-md`) |
 | `item` | a clickable action row | radius `radius-md` · `px-cx-sm`-ish (10px) · text `text-md` · text `content-primary` · gap `--space-1.5` |
 | `label` | a non-interactive group caption | `text-xs` UPPERCASE · tracking-wide · weight 500 · text `content-tertiary` |
 | `separator` | a hairline divider between groups | 1px rule · bg `line-default` · vertical margin `--space-1` |
 | `group` | wraps related items (semantic only, no skin) | — |
 | `sub-trigger` | an item that opens a nested sub-menu | item recipe + trailing chevron · open-state bg `surface-hover` |
-| `sub-content` | the nested sub-menu popup | content recipe · min-width 160px *(no token — see notes)* |
+| `sub-content` | the nested sub-menu popup | content recipe · min-width 160px (`--spacing-popup-xs`) |
 | `checkbox-item` | a toggleable row with a trailing check | item recipe · `text-md` · trailing check glyph `--space-4` (16px) |
 | `radio-item` | a single-select row with a trailing check | item recipe · `text-md` · trailing check glyph `--space-4` (16px) |
 | `shortcut` | trailing keyboard-hint text on an item | pushed right · `text-xs` · tracking-widest · text `content-tertiary` |
@@ -79,7 +79,7 @@ content (popup surface)
   is the "re-skin via className" this contract forbids, and it renders a stray
   control where a quiet menu row belongs. (A standalone `danger` **button** is the
   *alternative* carrier — used **instead of** a menu, not within one.)
-- **min-width is hardcoded** in the source: content `min-w-[240px]`, sub-content `min-w-[160px]`. No sizing token expresses these popup widths. The reference CSS keeps them as raw px and flags a token-change wish here (a `--popup-width-*` / menu-min-width token would close the gap — same wish noted in hover-card.md).
+- **min-width** — content `min-w-[240px]` (`--spacing-popup-md`), sub-content `min-w-[160px]` (`--spacing-popup-xs`); part of the shared popup-sizing family (also used by `context-menu`, `hover-card`, `popover`).
 - **Rows fill the popup width — the skin owns this now.** A menu row is a `<button>`
   (a form control): it shrink-wraps to its content and does **not** stretch to the
   popup width on its own — even in a definite-width popup — so the highlight / hit

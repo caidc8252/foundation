@@ -898,7 +898,7 @@ body {
 }
 
 @media (min-width: 640px) {
-  .alert-dialog { max-width: 440px; }
+  .alert-dialog { max-width: var(--spacing-dialog-confirm); }
 }
 
 .alert-dialog__header {
@@ -1452,7 +1452,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);   
-  max-height: 224px;
+  max-height: var(--spacing-popup-list-sm);
   overflow-x: hidden;
   overflow-y: auto;
   padding: var(--space-1);
@@ -1528,7 +1528,7 @@ body {
   z-index: var(--z-dialog);   
   transform: translateX(-50%);
   width: 100%;
-  max-width: 460px;   
+  max-width: var(--spacing-dialog-command);   
   overflow: hidden;
   border: 1px solid var(--color-line-default);
   border-radius: var(--radius-xl);
@@ -1572,7 +1572,7 @@ body {
 }
 
 .command__list {
-  max-height: 288px;   
+  max-height: var(--spacing-popup-list-md);   
   overflow-x: hidden;
   overflow-y: auto;
   scroll-padding-block: var(--space-1);
@@ -1654,7 +1654,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);   
-  min-width: 220px;   
+  min-width: var(--spacing-popup-sm);   
   overflow-x: hidden;
   overflow-y: auto;   
   padding: var(--space-1);
@@ -1943,7 +1943,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);   
-  min-width: 240px;   
+  min-width: var(--spacing-popup-md);   
   max-height: 80vh;   
   overflow-x: hidden;
   overflow-y: auto;
@@ -2049,7 +2049,7 @@ body {
 
 .dropdown-menu__sub-content {
   z-index: var(--z-popover);   
-  min-width: 160px;   
+  min-width: var(--spacing-popup-xs);   
 }
 
 .dropdown-menu__checkbox-item,
@@ -2119,7 +2119,7 @@ body {
 
 .hover-card {
   z-index: var(--z-popover);   
-  width: 280px;   
+  width: var(--spacing-popup-lg);   
   padding: var(--spacing-cx-md);   
   border: 1px solid var(--color-line-default);
   border-radius: var(--radius-xl);
@@ -2333,7 +2333,7 @@ body {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 480px;   
+  max-width: var(--spacing-dialog-md);   
   max-height: calc(100vh - 96px);   
   overflow: hidden;
   border: 1px solid var(--color-line-subtle);
@@ -2345,15 +2345,15 @@ body {
   outline: none;
 }
 
-.modal--sm { max-width: 360px; }
-.modal--md { max-width: 480px; }
-.modal--lg { max-width: 640px; }
-.modal--xl { max-width: 880px; }
+.modal--sm { max-width: var(--spacing-dialog-sm); }
+.modal--md { max-width: var(--spacing-dialog-md); }
+.modal--lg { max-width: var(--spacing-dialog-lg); }
+.modal--xl { max-width: var(--spacing-dialog-xl); }
 .modal--fullscreen {
   max-width: none;
-  width: calc(100vw - 64px);   
-  height: calc(100vh - 64px);
-  max-height: calc(100vh - 64px);
+  width: calc(100vw - var(--space-16));    
+  height: calc(100vh - var(--space-16));
+  max-height: calc(100vh - var(--space-16));
 }
 
 .modal__header {
@@ -2438,7 +2438,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-cx-sm);            
-  width: 18rem;                          
+  width: var(--spacing-popup-xl);        
   max-width: 100%;
   padding: var(--spacing-cx-sm);         
   border-radius: var(--radius-lg);
@@ -3142,7 +3142,7 @@ body {
   display: flex;
   align-items: flex-start;   
   gap: var(--space-2);
-  width: 340px;   
+  width: var(--spacing-popup-2xl);   
   padding-inline: var(--space-3);
   padding-block: calc(var(--space-2) + var(--space-1) / 2);   
   overflow: hidden;   

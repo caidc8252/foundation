@@ -25,9 +25,9 @@ One shell, no shell variant. The only choice is the **confirm action's** button 
 
 ## Sizes
 
-No size vocabulary — a single content-driven width. It floors to `calc(100% - 2rem)` on a narrow viewport and caps at `440px` on `sm`+ (one notch under `Modal`'s `md`/480px, because a confirm carries less than a form).
+No size vocabulary — a single content-driven width. It floors to `calc(100% - 2rem)` on a narrow viewport and caps at `--spacing-dialog-confirm` (440px) on `sm`+ (one notch under `Modal`'s `md`/480px, because a confirm carries less than a form).
 
-> The `440px` cap and the `2rem` mobile inset are viewport math, not token-expressible; left as raw px / calc (conventionally exempt, same gap `Modal` notes for its width presets).
+> The `2rem` mobile inset is viewport math, not token-expressible; left as calc (conventionally exempt).
 
 ## States
 
@@ -71,7 +71,7 @@ No size vocabulary — a single content-driven width. It floors to `calc(100% - 
 ## Notes
 
 - The source paints the panel on `bg-popover` / `text-popover-foreground`; in this token system those resolve to `surface-2` / `content-primary` (same mapping `Modal`, `hover-card`, and `dropdown-menu` use). The scrim is `bg-surface-overlay` directly.
-- The `440px` width cap, the `calc(100% - 2rem)` mobile floor, and the centering transform are viewport math, not token-expressible — left as raw px / calc / percent (conventionally exempt; same popup-sizing token gap `Modal`/`hover-card`/`command` flag).
+- The `440px` width cap is `--spacing-dialog-confirm`. The `calc(100% - 2rem)` mobile floor and the centering transform are viewport math, not token-expressible — left as calc/percent (conventionally exempt).
 - The header's `gap-1.5` (6px) is a half-step over the raw `--space-1`/`--space-2`; expressed via `calc` like other 6px gaps in this stylesheet.
 - Open/close animation, portalling, focus trap, and the deliberate suppression of Escape/overlay dismissal are **behavior owned by the React implementation**; the reference CSS expresses the static OPEN skin only. The artifact `.alert-dialog` block does not — and cannot — enforce the no-dismiss rule; it is a confirm-shaped shell whose visibility the consumer drives.
 
