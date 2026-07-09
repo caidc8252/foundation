@@ -1022,7 +1022,7 @@ body {
 .alert__action {
   position: absolute;
   top: var(--space-2);
-  right: var(--space-2);
+  inset-inline-end : var(--space-2);
 }
 
 /* ═══════════════════════════════ Alert Dialog ═══════════════════════════════ */
@@ -1043,7 +1043,7 @@ body {
 .alert-dialog-overlay {
   position: fixed;
   inset: 0;
-  z-index: 50;   /* modal z-layer — above sticky page chrome (z-index 10); z-index conventionally exempt */
+  z-index: var(--z-dialog);
   background-color: var(--color-surface-overlay);
 }
 
@@ -1053,7 +1053,7 @@ body {
   position: fixed;
   top: 50%;
   left: 50%;
-  z-index: 50;   /* modal z-layer — panel is a fixed sibling of its scrim, so it needs the layer too; z-index conventionally exempt */
+  z-index: var(--z-dialog);   /* fixed sibling of its scrim, so it repeats the rung rather than inheriting it */
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
@@ -1102,7 +1102,7 @@ body {
 
 /* Footer — action shelf, no border/fill (sits flush in the panel padding).
    Stacks reversed on mobile (Confirm on top so the safe Cancel sits nearest the
-   thumb); right-aligned row on sm+. Holds two .btn (.btn--secondary Cancel +
+   thumb); right-aligned row on sm+. Holds two .btn (.btn--ghost Cancel +
    .btn--primary/.btn--danger Confirm). */
 .alert-dialog__footer {
   display: flex;
@@ -1428,7 +1428,7 @@ body {
   border-end-end-radius: var(--cell-radius);
 }
 /* Endpoint pill — a rounded primary fill behind the number. isolation + a
-   z-index:-1 ::before keep the pill above the track yet below the number, and let
+   --z-behind ::before keeps the pill above the track yet below the number, and lets
    the track stay visible on the endpoint's connecting side. */
 .calendar__day--range-start,
 .calendar__day--range-end {
@@ -1441,7 +1441,7 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: var(--z-behind);
   border-radius: var(--cell-radius);
   background-color: var(--color-primary-700);
 }
@@ -1467,7 +1467,7 @@ body {
 /* Focused day — 3px ring (source group-data-focused: ring-[3px] ring-ring); lifts
    the cell above neighbors so the ring isn't clipped. */
 .calendar__day--focused {
-  z-index: 1;
+  z-index: var(--z-raised);
   box-shadow: var(--shadow-focus);
 }
 
@@ -1722,7 +1722,7 @@ body {
 
 /* Open popup surface — width tracks the trigger; min-width floor 144px (min-w-36). */
 .combobox__content {
-  z-index: 60;   /* popover z-layer — above the dialog layer (z-index 50); inert until positioned; z-index conventionally exempt */
+  z-index: var(--z-popover);   /* inert until the consumer positions this surface */
   min-width: calc(var(--space-16) + var(--space-20));   /* 144px — source min-w-36 */
   overflow: hidden;
   border: 1px solid var(--color-line-default);
@@ -1847,14 +1847,14 @@ body {
 .command-dialog__backdrop {
   position: fixed;
   inset: 0;
-  z-index: 50;   /* modal z-layer — above sticky page chrome (z-index 10); z-index conventionally exempt */
+  z-index: var(--z-dialog);
   background-color: var(--color-surface-overlay);
 }
 .command-dialog {
   position: fixed;
   top: 33%;   /* source top-1/3 */
   left: 50%;
-  z-index: 50;   /* modal z-layer — panel is a fixed sibling of its backdrop; z-index conventionally exempt */
+  z-index: var(--z-dialog);   /* fixed sibling of its backdrop, so it repeats the rung rather than inheriting it */
   transform: translateX(-50%);
   width: 100%;
   max-width: 460px;   /* source max-w-[460px]; no sizing token expresses popup width yet */
@@ -1996,7 +1996,7 @@ body {
    row recipe with dropdown-menu (same tone/spacing, different trigger gesture). */
 
 .context-menu__content {
-  z-index: 60;   /* popover z-layer — above the dialog layer (z-index 50); inert until positioned; z-index conventionally exempt */
+  z-index: var(--z-popover);   /* inert until the consumer positions this surface */
   display: flex;
   flex-direction: column;
   gap: var(--space-1);   /* rows carry a real gap — see combobox__list */
@@ -2331,7 +2331,7 @@ body {
    expresses popup width yet (see dropdown-menu.md notes). */
 
 .dropdown-menu {
-  z-index: 60;   /* popover z-layer — above the dialog layer (z-index 50) so a menu opened inside a dialog clears it; inert until positioned; z-index conventionally exempt */
+  z-index: var(--z-popover);   /* the rung clears a dialog, so a menu opened inside one is not trapped; inert until positioned */
   display: flex;
   flex-direction: column;
   gap: var(--space-1);   /* rows carry a real gap — see combobox__list */
@@ -2454,7 +2454,7 @@ body {
 
 /* Nested sub-menu popup — content recipe, narrower min-width. */
 .dropdown-menu__sub-content {
-  z-index: 60;   /* popover z-layer — matches its parent menu; inert until positioned; z-index conventionally exempt */
+  z-index: var(--z-popover);   /* shares its parent menu's rung; inert until positioned */
   min-width: 160px;   /* source min-w-[160px]; no sizing token yet */
 }
 
@@ -2542,7 +2542,7 @@ body {
    token-change wish for a popup-width sizing token); everything else is a token. */
 
 .hover-card {
-  z-index: 60;   /* popover z-layer — above the dialog layer (z-index 50); inert until positioned; z-index conventionally exempt */
+  z-index: var(--z-popover);   /* inert until the consumer positions this surface */
   width: 280px;   /* source w-[280px]; no sizing token expresses this yet */
   padding: var(--spacing-cx-md);   /* 14px — source p-3.5 */
   border: 1px solid var(--color-line-default);
@@ -2736,7 +2736,7 @@ body {
 /* active = the slot the caret is in. Raised above neighbours so the ring is
    not clipped by the next slot's border. */
 .input-otp__slot--active {
-  z-index: 10;
+  z-index: var(--z-raised);
   border-color: var(--color-primary-700);
   box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-primary-700) 25%, transparent);
 }
@@ -2797,7 +2797,7 @@ body {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  z-index: 50;   /* modal z-layer — must sit above sticky page chrome (summary-bar/table head at z-index 10); z-index conventionally exempt */
+  z-index: var(--z-dialog);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2929,7 +2929,7 @@ body {
    .popover__ so any list-shaped overlay can reuse it. */
 
 .popover {
-  z-index: 60;   /* popover z-layer — above the dialog layer (z-index 50) so it clears a modal it opens within; inert until the consumer positions this surface; z-index conventionally exempt */
+  z-index: var(--z-popover);   /* the rung clears a modal it opens within; inert until the consumer positions this surface */
   display: flex;
   flex-direction: column;
   gap: var(--spacing-cx-sm);            /* 10px (source gap-2.5) */
@@ -3158,7 +3158,7 @@ body {
 
 /* Optional grip nub (withHandle) — explicit drag affordance, decorative. */
 .resizable-handle__grip {
-  z-index: 10;
+  z-index: var(--z-raised);
   flex-shrink: 0;
   width: var(--space-2);    /* 8px (source w-2) */
   height: var(--space-6);   /* 24px (source h-6) */
@@ -3296,7 +3296,7 @@ body {
 .sheet-overlay {
   position: fixed;
   inset: 0;
-  z-index: 50;   /* modal z-layer — z-index is conventionally exempt */
+  z-index: var(--z-dialog);
   background-color: var(--color-surface-overlay);   /* shared scrim, aligned with Modal/AlertDialog */
   backdrop-filter: blur(2px);   /* source supports-backdrop-filter:backdrop-blur-xs — progressive enhancement, no token */
   transition: opacity 0.15s;
@@ -3304,7 +3304,7 @@ body {
 
 .sheet {
   position: fixed;
-  z-index: 50;   /* modal z-layer */
+  z-index: var(--z-dialog);
   display: flex;
   flex-direction: column;
   border: 0;
@@ -3780,7 +3780,7 @@ body {
 
 .toast {
   position: relative;
-  z-index: 80;   /* toast z-layer — top of the stack, above tooltip (70)/popover (60)/dialog (50); z-index conventionally exempt */
+  z-index: var(--z-toast);
   display: flex;
   align-items: flex-start;   /* items-start — icon top-aligns with the title */
   gap: var(--space-2);
@@ -3874,7 +3874,7 @@ body {
   background-color: var(--color-primary-400);
   transform-origin: left;
   animation: toast-countdown var(--toast-duration) linear forwards;
-  z-index: 1;
+  z-index: var(--z-raised);
 }
 .toast--countdown:hover::after { animation-play-state: paused; }
 
@@ -4095,7 +4095,7 @@ body {
 
 .tooltip {
   position: relative;
-  z-index: 70;   /* tooltip z-layer — above popover (60) and dialog (50) layers; z-index conventionally exempt */
+  z-index: var(--z-tooltip);
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);

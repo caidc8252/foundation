@@ -802,13 +802,13 @@ body {
 .alert__action {
   position: absolute;
   top: var(--space-2);
-  right: var(--space-2);
+  inset-inline-end : var(--space-2);
 }
 
 .alert-dialog-overlay {
   position: fixed;
   inset: 0;
-  z-index: 50;   
+  z-index: var(--z-dialog);
   background-color: var(--color-surface-overlay);
 }
 
@@ -816,7 +816,7 @@ body {
   position: fixed;
   top: 50%;
   left: 50%;
-  z-index: 50;   
+  z-index: var(--z-dialog);   
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
@@ -1128,7 +1128,7 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: var(--z-behind);
   border-radius: var(--cell-radius);
   background-color: var(--color-primary-700);
 }
@@ -1149,7 +1149,7 @@ body {
 }
 
 .calendar__day--focused {
-  z-index: 1;
+  z-index: var(--z-raised);
   box-shadow: var(--shadow-focus);
 }
 
@@ -1347,7 +1347,7 @@ body {
 }
 
 .combobox__content {
-  z-index: 60;   
+  z-index: var(--z-popover);   
   min-width: calc(var(--space-16) + var(--space-20));   
   overflow: hidden;
   border: 1px solid var(--color-line-default);
@@ -1454,14 +1454,14 @@ body {
 .command-dialog__backdrop {
   position: fixed;
   inset: 0;
-  z-index: 50;   
+  z-index: var(--z-dialog);
   background-color: var(--color-surface-overlay);
 }
 .command-dialog {
   position: fixed;
   top: 33%;   
   left: 50%;
-  z-index: 50;   
+  z-index: var(--z-dialog);   
   transform: translateX(-50%);
   width: 100%;
   max-width: 460px;   
@@ -1586,7 +1586,7 @@ body {
 }
 
 .context-menu__content {
-  z-index: 60;   
+  z-index: var(--z-popover);   
   display: flex;
   flex-direction: column;
   gap: var(--space-1);   
@@ -1875,7 +1875,7 @@ body {
 }
 
 .dropdown-menu {
-  z-index: 60;   
+  z-index: var(--z-popover);   
   display: flex;
   flex-direction: column;
   gap: var(--space-1);   
@@ -1984,7 +1984,7 @@ body {
 .dropdown-menu__sub-trigger__chevron { margin-inline-start: auto; }
 
 .dropdown-menu__sub-content {
-  z-index: 60;   
+  z-index: var(--z-popover);   
   min-width: 160px;   
 }
 
@@ -2054,7 +2054,7 @@ body {
 }
 
 .hover-card {
-  z-index: 60;   
+  z-index: var(--z-popover);   
   width: 280px;   
   padding: var(--spacing-cx-md);   
   border: 1px solid var(--color-line-default);
@@ -2213,7 +2213,7 @@ body {
 }
 
 .input-otp__slot--active {
-  z-index: 10;
+  z-index: var(--z-raised);
   border-color: var(--color-primary-700);
   box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-primary-700) 25%, transparent);
 }
@@ -2257,7 +2257,7 @@ body {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  z-index: 50;   
+  z-index: var(--z-dialog);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2370,7 +2370,7 @@ body {
 }
 
 .popover {
-  z-index: 60;   
+  z-index: var(--z-popover);   
   display: flex;
   flex-direction: column;
   gap: var(--spacing-cx-sm);            
@@ -2560,7 +2560,7 @@ body {
 }
 
 .resizable-handle__grip {
-  z-index: 10;
+  z-index: var(--z-raised);
   flex-shrink: 0;
   width: var(--space-2);    
   height: var(--space-6);   
@@ -2661,7 +2661,7 @@ body {
 .sheet-overlay {
   position: fixed;
   inset: 0;
-  z-index: 50;   
+  z-index: var(--z-dialog);
   background-color: var(--color-surface-overlay);   
   backdrop-filter: blur(2px);   
   transition: opacity 0.15s;
@@ -2669,7 +2669,7 @@ body {
 
 .sheet {
   position: fixed;
-  z-index: 50;   
+  z-index: var(--z-dialog);
   display: flex;
   flex-direction: column;
   border: 0;
@@ -3074,7 +3074,7 @@ body {
 
 .toast {
   position: relative;
-  z-index: 80;   
+  z-index: var(--z-toast);
   display: flex;
   align-items: flex-start;   
   gap: var(--space-2);
@@ -3156,7 +3156,7 @@ body {
   background-color: var(--color-primary-400);
   transform-origin: left;
   animation: toast-countdown var(--toast-duration) linear forwards;
-  z-index: 1;
+  z-index: var(--z-raised);
 }
 .toast--countdown:hover::after { animation-play-state: paused; }
 
@@ -3342,7 +3342,7 @@ body {
 
 .tooltip {
   position: relative;
-  z-index: 70;   
+  z-index: var(--z-tooltip);
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);

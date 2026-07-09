@@ -172,7 +172,7 @@
 .page-header--sticky {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: var(--z-sticky);
 }
 .page-header__bar {
   display: flex;
@@ -322,7 +322,7 @@
 .summary-bar--sticky {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: var(--z-sticky);
 }
 .summary-bar__count {
   display: flex;
@@ -511,7 +511,7 @@
 .data-table--sticky-head thead th {
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: var(--z-raised);
   background-color: var(--color-surface-3);
 }
 /* Sticky first column (keep identity visible while scrolling wide tables). */
@@ -519,7 +519,7 @@
 .data-table--sticky-col td:first-child {
   position: sticky;
   left: 0;
-  z-index: 1;
+  z-index: var(--z-raised);
   box-shadow: var(--shadow-sticky-col);
 }
 .data-table--sticky-col thead th:first-child { background-color: var(--color-surface-3); }
@@ -1655,7 +1655,7 @@
 .detail-header--sticky {
   position: sticky;
   top: 0;
-  z-index: 10;   /* band z-layer — z-index conventionally exempt */
+  z-index: var(--z-sticky);
 }
 .detail-header__bar {
   display: flex;
@@ -1786,7 +1786,7 @@
   margin-block-start: auto;   /* short page → sit at the viewport bottom */
   position: sticky;
   bottom: 0;
-  z-index: 10;                /* band z-layer — matches .detail-header--sticky */
+  z-index: var(--z-sticky);   /* shares the .detail-header--sticky rung */
   background-color: var(--color-surface-2);
   border-top: 1px solid var(--color-line-subtle);
 }
@@ -2700,9 +2700,9 @@
   content: "";
   position: absolute;
   inset: 0;
-  z-index: 0;
+  z-index: var(--z-base);
 }
 /* Footer controls sit above the stretched hit-area so they stay clickable. */
 .status-card > .card__footer,
 .status-card__footer-start,
-.status-card__footer-end { position: relative; z-index: 1; }
+.status-card__footer-end { position: relative; z-index: var(--z-raised); }

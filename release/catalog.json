@@ -176,7 +176,15 @@
     "text-md",
     "text-sm",
     "text-xl",
-    "text-xs"
+    "text-xs",
+    "z-base",
+    "z-behind",
+    "z-dialog",
+    "z-popover",
+    "z-raised",
+    "z-sticky",
+    "z-toast",
+    "z-tooltip"
   ],
   "classes": [
     "accordion",

@@ -75,7 +75,7 @@
       position: absolute;
       top: calc(100% + var(--space-1));
       left: 0;
-      z-index: 20;
+      z-index: var(--z-popover);
       display: none;          /* hidden by default; shown on trigger click */
       width: auto;
     }
@@ -102,7 +102,7 @@
       cursor: pointer;
       color: var(--color-content-tertiary);
       padding: 0;
-      z-index: 1;
+      z-index: var(--z-raised);
     }
     .date-trigger__clear:hover {
       color: var(--color-content-primary);
