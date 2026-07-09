@@ -1779,7 +1779,7 @@ body {
 .combobox__trigger:hover { border-color: var(--color-line-strong); }
 .combobox__trigger:focus-visible {
   border-color: var(--color-line-focus);
-  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-line-focus) 30%, transparent);
+  box-shadow: var(--shadow-focus);
 }
 .combobox__trigger:disabled,
 .combobox__trigger[aria-disabled="true"] {
@@ -2285,7 +2285,7 @@ body {
 .date-trigger:hover { border-color: var(--color-line-strong); }
 .date-trigger:focus-visible {
   border-color: var(--color-line-focus);
-  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-line-focus) 30%, transparent);
+  box-shadow: var(--shadow-focus);
 }
 .date-trigger:disabled,
 .date-trigger[aria-disabled="true"] {
