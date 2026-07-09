@@ -1437,8 +1437,8 @@
 /* @component timeline */
 /* Mirrors @cloud/ui ui/Timeline: a vertical event log — tone-coded markers
    joined by a continuous rail, each beside a content block. Display-only.
-   Two root axes: density (.timeline--compact) sets item vertical rhythm + title
-   size; stacked (.timeline--stacked) moves the time below the title as a
+   Two root axes: density (.timeline--compact) sets item vertical rhythm (not
+   title size); stacked (.timeline--stacked) moves the time below the title as a
    "time · actor" row instead of at the header's right edge. Marker shape is
    derived from icon presence in the source (dot vs icon); the static skin can't
    observe that, so set .timeline__marker--dot / --icon by hand, and tone via
@@ -1583,12 +1583,14 @@
   display: block;
 }
 
+/* One title size at both densities — .timeline--compact changes rhythm, not type.
+   (It once dropped to --text-sm; that token is a 14px alias of --text-md, so the
+   override never rendered a difference and ed148cb flattened it into a no-op.) */
 .timeline__title {
   font-size: var(--text-md);
   font-weight: var(--font-weight-medium);
   color: var(--color-content-primary);
 }
-.timeline--compact .timeline__title { font-size: var(--text-md); }
 
 .timeline__time {
   font-family: var(--font-mono);

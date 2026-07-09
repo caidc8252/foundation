@@ -31,7 +31,7 @@ radio/checkbox behavior, not a `cursor-pointer` div.
   **checkbox** (`radius-sm`, svg check) for multi-select. Add `.option-card--radio`
   on the card element for single-select groups; the default is checkbox.
 - **Icon** — optional tonal tile, sized ~40px.
-- **Body** — `title` (`text-sm`, weight 600) over an optional `description`
+- **Body** — `title` (`text-md`, weight 600) over an optional `description`
   (`text-xs`, `content-secondary`).
 
 ## Rules

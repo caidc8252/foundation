@@ -15,13 +15,13 @@ Single visual variant — no variant prop. It is an inline-flex text caption.
 
 | token recipe |
 |---|
-| font `font-sans` · size `text-sm` (14px) · weight 500 · line-height 1 · `select-none` · **color inherited** (not set by the primitive) |
+| font `font-sans` · size `text-md` (14px) · weight 500 · line-height 1 · `select-none` · **color inherited** (not set by the primitive) |
 
 The label sets no color of its own — it inherits the surrounding text color, so it composes inside any field or context. The `Field` wrapper applies `content-secondary` as the standard form-caption tone; the reference `.label` class bakes that same tone in for the artifact side (see Notes).
 
 ## Sizes
 
-No size variants. Fixed `text-sm` (14px), weight 500, line-height 1. Slot gap is `gap-2` (`--space-2`, 8px) between the caption text and any inline adornment (e.g. a required `*` or an inline control).
+No size variants. Fixed `text-md` (14px), weight 500, line-height 1. Slot gap is `gap-2` (`--space-2`, 8px) between the caption text and any inline adornment (e.g. a required `*` or an inline control).
 
 ## States
 
@@ -46,4 +46,4 @@ There is no hover, active, focus, invalid, or selected styling on the label itse
 ## Implementations
 
 - **Next / @cloud/ui** — `import { Label } from "@cloud/ui"`. A plain `<label>` (no base-ui dependency); pass `htmlFor` + children. The disabled dimming is driven by Tailwind `group-data-[disabled=true]:*` / `peer-disabled:*` variants reading state off the surrounding group or paired control. For the standard stacked form field (label → control → hint/error) use `Field`, which wraps `Label` and applies the `content-secondary` tone plus the required `*`. Prop/API details: the `ui` skill.
-- **Artifact (self-contained HTML)** — use `<label class="label">` in `../primitives/primitives.css`, on top of the inlined `release/tokens.inline.css`. Same `font-sans` / `text-sm` / weight-500 / `select-none` recipe. Disabled dimming is expressed via `.label--disabled` (static stand-in for the React group/peer variants, which need live control state). For the full stacked field, compose with `.field` / `.field__required` / `.field__hint` / `.field__error`.
+- **Artifact (self-contained HTML)** — use `<label class="label">` in `../primitives/primitives.css`, on top of the inlined `release/tokens.inline.css`. Same `font-sans` / `text-md` / weight-500 / `select-none` recipe. Disabled dimming is expressed via `.label--disabled` (static stand-in for the React group/peer variants, which need live control state). For the full stacked field, compose with `.field` / `.field__required` / `.field__hint` / `.field__error`.

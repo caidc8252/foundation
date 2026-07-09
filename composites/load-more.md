@@ -58,9 +58,9 @@ State is driven by the `done` / `loading` flags, not a variant:
 |---|---|---|
 | `loading=false done=false` *(more)* | `secondary` `lg` button, enabled, shows the passed label | bar at current ratio |
 | `loading=true` | the SAME button, now `loading` (spinner replaces iconLeft, button disabled) — the label stays visible | bar unchanged |
-| `done=true` | button removed; **end marker** text (`text-sm` / `content-tertiary`) in its place | bar at 100% |
+| `done=true` | button removed; **end marker** text (`text-md` / `content-tertiary`) in its place | bar at 100% |
 
-- **summary** — `text-sm` / `content-secondary`, e.g. a localized "Showing N of TOTAL". Rendered only when provided.
+- **summary** — `text-md` / `content-secondary`, e.g. a localized "Showing N of TOTAL". Rendered only when provided.
 - **progress** — optional thin bar, capped to a readable measure (`w-60` ≈ 240px, `max-w-full`). The ratio is clamped to 0–100%. Rendered only when provided. The bar's own skin (track / indicator / tones) is the **progress** contract, not redefined here.
 - The button's hover/active/disabled/focus behavior is the `secondary` Button recipe — see button.md. `loading` implies disabled.
 

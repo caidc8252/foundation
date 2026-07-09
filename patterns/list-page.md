@@ -164,7 +164,7 @@ the three tile flush with no gap or overlap:
   `confirm-danger` dialog. Every action `stopPropagation`s so it never triggers the
   row's navigate-to-detail.
 - **Three text-column shapes**, and nothing else (keeps columns scannable):
-  1. **Two-line** — primary `text-sm`/medium/`content-primary` over a subline
+  1. **Two-line** — primary `text-md`/medium/`content-primary` over a subline
      `text-xs`/`content-tertiary`; may lead with an avatar / initial tile
      (`size-8`, `surface-3`, `rounded-lg`).
   2. **Numeric / id / date** — always mono + `tabular-nums`, `content-secondary`

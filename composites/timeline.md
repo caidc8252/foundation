@@ -48,7 +48,7 @@ signaling status); leaving a long absolute timestamp in time-right layout.
 
 | axis | values | effect |
 |---|---|---|
-| `density` | `default` *(default)* · `compact` | vertical rhythm of each item's content (`space-5` vs `space-3` bottom padding) **and** title size (`text-md` vs `text-sm`). `compact` is for dense audit logs. |
+| `density` | `default` *(default)* · `compact` | vertical rhythm of each item's content (`space-5` vs `space-3` bottom padding). `compact` is for dense audit logs. |
 | `stacked` | `false` *(default)* · `true` | timestamp placement. `false` → time sits at the right edge of the header row (across from the title). `true` → time + actor stack as a "time · actor" inline row *below* the title. |
 
 ## Marker variants
@@ -103,10 +103,10 @@ Badge's `tone`. `primary` maps to the **accent** ramp (not the gray-blue
 - **Header** is a `space-3`-gapped row (title left / time right) when
   `stacked=false`; a plain block (title, then the TimeRow beneath) when
   `stacked=true`.
-- **Title** `text-md` (or `text-sm` compact) · 500 · `content-primary`.
+- **Title** `text-md` · 500 · `content-primary` — the same size at both densities; `compact` changes rhythm, not type size.
 - **Time** mono · `text-xs` · tabular-nums · `content-tertiary` · nowrap.
   Renders as `<time dateTime>`.
-- **Description** `text-sm` · normal leading · `content-secondary`, with a small
+- **Description** `text-md` · normal leading · `content-secondary`, with a small
   top nudge.
 - **Actor** mono · `text-xs` · `content-tertiary`. In a TimeRow it sits inline
   (joined to the time by a `·` separator); outside one it is a block with a top

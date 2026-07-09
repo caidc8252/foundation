@@ -41,7 +41,7 @@ input-group affix shape) plus the shared `.date-trigger__clear` from the family.
 | size | recipe | use |
 |---|---|---|
 | `sm` | `control-sm` (28px) · `px-cx-sm` · `text-xs` (`Input` `inputSize="sm"`) | dense forms |
-| `md` *(default)* | `control-md` (36px) · `px-cx-md` · `text-sm` | standard form field |
+| `md` *(default)* | `control-md` (36px) · `px-cx-md` · `text-md` | standard form field |
 | `lg` | `control-lg` (44px) · `px-cx-lg` · `text-lg` (16px, source `text-base`) | spacious forms |
 
 Sizes map straight to the `Input` size scale.

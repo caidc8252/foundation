@@ -20,10 +20,10 @@ trailing each step.
 
 | state | dot recipe | title recipe | connector (to the right) |
 |---|---|---|---|
-| `completed` | border `success`/25 · bg `success-bg` · text `success-strong` · glyph = check (or the step's own `icon`) | `text-sm`/500 · `content-secondary` | `success`/50 hairline |
-| `active` *(current)* | border `primary-700` · bg `primary-700` · text `content-on-primary` · 600 · `shadow-cta` | `text-sm`/600 · `content-primary` | `line-default` hairline |
-| `upcoming` | border `line-default` · bg `surface-3` · text `content-tertiary` · 500 | `text-sm`/500 · `content-secondary` | `line-default` hairline |
-| `error` | border `error`/25 · bg `error-bg` · text `error-strong` · glyph = alert (or the step's own `icon`) | `text-sm`/600 · `error-strong` | `error`/50 hairline |
+| `completed` | border `success`/25 · bg `success-bg` · text `success-strong` · glyph = check (or the step's own `icon`) | `text-md`/500 · `content-secondary` | `success`/50 hairline |
+| `active` *(current)* | border `primary-700` · bg `primary-700` · text `content-on-primary` · 600 · `shadow-cta` | `text-md`/600 · `content-primary` | `line-default` hairline |
+| `upcoming` | border `line-default` · bg `surface-3` · text `content-tertiary` · 500 | `text-md`/500 · `content-secondary` | `line-default` hairline |
+| `error` | border `error`/25 · bg `error-bg` · text `error-strong` · glyph = alert (or the step's own `icon`) | `text-md`/600 · `error-strong` | `error`/50 hairline |
 
 The connector belongs to the step it trails and is omitted after the last step.
 A connector reads "done" (`success`/50) only when its **own** step index is `<

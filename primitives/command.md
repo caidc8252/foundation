@@ -19,12 +19,12 @@ Command is not a variant family — it is a fixed shell plus a set of structural
 |---|---|---|
 | `Command` *(shell)* | the palette panel | bg `surface-2` · border `line-default` · radius `radius-xl` · `shadow-5` · text `content-primary` · `overflow-hidden`, column flex |
 | `CommandDialog` | the shell inside a centered modal | backdrop `surface-overlay` + blur · popup bg `surface-2` · border `line-default` · radius `radius-xl` · `shadow-5`; pinned `top-1/3`, capped `max-w-[460px]` (no token — see notes) |
-| `CommandInput` | the search field | wraps an `InputGroup` shell, chromeless (`border-0` save a bottom `line-subtle` hairline, transparent, `shadow-none`); leading `SearchIcon` addon · `text-sm` placeholder `content-tertiary` |
+| `CommandInput` | the search field | wraps an `InputGroup` shell, chromeless (`border-0` save a bottom `line-subtle` hairline, transparent, `shadow-none`); leading `SearchIcon` addon · `text-md` placeholder `content-tertiary` |
 | `CommandList` | the scroll viewport | `max-h-72` (288px) · scroll-padding `space-1` · scrollbar hidden · `overflow-y-auto` |
-| `CommandEmpty` | no-results message | centered, padded `space-6` block · `text-sm` |
+| `CommandEmpty` | no-results message | centered, padded `space-6` block · `text-md` |
 | `CommandGroup` | a labeled section of items | padding `space-1`; heading uppercase `text-xs`, weight 500, tracked, `content-tertiary` |
 | `CommandSeparator` | hairline between groups | 1px `line-default`, bleeds past the list padding |
-| `CommandItem` | one runnable row | flex row · gap `space-2.5` · radius `radius-md` · px `cx-sm` · py `space-2` · `text-sm` · `content-primary`; leading icon slot + label + trailing check / shortcut |
+| `CommandItem` | one runnable row | flex row · gap `space-2.5` · radius `radius-md` · px `cx-sm` · py `space-2` · `text-md` · `content-primary`; leading icon slot + label + trailing check / shortcut |
 | `CommandShortcut` | trailing keyboard hint on a row | `ml-auto` · `text-xs` · widely tracked · `content-tertiary` |
 
 ## States

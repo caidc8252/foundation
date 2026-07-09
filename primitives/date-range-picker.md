@@ -39,7 +39,7 @@ defined once and reused across the family.
   the placeholder (default *Pick a range*, i18n `ui.datePicker.placeholder.range`).
 - **`.date-presets`** — a fixed-width (`w-32`, 128px) left rail of quick-range
   buttons inside the popover, separated from the calendar by a right hairline. Each
-  `.date-presets__item` is a full-width, left-aligned `text-sm` `content-secondary`
+  `.date-presets__item` is a full-width, left-aligned `text-md` `content-secondary`
   row that hovers to `surface-hover` + `content-primary`. Defaults: *Today*,
   *Last 7 days*, *Last 30 days*, *This month*, *Last month*
   (i18n `ui.datePicker.presets.*`). The rail is omitted when `presets` is empty.
@@ -52,7 +52,7 @@ defined once and reused across the family.
 | size | trigger recipe | use |
 |---|---|---|
 | `sm` | `control-sm` (28px) · `px-cx-sm` · `text-xs` | dense filter bars |
-| `md` *(default)* | `control-md` (36px) · `px-cx-md` · `text-sm` | standard form field |
+| `md` *(default)* | `control-md` (36px) · `px-cx-md` · `text-md` | standard form field |
 | `lg` | `control-lg` (44px) · `px-cx-lg` · `text-lg` (16px, source `text-base`) | spacious forms |
 
 Sizes drive the trigger; the presets rail and two-month grid keep fixed sizing.

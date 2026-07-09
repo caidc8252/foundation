@@ -46,7 +46,7 @@ Start field + an End field — not a single dual-calendar control.)
 | size | trigger recipe | use |
 |---|---|---|
 | `sm` | `control-sm` (28px) · `px-cx-sm` · `text-xs` | dense filter bars, table toolbars |
-| `md` *(default)* | `control-md` (36px) · `px-cx-md` · `text-sm` | standard form field |
+| `md` *(default)* | `control-md` (36px) · `px-cx-md` · `text-md` | standard form field |
 | `lg` | `control-lg` (44px) · `px-cx-lg` · `text-lg` (16px, source `text-base`) | prominent / spacious forms |
 
 Sizes drive the trigger only; the calendar grid keeps its own fixed cell size.

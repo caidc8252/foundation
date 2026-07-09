@@ -25,7 +25,7 @@ A non-tabular interactive list row — a leading visual, a title line that can c
   trailing are `auto`-width; the main column takes the rest.
 - **Leading** *(optional)* — an `__icon` tile (neutral by default) or a primitive
   `.avatar`. Omit it for a text-only row; the column collapses.
-- **Main** — a **title** (`text-sm`, weight 600) that may hold inline `.badge`s /
+- **Main** — a **title** (`text-md`, weight 600) that may hold inline `.badge`s /
   status chips, over an optional **sub** line (`text-xs`, `content-secondary`) —
   a description, a handle, a secondary metadata line. The title's text goes in a
   `__name` span that **truncates** (the badges stay inline, never wrap), and the

@@ -18,8 +18,8 @@ axes are placement (`side` + `align` + their offsets), owned by the positioner.
 
 | part | token recipe |
 |---|---|
-| panel | bg `surface-1` · text `content-primary` · radius `radius-lg` (8px) · 1px hairline ring `content-primary`/10% · `shadow-3` · padding `cx-sm` (10px) · gap `cx-sm` between children · font `text-sm` |
-| `MenuItem` (row) | full-width row · padding `space-2` inline / `space-1.5` block · radius `radius-md` · `text-sm` · text `content-primary` · hover bg `surface-hover` |
+| panel | bg `surface-1` · text `content-primary` · radius `radius-lg` (8px) · 1px hairline ring `content-primary`/10% · `shadow-3` · padding `cx-sm` (10px) · gap `cx-sm` between children · font `text-md` |
+| `MenuItem` (row) | full-width row · padding `space-2` inline / `space-1.5` block · radius `radius-md` · `text-md` · text `content-primary` · hover bg `surface-hover` |
 | `MenuItem` destructive | text `error-strong` · hover bg `error-bg` |
 
 (The implementation's `bg-popover` / `text-popover-foreground` are shadcn aliases
@@ -73,7 +73,7 @@ open skin only (no enter/exit keyframes).
 
 Slots (all optional, composed by the consumer):
 - **`__header`** — stacks `__title` + `__description` with a tight `space-0.5` gap.
-- **`__title`** — `font-medium`, `text-sm`; the panel's heading.
+- **`__title`** — `font-medium`, `text-md`; the panel's heading.
 - **`__description`** — `content-secondary` supporting text.
 - **`.menu-item`** — a full-width action row for the dropdown-list shape; renders an optional leading icon + left-aligned label, with a `destructive` modifier for delete-style actions.
 
