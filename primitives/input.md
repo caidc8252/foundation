@@ -6,7 +6,7 @@ A single-line text field. The default control for short free-text, numbers, sear
 
 | variant | use | token recipe |
 |---|---|---|
-| `default` *(default)* | standard bordered field on a form surface | bg `surface-2` · text `content-primary` · border `line-default` · placeholder `content-tertiary` · focus border `line-focus` + ring `line-focus`/30 |
+| `default` *(default)* | standard bordered field on a form surface | bg `surface-2` · text `content-primary` · border `line-default` · placeholder `content-tertiary` · focus border `line-focus` + `shadow-focus` ring |
 | `filled` | tonal fill for dense toolbars / nested forms — border only on focus | bg `surface-3` · border transparent · hover `surface-hover` · focus bg `surface-2` |
 
 Plus an orthogonal **validation** axis (independent of `variant`, see States): `warn` and `ok`.
@@ -36,6 +36,24 @@ Body text is `text-md`; the `lg` size bumps to `text-lg`. Horizontal padding fol
 
 `[ prefix? ] input [ suffix? ]` — `prefix`/`suffix` are optional non-interactive adornments (icon, unit, currency). When either is present the component wraps the input in a flex container that owns the border, focus ring, and error styling; the inner `<input>` goes borderless and transparent so only one ring shows. Without adornments the `<input>` is the bordered element directly.
 
+> **That wrapper is `InputGroup` — it is not an `Input` internal.** There is no
+> `.input__prefix` / `.input__suffix`. The adorned shape is the separate `input-group`
+> primitive ([`input-group.md`](input-group.md)): React's `prefix`/`suffix` props render
+> it for you, and an artifact composes it by hand.
+>
+> ```html
+> <div class="input-group" role="group">
+>   <input class="input input-group__control" type="number" placeholder="0.00">
+>   <div class="input-group__addon input-group__addon--inline-end">
+>     <span class="input-group__text">USD</span>
+>   </div>
+> </div>
+> ```
+>
+> `.input-group__control` strips the inner field's own border/fill/ring so the group's
+> single border shows; the group owns focus, invalid and disabled. Reach for it whenever
+> an adornment, an action button, or a keyboard hint sits against the field.
+
 ## Accessibility
 
 - Real `<input>` semantics; pair with a `<Label htmlFor>` (or wrap in `Field`) for click-to-focus.
@@ -51,4 +69,4 @@ Body text is `text-md`; the `lg` size bumps to `text-lg`. Horizontal padding fol
 ## Implementations
 
 - **Next / @cloud/ui** — `import { Input } from "@cloud/ui"`. base-ui `Input` under the hood; props `inputSize` `variant` `invalid` `validation` `prefix` `suffix`. API details: the `ui` skill. Do not re-skin via `className`; pick a variant/size.
-- **Artifact (self-contained HTML)** — use the `.input` class (plus size/state modifiers `.input--sm/--md/--lg`, `.input--filled`, `.input--warn/--ok`, `.input--loading`) in `./primitives.css`, on top of the inlined `release/tokens.inline.css`. Invalid is `aria-invalid="true"`; read-only/disabled are the native attributes. Same token recipe, same names.
+- **Artifact (self-contained HTML)** — use the `.input` class (plus size/state modifiers `.input--sm/--md/--lg`, `.input--filled`, `.input--warn/--ok`, `.input--loading`) in `./primitives.css`, on top of the inlined `release/tokens.inline.css`. Invalid is `aria-invalid="true"`; read-only/disabled are the native attributes. Same token recipe, same names. For a `prefix`/`suffix` adornment there is no `Input` class — compose `.input-group` (§Anatomy).

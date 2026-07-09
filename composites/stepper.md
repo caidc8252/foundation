@@ -31,8 +31,9 @@ stepper-specific surface:
 
 - **focus-visible** — only the input takes focus (both buttons are
   `tabIndex=-1`, out of the tab order). The input is borderless, so its focus
-  lifts to the group: border `line-focus` + a 3px ring `line-focus`/50. The
-  `−`/`+` buttons are reached by click, not Tab.
+  lifts to the group: border `line-focus` + the `shadow-focus` ring. The ring is
+  not stepper-specific — `.stepper` adds no chrome of its own, it inherits the
+  `.input-group` shell. The `−`/`+` buttons are reached by click, not Tab.
 - **boundary** (`atMin` / `atMax`) — when the value hits `min` (or `max`), only
   *that one* button dims: it sets `aria-disabled` (NOT native `disabled`) +
   `cursor-not-allowed` + `opacity-50`, and its hover fill is suppressed. Using

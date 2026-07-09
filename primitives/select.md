@@ -6,13 +6,19 @@ A dropdown for choosing one option from a list. The control for single-choice wh
 
 The trigger has a single visual variant. The composable parts are slots: `Select` (root) · `SelectTrigger` · `SelectValue` · `SelectContent` · `SelectGroup` · `SelectLabel` · `SelectItem` · `SelectSeparator`.
 
-| part | token recipe |
-|---|---|
-| `SelectTrigger` | bg `surface-2` · text `content-primary` (`text-md`) · border `line-default` · hover border `line-strong` · focus border `line-focus` + ring `line-focus`/30 · chevron `content-tertiary` · placeholder text `content-tertiary` |
-| `SelectContent` (popup) | bg `surface-2` · text `content-primary` · border `line-default` · radius `radius-md` · `shadow-4` · padding `space-1` |
-| `SelectItem` | radius `radius-md` · `text-md` · focus(highlight) bg `surface-hover` + text `content-primary` · check indicator |
-| `SelectLabel` (group label) | `text-xs` · `content-tertiary` |
-| `SelectSeparator` | 1px rule `line-default` |
+| part | token recipe | artifact class |
+|---|---|---|
+| `SelectTrigger` | bg `surface-2` · text `content-primary` (`text-md`) · border `line-default` · hover border `line-strong` · focus border `line-focus` + `shadow-focus` ring · chevron `content-tertiary` · placeholder text `content-tertiary` | `.select` (on a native `<select>`) |
+| `SelectContent` (popup) | bg `surface-2` · text `content-primary` · border `line-default` · radius `radius-md` · `shadow-4` · padding `space-1` | — **React only** |
+| `SelectItem` | radius `radius-md` · `text-md` · focus(highlight) bg `surface-hover` + text `content-primary` · check indicator | — **React only** |
+| `SelectLabel` (group label) | `text-xs` · `content-tertiary` | — **React only** |
+| `SelectSeparator` | 1px rule `line-default` | — **React only** |
+
+> **Only the trigger has an artifact skin.** The popup is portalled, positioned and
+> keyboard-driven — behavior a static artifact cannot reproduce. So no `.select__content`
+> / `__item` / `__label` / `__separator` classes exist, and none are coming. Those recipes
+> are here so the React implementation has one authority to answer to, **not** because
+> they are in the artifact closed set. See §Implementations.
 
 ## Sizes
 
