@@ -13,7 +13,16 @@ const MARK = /\/\*\s*@component\s+([a-z0-9-]+)\s*\*\//gi;
 
 export function sliceComponentCss(compositesCss, components) {
   if (components === "all") return compositesCss;
-  if (components === "none" || (Array.isArray(components) && components.length === 0)) return "";
+  // Preamble = everything before the first @component marker: the base/reset/baseline
+  // layer (box-sizing:border-box, body{font-family:var(--font-sans)}, flow-element margin
+  // reset for h1/p/dl/dd/form…). It is NOT a component — it is the mandatory baseline every
+  // self-contained artifact depends on, so it ships in EVERY shell regardless of which
+  // components are sliced. Dropping it (the pre-fix behavior for any non-"all" subset) made
+  // inheriting text fall back to the UA serif and padded controls overflow their track.
+  MARK.lastIndex = 0;
+  const first = MARK.exec(compositesCss);
+  const preamble = first ? compositesCss.slice(0, first.index).trimEnd() : compositesCss;
+  if (components === "none" || (Array.isArray(components) && components.length === 0)) return preamble;
   const want = new Set(components);
   const idxs = [];
   let m;
@@ -24,7 +33,7 @@ export function sliceComponentCss(compositesCss, components) {
     const seg = compositesCss.slice(idxs[i].start, i + 1 < idxs.length ? idxs[i + 1].start : undefined);
     if (want.has(idxs[i].name)) out.push(seg.trimEnd());
   }
-  return out.join("\n");
+  return [preamble, ...out].filter(Boolean).join("\n");
 }
 
 // CRUD 原型常用的 primitive 家族(核心集 ≈45K, vs 全量 145K)。

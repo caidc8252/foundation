@@ -1,14 +1,19 @@
 // scripts/prototype-cheatsheet/refresh.mjs
 //
-// Generates the 3-tier prototype cheatsheets + tier-components.json into release/prototype-cheatsheet/.
+// Generates the 3-tier prototype component INDEX + tier-components.json into release/prototype-cheatsheet/.
 // Run manually pre-tag by foundation maintainers: `node scripts/prototype-cheatsheet/refresh.mjs`
 // (bare invocation from the foundation repo root — all paths default foundation-relative).
+//
+// The index is a PURE lookup table (component · class vocab · purpose · example path),
+// derived entirely from component-registry.md (tier) + release/catalog.json (summary/classes/example/layer).
+// It carries NO markup skeletons — the downstream writer reads the real example
+// (`primitives|composites/<name>.html`) on demand for any non-trivial usage.
+// Consequently the old skeleton library + distillation + staleness check are retired.
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseRegistry, componentsForTier } from './lib/registry.mjs';
 import { readCatalog } from './lib/catalog.mjs';
-import { loadSkeleton, missingSkeletons } from './lib/skeletons.mjs';
 import { markerCoverage } from './lib/marker-coverage.mjs';
 
 export { markerCoverage };
@@ -16,13 +21,19 @@ export { markerCoverage };
 const TIER_FILE = { 30: 'cheatsheet-low.md', 70: 'cheatsheet-mid.md', 100: 'cheatsheet-full.md' };
 const TOKENS_HEADER = `## Tokens (semantic, use \`var(--…)\`)\n\n- content/surface/line/primary/status colors · space · text · radius · font-sans · shadow(card/overlay). (Full list in tokens.inline.css, inlined in the shell.)\n`;
 
-export function buildCheatsheet({ tier, registry, catalog, skeletonsDir }) {
+export function buildIndex({ tier, registry, catalog }) {
   const names = componentsForTier(registry, tier);
-  const missing = missingSkeletons(skeletonsDir, names);
-  if (missing.length) throw new Error(`missing skeleton(s) for tier ${tier}: ${missing.join(', ')}`);
-  const head = `# Foundation cheatsheet · 档 ${tier}%\n\n> 生成物,勿手改;改覆盖范围请编辑 component-registry.md 后跑 refresh。class vocab + 最小 markup;CSS 在壳里。\n\n${TOKENS_HEADER}\n---\n`;
-  const body = names.map(n => loadSkeleton(skeletonsDir, n)).join('\n\n');
-  return `${head}\n${body}\n`;
+  const head = `# Foundation 组件索引 · 档 ${tier}%\n\n> **纯索引**:组件清单 + class vocab + 用途 + 范例路径。**不含 markup 骨架**——非平凡使用直接读 \`example\` 指的真范例、取其规范实例(忽略 demo 脚手架)。组件 CSS 已在壳里。生成物,勿手改;改覆盖范围请编辑 component-registry.md 后跑 refresh。\n\n${TOKENS_HEADER}\n---\n`;
+  const blocks = names.map(n => {
+    const c = registry.find(r => r.name === n);
+    const cat = catalog.get(n) || {};
+    const layer = cat.layer || c.kind;
+    const summary = (cat.summary || '').trim() || '(catalog 无 summary)';
+    const classes = (cat.classes || []).map(x => `\`${x}\``).join(' ');
+    const example = cat.example || `${c.kind === 'primitive' ? 'primitives' : 'composites'}/${n}.html`;
+    return `### ${n} · ${layer} · tier ${c.tier}\n${summary}\nclass: ${classes || '(见范例)'}\nexample → \`${example}\` (非平凡使用去读、取规范实例)`;
+  });
+  return `${head}\n${blocks.join('\n\n')}\n`;
 }
 
 // Foundation repo root — 2 levels up from this script
@@ -36,7 +47,6 @@ function main() {
   const foundationRoot = a.foundation || FOUNDATION_ROOT;
   const registryPath = a.registry || join(foundationRoot, 'prototype-cheatsheet', 'component-registry.md');
   const catalogPath = a.catalog || join(foundationRoot, 'release', 'catalog.json');
-  const skeletonsDir = a.skeletons || join(foundationRoot, 'prototype-cheatsheet', 'skeletons');
   const outDir = a.out || join(foundationRoot, 'release', 'prototype-cheatsheet');
   mkdirSync(outDir, { recursive: true });
 
@@ -58,7 +68,7 @@ function main() {
       console.log(`marker-coverage: tier ${tier} warn(s) (markerless but safe): ${cov.warns.map(w => w.host ? `${w.name}(host=${w.host})` : `${w.name}(host unresolved)`).join(', ')}`);
     }
 
-    const md = buildCheatsheet({ tier, registry, catalog, skeletonsDir });
+    const md = buildIndex({ tier, registry, catalog });
     writeFileSync(join(outDir, TIER_FILE[tier]), md);
     tierMap[tier] = {
       primitives: registry.filter(c => c.kind === 'primitive' && c.tier <= tier).map(c => c.name),
