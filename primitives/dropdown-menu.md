@@ -16,14 +16,14 @@ A dropdown menu is a composed set of slots, not a single element. The popup is t
 | part | role | token recipe |
 |---|---|---|
 | `content` (popup) | the floating surface that holds the rows | bg `surface-2` · border `line-default` · radius `radius-lg` · `shadow-4` · text `content-primary` · padding `--space-1` · min-width 240px *(no token — see notes)* |
-| `item` | a clickable action row | radius `radius-md` · `px-cx-sm`-ish (10px) · text `text-xs` · text `content-primary` · gap `--space-1.5` |
+| `item` | a clickable action row | radius `radius-md` · `px-cx-sm`-ish (10px) · text `text-md` · text `content-primary` · gap `--space-1.5` |
 | `label` | a non-interactive group caption | `text-xs` UPPERCASE · tracking-wide · weight 500 · text `content-tertiary` |
 | `separator` | a hairline divider between groups | 1px rule · bg `line-default` · vertical margin `--space-1` |
 | `group` | wraps related items (semantic only, no skin) | — |
 | `sub-trigger` | an item that opens a nested sub-menu | item recipe + trailing chevron · open-state bg `surface-hover` |
 | `sub-content` | the nested sub-menu popup | content recipe · min-width 160px *(no token — see notes)* |
-| `checkbox-item` | a toggleable row with a trailing check | item recipe · `text-sm` · trailing check glyph `--space-4` (16px) |
-| `radio-item` | a single-select row with a trailing check | item recipe · `text-sm` · trailing check glyph `--space-4` (16px) |
+| `checkbox-item` | a toggleable row with a trailing check | item recipe · `text-md` · trailing check glyph `--space-4` (16px) |
+| `radio-item` | a single-select row with a trailing check | item recipe · `text-md` · trailing check glyph `--space-4` (16px) |
 | `shortcut` | trailing keyboard-hint text on an item | pushed right · `text-xs` · tracking-widest · text `content-tertiary` |
 
 ## Item variants
@@ -99,7 +99,7 @@ content (popup surface)
   cap holds whether the popup is absolute-in-wrapper or portalled+`fixed`. Don't
   reintroduce a `%` height here.
 - The source's `bg-border` (separator) and `text-muted-foreground` (shortcut) are shadcn aliases; they resolve to `line-default` and `content-tertiary` in this token system.
-- Action `item` uses `text-xs` (12px) while `checkbox-item` / `radio-item` use `text-sm` (14px) — kept faithfully; do not normalize them.
+- **Every row is `text-md`** — `item`, `sub-trigger`, `checkbox-item`, `radio-item` alike. A row's kind is signalled by its adornments (leading icon, trailing check, chevron), never by its type size. This reverses an earlier note that kept the source's `text-xs` action row / `text-sm` checkbox row split "faithfully": the split had already been normalized away in the reference CSS, and `text-sm` is a compat alias of `text-md` (both 14px), so it never rendered a difference. Same rule in `context-menu` — the two share one row recipe. Only `label` and `shortcut` (non-rows) stay `text-xs`.
 - The contract documents the static skin only — see Implementations.
 
 ## Implementations

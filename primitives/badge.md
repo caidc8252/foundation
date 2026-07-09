@@ -59,7 +59,7 @@ nothing. The dot and the icon answer *different* questions, so pick by the badge
 
 ## Sizes
 
-No size prop — fixed height `h-5` (20px), `text-xs`, `font-medium`, `px-2`. The leading `.badge__dot` is 6px; a leading **identity icon** (§Leading adornment) is clamped to `size-3` (12px), and padding tightens on the icon side via `has-data-[icon=inline-start]:pl-1.5` / `has-data-[icon=inline-end]:pr-1.5`.
+No size prop — fixed height `h-5` (20px), `text-xs`, `font-medium`, `px-2`. The leading `.badge__dot` is 6px; a leading **identity icon** (§Leading adornment) is `.badge__icon`, clamped to `size-3` (12px), and the leading padding tightens to 6px when one is present (source `has-data-[icon=inline-start]:pl-1.5`).
 
 ## States
 
@@ -93,4 +93,4 @@ v5.2.14         ← tag   : a verbatim token (mono, boxy; no dot, no icon)
 ## Implementations
 
 - **Next / @cloud/ui** — `import { Badge } from "@cloud/ui"`. Renders a `<span>` (or any element via `render`); props `tone` `shape` `dot`. API details: the `ui` skill. Color is set entirely by `tone`; there is no `variant` prop.
-- **Artifact (self-contained HTML)** — use `.badge` + `.badge--<tone>` (5 tones), optionally `.badge--tag` for the tag shape and `.badge__dot` for a leading status dot, in `./primitives.css`, on top of the inlined `release/tokens.inline.css`. Same tonal recipe and names.
+- **Artifact (self-contained HTML)** — use `.badge` + `.badge--<tone>` (5 tones), optionally `.badge--tag` for the tag shape, and for the leading slot **either** `.badge__dot` (status dot) **or** `.badge__icon` (identity glyph — put it on the `<svg>` itself; it sizes the glyph to 12px and tightens the leading padding), in `./primitives.css`, on top of the inlined `release/tokens.inline.css`. Same tonal recipe and names.

@@ -17,7 +17,7 @@ One elevated panel; no tone/semantic variant on the panel itself (status belongs
 | part | token recipe |
 |---|---|
 | panel (`__content`) | bg `surface-2` · text `content-primary` · border `line-default` · radius `radius-lg` (8px) · `shadow-4` · padding `space-1` (4px) · min-width 220px (see Notes) |
-| item — `default` | row · gap `space-1.5` · padding `space-2.5` inline / `space-2` block · radius `radius-md` · `text-xs` · text `content-primary` · focus bg `surface-hover` |
+| item — `default` | row · gap `space-1.5` · padding `space-2.5` inline / `space-2` block · radius `radius-md` · `text-md` · text `content-primary` · focus bg `surface-hover` |
 | item — `destructive` | text `error-strong` · focus bg `error-bg` |
 | `__label` (group heading) | `text-xs` · uppercase · `font-medium` · text `content-tertiary` · padding `space-2.5` inline / `space-1` block |
 | `__separator` | 1px hairline `line-default`, bled to the panel edges, `space-1` block margin |
@@ -27,7 +27,9 @@ One elevated panel; no tone/semantic variant on the panel itself (status belongs
 
 ## Sizes
 
-No size variants. Plain rows, labels, and the submenu trigger are `text-xs`; checkbox/radio rows are `text-sm` (they carry a trailing indicator gutter, so they sit a hair larger). The panel is content-sized vertically (capped to `--available-height` by the positioner, then scrolls) with a fixed 220px minimum width — see Notes for the width-token gap.
+No size variants. **Every row is `text-md`** — plain items, destructive items, the submenu trigger, and checkbox/radio rows alike. A row's kind is signalled by its adornments (leading icon, trailing indicator, chevron), never by its type size; there is no "a hair larger" row. Only the two non-row parts differ: the `__label` group heading and the `__shortcut` key hint are `text-xs`. `dropdown-menu` shares this row recipe and the same rule.
+
+The panel is content-sized vertically (capped to `--available-height` by the positioner, then scrolls) with a fixed 220px minimum width — see Notes for the width-token gap.
 
 ## States
 
@@ -58,7 +60,7 @@ The rows carry the interactive states:
 
 Rows (composed by the consumer):
 - **`__item`** — `[icon?] label [__shortcut?]`. Leading icon is an inline slot (defaults 14px / `space-3.5`); the optional `__shortcut` is pushed to the row's trailing edge (`margin-inline-start: auto`). `--destructive` modifier for delete-style actions; `--inset` modifier reserves a leading gutter so iconless rows align under rows that have icons.
-- **`__item--checkbox` / `__item--radio`** — label with a right-edge indicator gutter (`padding-inline-end` reserved); a check glyph paints there when selected. These are `text-sm` and use a tighter `space-1.5` leading inset.
+- **`__item--checkbox` / `__item--radio`** — label with a right-edge indicator gutter (`padding-inline-end` reserved); a check glyph paints there when selected. Same `text-md` as every other row; they use a tighter `space-1.5` leading inset.
 - **`__sub-trigger`** — an item-shaped row that opens a nested submenu; carries a trailing chevron and an open-state fill.
 - **`__label`** — non-interactive uppercase group heading.
 - **`__separator`** — a hairline divider between groups.

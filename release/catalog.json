@@ -260,6 +260,7 @@
     "badge--tag",
     "badge--warning",
     "badge__dot",
+    "badge__icon",
     "btn",
     "btn--auto",
     "btn--danger",
@@ -983,7 +984,8 @@
         ".badge--success",
         ".badge--tag",
         ".badge--warning",
-        ".badge__dot"
+        ".badge__dot",
+        ".badge__icon"
       ]
     },
     {

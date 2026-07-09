@@ -689,6 +689,20 @@ body {
   transform: scale(0.75);
 }
 
+/* Badge · leading identity icon (12px). Unlike the dot it carries meaning — it names
+   a *type*, never a status. Follows the text colour, so it tracks the tone. */
+.badge__icon {
+  flex-shrink: 0;
+  width: var(--space-3);   /* 12px — source size-3 */
+  height: var(--space-3);
+}
+
+/* A glyph sits heavier against the box edge than a letter does; tighten the leading
+   padding when one is present (source has-data-[icon=inline-start]:pl-1.5). */
+.badge:has(> .badge__icon) {
+  padding-inline-start: calc(var(--space-1) + var(--space-1) / 2);   /* 6px — source pl-1.5 */
+}
+
 /* Badge · focus */
 .badge:focus-visible {
   outline: none;
@@ -2097,7 +2111,7 @@ body {
   margin-inline-start: auto;
 }
 
-/* ── Checkbox / radio rows: trailing indicator gutter, slightly larger type ── */
+/* ── Checkbox / radio rows: trailing indicator gutter, same text-md as every row ── */
 .context-menu__item--checkbox,
 .context-menu__item--radio {
   position: relative;
