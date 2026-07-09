@@ -69,7 +69,7 @@ The group itself is a single height — `control-md` (36px), or `height:auto` wh
 States are owned by the **group**, not the inner control — the borderless control defers all chrome upward:
 
 - **hover** — no chrome change (matches `default` `input`).
-- **focus-visible** — when the inner control has focus, the group border goes `line-focus` + a 3px ring `line-focus`/50. Triggered by the control's focus, applied to the container.
+- **focus-visible** — when the inner control has focus, the group border goes `line-focus` + the `shadow-focus` ring (3px `line-focus`/25 — the one focus-ring token every control shares). Triggered by the control's focus, applied to the container.
 - **invalid** (`aria-invalid` on the control) — group border `error-strong` + 3px ring `error`/20.
 - **disabled** (a disabled control inside) — group bg dims toward `surface-3` + `opacity-50`; addons fade with it.
 - **inside a combobox popover** — the group *suppresses* its own border/ring on focus and defers to the popover so the focus treatment isn't doubled. Behavior owned by the React implementation; not expressible in static CSS.
