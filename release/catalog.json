@@ -824,6 +824,9 @@
     "tags-input__remove",
     "tags-input__tag",
     "textarea",
+    "textarea__count",
+    "textarea__count--error",
+    "textarea__count--warning",
     "th-sort",
     "th-sort__icon--active",
     "th-sort__icon--idle",
@@ -1728,7 +1731,10 @@
       "contract": "primitives/textarea.md",
       "example": "primitives/textarea.html",
       "classes": [
-        ".textarea"
+        ".textarea",
+        ".textarea__count",
+        ".textarea__count--error",
+        ".textarea__count--warning"
       ]
     },
     {

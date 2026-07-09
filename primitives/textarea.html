@@ -64,52 +64,10 @@
       .demo-col2 { grid-template-columns: 1fr; }
     }
 
-    /* Textarea styling per contract */
-    .textarea {
-      display: block;
-      width: 100%;
-      min-height: 64px;
-      padding: var(--space-3);
-      background: var(--color-surface-2);
-      color: var(--color-content-primary);
-      font-size: var(--text-sm);
-      font-family: var(--font-sans);
-      border: 1px solid var(--color-line-default);
-      border-radius: var(--radius-md);
-      resize: vertical;
-      box-sizing: border-box;
-      outline: none;
-    }
-    .textarea::placeholder {
-      color: var(--color-content-tertiary);
-    }
-    .textarea:focus-visible {
-      border-color: var(--color-line-focus);
-      box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-line-focus) 30%, transparent);
-    }
-    .textarea:disabled {
-      cursor: not-allowed;
-      background: var(--color-surface-3);
-      opacity: 0.5;
-    }
-    .textarea[aria-invalid="true"] {
-      border-color: var(--color-error-strong);
-      box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-error) 20%, transparent);
-    }
-
-    .textarea-counter {
-      display: flex;
-      justify-content: flex-end;
-      font-size: var(--text-xs);
-      color: var(--color-content-tertiary);
-      margin-top: var(--space-1);
-    }
-    .textarea-counter--warning {
-      color: var(--color-warning-strong);
-    }
-    .textarea-counter--error {
-      color: var(--color-error-strong);
-    }
+    /* .textarea and .textarea__count come from the linked primitives.css.
+       This page used to re-declare both here — a stale fork that hardcoded
+       min-height:64px and painted its own focus ring, silently masking the
+       foundation skin it was meant to demonstrate. Deleted. */
 
     .demo-field {
       display: flex;
@@ -182,12 +140,12 @@
         <div class="demo-field">
           <label class="demo-field__label" for="ta-count-ok">Normal count</label>
           <textarea class="textarea" id="ta-count-ok" maxlength="200" rows="3" placeholder="Type something…">A short note.</textarea>
-          <div class="textarea-counter">12 / 200</div>
+          <div class="textarea__count">12 / 200</div>
         </div>
         <div class="demo-field">
           <label class="demo-field__label" for="ta-count-warn">Near limit (warning)</label>
           <textarea class="textarea" id="ta-count-warn" maxlength="200" rows="3">Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est laborum.</textarea>
-          <div class="textarea-counter textarea-counter--warning">189 / 200</div>
+          <div class="textarea__count textarea__count--warning">189 / 200</div>
         </div>
       </div>
     </div>
@@ -209,7 +167,7 @@
           <div class="demo-field">
             <label class="demo-field__label" for="ta-note">Note</label>
             <textarea class="textarea" id="ta-note" maxlength="500" rows="4" placeholder="Write your note here…"></textarea>
-            <div class="textarea-counter">0 / 500</div>
+            <div class="textarea__count">0 / 500</div>
           </div>
           <div style="display:flex;justify-content:flex-end;gap:var(--space-2);">
             <button class="btn btn--ghost" type="button">Cancel</button>
@@ -226,7 +184,7 @@
       var textareas = document.querySelectorAll('.textarea');
       textareas.forEach(function (ta) {
         var parent = ta.closest('.demo-field') || ta.parentElement;
-        var counter = parent.querySelector('.textarea-counter');
+        var counter = parent.querySelector('.textarea__count');
         if (!counter) return;
         var max = parseInt(ta.getAttribute('maxlength'), 10);
         if (!max) return;
@@ -234,11 +192,11 @@
         function updateCounter() {
           var len = ta.value.length;
           counter.textContent = len + ' / ' + max;
-          counter.classList.remove('textarea-counter--warning', 'textarea-counter--error');
+          counter.classList.remove('textarea__count--warning', 'textarea__count--error');
           if (len >= max) {
-            counter.classList.add('textarea-counter--error');
+            counter.classList.add('textarea__count--error');
           } else if (len >= max * 0.9) {
-            counter.classList.add('textarea-counter--warning');
+            counter.classList.add('textarea__count--warning');
           }
         }
 

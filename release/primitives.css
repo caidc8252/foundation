@@ -353,6 +353,18 @@ body {
   box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-error) 20%, transparent);
 }
 
+.textarea__count {
+  display: block;
+  margin-top: var(--space-1);
+  color: var(--color-content-tertiary);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.textarea__count--warning { color: var(--color-warning-strong); }   
+.textarea__count--error   { color: var(--color-error-strong); }     
+
 .select {
   display: inline-flex;
   align-items: center;

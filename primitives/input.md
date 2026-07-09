@@ -24,7 +24,7 @@ Body text is `text-md`; the `lg` size bumps to `text-lg`. Horizontal padding fol
 ## States
 
 - **hover** — no chrome change in `default`; `filled` lifts to `surface-hover`.
-- **focus-visible** — border `line-focus` + 2px ring `line-focus`/30. Always visible on keyboard focus.
+- **focus-visible** — border `line-focus` + the `shadow-focus` ring (the one focus-ring token every control shares; it *is* `line-focus` at 25%). Always visible on keyboard focus.
 - **read-only** (native `readOnly`) — bg `surface-3` + text `content-secondary`, automatically.
 - **disabled** — `cursor-not-allowed` + bg `surface-3` + `opacity-50`.
 - **invalid** (`invalid` prop or `aria-invalid`) — border `error-strong` + 2px ring `error`/20. Sets `aria-invalid`; takes priority over `validation`.

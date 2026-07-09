@@ -28,7 +28,7 @@ There is no `md`/`lg` — the only two values are `sm` and `default`.
 ## States
 
 - **hover** (trigger) — border lifts to `line-strong`.
-- **focus-visible** (trigger) — border `line-focus` + 2px ring `line-focus`/30.
+- **focus-visible** (trigger) — border `line-focus` + the `shadow-focus` ring (the one focus-ring token every control shares; it *is* `line-focus` at 25%).
 - **disabled** (trigger) — `cursor-not-allowed` + `opacity-50`.
 - **invalid** (`aria-invalid` on trigger) — border `error-strong` + 2px ring `error`/20.
 - **placeholder** — when no value is selected, the value text renders `content-tertiary` (`data-placeholder`).
