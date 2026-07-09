@@ -4,7 +4,7 @@
 
 ## Tokens (semantic, use `var(--…)`)
 
-- content/surface/line/primary/status colors · space · text · radius · font-mono/sans · shadow(card/overlay). (Full list in tokens.inline.css, inlined in the shell.)
+- content/surface/line/primary/status colors · space · text · radius · font-sans · shadow(card/overlay). (Full list in tokens.inline.css, inlined in the shell.)
 
 ---
 
@@ -51,7 +51,7 @@ Variant: `.btn--primary/--secondary/--ghost/--danger/--ghost-danger/--link`. Siz
 ```
 
 ### badge — small status/category label
-Tone: `.badge--neutral/--success/--warning/--error/--info`. Shape: `.badge--tag` (mono token). Leading: `.badge__dot` (live status). Never put an icon on a status — that's the dot's job.
+Tone: `.badge--neutral/--success/--warning/--error/--info`. Shape: `.badge--tag` (boxy token). Leading: `.badge__dot` (live status). Never put an icon on a status — that's the dot's job.
 ```html
 <span class="badge badge--success"><span class="badge__dot" aria-hidden="true"></span>Active</span>
 <span class="badge badge--tag">SN-8F2A19</span>
@@ -176,7 +176,7 @@ Modifiers: `.detail-header--sticky`. Slots: `__bar __back __logo __main __title 
         <span class="detail-header__chips"><span class="badge badge--neutral">…</span></span>
       </div>
       <div class="detail-header__meta">
-        <span style="font-family:var(--font-mono);">#…</span>
+        <span style="font-variant-numeric:tabular-nums;">#…</span>
         <span>…</span>
       </div>
     </div>

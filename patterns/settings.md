@@ -116,7 +116,7 @@ create-form `Field` when the screen is really a record-entry form.
 - **The content column fills the width the shell allows** (principle #6); only the
   nav rail is fixed-narrow. Don't wrap the groups in a `max-width` centering
   wrapper.
-- **Data-readable values are mono + tabular** where they appear (IDs, thresholds,
+- **Data-readable values are `tabular-nums`** where they appear (IDs, thresholds,
   intervals) — principle #11.
 
 ## Building blocks

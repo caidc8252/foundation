@@ -129,9 +129,7 @@
     "duration-slow",
     "ease-emphasized",
     "ease-standard",
-    "font-family-mono",
     "font-family-sans",
-    "font-mono",
     "font-sans",
     "font-weight-bold",
     "font-weight-medium",
@@ -2110,7 +2108,7 @@
       "layer": "composite",
       "name": "log-console",
       "title": "Log console",
-      "summary": "A structured logcat viewer — a toolbar (level filter · text filter · download) over a dense, monospace, level-coloured row list with expandable rows.",
+      "summary": "A structured logcat viewer — a toolbar (level filter · text filter · download) over a dense, tabular, level-coloured row list with expandable rows.",
       "contract": "composites/log-console.md",
       "example": "composites/log-console.html",
       "classes": [
@@ -2263,7 +2261,7 @@
       "layer": "composite",
       "name": "stat-card",
       "title": "Stat card · composite",
-      "summary": "A single key metric — overline label, big mono value, optional trend / icon / description — surfaced above a list (style-spec §4).",
+      "summary": "A single key metric — overline label, big tabular value, optional trend / icon / description — surfaced above a list (style-spec §4).",
       "contract": "composites/stat-card.md",
       "example": "composites/stat-card.html",
       "classes": [

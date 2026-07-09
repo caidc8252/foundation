@@ -23,7 +23,7 @@ product-grid  (auto-fill columns, ~300px min — count follows CONTAINER width)
 │ │     [ product image ]   │ │ │ │   [ glyph placeholder ] │ │
 │ └─────────────────────────┘ │ │ └─────────────────────────┘ │
 │ Reader Pro X                │ │ Cable, USB-C 2m             │
-│ SKU-RDR-PRO-X   (mono)      │ │ SKU-CBL-USBC-2M             │
+│ SKU-RDR-PRO-X   (tabular)   │ │ SKU-CBL-USBC-2M             │
 │ Contactless EMV reader.     │ │ Braided, 100W PD.           │
 │ ¥1,299          3 options   │ │ ¥59                         │  ← price-row, pinned to bottom
 │ [ 加入购物车 ]        [ + ] │ │ [ 加入购物车 ]        [ + ] │  ← cta
@@ -34,9 +34,9 @@ product-grid  (auto-fill columns, ~300px min — count follows CONTAINER width)
   (shown whole, never cropped). Falls back to a `placeholder` / tinted `glyph`
   when there's no asset. An optional diagonal **ribbon** carries a status
   (Sample / New / Sale).
-- **Body** — `name` (weight 600), optional `sku` (mono, tertiary), a one-line
+- **Body** — `name` (weight 600), optional `sku` (tabular, tertiary), a one-line
   clamped `description`, then the **price-row** and **cta**.
-- **Price-row** — `price` (mono, tabular) left, an optional `options` count
+- **Price-row** — `price` (tabular) left, an optional `options` count
   ("3 options") right. Pinned to the card's bottom so cards in a row align
   regardless of name/description length.
 - **CTA** — a primary "add to cart" button + an optional icon `add` button.
@@ -56,7 +56,7 @@ product-grid  (auto-fill columns, ~300px min — count follows CONTAINER width)
   spec sheet; the detail page carries the full copy.
 - **Ribbon tone is status, not decoration** — reserve it for a real signal
   (Sample unit, New, on Sale); most cards carry none.
-- Price is mono + tabular so figures don't reflow as the grid re-lays.
+- Price is `tabular-nums` so figures don't reflow as the grid re-lays.
 
 ## States
 

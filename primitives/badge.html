@@ -4,7 +4,7 @@
   The Badge primitive has THREE orthogonal signals, each a question about the value
   (badge.md §The three signals):
     1. TONE  (colour)            — what does it mean?      (5 semantic tones)
-    2. SHAPE (pill vs tag)       — is it a literal token?  (word vs mono/boxy token)
+    2. SHAPE (pill vs tag)       — is it a literal token?  (word vs boxy token)
     3. LEADING (dot / icon / none) — a live state / a recognizable type / plain
   Answer the three from the data and the badge's form is fully specified.
   The one ban: never put an icon on a status — a status's marker is the dot.
@@ -89,17 +89,17 @@
 
     <!-- ══════════════════════════════════════════════════════════════════
          Signal 2 · SHAPE — is it a verbatim machine token?
-         pill (word) vs tag (mono, boxy). Tone is orthogonal — a token may be
+         pill (word) vs tag (boxy). Tone is orthogonal — a token may be
          neutral (an id) or carry a tone (an error code).
          ════════════════════════════════════════════════════════════════ -->
     <div class="demo-section">
       <h2 class="demo-section__title">Shape — <code>pill</code> vs <code>tag</code> · is it a literal token?</h2>
       <p class="demo-section__desc">
-        A <strong>word</strong> read as language → <code>pill</code> (default, round, sans).
+        A <strong>word</strong> read as language → <code>pill</code> (default, round).
         A <strong>verbatim machine token</strong> you'd copy / compare char-by-char →
-        <code>.badge--tag</code> (boxy <code>radius-sm</code> + <code>font-mono</code>).
-        The box corners and the monospace are two cues for the same signal. Tone is a
-        separate axis — a token can be neutral (an id) or carry a tone (an error code).
+        <code>.badge--tag</code> (boxy <code>radius-sm</code> + <code>tabular-nums</code>).
+        The box corners carry the signal; tabular figures keep the digits from reflowing.
+        Tone is a separate axis — a token can be neutral (an id) or carry a tone (an error code).
       </p>
 
       <div class="demo-row">

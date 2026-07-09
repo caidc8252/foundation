@@ -26,7 +26,7 @@ top of its anatomy; [`create-form`](../patterns/create-form.md) and
 ```
 ┌ detail-header (full-bleed surface-2 band, hairline bottom edge) ────────────┐
 │ [‹] 〔logo〕 Name 〔status〕 〔chip〕 〔chip〕   [ secondary? ] [ ⋯? ] [ primary? ] │
-│              id · mono · 〔copy〕 · created 3d ago · 12 members               │
+│              id · tabular · 〔copy〕 · created 3d ago · 12 members            │
 │ ┌ tabs (line variant, on the band's bottom edge) ─────────────────────────┐ │
 │ │ Overview   Activity   Members   Settings                                │ │
 │ └─────────────────────────────────────────────────────────────────────────┘ │
@@ -58,7 +58,7 @@ top of its anatomy; [`create-form`](../patterns/create-form.md) and
 - **Main** — at most **two lines**: (1) the `title` (one `h1` `name`) with optional
   inline **status badges** and **category chips** (`Badge`s) on the *same* line —
   the name ellipsizes so trailing badges / chips survive; (2) a one-line **meta row**
-  (mono ids, a `copy` affordance, dot-joined facts). **Never a third stacked line** —
+  (tabular ids, a `copy` affordance, dot-joined facts). **Never a third stacked line** —
   chips share the title line, they do not get their own row.
 - **Actions** — the action cluster, **business-driven** (same rule as
   `page-header`): include only the verbs this record needs. The `⋯` overflow is
@@ -113,7 +113,7 @@ top of its anatomy; [`create-form`](../patterns/create-form.md) and
   at one weight so the selected tab doesn't widen and nudge its neighbours; the
   active tab reads by ink + the 2px underline (see `tabs`).
 - Title is `text-2xl` / weight 600 / tracking-tight / `content-primary`. The meta
-  row is `text-xs` / `content-secondary`; ids are mono.
+  row is `text-xs` / `content-secondary`; ids are tabular.
 
 ## States
 
@@ -134,7 +134,7 @@ Cross-consumer guards:
 - **The name truncates; badges don't.** The name cell is `min-w-0` + truncate so
   trailing status badges stay on the title line instead of being pushed off.
 - **Meta row uses dot separators** (`·`) *between* facts (inserted between items,
-  never trailing the last); ids render mono.
+  never trailing the last); ids render tabular.
 - **Full-bleed band**, like `page-header`: render it OUTSIDE `page-body` so it
   spans edge-to-edge and draws its hairline corner-to-corner; the tab *content*
   below gets `page-body`'s gutters.

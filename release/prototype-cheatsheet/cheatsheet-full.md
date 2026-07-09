@@ -4,7 +4,7 @@
 
 ## Tokens (semantic, use `var(--…)`)
 
-- content/surface/line/primary/status colors · space · text · radius · font-mono/sans · shadow(card/overlay). (Full list in tokens.inline.css, inlined in the shell.)
+- content/surface/line/primary/status colors · space · text · radius · font-sans · shadow(card/overlay). (Full list in tokens.inline.css, inlined in the shell.)
 
 ---
 
@@ -51,7 +51,7 @@ Variant: `.btn--primary/--secondary/--ghost/--danger/--ghost-danger/--link`. Siz
 ```
 
 ### badge — small status/category label
-Tone: `.badge--neutral/--success/--warning/--error/--info`. Shape: `.badge--tag` (mono token). Leading: `.badge__dot` (live status). Never put an icon on a status — that's the dot's job.
+Tone: `.badge--neutral/--success/--warning/--error/--info`. Shape: `.badge--tag` (boxy token). Leading: `.badge__dot` (live status). Never put an icon on a status — that's the dot's job.
 ```html
 <span class="badge badge--success"><span class="badge__dot" aria-hidden="true"></span>Active</span>
 <span class="badge badge--tag">SN-8F2A19</span>
@@ -682,7 +682,7 @@ Modifiers: `.detail-header--sticky`. Slots: `__bar __back __logo __main __title 
         <span class="detail-header__chips"><span class="badge badge--neutral">…</span></span>
       </div>
       <div class="detail-header__meta">
-        <span style="font-family:var(--font-mono);">#…</span>
+        <span style="font-variant-numeric:tabular-nums;">#…</span>
         <span>…</span>
       </div>
     </div>
@@ -1088,7 +1088,7 @@ Declarative: `nav.pagination[data-pager="numbered"][data-total][data-page]`, opt
 With `data-firstlast`: prepend `.pagination__page[aria-label="First page"]` (`chevrons-left`) and append `[aria-label="Last page"]` (`chevrons-right`). Boundary buttons get `disabled` at the ends.
 
 ### diff — compact before → after comparison (old struck · arrow · new highlighted)
-`.diff` (add `.diff--inline` to collapse the 3-column grid into one mono line for rows/table cells). Columns: `.diff__col.diff__col--old` and `.diff__col.diff__col--new`, each with `.diff__label` (BEFORE/AFTER) + `.diff__value`; an `.diff__arrow` between them. Absence uses `.diff__value.diff__value--empty` (em-dash).
+`.diff` (add `.diff--inline` to collapse the 3-column grid into one compact line for rows/table cells). Columns: `.diff__col.diff__col--old` and `.diff__col.diff__col--new`, each with `.diff__label` (BEFORE/AFTER) + `.diff__value`; an `.diff__arrow` between them. Absence uses `.diff__value.diff__value--empty` (em-dash).
 ```html
 <div class="diff">
   <div class="diff__col diff__col--old">
@@ -1136,7 +1136,7 @@ Container `.feed-list` (usually inside `.card > .card__content.card__content--fl
 ```
 Read rows drop the `.unread-dot`; action-less rows drop `.feed-item__actions`.
 
-### log-console — monospace logcat viewer: level toggles, filter, expandable rows
+### log-console — tabular logcat viewer: level toggles, filter, expandable rows
 Structure: `.log-console > .log-console__toolbar` (level `.toggle-group` + `.search-input` + download btn) `+ .log-console__viewport` (rows). Row: `.log-console__row .log-console__row--{v|d|i|w|e|f}[data-level]` with cells `__time __pid __level __tag __msg`. Expandable rows add `--expandable` (toggles `--expanded`) + `.log-console__detail`. Empty state: `.log-console__empty[hidden]`.
 ```html
 <div class="log-console">

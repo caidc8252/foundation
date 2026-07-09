@@ -1,4 +1,4 @@
-### log-console — monospace logcat viewer: level toggles, filter, expandable rows
+### log-console — tabular logcat viewer: level toggles, filter, expandable rows
 Structure: `.log-console > .log-console__toolbar` (level `.toggle-group` + `.search-input` + download btn) `+ .log-console__viewport` (rows). Row: `.log-console__row .log-console__row--{v|d|i|w|e|f}[data-level]` with cells `__time __pid __level __tag __msg`. Expandable rows add `--expandable` (toggles `--expanded`) + `.log-console__detail`. Empty state: `.log-console__empty[hidden]`.
 ```html
 <div class="log-console">

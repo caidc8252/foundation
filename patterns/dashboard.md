@@ -44,7 +44,7 @@ A dashboard is a **framework**, not a filled-in screen (governance principle [#9
 - **The metric strip is the required core** — ≥1 `stat-grid` of `stat-card`s. It fills the full width the shell allows (principle #6); never wrap it in a `max-width` centering wrapper.
 - **The insight row is a full-width columns row** — a chart card beside an optional feed. Compose the columns with a page-local grid on tokens; it too fills full width (principle #6). Below a narrow width it collapses to one column.
 - **Semantic color stays on status carriers** (stat-card value tones, trend deltas, feed-item tones, badges) — never a card background wash (principle #10). Chart series take the ordinal `--color-chart-*` palette, not status colors.
-- **Data-readable figures are mono + tabular** — the big `stat-card__value`, counts, times (principle #11).
+- **Data-readable figures are `tabular-nums`** — the big `stat-card__value`, counts, times (principle #11b).
 
 ## Building blocks
 

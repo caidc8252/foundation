@@ -37,7 +37,7 @@ screen is *about* (see its "Metric vs attribute").
   columns, so short values sit next to their label instead of stranding across an
   empty column. This is the single, canonical KV layout.
 - **Label** — `dt`, `text-xs`, **UPPERCASE** (`text-transform: uppercase`), `tracking-overline` (letter-spacing ~0.06 em), `content-tertiary`, weight 500. This casing is mandatory — never title-case or sentence-case labels. Both wizard summary rails and detail-screen overview grids must match.
-- **Value** — `dd`, `text-md`, `content-primary`; ids/tokens render mono; a short
+- **Value** — `dd`, `text-md`, `content-primary`; ids/tokens render tabular; a short
   value stays beside its label, a long / multi-line one (addresses, notes) simply
   wraps inside its value column (`overflow-wrap: break-word`), staying aligned with
   every other row.

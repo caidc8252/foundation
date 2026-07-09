@@ -167,9 +167,9 @@ the three tile flush with no gap or overlap:
   1. **Two-line** — primary `text-md`/medium/`content-primary` over a subline
      `text-xs`/`content-tertiary`; may lead with an avatar / initial tile
      (`size-8`, `surface-3`, `rounded-lg`).
-  2. **Numeric / id / date** — always mono + `tabular-nums`, `content-secondary`
+  2. **Numeric / id / date** — always `tabular-nums`, `content-secondary`
      (the data-table `cell-num`); usually right-aligned so digits line up.
-  3. **Plain** — table default size, `content-secondary`, **no** mono.
+  3. **Plain** — table default size, `content-secondary`, **no** `tabular-nums`.
   **Badges encode meaning by kind:** a **status** value renders a *tonal* `Badge`
   (`success` / `warning` / `error` / `info`, with a `dot`); a **category / type /
   tag** value (e.g. plan, contract type, labels — single or multiple) renders a

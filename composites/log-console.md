@@ -1,6 +1,6 @@
 # Log console
 
-A structured **logcat** viewer — a toolbar (level filter · text filter · download) over a dense, monospace, level-coloured row list with expandable rows. For collecting and reading Android device logs off a POS fleet.
+A structured **logcat** viewer — a toolbar (level filter · text filter · download) over a dense, tabular, level-coloured row list with expandable rows. For collecting and reading Android device logs off a POS fleet.
 
 ## When to use
 

@@ -36,7 +36,7 @@ load-bearing exposition — read them before applying. Rules are referenced by n
 | 9b | At most one primary action | Law | both | review |
 | 10 | Semantic color has a scope | Law | both | review |
 | 11a | Weight is a closed set | Law | both | mechanical + review |
-| 11b | Data-readable text uses mono | Default | both | review |
+| 11b | Data-readable text uses tabular-nums | Default | both | review |
 | 12 | Rows align on a shared baseline | Law | both | review |
 | 13 | Spacing rhythm — the nesting ladder | Law | both | review |
 | 14 | Filtering commits on an explicit action | Law | both | review + advisory |
@@ -266,15 +266,23 @@ Line-height follows the closed `--line-height-*` ladder (`none`, `tight`,
 `snug`, `compact`, `normal`, `relaxed`) for the same reason: typography rhythm
 is part of the system, not a per-page number.
 
-### 11b. Data-readable text uses `font-mono` + `tabular-nums`
+### 11b. Data-readable text uses `tabular-nums`
 
 > **Default** · both · review — data-readable text (identifiers, timestamps, amounts,
-> counts, versions) uses `font-mono` + `tabular-nums` so digits align; prose and labels
-> use the sans family.
+> counts, versions) sets `font-variant-numeric: tabular-nums` so digits align down a
+> column; prose and labels leave figures proportional.
 
 **Data-readable text** — identifiers, timestamps, amounts, counts, versions —
-uses `font-mono` + `tabular-nums` so digits align and codes read unambiguously.
-Prose and labels use the sans family.
+sets `tabular-nums` so digits occupy equal advance widths and align down a column.
+Prose and labels leave figures proportional.
+
+The foundation ships **one family** (`--font-sans`, Geist) and **no monospace face**.
+Alignment is a numeric-figure property, not a typeface: `tabular-nums` fixes digit
+width without importing a second family, so a stat value, a table's numeric column,
+and a log timestamp all align while staying in the page's voice. `--font-mono` does
+not exist — reaching for a monospace stack is off-system. Code-ish runs (`pre`,
+`code`, `kbd`, `samp`) render in Geist with `tabular-nums`; they are distinguished
+by surface and border, not by typeface.
 
 ## 12. Rows align on a shared baseline
 

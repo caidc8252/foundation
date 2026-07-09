@@ -12,7 +12,7 @@ Modifiers: `.detail-header--sticky`. Slots: `__bar __back __logo __main __title 
         <span class="detail-header__chips"><span class="badge badge--neutral">…</span></span>
       </div>
       <div class="detail-header__meta">
-        <span style="font-family:var(--font-mono);">#…</span>
+        <span style="font-variant-numeric:tabular-nums;">#…</span>
         <span>…</span>
       </div>
     </div>

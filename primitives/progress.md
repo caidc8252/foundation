@@ -63,7 +63,7 @@ optional striped-motion affordance:
 ```
 Root  ── flex column, gap-3 (label/value row + track)
  ├─ [ Label ]   optional — caption text (text-xs, content-secondary)
- ├─ [ Value ]   optional — right-aligned % readout (text-xs, content-secondary, mono tabular-nums)
+ ├─ [ Value ]   optional — right-aligned % readout (text-xs, content-secondary, tabular-nums)
  └─ Track       6px tall, full width, radius-full, bg surface-3, clips overflow
      └─ Indicator   full height, radius-full, bg primary (or tone color), width = value%
 ```

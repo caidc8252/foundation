@@ -60,14 +60,14 @@ swatch, and tooltip indicator all read that same `--color-<series>`.
 │   ┊      ┊      ┊      ┊      (chart__grid, dashed)    │
 │  ▁█  ▃█  █▆  ▅█       bars: free end radius-md         │
 │  ──────────────────── (chart__axis baseline)          │
-│   Jan   Feb   Mar     (chart__tick, mono 9.5px)        │
+│   Jan   Feb   Mar     (chart__tick, tabular 9.5px)     │
 ├───────────────────────────────────────────────────────┤
 │  ● Revenue   ● Refunds        (chart-legend, below)    │
 └───────────────────────────────────────────────────────┘
 
 chart-tooltip (floating, dark)        chart-legend item
-┌──────────────────┐                  [● Revenue]  dot|line swatch + mono label
-│ Mar              │ ← header (mono)
+┌──────────────────┐                  [● Revenue]  dot|line swatch + tabular label
+│ Mar              │ ← header (tabular)
 │ ● Revenue  12,480│ ← swatch · name · value(tabular)
 │ ● Refunds     320│
 │ ──────────────── │
@@ -75,19 +75,19 @@ chart-tooltip (floating, dark)        chart-legend item
 └──────────────────┘
 ```
 
-- **Container** — `flex aspect-video` region; `text-xs` mono baseline. Gains
+- **Container** — `flex aspect-video` region; `text-xs` tabular baseline. Gains
   `role="img"` + sr-only title/desc only when `label`/`description` are set.
 - **Legend** — wrapped row, centered, `gap-x-3 gap-y-1.5`; each item = swatch +
-  mono `text-xs` `content-secondary` label. Swatch is a `dot` (`2.5px` rounded
+  `text-xs` `content-secondary` label. Swatch is a `dot` (`2.5px` rounded
   square) or `line` (`0.5×3` bar) tinted with the series color; toggled-off
   items dim to `content-tertiary` / `opacity-60`.
 - **Tooltip** — dark card (`chart-tooltip-bg`/`-fg`), `radius-md`, `shadow-4`,
-  `min-w-32`; mono header, per-row swatch (`dot`/`line`/`dashed`) + truncating
+  `min-w-32`; tabular header, per-row swatch (`dot`/`line`/`dashed`) + truncating
   name + `font-semibold tabular-nums` value; optional `Total` row above a
   hairline divider.
 - **Pie callout** — slice → elbow polyline (`startX/Y` → `elbowX/Y` → `endX/Y`,
   round caps) → text block: name (`font-medium`) over value
-  (`content-tertiary tabular-nums`), both mono `text-xs`.
+  (`content-tertiary tabular-nums`), both `text-xs` tabular.
 - **Empty / skeleton** — both fill the `aspect-video` plot box. Empty = icon +
   `text-md`/medium/`content-primary` title + `content-tertiary` description,
   centered. Skeleton = `radius-md` shimmer block, `role="status"`/`aria-busy`.
@@ -147,7 +147,7 @@ Recharts forwards onto the SVG primitive):
   SVG** (no Recharts); apply the `.chart` skin classes from `composites.css` on
   top of the inlined `release/tokens.inline.css`:
   - `.chart` (container) › `.chart__grid` line · `.chart__axis` baseline ·
-    `.chart__tick` (mono 9.5px) · `.chart__bar` (free end `radius-md`) ·
+    `.chart__tick` (tabular 9.5px) · `.chart__bar` (free end `radius-md`) ·
     `.chart__curve` (round caps) · datum-state `.chart__series--selected` /
     `--dimmed` / `--filtered`.
   - `.chart-legend` › `.chart-legend__item` (+ `--toggle` for the button form,

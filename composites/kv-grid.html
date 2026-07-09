@@ -18,7 +18,7 @@
     - Long / multi-line value (address): wraps inside its value column
     - Empty value: renders em-dash (content-tertiary) per contract
     - Loading state: skeleton--text stands in for values while labels hold
-    - Mono values for IDs, amounts (via font-mono tabular-nums class)
+    - Tabular values for IDs, amounts (via the .kv-mono tabular-nums helper)
     - Realistic detail-page Overview layout
 
   Cross-reference: @cloud/ui ui/recipes/KeyValue + KvGrid.
@@ -93,9 +93,8 @@
       margin-top: var(--space-2);
       font-style: italic;
     }
-    /* Inline mono helper for values that should render in monospace */
+    /* Data-readable values: tabular figures so digits align down the column (principle 11b) */
     .kv-mono {
-      font-family: var(--font-mono);
       font-variant-numeric: tabular-nums;
     }
   </style>
@@ -115,7 +114,7 @@
       <div class="demo-card__header">Overview</div>
       <div class="demo-card__content">
         <dl class="kv-grid">
-          <!-- ID: mono value -->
+          <!-- ID: tabular value -->
           <div class="kv-grid__row">
             <dt>ID</dt>
             <dd class="kv-mono">cust_8f2a1b3e</dd>
@@ -127,7 +126,7 @@
             <dd>Active</dd>
           </div>
 
-          <!-- Created: mono date -->
+          <!-- Created: tabular date -->
           <div class="kv-grid__row">
             <dt>Created</dt>
             <dd class="kv-mono">Mar 4, 2026</dd>

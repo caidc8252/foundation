@@ -31,10 +31,11 @@ follows from the data, not taste:
 | shape | use for | result |
 |---|---|---|
 | `pill` *(default)* | a **word** read as language — a status or a category | radius `radius-full`, sans |
-| `tag` | a **verbatim machine token** you'd copy / compare char-by-char — an id, SN, version (`v5.2.14`), hash | radius `radius-sm`, monospace (`font-mono`) |
+| `tag` | a **verbatim machine token** you'd copy / compare char-by-char — an id, SN, version (`v5.2.14`), hash | radius `radius-sm`, `tabular-nums` |
 
-The box corners **and** the monospace are two cues for the **same** signal ("this is a
-literal token"); they always travel together — there is no boxy-sans or round-mono badge.
+The **box corners** carry the signal ("this is a literal token"); `tabular-nums` keeps the
+digits inside it from reflowing when the value changes. The foundation ships one family,
+so the corners are the whole shape cue — there is no round tag and no boxy pill.
 
 ## Leading adornment — dot · icon · none
 
@@ -45,7 +46,7 @@ nothing. The dot and the icon answer *different* questions, so pick by the badge
 |---|---|---|
 | a **live state** — Active, Pending, Failed, Offline, Locked, Draft | **`.badge__dot`** | the dot is an abstract *liveness* marker: it means "this is a state" and nothing more — colour + word carry the meaning. A **neutral** live state (Offline, Draft) takes the dot too; the dot marks **liveness, not colour**. |
 | a **recognizable type / identity** where a glyph names the kind faster than the word — a visibility lock, an integration mark, a channel type | a leading **icon** (12px) | the icon *carries meaning* — it identifies the kind. Opt-in and rare: use only when the glyph adds recognition the word is slower at. |
-| a plain **category / tier / token** — Enterprise, Merchant, `v5.2.14` | **nothing** | the word (or the mono tag) is enough |
+| a plain **category / tier / token** — Enterprise, Merchant, `v5.2.14` | **nothing** | the word (or the boxy tag) is enough |
 
 - **The one ban — never put an icon on a status.** A ⚠ before "Failed" or a ✓ before
   "Active" is redundant with the tone + word, and it forces a per-status glyph choice
@@ -75,7 +76,7 @@ No size prop — fixed height `h-5` (20px), `text-xs`, `font-medium`, `px-2`. Th
 ● Active        ← dot   : a live state (liveness marker; no meaning of its own)
 [icon] Private  ← icon  : a recognizable type (the glyph identifies the kind)
 Enterprise      ← none  : a plain category / label
-v5.2.14         ← tag   : a verbatim token (mono, boxy; no dot, no icon)
+v5.2.14         ← tag   : a verbatim token (boxy, tabular; no dot, no icon)
 ```
 
 ## Accessibility
@@ -88,7 +89,7 @@ v5.2.14         ← tag   : a verbatim token (mono, boxy; no dot, no icon)
 - **Use `tone` for color — there is no `variant`.** There is no `variant` axis (`default`/`secondary`/`destructive`/`outline`/`ghost`/`link`) — the skin is tone-only. Migrating old usage: `secondary`→`neutral`, `destructive`→`error`; `default`/`outline`/`ghost`/`link` have no tonal equivalent, so pick the tone that matches the status/category the badge conveys (or `neutral` for a plain label).
 - **Semantic `tone` is for status / severity only.** Informational / category / plain-display fields (plan tier, type, category, a bare label) use `tone="neutral"` — never borrow a semantic tone (or a categorical color) to tint or distinguish a non-status field. (See `principles.md` §10.)
 - **Form follows the value, not taste** (§The three signals): colour = *what it means*, shape = *is it a literal token?* (`tag`), leading adornment = *live state* (`dot`) / *recognizable type* (`icon`) / *plain* (none). Answer the three from the data and the badge is fully specified.
-- `shape="tag"` switches to monospace + `radius-sm` — code-like tokens/IDs only, never prose labels, and it never carries a dot or an icon.
+- `shape="tag"` switches to `radius-sm` + `tabular-nums` — code-like tokens/IDs only, never prose labels, and it never carries a dot or an icon.
 
 ## Implementations
 
