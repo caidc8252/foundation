@@ -5,11 +5,18 @@
 ## 何时跑
 **打 release tag 之前,手动触发一次**（组件/CSS/范例有变时）。这是 foundation 发布流程里加的一步;发布逻辑其余不变。
 
-## 怎么跑
+## 怎么跑（打 tag 前,catalog 重建之后）
 ```bash
 # 从 foundation 仓库根
+# ① 先查骨架陈旧(范例变了但骨架没重蒸馏)——确定性哈希 diff,非零退出=有待修
+node scripts/prototype-cheatsheet/check-staleness.mjs
+#   报「陈旧」的组件 → 重蒸馏其 skeletons/<name>.md(读 primitives|composites/<name>.html)→ 跑 --update 落基线
+#   报「缺骨架」的组件 → 补一份骨架 → --update
+# ② 再生成(读现有骨架 + registry + catalog → 三档速查 + tier-components)
 node scripts/prototype-cheatsheet/refresh.mjs
 ```
+> 顺序要点:**check-staleness 在 refresh 之前**。refresh 只重拼、不重蒸馏骨架,所以必须先靠 check-staleness 点名过期骨架、重蒸馏,否则 refresh 会把旧骨架静默烘进速查。
+
 产出（提交进本次 release(release/prototype-cheatsheet/)、随 tag 走）:
 - `release/prototype-cheatsheet/cheatsheet-low.md` / `-mid.md` / `-full.md` — 三档组件用法速查（class + 最小 markup 骨架）
 - `release/prototype-cheatsheet/tier-components.json` — 三档组件清单（下游按它建壳 `build-netshell --components/--primitives`）
