@@ -1,6 +1,6 @@
 {
   "name": "@cloud/foundation",
-  "version": "0.7.11",
+  "version": "0.7.12",
   "private": true,
   "description": "Shared design foundation — single source of truth for tokens, primitive contracts, pattern archetypes, and design governance. Consumed by the Next.js app (@cloud/ui) and by artifact-design prototypes.",
   "type": "module",
@@ -44,7 +44,8 @@
     "check:patterns": "node scripts/check-pattern-router.mjs",
     "check:examples": "node scripts/check-examples.mjs",
     "check:release": "node scripts/check-release.mjs",
-    "check:all": "node --test emit/build.test.mjs scripts/check-artifact.test.mjs scripts/promote-version.test.mjs scripts/release-lib.test.mjs && node scripts/check-release.mjs && node scripts/check-examples.mjs --strict && node scripts/check-pattern-router.mjs",
+    "check:z-index": "node scripts/check-z-index.mjs",
+    "check:all": "node --test emit/build.test.mjs scripts/check-artifact.test.mjs scripts/promote-version.test.mjs scripts/release-lib.test.mjs && node scripts/check-release.mjs && node scripts/check-examples.mjs --strict && node scripts/check-pattern-router.mjs && node scripts/check-z-index.mjs",
     "visual:render": "node scripts/visual/render.mjs",
     "visual:sticky": "node scripts/visual/sticky-check.mjs composites/summary-bar.html patterns/list-page.html patterns/list-page-advanced-filter.html",
     "visual:setup": "playwright install chromium",

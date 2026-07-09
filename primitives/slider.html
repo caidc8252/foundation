@@ -96,7 +96,7 @@
       border-radius: 50%;
       box-shadow: var(--shadow-1);
       transform: translate(-50%, -50%);
-      z-index: 2;
+      z-index: var(--z-raised);
       pointer-events: none;
     }
 
@@ -114,13 +114,15 @@
       cursor: not-allowed;
     }
 
+    /* Shares --z-raised with .slider__thumb; it only grabs the drag because it
+       comes after the thumb in the DOM. Keep it last inside .slider. */
     .slider .range-input {
       position: absolute;
       inset: 0;
       width: 100%;
       opacity: 0;
       cursor: pointer;
-      z-index: 3;
+      z-index: var(--z-raised);
     }
     .slider--disabled .range-input {
       cursor: not-allowed;

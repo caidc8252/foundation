@@ -78,12 +78,12 @@
 
   /* Combobox: popup anchors under its trigger; collapsed until aria-expanded. */
   .combobox-wrapper { position: relative; width: 100%; max-width: 320px; }
-  .combobox-wrapper .combobox__content { position: absolute; top: calc(100% + var(--space-1)); left: 0; right: 0; z-index: 20; }
+  .combobox-wrapper .combobox__content { position: absolute; top: calc(100% + var(--space-1)); left: 0; right: 0; }
   .combobox__trigger[aria-expanded="false"] + .combobox__content { display: none; }
 
   /* Dropdown menu: anchors beneath its ⋯ trigger (see the portal note below). */
   .action-menu-wrapper { position: relative; display: inline-block; }
-  .action-menu-wrapper .dropdown-menu { position: absolute; top: calc(100% + var(--space-1)); right: 0; z-index: 20; min-width: 200px; }
+  .action-menu-wrapper .dropdown-menu { position: absolute; top: calc(100% + var(--space-1)); right: 0; min-width: 200px; }
 
   @keyframes spin { to { transform: rotate(360deg); } }
 </style>

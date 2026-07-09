@@ -82,12 +82,21 @@ ramp steps don't.
 
 ## 4. The type scale is closed
 
-> **Law** · both · mechanical — font size, spacing, radius, shadow, and control-height
-> snap to their closed ladders; there is no off-scale value (`text-[15px]`). Violate = fail.
+> **Law** · both · mechanical — font size, spacing, radius, shadow, control-height, and
+> stacking snap to their closed ladders; there is no off-scale value (`text-[15px]`).
+> Violate = fail.
 
 Font sizes snap to `--text-{xs…5xl}`. There is no `text-[15px]`. Same for the
 control-height (`control-*`), spacing (`cx-*`, `space-*`), radius, and shadow
 ladders. The scales are the design; off-scale values read as accidents.
+
+`z-index` snaps to the `--z-*` ladder in `tokens/elevation.css`; a bare number is
+an off-scale value like any other. The ladder has two tiers, and picking from the
+wrong one is the defect it exists to catch: `--z-behind/base/raised` order siblings
+**inside one stacking context**, while `--z-sticky/dialog/popover/tooltip/toast` are
+the **cross-component** contract for surfaces that escape their parent. To lift a
+thing above its neighbours, reach for `--z-raised` — never a big number "to be safe",
+which is how a nub or an input slot quietly outranks the dialog layer.
 
 ## 5. The component contract is authoritative — atoms and composites alike
 

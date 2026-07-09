@@ -72,7 +72,7 @@
     .popover-overlay {
       position: absolute;
       inset: 0;
-      z-index: 5;
+      z-index: var(--z-raised);
       background: transparent;
     }
     .popover-overlay--hidden {
@@ -98,7 +98,7 @@
       cursor: pointer;
       color: var(--color-content-tertiary);
       padding: 0;
-      z-index: 1;
+      z-index: var(--z-raised);
     }
     .date-trigger__clear:hover {
       color: var(--color-content-primary);
@@ -150,7 +150,7 @@
         </div>
 
         <!-- Popover -->
-        <div id="picker-popover" class="popover" role="dialog" aria-label="Select date range" style="display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:10;padding:0;width:auto;min-width:560px;">
+        <div id="picker-popover" class="popover" role="dialog" aria-label="Select date range" style="display:none;position:absolute;top:calc(100% + 4px);left:0;padding:0;width:auto;min-width:560px;">
           <div style="display:flex;flex-direction:row;align-items:stretch;">
             <!-- Presets rail -->
             <div class="date-presets" style="width:128px;flex-shrink:0;padding:var(--space-3) var(--space-2);border-right:1px solid var(--color-line-subtle);">

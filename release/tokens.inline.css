@@ -152,6 +152,20 @@
 }
 
 :root {
+  
+  --z-behind:  -1;   
+  --z-base:     0;   
+  --z-raised:   1;   
+
+  
+  --z-sticky:  10;   
+  --z-dialog:  50;   
+  --z-popover: 60;   
+  --z-tooltip: 70;   
+  --z-toast:   80;   
+}
+
+:root {
   --duration-instant: 80ms;
   --duration-fast:    120ms;
   --duration-normal:  200ms;

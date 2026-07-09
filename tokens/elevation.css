@@ -1,8 +1,9 @@
 /* ─────────────────────────────────────────────────────────────
    Foundation · Tokens · Elevation (L1)
-   Corner radius + shadow ladder. Dark-mode shadow overrides live
-   in tokens/dark.css. Snap radius/shadow to a step here, never an
-   arbitrary rounded-[…] / shadow-[…].
+   Depth: corner radius, shadow ladder, stacking ladder. Dark-mode
+   shadow overrides live in tokens/dark.css. Snap radius/shadow to a
+   step here, never an arbitrary rounded-[…] / shadow-[…]; snap
+   z-index to the --z-* ladder below, never a hand-picked number.
    ───────────────────────────────────────────────────────────── */
 @theme {
   /* ─── Radius ─── */
@@ -28,4 +29,34 @@
      so they follow theme switches. */
   --shadow-row-selected: inset 2px 0 0 var(--color-primary-700);
   --shadow-sticky-col:   1px 0 0 var(--color-line-subtle);
+}
+
+/* ─── Stacking ladder — raw var() consumption, two tiers ───────
+   The z axis. The tiers look alike (both are bare integers) and are
+   the thing most often confused, so they are named apart:
+
+   • LOCAL — meaningful only inside ONE stacking context (a card, a
+     table, a calendar cell). Portable: any component may reach for
+     these, they never collide across components.
+   • GLOBAL — the cross-component ordering contract. A surface that
+     escapes its parent (sticky chrome, dialog, popover, tooltip,
+     toast) claims exactly one rung. Nothing floating over the page
+     invents a number; it picks a rung, or `token-change.md` adds one.
+
+   A local lift is `--z-raised`, never a big number "to be safe" — a
+   big number is how a component quietly outranks the dialog layer.
+   Rungs are spaced so a new one can be inserted without renumbering.
+   ───────────────────────────────────────────────────────────── */
+:root {
+  /* local — within a single stacking context */
+  --z-behind:  -1;   /* decorative fill painted under its own content */
+  --z-base:     0;   /* sits at the context floor (stretched hit-area) */
+  --z-raised:   1;   /* lift over siblings: focus ring, sticky cell, progress fill */
+
+  /* global — the cross-component ordering contract */
+  --z-sticky:  10;   /* sticky page chrome: page/detail header, summary bar, action footer */
+  --z-dialog:  50;   /* modal, sheet, command palette — scrim and panel share the rung */
+  --z-popover: 60;   /* popover, dropdown/context menu, combobox, hover card */
+  --z-tooltip: 70;   /* tooltip — clears any popover it annotates */
+  --z-toast:   80;   /* top of the stack; must clear everything below */
 }

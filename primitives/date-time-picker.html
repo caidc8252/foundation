@@ -73,7 +73,7 @@
     }
     .demo-popover__panel {
       position: absolute;
-      z-index: 10;
+      z-index: var(--z-popover);
       top: calc(100% + var(--space-1));
       left: 0;
     }
@@ -105,7 +105,7 @@
       cursor: pointer;
       color: var(--color-content-tertiary);
       padding: 0;
-      z-index: 1;
+      z-index: var(--z-raised);
     }
     .date-trigger__clear:hover {
       color: var(--color-content-primary);
@@ -133,7 +133,7 @@
       position: absolute;
       top: calc(100% + var(--space-1));
       left: 0;
-      z-index: 10;
+      z-index: var(--z-popover);
       display: none;
     }
     [data-dtp-field].is-open .dtp-panel { display: block; }
