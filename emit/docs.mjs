@@ -402,7 +402,7 @@ code, .mono { font-family: var(--font-mono); }
 .shell { display: grid; grid-template-columns: 232px 1fr; min-height: 100vh; }
 .nav {
   position: sticky; top: 0; align-self: start; height: 100vh; overflow-y: auto;
-  border-right: 1px solid var(--color-line-default);
+  border-inline-end: 1px solid var(--color-line-default);
   background: var(--color-surface-2);
   padding: var(--space-6) var(--space-5);
 }
@@ -560,7 +560,7 @@ h3.group { font-size: var(--text-sm); letter-spacing: 0.02em;
 
 /* ── in-page annotations ── */
 #anno-launch {
-  position: fixed; right: var(--space-5); bottom: var(--space-5); z-index: 950;
+  position: fixed; inset-inline-end: var(--space-5); bottom: var(--space-5); z-index: 950;
   display: flex; align-items: center; gap: var(--space-2);
   height: var(--spacing-control-lg); padding: 0 var(--spacing-cx-lg);
   border: 1px solid var(--color-line-strong); border-radius: var(--radius-full);
@@ -573,7 +573,7 @@ h3.group { font-size: var(--text-sm); letter-spacing: 0.02em;
 
 /* inspect-mode toggle — same fixed pill as #anno-launch, docked one row above it */
 #inspectToggle {
-  position: fixed; right: var(--space-5);
+  position: fixed; inset-inline-end: var(--space-5);
   bottom: calc(var(--space-5) + var(--spacing-control-lg) + var(--space-2)); z-index: 950;
   display: flex; align-items: center; gap: var(--space-2);
   height: var(--spacing-control-lg); padding: 0 var(--spacing-cx-lg);
@@ -602,7 +602,7 @@ body.anno-on main { cursor: crosshair; }
 .anno-flash { outline: 2px solid transparent; outline-offset: 2px; animation: anno-flash 1.2s var(--ease-standard); }
 
 #anno-panel {
-  position: fixed; right: var(--space-5); bottom: calc(var(--space-5) + 2 * var(--spacing-control-lg) + 2 * var(--space-2));
+  position: fixed; inset-inline-end: var(--space-5); bottom: calc(var(--space-5) + 2 * var(--spacing-control-lg) + 2 * var(--space-2));
   z-index: 951; width: 340px; max-width: calc(100vw - 2 * var(--space-5)); max-height: 64vh;
   display: flex; flex-direction: column; overflow: hidden;
   background: var(--color-surface-2); border: 1px solid var(--color-line-strong);
@@ -612,7 +612,7 @@ body.anno-on main { cursor: crosshair; }
 .anno-panel__head { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-line-subtle); }
 .anno-panel__head strong { font-size: var(--text-md); }
 #anno-count { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-content-tertiary); }
-.anno-mode { margin-left: auto; display: flex; align-items: center; gap: var(--space-1); font-size: var(--text-xs); color: var(--color-content-secondary); cursor: pointer; }
+.anno-mode { margin-inline-start: auto; display: flex; align-items: center; gap: var(--space-1); font-size: var(--text-xs); color: var(--color-content-secondary); cursor: pointer; }
 .anno-x { border: 0; background: transparent; cursor: pointer; color: var(--color-content-tertiary); font-size: var(--text-lg); line-height: var(--line-height-none); font-family: var(--font-sans); padding: 0 var(--space-1); }
 .anno-x:hover { color: var(--color-content-primary); }
 .anno-list { overflow-y: auto; padding: var(--space-2); display: flex; flex-direction: column; gap: 2px; }
@@ -658,7 +658,7 @@ h6.md-h { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 
 .md-quote { margin: var(--space-3) 0; padding: var(--space-2) var(--space-4); border-left: 3px solid var(--color-line-strong); background: var(--color-surface-3); border-radius: var(--radius-sm); font-size: var(--text-xs); color: var(--color-content-tertiary); line-height: var(--line-height-relaxed); }
 .contract code { font-family: var(--font-mono); font-size: 0.88em; background: var(--color-surface-3); padding: 1px var(--space-1); border-radius: var(--radius-sm); color: var(--color-content-primary); }
 .md-table { border-collapse: collapse; width: 100%; margin: var(--space-3) 0; font-size: var(--text-xs); display: block; overflow-x: auto; }
-.md-table th, .md-table td { border: 1px solid var(--color-line-default); padding: var(--space-2) var(--space-3); text-align: left; vertical-align: top; }
+.md-table th, .md-table td { border: 1px solid var(--color-line-default); padding: var(--space-2) var(--space-3); text-align: start; vertical-align: top; }
 .md-table th { background: var(--color-surface-3); color: var(--color-content-secondary); font-weight: var(--font-weight-semibold); white-space: nowrap; }
 .md-table td { color: var(--color-content-secondary); }
 .contract a { color: var(--color-primary-500); }

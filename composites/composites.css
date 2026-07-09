@@ -228,8 +228,8 @@
   align-items: center;
   gap: var(--space-2);
 }
-/* push the advanced/secondary trigger to the right of the toolbar */
-.condition-band__spacer { margin-left: auto; }
+/* push the advanced/secondary trigger to the inline end of the toolbar */
+.condition-band__spacer { margin-inline-start: auto; }
 
 /* ── Search input (wraps a .input with a leading icon) ── */
 .search-input {
@@ -407,7 +407,7 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;        /* table header uses `wide` tracking (0.04em),
                                     NOT the 0.06em overline tracking — em metric, no token */
-  text-align: left;
+  text-align: start;
   color: var(--color-content-tertiary);
 }
 /* Sortable header: clickable cluster, chevron reveals on hover. */
@@ -441,7 +441,7 @@
   padding-block: var(--space-3);
   border-bottom: 1px solid var(--color-line-subtle);
   color: var(--color-content-primary);
-  text-align: left;
+  text-align: start;
 }
 /* numeric / id columns read as mono tabular */
 .data-table .cell-num {
@@ -787,7 +787,7 @@
   background-color: var(--color-surface-2);
   border-bottom: 1px solid var(--color-line-subtle);
 }
-.app-frame__spacer { margin-left: auto; }
+.app-frame__spacer { margin-inline-start: auto; }
 .app-frame__avatar {
   display: grid;
   place-items: center;
@@ -1113,7 +1113,7 @@
   background-color: var(--color-surface-2);
   box-shadow: var(--shadow-1);
   font-family: var(--font-sans);
-  text-align: left;
+  text-align: start;
   transition: background-color var(--duration-fast) var(--ease-standard),
               border-color var(--duration-fast) var(--ease-standard),
               box-shadow var(--duration-fast) var(--ease-standard);
@@ -1135,7 +1135,7 @@
   box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-primary-500) 10%, transparent);
 }
 
-/* Top row — overline label (left) + optional icon (right). */
+/* Top row — overline label (start) + optional icon (end). */
 .stat-card__head {
   display: flex;
   align-items: flex-start;
@@ -1257,7 +1257,7 @@
   border-radius: var(--radius-md);
   background-color: transparent;
   font-family: inherit;
-  text-align: left;
+  text-align: start;
   cursor: default;
   outline: none;
 }
@@ -1749,7 +1749,7 @@
   flex-shrink: 0;
   align-items: center;
   gap: var(--space-2);
-  margin-left: auto;
+  margin-inline-start: auto;
 }
 /* tab strip docked on the band's bottom edge: wraps a .tabs__list--line, flush
    to the band's own hairline (no second border). */
@@ -2180,7 +2180,7 @@
 }
 .product-card__glyph { width: 60%; max-width: var(--space-20); height: auto; color: var(--color-content-tertiary); }
 
-/* Diagonal status ribbon (Sample / New / Sale) — pinned across the top-right
+/* Diagonal status ribbon (Sample / New / Sale) — pinned across the top inline-end
    corner. Tone sets the fill; text is always on-primary white. */
 .product-card__ribbon {
   position: absolute;
@@ -2188,9 +2188,9 @@
   /* The band must be LONG enough (and centred ~29px in from the corner) that,
      once rotated 45°, both ends overshoot the image edges and get clipped into a
      clean diagonal band across the corner — a short band leaves a clipped stub.
-     130px width / -36px right are the portal-proven geometry; layout measures
+     130px width / -36px inline-end offset are the portal-proven geometry; layout measures
      (depend on the rotate math, not a token), same exemption as other dims. */
-  right: -2.25rem;   /* -36px */
+  inset-inline-end: -2.25rem;
   width: 8.125rem;   /* 130px */
   padding-block: var(--space-1);
   transform: rotate(45deg);
@@ -2690,7 +2690,7 @@
    already provides display:flex/align-items:center/gap; this file only adds
    the start/end cluster split. */
 .status-card__footer-start { display: flex; align-items: center; gap: var(--space-2); }
-.status-card__footer-end   { display: flex; align-items: center; gap: var(--space-2); margin-left: auto; }
+.status-card__footer-end   { display: flex; align-items: center; gap: var(--space-2); margin-inline-start: auto; }
 /* Tighter vertical footer than the card size default (space-5): the footer is a
    single control row, not stacked content. Keeps horizontal padding from base. */
 .status-card > .card__footer { padding-block: var(--space-3); }

@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -69,4 +69,25 @@ test("typography exports closed weight and line-height token sets", () => {
       "line-height-tight": "1.1",
     },
   );
+});
+
+test("governed composite and docs CSS use logical inline properties", () => {
+  const checkedFiles = ["composites/composites.css", "emit/docs.mjs"];
+  const findings = [];
+  const physicalDirectionDecl = /\b(border-right(?:-[\w-]+)?|margin-left|text-align|right)\s*:\s*([^;"'}]+)/g;
+
+  for (const file of checkedFiles) {
+    const text = readFileSync(join(repoRoot, file), "utf8")
+      .replace(/\/\*[\s\S]*?\*\//g, " ");
+
+    for (const match of text.matchAll(physicalDirectionDecl)) {
+      const prop = match[1];
+      const value = match[2].trim().replace(/\s+/g, " ");
+      if (prop === "margin-left" && value !== "auto") continue;
+      if (prop === "text-align" && value !== "left") continue;
+      findings.push(`${file}: ${prop}: ${value}`);
+    }
+  }
+
+  assert.deepEqual(findings, []);
 });

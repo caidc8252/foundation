@@ -79,7 +79,7 @@ Cross-consumer guards. Most values are tokens, but this composite carries the
 **most non-token layout literals of the set** — copy them, don't re-derive:
 
 - **The ribbon geometry is exact, not approximate.** The diagonal corner band is
-  `width: 8.125rem` (130px, `w-[8.125rem]`) · `right: -2.25rem` (`-right-9`) ·
+  `width: 8.125rem` (130px, `w-[8.125rem]`) · `inset-inline-end: -2.25rem` (`-right-9`) ·
   `top: cx-md` (14px) · `rotate(45deg)` · `transform-origin: center`, inside an
   `overflow-hidden` image box. These are tuned so both ends overshoot the edges
   and clip into a clean band; **shrinking the width leaves a clipped stub** (a
