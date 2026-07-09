@@ -15,7 +15,7 @@ A combobox is a composed set of slots, not a single element. The trigger lives i
 
 | part | role | token recipe |
 |---|---|---|
-| `trigger` | the closed control — shows the selected label(s) or placeholder | bg `surface-2` · text `content-primary` (`text-sm`) · border `line-default` · radius `radius-md` · hover border `line-strong` · focus border `line-focus` + ring `line-focus`/30 · trailing chevron `content-tertiary` · placeholder text `content-tertiary` |
+| `trigger` | the closed control — shows the selected label(s) or placeholder | bg `surface-2` · text `content-primary` (`text-md`) · border `line-default` · radius `radius-md` · hover border `line-strong` · focus border `line-focus` + `shadow-focus` ring · trailing chevron `content-tertiary` · placeholder text `content-tertiary` |
 | `content` (popup) | the floating surface that holds the search box and the list | bg `surface-2` · text `content-primary` · border `line-default` · radius `radius-md` · `shadow-4` · width tracks trigger (`--anchor-width`) with `min-w-36` floor |
 | `search` (input row) | the filter input with a leading search glyph | leading `search` icon `content-tertiary` (`size-3.5`) · borderless `text-sm` input · placeholder `content-tertiary` · bottom hairline `line-subtle` |
 | `list` | the scrollable option list | padding `--space-1` · max-height clamp + scroll *(see notes)* |
@@ -36,7 +36,7 @@ The popup's search input is a fixed `control-md` (36px, source `h-9`) regardless
 ## States
 
 - **hover** (trigger) — border lifts to `line-strong`.
-- **focus-visible** (trigger) — border `line-focus` + 2px ring `line-focus`/30.
+- **focus-visible** (trigger) — border `line-focus` + the `shadow-focus` ring, same as every other bordered control.
 - **disabled** (trigger) — `cursor-not-allowed` + `opacity-50`.
 - **invalid** (`aria-invalid` on trigger) — border `error-strong` + 2px ring `error`/20.
 - **placeholder** — when nothing is selected, the trigger value text renders `content-tertiary` (`data-placeholder`).

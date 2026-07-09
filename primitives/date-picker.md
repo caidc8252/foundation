@@ -59,7 +59,7 @@ The **trigger** owns all interactive states; it mirrors `Input`/`Select` exactly
 so a picker reads as just another field:
 
 - **hover** — border `line-strong`.
-- **focus-visible** — border `line-focus` + 2px ring `line-focus`/30.
+- **focus-visible** — border `line-focus` + the `shadow-focus` ring (shared by every bordered control; `.date-trigger` carries it for all four date/time pickers).
 - **disabled** — `cursor-not-allowed` + `opacity-50`; the clear button is suppressed.
 - **invalid** (`aria-invalid`, via the `invalid` prop) — border `error-strong` +
   2px ring `error`/20. Same recipe as `Input`/`Select`'s error state.

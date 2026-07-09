@@ -62,7 +62,7 @@ Sizes drive the trigger; the presets rail and two-month grid keep fixed sizing.
 The **trigger** owns interactive states, mirroring `Input`/`Select`:
 
 - **hover** — border `line-strong`.
-- **focus-visible** — border `line-focus` + 2px ring `line-focus`/30.
+- **focus-visible** — border `line-focus` + the `shadow-focus` ring (shared by every bordered control; `.date-trigger` carries it for all four date/time pickers).
 - **disabled** — `cursor-not-allowed` + `opacity-50`; clear suppressed.
 - **invalid** (`aria-invalid`, via `invalid`) — border `error-strong` + 2px ring `error`/20.
 - **open** — popover entrance owned by the React side; reference CSS = static open skin.
