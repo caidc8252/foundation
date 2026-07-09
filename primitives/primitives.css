@@ -286,6 +286,24 @@ body {
 }
 .btn--link:hover:not(:disabled) { text-decoration: underline; }
 
+/* ── Invalid + danger-family focus (button.md §States) ── */
+
+/* aria-invalid — destructive border + resting ring. Same recipe the other eight
+   form controls carry, so an invalid button reads like an invalid field. */
+.btn[aria-invalid="true"] {
+  border-color: var(--color-error-strong);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-error) 20%, transparent);
+}
+
+/* The danger family focuses in its own hue — a primary-blue ring around a red
+   button reads as a different control. Geometry tracks --shadow-focus (3px ring);
+   only the hue moves, and --color-error is theme-aware so dark mode follows. */
+.btn--danger:focus-visible,
+.btn--ghost-danger:focus-visible,
+.btn[aria-invalid="true"]:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-error) 30%, transparent);
+}
+
 /* ── Button sizes ── */
 .btn--xs {
   height: var(--spacing-control-xs);

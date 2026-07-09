@@ -215,6 +215,32 @@
     </div>
 
     <!-- ══════════════════════════════════════════════════════════════════
+         Section 5b: invalid + danger-family focus
+         aria-invalid is an ATTRIBUTE, not a modifier class — the same
+         [aria-invalid="true"] hook every other form control carries.
+         The danger family focuses in the error hue: tab to the two rightmost
+         buttons to see the ring change colour.
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Button · invalid &amp; danger-family focus</h2>
+      <p class="demo-section__desc">
+        A button that submits an invalid form takes <code>aria-invalid="true"</code> —
+        an attribute, not a modifier class, matching the hook every other form control
+        uses. It paints a destructive border plus a resting ring.
+        Separately, the <strong>danger family</strong> (<code>.btn--danger</code>,
+        <code>.btn--ghost-danger</code>) focuses in the <strong>error hue</strong> rather
+        than the default primary ring — <em>keyboard-focus the buttons below</em> to compare.
+      </p>
+
+      <div class="demo-row">
+        <button class="btn btn--secondary" type="button" aria-invalid="true">Invalid</button>
+        <button class="btn btn--primary" type="button" aria-invalid="true">Invalid primary</button>
+        <button class="btn btn--danger" type="button">Danger (focus me)</button>
+        <button class="btn btn--ghost-danger" type="button">Ghost danger (focus me)</button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
          Section 6: With icons
          ════════════════════════════════════════════════════════════════ -->
     <div class="demo-section">

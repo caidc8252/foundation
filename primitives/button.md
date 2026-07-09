@@ -43,8 +43,8 @@ Horizontal padding follows the `cx-*` scale (`px-cx-sm/md/lg`); never an arbitra
 - **hover / active** — per-variant steps above; selected/expanded (`aria-expanded`) reuses the hover surface.
 - **focus-visible** — border `ring` + `shadow-focus` ring. Always visible on keyboard focus.
 - **disabled** — `cursor-not-allowed` + `opacity-50`. `loading` implies disabled.
-- **invalid** (`aria-invalid`) — destructive border + ring.
-- **danger family focus** — focus ring shifts to the error hue.
+- **invalid** (`aria-invalid="true"`) — destructive border (`error-strong`) + a resting 2px `error`/20 ring. This is an **attribute**, not a modifier class — the same hook the other eight form controls carry, so an invalid button reads like an invalid field.
+- **danger family focus** — `.btn--danger` and `.btn--ghost-danger` focus in the **error hue** (a 3px `error`/30 ring) instead of the default `shadow-focus`; a primary-blue ring around a red button reads as a different control. An `aria-invalid` button focuses in the error hue too. Ring geometry tracks `shadow-focus`; only the hue moves, and `--color-error` is theme-aware so dark mode follows.
 
 ## Anatomy
 
@@ -60,4 +60,4 @@ Horizontal padding follows the `cx-*` scale (`px-cx-sm/md/lg`); never an arbitra
 ## Implementations
 
 - **Next / @cloud/ui** — `import { Button } from "@cloud/ui"`. base-ui `Button` under the hood; props `variant` `size` `loading` `block` `iconLeft` `iconRight`. Prop/API details: the `ui` skill. Do not re-skin via `className`; pick a variant.
-- **Artifact (self-contained HTML)** — use the `.btn` + `.btn--<variant>` + `.btn--<size>` classes in `../primitives/primitives.css`, on top of the inlined `release/tokens.inline.css`. Same token recipe, same names.
+- **Artifact (self-contained HTML)** — use the `.btn` + `.btn--<variant>` + `.btn--<size>` classes in `../primitives/primitives.css`, on top of the inlined `release/tokens.inline.css`. Same token recipe, same names. The invalid state is the `aria-invalid="true"` attribute (§States), not a class — there is no `.btn--invalid`.
