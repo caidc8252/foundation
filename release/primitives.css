@@ -524,6 +524,16 @@ body {
   transform: scale(0.75);
 }
 
+.badge__icon {
+  flex-shrink: 0;
+  width: var(--space-3);   
+  height: var(--space-3);
+}
+
+.badge:has(> .badge__icon) {
+  padding-inline-start: calc(var(--space-1) + var(--space-1) / 2);   
+}
+
 .badge:focus-visible {
   outline: none;
   box-shadow: var(--shadow-focus);
