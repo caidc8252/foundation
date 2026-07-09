@@ -76,7 +76,7 @@ content (popup surface)
 - This is **base-ui** (`@base-ui/react/combobox`), not Radix. The wrapper normalizes `value` to `option | null` (or `option[]`) so the underlying Root is always controlled — passing `undefined` never flips it uncontrolled. `multiple` switches `value`/`onValueChange` to `string[]` and keeps the popover open while toggling.
 - Size vocabulary is `sm` | `md` (default `md`), matching `Select`'s two-value axis — not the `xs/sm/md/lg` of other controls.
 - The popup width tracks the trigger (`w-(--anchor-width)`) with a `min-w-36` (144px) floor; the reference CSS expresses the floor as `--space-` math.
-- **List max-height is untokenized** — the source clamps the scroll area to `max-h-56` (224px); no sizing token lands there. The reference CSS keeps it as a raw value and flags a token-change wish (a `--popup-list-max-h` / popup-sizing token would close the gap — same family of wish noted in dropdown-menu.md and hover-card.md).
+- **List max-height** — the source clamps the scroll area to `max-h-56` (224px); the reference CSS expresses this as `--spacing-popup-list-sm` (same popup-sizing family as `command.md`'s list cap).
 - `text-content-tertiary` / `text-content-primary` are the semantic tokens the source uses directly; the `dark:bg-surface-3/30` trigger tint is a dark-mode-only nicety that the token system handles via the theme flip — the reference layer paints the single `surface-2` ground.
 - The contract documents the **static skin only** — see Implementations.
 

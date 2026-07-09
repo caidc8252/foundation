@@ -211,6 +211,24 @@
   --spacing-stat-card: 92px;
 
   
+  --spacing-popup-xs:      160px;  
+  --spacing-popup-sm:      220px;  
+  --spacing-popup-md:      240px;  
+  --spacing-popup-lg:      280px;  
+  --spacing-popup-xl:      288px;  
+  --spacing-popup-2xl:     340px;  
+  --spacing-popup-list-sm: 224px;  
+  --spacing-popup-list-md: 288px;  
+
+  
+  --spacing-dialog-sm:      360px;  
+  --spacing-dialog-md:      480px;  
+  --spacing-dialog-lg:      640px;  
+  --spacing-dialog-xl:      880px;  
+  --spacing-dialog-confirm: 440px;  
+  --spacing-dialog-command: 460px;  
+
+  
   --container-content: 1280px; 
 
   

@@ -16,13 +16,13 @@ Width presets only — height is content-driven and capped (see States · overfl
 
 | size | max-width | use |
 |---|---|---|
-| `sm` | 360px | a single confirm / a one-field prompt |
-| `md` *(default)* | 480px | the standard form / detail dialog |
-| `lg` | 640px | a wider form, side-by-side fields, a table |
-| `xl` | 880px | a dense editor / multi-column layout |
+| `sm` | 360px (`--spacing-dialog-sm`) | a single confirm / a one-field prompt |
+| `md` *(default)* | 480px (`--spacing-dialog-md`) | the standard form / detail dialog |
+| `lg` | 640px (`--spacing-dialog-lg`) | a wider form, side-by-side fields, a table |
+| `xl` | 880px (`--spacing-dialog-xl`) | a dense editor / multi-column layout |
 | `fullscreen` | `100vw − 64px` × `100vh − 64px` | an immersive task; leaves a 32px frame on every side |
 
-> The width presets are raw px (360/480/640/880) and the fullscreen frame is `64px` — no sizing token expresses popup dimensions yet (same gap noted in hover-card / dropdown-menu / command). See **Notes**.
+> The width presets are `--spacing-dialog-{sm,md,lg,xl}`; the fullscreen frame reuses the raw `--space-16` (64px) step. See **Notes**.
 
 ### Choosing a width
 
@@ -99,7 +99,7 @@ Map the content's shape to the width:
 ## Notes
 
 - The source paints on `bg-popover` / `text-popover-foreground` and the footer on `bg-muted`; in this token system those resolve to `surface-2` / `content-primary` and `surface-3` (same mapping the hover-card and dropdown-menu skins use).
-- Size presets (360/480/640/880px) and the fullscreen 64px frame are raw px — token-change wish: a popup-width / dialog-size sizing scale (also wanted by hover-card, dropdown-menu, command). The reference CSS pins them as raw px and flags it inline.
+- Size presets are `--spacing-dialog-{sm,md,lg,xl}` (360/480/640/880px), part of the shared dialog-sizing family also used by `alert-dialog` and `command`. The fullscreen 64px frame reuses the raw `--space-16` step rather than a dialog-sizing token, since it's a frame inset, not a panel width.
 - The panel max-height (`100vh − 96px`), the mobile width floor (`100% − 2rem`), and the centered transform are viewport math, not token-expressible; left as calc/percent (conventionally exempt).
 - Open/close animation, portalling, focus trap, and dismissal gating are **behavior owned by the React implementation**; the reference CSS expresses the static OPEN skin only.
 

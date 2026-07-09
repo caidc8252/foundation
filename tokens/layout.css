@@ -16,6 +16,31 @@
   --spacing-cx-lg: 18px;
   --spacing-stat-card: 92px;
 
+  /* ─── Popup sizing → w-popup-*, min-w-popup-*, max-h-popup-list-* ───
+     Floating-panel widths and their scroll-list caps. Each step is a
+     distinct existing design decision (menu/card/popover), pinned 1:1 to
+     its prior raw-px value — not a redesign, just naming what already
+     shipped. See primitives/{combobox,command,context-menu,dropdown-menu,
+     hover-card,popover,toast}.md. */
+  --spacing-popup-xs:      160px;  /* dropdown-menu sub-content min-width */
+  --spacing-popup-sm:      220px;  /* context-menu min-width */
+  --spacing-popup-md:      240px;  /* dropdown-menu content min-width */
+  --spacing-popup-lg:      280px;  /* hover-card fixed width */
+  --spacing-popup-xl:      288px;  /* popover fixed width */
+  --spacing-popup-2xl:     340px;  /* toast fixed width */
+  --spacing-popup-list-sm: 224px;  /* combobox option-list max-height */
+  --spacing-popup-list-md: 288px;  /* command palette list max-height */
+
+  /* ─── Dialog sizing → max-w-dialog-* ───
+     Centered-dialog max-widths (Modal presets + the two dialogs that pin
+     their own one-off cap). See primitives/{modal,alert-dialog,command}.md. */
+  --spacing-dialog-sm:      360px;  /* modal sm */
+  --spacing-dialog-md:      480px;  /* modal md (default) */
+  --spacing-dialog-lg:      640px;  /* modal lg */
+  --spacing-dialog-xl:      880px;  /* modal xl */
+  --spacing-dialog-confirm: 440px;  /* alert-dialog max-width */
+  --spacing-dialog-command: 460px;  /* command palette dialog max-width */
+
   /* ─── Container max-widths → max-w-* ─── */
   --container-content: 1280px; /* content max-width 1280 + 24px gutters */
 

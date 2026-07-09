@@ -36,7 +36,7 @@ One neutral surface in every tone — the toast card is always `surface-2` / `co
 
 ## Sizes
 
-No size variants. Fixed `340px` width (raw px — no sizing token expresses popup/toast width yet; see notes). Height is content-driven. Default auto-dismiss is 2500ms (a deployment constant owned by the implementation, not a token).
+No size variants. Fixed `340px` width (`--spacing-popup-2xl`). Height is content-driven. Default auto-dismiss is 2500ms (a deployment constant owned by the implementation, not a token).
 
 ## States
 

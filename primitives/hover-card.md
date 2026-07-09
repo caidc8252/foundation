@@ -15,7 +15,7 @@ Single visual variant — a portalled popup surface. No tone/style modifiers; it
 
 | part | token recipe |
 |---|---|
-| popup | width fixed `280px` · radius `radius-xl` · bg `surface-2` · 1px border `line-default` · padding `spacing-cx-md` (14px) · text `content-primary` at `text-md` · `shadow-4` |
+| popup | width fixed `280px` (`--spacing-popup-lg`) · radius `radius-xl` · bg `surface-2` · 1px border `line-default` · padding `spacing-cx-md` (14px) · text `content-primary` at `text-md` · `shadow-4` |
 
 ## Sizes
 
@@ -49,7 +49,7 @@ The trigger is whatever element the consumer wraps; this primitive adds no skin 
 
 - The source uses `rounded-xl` → `radius-xl` (12px) and `shadow-4`, a heavier elevation than the tooltip (which has no token shadow) — the hover card reads as a floating panel, the tooltip as a hint.
 - Padding `p-3.5` (14px) has no `--space-*` step; it maps exactly to `--spacing-cx-md` (14px), used here as the popup inset.
-- The `280px` fixed width has no token; recorded as a token-change wish (a `--popup-width-sm`-style sizing token would let prototype and production share the value). The reference CSS hardcodes `280px` only because no token expresses it; if one is added, swap it in.
+- The `280px` fixed width is `--spacing-popup-lg`, part of the shared popup-sizing family (also used by `context-menu`, `dropdown-menu`, `popover`).
 - Open/close keyframes (`fade`, `zoom-95`, directional `slide`) are React/base-ui behavior; the static skin omits animation and renders the resting open surface.
 
 ## Implementations

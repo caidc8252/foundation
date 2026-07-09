@@ -1124,9 +1124,8 @@ body {
    shadow-4). The no-dismiss rule, open/close keyframes, portalling, and focus
    trap are React/base-ui behaviors — out of scope for this static skin; the
    reference layer paints the resting OPEN dialog only, and the consumer drives
-   visibility. The 440px width cap, the mobile inset, and the centering
-   transform are viewport math, not token-expressible (same popup-sizing token
-   gap modal/hover-card/command flag). */
+   visibility. The 440px width cap is `--spacing-dialog-confirm`; the mobile
+   inset and the centering transform are viewport math, not token-expressible. */
 
 /* Scrim — fixed full-viewport wash. Unlike .modal-overlay, clicking it does
    NOT dismiss (behavior owned by the React side). */
@@ -1160,9 +1159,9 @@ body {
   outline: none;
 }
 /* sm+ caps the width one notch under Modal's md (480px) — a confirm carries
-   less than a form. 440px: no popup-sizing token expresses this yet. */
+   less than a form. */
 @media (min-width: 640px) {
-  .alert-dialog { max-width: 440px; }
+  .alert-dialog { max-width: var(--spacing-dialog-confirm); }
 }
 
 /* Header — title + optional description stack. Center on mobile, left on sm+.
@@ -1751,8 +1750,7 @@ body {
    layer paints the resting trigger plus ONE open popup; mark the highlighted
    row with .combobox__item--highlighted and selected rows with
    .combobox__item--selected (the skin can't observe live focus/selection).
-   The list max-height (224px) is a raw value: no sizing token lands there
-   (see combobox.md notes). */
+   The list max-height (224px) is `--spacing-popup-list-sm`. */
 
 /* The closed control — same recipe as .select, but a div with a trailing chevron. */
 .combobox__trigger {
@@ -1850,13 +1848,12 @@ body {
 }
 .combobox__input::placeholder { color: var(--color-content-tertiary); }
 
-/* Scrollable option list. max-height 224px (source max-h-56) — no sizing token
-   lands there; raw value, flagged in combobox.md notes. */
+/* Scrollable option list. max-height 224px (source max-h-56). */
 .combobox__list {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);   /* the list rows carry a real gap — highlight pills never touch */
-  max-height: 224px;
+  max-height: var(--spacing-popup-list-sm);
   overflow-x: hidden;
   overflow-y: auto;
   padding: var(--space-1);
@@ -1916,8 +1913,8 @@ body {
    React behaviors — out of scope for this static skin. The reference layer
    paints the resting shell, its rows, and a single highlighted row; mark it
    with .command__item--active (the skin can't observe live roving focus). The
-   list max-height (288px) and dialog max-width (460px) are raw px: no sizing
-   token expresses popup dimensions yet (see command.md notes). */
+   list max-height (288px) is `--spacing-popup-list-md`; the dialog max-width
+   (460px) is `--spacing-dialog-command`. */
 
 .command {
   display: flex;
@@ -1947,7 +1944,7 @@ body {
   z-index: var(--z-dialog);   /* fixed sibling of its backdrop, so it repeats the rung rather than inheriting it */
   transform: translateX(-50%);
   width: 100%;
-  max-width: 460px;   /* source max-w-[460px]; no sizing token expresses popup width yet */
+  max-width: var(--spacing-dialog-command);   /* source max-w-[460px] */
   overflow: hidden;
   border: 1px solid var(--color-line-default);
   border-radius: var(--radius-xl);
@@ -1994,7 +1991,7 @@ body {
 
 /* Scroll viewport — capped height, hidden scrollbar, vertical scroll only. */
 .command__list {
-  max-height: 288px;   /* source max-h-72; no sizing token expresses this yet */
+  max-height: var(--spacing-popup-list-md);   /* source max-h-72 */
   overflow-x: hidden;
   overflow-y: auto;
   scroll-padding-block: var(--space-1);
@@ -2090,7 +2087,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);   /* rows carry a real gap — see combobox__list */
-  min-width: 220px;   /* source min-w-[220px]; no sizing token expresses this yet */
+  min-width: var(--spacing-popup-sm);   /* source min-w-[220px] */
   overflow-x: hidden;
   overflow-y: auto;   /* React caps height to --available-height, then this scrolls */
   padding: var(--space-1);
@@ -2417,15 +2414,15 @@ body {
    checkbox/radio/sub-menu state are React/base-ui behaviors — out of scope for
    this static skin. The reference layer paints the resting OPEN popup surface
    and its rows; mark the highlighted row with .dropdown-menu__item--active
-   (the skin can't observe live keyboard focus). min-widths are raw px: no token
-   expresses popup width yet (see dropdown-menu.md notes). */
+   (the skin can't observe live keyboard focus). min-widths are
+   `--spacing-popup-md` / `--spacing-popup-xs` (see dropdown-menu.md notes). */
 
 .dropdown-menu {
   z-index: var(--z-popover);   /* the rung clears a dialog, so a menu opened inside one is not trapped; inert until positioned */
   display: flex;
   flex-direction: column;
   gap: var(--space-1);   /* rows carry a real gap — see combobox__list */
-  min-width: 240px;   /* source min-w-[240px]; no sizing token expresses this yet */
+  min-width: var(--spacing-popup-md);   /* source min-w-[240px] */
   max-height: 80vh;   /* viewport-capped, like .modal/.sheet — NOT 100%. A % max-height resolves against the containing block, so when a static artifact positions this popup `position:absolute` inside a trigger-sized `.overflow-wrap` (the taught detail-header pattern), `100%` collapsed to the trigger's height and clipped the menu. vh is containing-block-independent, so it works whether the popup is absolute-in-wrapper or portalled+fixed. */
   overflow-x: hidden;
   overflow-y: auto;
@@ -2545,7 +2542,7 @@ body {
 /* Nested sub-menu popup — content recipe, narrower min-width. */
 .dropdown-menu__sub-content {
   z-index: var(--z-popover);   /* shares its parent menu's rung; inert until positioned */
-  min-width: 160px;   /* source min-w-[160px]; no sizing token yet */
+  min-width: var(--spacing-popup-xs);   /* source min-w-[160px] */
 }
 
 /* Toggle rows (checkbox / radio) — item recipe at sm type, trailing check slot. */
@@ -2628,12 +2625,11 @@ body {
    elevation than the tooltip. Open/close (fade + zoom-95 + directional slide),
    portalling, and side/align positioning are React/base-ui behaviors; this
    static skin paints the resting OPEN popup surface only — the consumer
-   positions it. Width is a fixed 280px with no token (see hover-card.md notes:
-   token-change wish for a popup-width sizing token); everything else is a token. */
+   positions it. Width is a fixed 280px, `--spacing-popup-lg`. */
 
 .hover-card {
   z-index: var(--z-popover);   /* inert until the consumer positions this surface */
-  width: 280px;   /* source w-[280px]; no sizing token expresses this yet */
+  width: var(--spacing-popup-lg);   /* source w-[280px] */
   padding: var(--spacing-cx-md);   /* 14px — source p-3.5 */
   border: 1px solid var(--color-line-default);
   border-radius: var(--radius-xl);
@@ -2878,9 +2874,9 @@ body {
    portalling, focus trap, Escape/overlay dismissal gating, and the fade+zoom
    keyframes are React/base-ui behaviors — out of scope for this static skin.
    The reference layer paints the resting OPEN dialog (scrim + panel + slots);
-   the consumer drives visibility. Width presets (360/480/640/880px) and the
-   fullscreen 64px frame are raw px — no sizing token expresses popup dimensions
-   yet (see modal.md notes). The max-height, mobile width floor, and centering
+   the consumer drives visibility. Width presets (360/480/640/880px) are
+   `--spacing-dialog-{sm,md,lg,xl}`; the fullscreen 64px frame reuses the raw
+   `--space-16` step. The max-height, mobile width floor, and centering
    transform are viewport math (calc/percent), conventionally exempt. */
 
 /* Scrim — fixed full-viewport wash; centers the panel and floors mobile width. */
@@ -2900,7 +2896,7 @@ body {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 480px;   /* md default; size modifiers override. No popup-width token yet */
+  max-width: var(--spacing-dialog-md);   /* md default; size modifiers override */
   max-height: calc(100vh - 96px);   /* source max-h-[calc(100vh-96px)] */
   overflow: hidden;
   border: 1px solid var(--color-line-subtle);
@@ -2912,16 +2908,16 @@ body {
   outline: none;
 }
 
-/* Modal · width presets (raw px; no sizing token expresses popup width yet). */
-.modal--sm { max-width: 360px; }
-.modal--md { max-width: 480px; }
-.modal--lg { max-width: 640px; }
-.modal--xl { max-width: 880px; }
+/* Modal · width presets. */
+.modal--sm { max-width: var(--spacing-dialog-sm); }
+.modal--md { max-width: var(--spacing-dialog-md); }
+.modal--lg { max-width: var(--spacing-dialog-lg); }
+.modal--xl { max-width: var(--spacing-dialog-xl); }
 .modal--fullscreen {
   max-width: none;
-  width: calc(100vw - 64px);   /* 32px frame each side */
-  height: calc(100vh - 64px);
-  max-height: calc(100vh - 64px);
+  width: calc(100vw - var(--space-16));    /* 32px frame each side */
+  height: calc(100vh - var(--space-16));
+  max-height: calc(100vh - var(--space-16));
 }
 
 /* Header — title/description stack + pinned close, under a bottom hairline.
@@ -3023,7 +3019,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-cx-sm);            /* 10px (source gap-2.5) */
-  width: 18rem;                          /* 288px (source w-72); no token — see popover.md notes */
+  width: var(--spacing-popup-xl);        /* 288px (source w-72) */
   max-width: 100%;
   padding: var(--spacing-cx-sm);         /* 10px (source p-2.5) */
   border-radius: var(--radius-lg);
@@ -3861,9 +3857,8 @@ body {
    out of scope for this static skin. The reference layer paints ONE resting toast
    card: neutral surface in every tone (the tone lives in the leading icon color,
    not the surface — default sonner, no richColors), its content stack, optional
-   close, and the draining countdown bar. The card width (340px) is a raw value —
-   no sizing token expresses toast/popup width yet (see toast.md notes). The
-   countdown bar's length is driven by a per-toast --toast-duration custom property
+   close, and the draining countdown bar. The card width (340px) is
+   `--spacing-popup-2xl` (see toast.md notes). The countdown bar's length is driven by a per-toast --toast-duration custom property
    the consumer sets (the 2500ms default auto-dismiss is a deployment constant, not
    a token — no motion token expresses a multi-second toast lifetime; the UI-motion
    --duration-* tokens cap at 320ms). */
@@ -3874,7 +3869,7 @@ body {
   display: flex;
   align-items: flex-start;   /* items-start — icon top-aligns with the title */
   gap: var(--space-2);
-  width: 340px;   /* source --width: 340px; no sizing token expresses toast width yet */
+  width: var(--spacing-popup-2xl);   /* source --width: 340px */
   padding-inline: var(--space-3);
   padding-block: calc(var(--space-2) + var(--space-1) / 2);   /* 10px — source py-2.5 */
   overflow: hidden;   /* clips the countdown bar to the rounded corner */

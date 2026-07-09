@@ -18,9 +18,9 @@ Command is not a variant family — it is a fixed shell plus a set of structural
 | slot | role | token recipe |
 |---|---|---|
 | `Command` *(shell)* | the palette panel | bg `surface-2` · border `line-default` · radius `radius-xl` · `shadow-5` · text `content-primary` · `overflow-hidden`, column flex |
-| `CommandDialog` | the shell inside a centered modal | backdrop `surface-overlay` + blur · popup bg `surface-2` · border `line-default` · radius `radius-xl` · `shadow-5`; pinned `top-1/3`, capped `max-w-[460px]` (no token — see notes) |
+| `CommandDialog` | the shell inside a centered modal | backdrop `surface-overlay` + blur · popup bg `surface-2` · border `line-default` · radius `radius-xl` · `shadow-5`; pinned `top-1/3`, capped `max-w-[460px]` (`--spacing-dialog-command`) |
 | `CommandInput` | the search field | wraps an `InputGroup` shell, chromeless (`border-0` save a bottom `line-subtle` hairline, transparent, `shadow-none`); leading `SearchIcon` addon · `text-md` placeholder `content-tertiary` |
-| `CommandList` | the scroll viewport | `max-h-72` (288px) · scroll-padding `space-1` · scrollbar hidden · `overflow-y-auto` |
+| `CommandList` | the scroll viewport | `max-h-72` (288px, `--spacing-popup-list-md`) · scroll-padding `space-1` · scrollbar hidden · `overflow-y-auto` |
 | `CommandEmpty` | no-results message | centered, padded `space-6` block · `text-md` |
 | `CommandGroup` | a labeled section of items | padding `space-1`; heading uppercase `text-xs`, weight 500, tracked, `content-tertiary` |
 | `CommandSeparator` | hairline between groups | 1px `line-default`, bleeds past the list padding |

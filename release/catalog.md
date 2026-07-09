@@ -8,7 +8,7 @@
 >
 > Check an artifact against this set: `node scripts/check-artifact.mjs <file.html>`
 
-## L1 · Tokens (193)
+## L1 · Tokens (207)
 
 Inline `tokens.inline.css`, then reference as `var(--name)`. Values live in
 that file / `tokens.json`; these are the legal **names**, grouped by prefix:
@@ -23,7 +23,7 @@ that file / `tokens.json`; these are the legal **names**, grouped by prefix:
 - **radius** (6) - `--radius-2xl` `--radius-full` `--radius-lg` `--radius-md` `--radius-sm` `--radius-xl`
 - **shadow** (9) - `--shadow-1` `--shadow-2` `--shadow-3` `--shadow-4` `--shadow-5` `--shadow-cta` `--shadow-focus` `--shadow-row-selected` `--shadow-sticky-col`
 - **space** (12) - `--space-0` `--space-1` `--space-10` `--space-12` `--space-16` `--space-2` `--space-20` `--space-3` `--space-4` `--space-5` `--space-6` `--space-8`
-- **spacing** (8) - `--spacing-control-lg` `--spacing-control-md` `--spacing-control-sm` `--spacing-control-xs` `--spacing-cx-lg` `--spacing-cx-md` `--spacing-cx-sm` `--spacing-stat-card`
+- **spacing** (22) - `--spacing-control-lg` `--spacing-control-md` `--spacing-control-sm` `--spacing-control-xs` `--spacing-cx-lg` `--spacing-cx-md` `--spacing-cx-sm` `--spacing-dialog-command` `--spacing-dialog-confirm` `--spacing-dialog-lg` `--spacing-dialog-md` `--spacing-dialog-sm` `--spacing-dialog-xl` `--spacing-popup-2xl` `--spacing-popup-lg` `--spacing-popup-list-md` `--spacing-popup-list-sm` `--spacing-popup-md` `--spacing-popup-sm` `--spacing-popup-xl` `--spacing-popup-xs` `--spacing-stat-card`
 - **text** (9) - `--text-2xl` `--text-3xl` `--text-4xl` `--text-5xl` `--text-lg` `--text-md` `--text-sm` `--text-xl` `--text-xs`
 - **z** (8) - `--z-base` `--z-behind` `--z-dialog` `--z-popover` `--z-raised` `--z-sticky` `--z-toast` `--z-tooltip`
 

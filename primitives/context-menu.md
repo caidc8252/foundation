@@ -16,7 +16,7 @@ One elevated panel; no tone/semantic variant on the panel itself (status belongs
 
 | part | token recipe |
 |---|---|
-| panel (`__content`) | bg `surface-2` · text `content-primary` · border `line-default` · radius `radius-lg` (8px) · `shadow-4` · padding `space-1` (4px) · min-width 220px (see Notes) |
+| panel (`__content`) | bg `surface-2` · text `content-primary` · border `line-default` · radius `radius-lg` (8px) · `shadow-4` · padding `space-1` (4px) · min-width 220px (`--spacing-popup-sm`) |
 | item — `default` | row · gap `space-1.5` · padding `space-2.5` inline / `space-2` block · radius `radius-md` · `text-md` · text `content-primary` · focus bg `surface-hover` |
 | item — `destructive` | text `error-strong` · focus bg `error-bg` |
 | `__label` (group heading) | `text-xs` · uppercase · `font-medium` · text `content-tertiary` · padding `space-2.5` inline / `space-1` block |
@@ -29,7 +29,7 @@ One elevated panel; no tone/semantic variant on the panel itself (status belongs
 
 No size variants. **Every row is `text-md`** — plain items, destructive items, the submenu trigger, and checkbox/radio rows alike. A row's kind is signalled by its adornments (leading icon, trailing indicator, chevron), never by its type size; there is no "a hair larger" row. Only the two non-row parts differ: the `__label` group heading and the `__shortcut` key hint are `text-xs`. `dropdown-menu` shares this row recipe and the same rule.
 
-The panel is content-sized vertically (capped to `--available-height` by the positioner, then scrolls) with a fixed 220px minimum width — see Notes for the width-token gap.
+The panel is content-sized vertically (capped to `--available-height` by the positioner, then scrolls) with a fixed 220px (`--spacing-popup-sm`) minimum width.
 
 ## States
 
@@ -78,7 +78,7 @@ The trigger is whatever element the consumer wraps; it is NOT part of the panel 
 ## Notes
 
 - **Behavior is owned by the React implementation.** Open/close, pointer-position anchoring, portalling, side/align positioning, keyboard roving, submenu timing, and dismissal are all base-ui `ContextMenu` behaviors. The reference CSS expresses the **static open skin only** — no enter/exit keyframes, no positioning. The artifact side renders a single open panel for prototyping.
-- **Min-width token gap.** The panel is `min-w-[220px]`; no sizing token expresses 220px (the cx/control scales top out far below, `container-content` is 1280px). The reference CSS pins `min-width: 220px` as a documented one-off. *Token-change wish:* if floating panels (popover 288px, this menu 220px) standardize, propose an `--size-overlay-{sm,md}` token family; until then these are per-component constants.
+- **Min-width** — the panel is `min-w-[220px]`, expressed as `--spacing-popup-sm` (part of the shared popup-sizing family alongside `dropdown-menu`, `hover-card`, and `popover`).
 - **Half-step / odd spacing.** Item inline padding is `px-2.5` (10px = `cx-sm`); block padding is `py-2` (8px = `space-2`); the row gap is `gap-1.5` (6px) and the inset gutter is `pl-7` (28px). The 6px and 28px values are between named raw steps (the scale jumps `space-6` 24px → `space-8` 32px, no 28px). The reference CSS uses the `cx-sm` token where it lands exactly (10px) and `calc()` over the raw scale for the rest — 6px as `space-1 + space-1/2`, 28px as `space-6 + space-1` — matching how `tooltip`/`alert`/`popover` handle their half-steps.
 - **Shares the menu row with dropdown-menu.** Context-menu and dropdown-menu render the same row recipe; the difference is the trigger gesture (right-click vs. button click), owned by the React side. The row classes are namespaced under `.context-menu__` here to match this file's block; a future dropdown-menu contract should reuse the same recipe rather than reinvent the row tone/spacing.
 - **`shadow-lg` on `SubContent`.** The submenu reuses the content skin and tacks on `shadow-lg` (shadcn alias) — it resolves to the same overlay elevation (`shadow-4`) in this system; no extra step is emitted.
