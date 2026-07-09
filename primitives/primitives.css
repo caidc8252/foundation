@@ -2649,6 +2649,7 @@ body {
    Uses dedicated avatar tokens (NOT surface-3) so dark mode stays distinct from
    cards. Static, non-interactive, aria-hidden — no hover/focus/disabled states.
    The artifact author writes the already-derived initials as text content (first
+/* @component input-group */
 /* Input Group */
 /* A single-border shell that fuses an .input/.textarea with addons (icons, text
    affixes, .btn actions, kbd hints). The group owns the border / radius / focus
