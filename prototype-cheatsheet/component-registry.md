@@ -118,7 +118,7 @@
 | timeline | 70 | 活动/历史时间线 |
 | option-card | 70 | 可选卡片组 |
 | toggles | 70 | 分段控件 |
-| pagination | 100 | 裸分页（已用 rich-pagination,仅全量档） |
+| pagination | 100 | 页码导航（rich-pagination 组合它；壳靠 composition 闭包自动随行，故档位只决定是否作为独立项进索引，标 niche 100） |
 | diff | 100 | 差异对比（niche） |
 | feed-list | 100 | 信息流（niche） |
 | log-console | 100 | 日志控制台（niche） |

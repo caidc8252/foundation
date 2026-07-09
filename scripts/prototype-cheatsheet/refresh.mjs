@@ -15,6 +15,7 @@ import { fileURLToPath } from 'node:url';
 import { parseRegistry, componentsForTier } from './lib/registry.mjs';
 import { readCatalog } from './lib/catalog.mjs';
 import { markerCoverage } from './lib/marker-coverage.mjs';
+import { directCompositionDeps, closure } from './lib/composition.mjs';
 
 export { markerCoverage };
 
@@ -55,11 +56,23 @@ function main() {
   const primitivesCss = readFileSync(join(foundationRoot, 'primitives', 'primitives.css'), 'utf8');
   const compositesCss = readFileSync(join(foundationRoot, 'composites', 'composites.css'), 'utf8');
 
+  // Composition edges (A composes B) read from example HTML — drives the shell closure.
+  const depsMap = directCompositionDeps(catalog, foundationRoot);
+  const kindOf = n => registry.find(c => c.name === n)?.kind || catalog.get(n)?.layer;
+  // Shell scaffold: build-netshell ALWAYS emits `<div class="app-frame app-frame--frameless">`
+  // as the shell root, so app-frame CSS must ship in EVERY shell (its --frameless rules are
+  // load-bearing for sticky headers), regardless of tier. Seed the closure with it.
+  const SHELL_BASELINE = ['app-frame'];
+
   const tierMap = {};
   for (const tier of [30, 70, 100]) {
-    const names = componentsForTier(registry, tier);
+    const indexNames = componentsForTier(registry, tier);            // lean index: tier's own components
+    const shellSet = closure([...indexNames, ...SHELL_BASELINE], depsMap); // shell: + baseline + transitive composition deps
+    const shellNames = [...shellSet];
+    const composedIn = shellNames.filter(n => !indexNames.includes(n)).sort(); // pulled in only via composition
 
-    const cov = markerCoverage({ selected: names, registry, primitivesCss, compositesCss });
+    // marker-coverage runs on the SHELL set (what actually gets sliced into the shell).
+    const cov = markerCoverage({ selected: shellNames, registry, primitivesCss, compositesCss });
     if (cov.errors.length) {
       const detail = cov.errors.map(e => `${e.name} (markerless, host=${e.host}@${e.hostTier} > tier ${tier})`).join('; ');
       throw new Error(`marker-coverage: tier ${tier} would ship class(es) with zero CSS: ${detail}`);
@@ -68,13 +81,13 @@ function main() {
       console.log(`marker-coverage: tier ${tier} warn(s) (markerless but safe): ${cov.warns.map(w => w.host ? `${w.name}(host=${w.host})` : `${w.name}(host unresolved)`).join(', ')}`);
     }
 
-    const md = buildIndex({ tier, registry, catalog });
+    const md = buildIndex({ tier, registry, catalog });              // index stays lean (tier's own components)
     writeFileSync(join(outDir, TIER_FILE[tier]), md);
-    tierMap[tier] = {
-      primitives: registry.filter(c => c.kind === 'primitive' && c.tier <= tier).map(c => c.name),
-      composites: registry.filter(c => c.kind === 'composite' && c.tier <= tier).map(c => c.name),
+    tierMap[tier] = {                                                // tier-components drives the shell → use closure
+      primitives: shellNames.filter(n => kindOf(n) === 'primitive').sort(),
+      composites: shellNames.filter(n => kindOf(n) === 'composite').sort(),
     };
-    console.log(`wrote ${TIER_FILE[tier]} (${tierMap[tier].primitives.length}p + ${tierMap[tier].composites.length}c)`);
+    console.log(`wrote ${TIER_FILE[tier]} (index ${indexNames.length}; shell ${shellNames.length}${composedIn.length ? `; +composition: ${composedIn.join(', ')}` : ''})`);
   }
   writeFileSync(join(outDir, 'tier-components.json'), JSON.stringify(tierMap, null, 2));
   console.log('wrote tier-components.json');

@@ -195,7 +195,7 @@ example → `primitives/calendar.html` (非平凡使用去读、取规范实例)
 
 ### input-group · primitive · tier 70
 A single-border container that fuses an Input/Textarea with leading/trailing addons (icons, text affixes, action buttons, keyboard hints).
-class: `.input-group` `.input-group--block` `.input-group--disabled` `.input-group--invalid` `.input-group__addon` `.input-group__addon--block-end` `.input-group__addon--block-start` `.input-group__addon--inline-end` `.input-group__addon--inline-start` `.input-group__control` `.input-group__text`
+class: `.btn` `.input-group` `.input-group--block` `.input-group--disabled` `.input-group--invalid` `.input-group__addon` `.input-group__addon--block-end` `.input-group__addon--block-start` `.input-group__addon--inline-end` `.input-group__addon--inline-start` `.input-group__control` `.input-group__text` `.textarea`
 example → `primitives/input-group.html` (非平凡使用去读、取规范实例)
 
 ### page-header · composite · tier 30
@@ -259,7 +259,7 @@ class: `.load-more` `.load-more__end` `.load-more__progress` `.load-more__summar
 example → `composites/load-more.html` (非平凡使用去读、取规范实例)
 
 ### stat-card · composite · tier 70
-A single key metric — overline label, big mono value, optional trend / icon / description — surfaced above a list (style-spec §4).
+A single key metric — overline label, big tabular value, optional trend / icon / description — surfaced above a list (style-spec §4).
 class: `.stat-card` `.stat-card--interactive` `.stat-card--selected` `.stat-card__delta` `.stat-card__delta--down` `.stat-card__delta--flat` `.stat-card__delta--up` `.stat-card__description` `.stat-card__head` `.stat-card__icon` `.stat-card__label` `.stat-card__value` `.stat-card__value--error` `.stat-card__value--info` `.stat-card__value--success` `.stat-card__value--warning` `.stat-grid` `.stat-grid--cols-2` `.stat-grid--cols-3` `.stat-grid--cols-4`
 example → `composites/stat-card.html` (非平凡使用去读、取规范实例)
 
