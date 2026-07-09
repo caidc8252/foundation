@@ -409,3 +409,50 @@ test("check-artifact rejects native date/time inputs (hard), but not plain text 
     rmSync(dir, { recursive: true, force: true });
   }
 });
+
+test("check-artifact rejects hardcoded font weight and line height, but accepts typography tokens", () => {
+  const dir = mkdtempSync(join(tmpdir(), "foundation-artifact-"));
+  try {
+    const bad = join(dir, "raw-typography.html");
+    writeFileSync(
+      bad,
+      `<!doctype html>
+<div class="card" style="font-weight: 800; line-height: 1.23;">
+  <div class="card__content">Raw typography values</div>
+</div>
+<style>
+  .local-title { font-weight: 600; line-height: 1.4; }
+</style>
+`,
+      "utf8",
+    );
+
+    const good = join(dir, "token-typography.html");
+    writeFileSync(
+      good,
+      `<!doctype html>
+<div class="card" style="font-weight: var(--font-weight-semibold); line-height: var(--line-height-compact);">
+  <div class="card__content">Tokenized typography values</div>
+</div>
+<style>
+  .local-title { font-weight: var(--font-weight-medium); line-height: var(--line-height-normal); }
+</style>
+`,
+      "utf8",
+    );
+
+    const bin = join(root, "scripts", "check-artifact.mjs");
+    const runBad = spawnSync(process.execPath, [bin, bad], { cwd: root, encoding: "utf8" });
+    const runGood = spawnSync(process.execPath, [bin, good], { cwd: root, encoding: "utf8" });
+
+    assert.notEqual(runBad.status, 0, runBad.stdout);
+    assert.match(runBad.stdout, /typography/i);
+    assert.match(runBad.stdout, /font-weight: 800/);
+    assert.match(runBad.stdout, /line-height: 1\.23/);
+
+    assert.equal(runGood.status, 0, runGood.stdout);
+    assert.match(runGood.stdout, /typography: ok/i);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});

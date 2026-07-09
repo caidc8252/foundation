@@ -44,7 +44,7 @@
     }
     .demo-section__title {
       font-size: var(--text-lg);
-      font-weight: 600;
+      font-weight: var(--font-weight-semibold);
       color: var(--color-content-primary);
       margin: 0;
       padding-bottom: var(--space-2);
@@ -87,7 +87,7 @@
       overflow: hidden;
       background-color: var(--color-avatar-bg);
       color: var(--color-avatar-fg);
-      font-weight: 600;
+      font-weight: var(--font-weight-semibold);
       font-size: var(--text-md);
       align-items: center;
       justify-content: center;
@@ -152,7 +152,7 @@
     }
     .hc-trigger__name {
       font-size: var(--text-md);
-      font-weight: 500;
+      font-weight: var(--font-weight-medium);
       color: var(--color-primary-500);
       border-bottom: 1px dashed var(--color-primary-500);
     }
@@ -164,9 +164,9 @@
     /* ── Content layout inside .hover-card ── */
     .hover-card__header { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-2); }
     .hover-card__info   { display: flex; flex-direction: column; gap: var(--space-0); }
-    .hover-card__title    { font-size: var(--text-md); font-weight: 600; color: var(--color-content-primary); line-height: 1.3; }
-    .hover-card__subtitle { font-size: var(--text-xs); color: var(--color-content-tertiary); line-height: 1.4; }
-    .hover-card__body   { font-size: var(--text-sm); color: var(--color-content-secondary); line-height: 1.5; margin-bottom: var(--space-3); }
+    .hover-card__title    { font-size: var(--text-md); font-weight: var(--font-weight-semibold); color: var(--color-content-primary); line-height: var(--line-height-snug); }
+    .hover-card__subtitle { font-size: var(--text-xs); color: var(--color-content-tertiary); line-height: var(--line-height-compact); }
+    .hover-card__body   { font-size: var(--text-sm); color: var(--color-content-secondary); line-height: var(--line-height-normal); margin-bottom: var(--space-3); }
     .hover-card__actions { display: flex; align-items: center; gap: var(--space-2); }
   </style>
 </head>

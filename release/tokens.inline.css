@@ -120,6 +120,22 @@
   --text-5xl: 48px;
 
   
+  
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  
+  
+  --line-height-none: 1;
+  --line-height-tight: 1.1;
+  --line-height-snug: 1.3;
+  --line-height-compact: 1.4;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.6;
+
+  
   --font-family-sans: "Geist Variable", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   --font-family-mono: "Geist Mono Variable", "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
   --font-sans: var(--font-family-sans);

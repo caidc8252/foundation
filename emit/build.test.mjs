@@ -1,9 +1,12 @@
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import test from "node:test";
-import { emitInlineCss } from "./build.mjs";
+import { emitInlineCss, emitTokensJson } from "./build.mjs";
+
+const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 const layers = [
   "palette",
@@ -33,4 +36,37 @@ test("emitInlineCss collapses blank lines after stripping CRLF comments", () => 
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
+});
+
+test("typography exports closed weight and line-height token sets", () => {
+  const { light } = emitTokensJson(repoRoot);
+
+  assert.deepEqual(
+    Object.fromEntries(
+      Object.entries(light)
+        .filter(([name]) => name.startsWith("font-weight-"))
+        .sort(),
+    ),
+    {
+      "font-weight-bold": "700",
+      "font-weight-medium": "500",
+      "font-weight-normal": "400",
+      "font-weight-semibold": "600",
+    },
+  );
+  assert.deepEqual(
+    Object.fromEntries(
+      Object.entries(light)
+        .filter(([name]) => name.startsWith("line-height-"))
+        .sort(),
+    ),
+    {
+      "line-height-compact": "1.4",
+      "line-height-none": "1",
+      "line-height-normal": "1.5",
+      "line-height-relaxed": "1.6",
+      "line-height-snug": "1.3",
+      "line-height-tight": "1.1",
+    },
+  );
 });

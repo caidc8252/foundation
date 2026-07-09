@@ -43,7 +43,7 @@
      Its sticky top clears the sticky page-header so the rail isn't hidden behind it. */
   .settings-nav { position: sticky; top: calc(var(--settings-header-h) + var(--space-4)); display: flex; flex-direction: column; gap: var(--space-1); }
   /* Eyebrow declares jump-nav semantics (anchors within one page), not tab switching. */
-  .settings-nav__eyebrow { margin: 0 0 var(--space-1); padding: 0 var(--space-3); font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-content-tertiary); }
+  .settings-nav__eyebrow { margin: 0 0 var(--space-1); padding: 0 var(--space-3); font-size: var(--text-xs); font-weight: var(--font-weight-semibold); text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-content-tertiary); }
   .settings-nav__link {
     display: block; padding: var(--space-2) var(--space-3); border-radius: var(--radius-md);
     font-size: var(--text-sm); color: var(--color-content-secondary); text-decoration: none;
@@ -51,7 +51,7 @@
   }
   .settings-nav__link:hover { background-color: var(--color-surface-hover); color: var(--color-content-primary); }
   .settings-nav__link--active {
-    color: var(--color-content-primary); font-weight: 600;
+    color: var(--color-content-primary); font-weight: var(--font-weight-semibold);
     background-color: var(--color-surface-active); border-left-color: var(--color-brand-mono);
   }
   .settings-nav__link--danger { color: var(--color-error); }
@@ -74,7 +74,7 @@
   /* Row hairline uses line-default (not line-subtle) so groups stay legible in dark mode too. */
   .setting-row + .setting-row { border-top: 1px solid var(--color-line-default); }
   .setting-row__text { display: flex; flex-direction: column; gap: var(--space-1); max-width: 34rem; }
-  .setting-row__title { font-size: var(--text-sm); font-weight: 500; color: var(--color-content-primary); }
+  .setting-row__title { font-size: var(--text-sm); font-weight: var(--font-weight-medium); color: var(--color-content-primary); }
   /* Descriptions are the load-bearing explanation of each control — keep them at
      secondary (AA-safe), not tertiary. */
   .setting-row__desc { font-size: var(--text-sm); color: var(--color-content-secondary); }
@@ -87,7 +87,7 @@
   .setting-row__control input[type="number"] { width: 5rem; text-align: right; }
   .setting-row__value { font-size: var(--text-sm); font-variant-numeric: tabular-nums; color: var(--color-content-secondary); }
 
-  .group-title { font-size: var(--text-lg); font-weight: 600; color: var(--color-content-primary); }
+  .group-title { font-size: var(--text-lg); font-weight: var(--font-weight-semibold); color: var(--color-content-primary); }
 
   /* Per-group Save sits at the card's bottom-right — the primary action is rightmost.
      Save is disabled until the group is dirty; a dirty group shows an "Unsaved changes" hint. */

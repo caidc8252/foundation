@@ -28,7 +28,7 @@ cannot hit. Tiers: **Law** (violate = fail) · **Default** (deviate with a reaso
 | 9a | Boundary | `check:patterns` (route.composites documented) | `check:patterns` · review: required-core vs optional |
 | 9b | Law | review (`page-header` / `detail-header`) | review |
 | 10 | Law | review | `check-artifact`: hardcoded-colors (literals only) · review: semantic-tone misuse |
-| 11a | Law | review | review |
+| 11a | Law | review | `check-artifact`: hardcoded-typography |
 | 11b | Default | review | review |
 | 12 | Law | review | review |
 | 13 | Law | review | `check-artifact` ⚠: inline padding/margin · review: 0-gap stack |
@@ -84,7 +84,9 @@ sidebar/header chrome, `main.app-frame__main` as the scroll root), and runs the
 strict checker.
 After hand edits, run the strict checker again.
 
-It reports usage outside the catalog — hardcoded colors, unknown `var(--…)`
+It reports usage outside the catalog — hardcoded colors, hardcoded typography
+(`font-weight` / `line-height` values must use `--font-weight-*` /
+`--line-height-*` tokens), unknown `var(--…)`
 tokens, native date/time inputs (`<input type="date|time|datetime-local|month|
 week">`, which render browser-native chrome that bypasses the token skin — use the
 date-picker family / `.date-trigger` instead), and classes that are neither a
@@ -135,8 +137,8 @@ The remaining items are an eye/design pass:
       the ungoverned DOM layer it can't judge, so verify that behavior by hand against the
       `primitives/field.html` reference model (also ported into `patterns/create-form.html`).
 - [ ] Inlined the current `release/tokens.inline.css`; no stale snapshot.
-- [ ] Every color/size/radius/shadow is `var(--token-…)` — zero hex/px literals
-      for anything a token covers.
+- [ ] Every color/size/radius/shadow/weight/line-height is `var(--token-…)` —
+      zero literals for anything a token covers.
 - [ ] Primitives/composites use the `primitives.css` / `composites.css` classes
       (`.btn`, `.input`, `.data-table`, …), matching the contracts — not hand-rolled one-offs.
       Dates/times use the picker family (`.date-trigger`), **never** a native

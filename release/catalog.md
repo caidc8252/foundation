@@ -8,7 +8,7 @@
 >
 > Check an artifact against this set: `node scripts/check-artifact.mjs <file.html>`
 
-## L1 · Tokens (183)
+## L1 · Tokens (193)
 
 Inline `tokens.inline.css`, then reference as `var(--name)`. Values live in
 that file / `tokens.json`; these are the legal **names**, grouped by prefix:
@@ -18,7 +18,8 @@ that file / `tokens.json`; these are the legal **names**, grouped by prefix:
 - **container** (1) - `--container-content`
 - **duration** (4) - `--duration-fast` `--duration-instant` `--duration-normal` `--duration-slow`
 - **ease** (2) - `--ease-emphasized` `--ease-standard`
-- **font** (4) - `--font-family-mono` `--font-family-sans` `--font-mono` `--font-sans`
+- **font** (8) - `--font-family-mono` `--font-family-sans` `--font-mono` `--font-sans` `--font-weight-bold` `--font-weight-medium` `--font-weight-normal` `--font-weight-semibold`
+- **line** (6) - `--line-height-compact` `--line-height-none` `--line-height-normal` `--line-height-relaxed` `--line-height-snug` `--line-height-tight`
 - **radius** (6) - `--radius-2xl` `--radius-full` `--radius-lg` `--radius-md` `--radius-sm` `--radius-xl`
 - **shadow** (9) - `--shadow-1` `--shadow-2` `--shadow-3` `--shadow-4` `--shadow-5` `--shadow-cta` `--shadow-focus` `--shadow-row-selected` `--shadow-sticky-col`
 - **space** (12) - `--space-0` `--space-1` `--space-10` `--space-12` `--space-16` `--space-2` `--space-20` `--space-3` `--space-4` `--space-5` `--space-6` `--space-8`

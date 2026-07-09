@@ -35,7 +35,7 @@ load-bearing exposition — read them before applying. Rules are referenced by n
 | 9a | Patterns are frameworks — required core | Boundary | both | review |
 | 9b | At most one primary action | Law | both | review |
 | 10 | Semantic color has a scope | Law | both | review |
-| 11a | Weight is a closed set | Law | both | review |
+| 11a | Weight is a closed set | Law | both | mechanical + review |
 | 11b | Data-readable text uses mono | Default | both | review |
 | 12 | Rows align on a shared baseline | Law | both | review |
 | 13 | Spacing rhythm — the nesting ladder | Law | both | review |
@@ -255,11 +255,16 @@ Beyond the closed scale (principle 4), weight and family carry rules too:
 
 ### 11a. Weight is a closed set
 
-> **Law** · both · review — weight is limited to `400` / `500` / `600`; `700` is rare
-> emphasis, `300` / `800` / `900` are off-system.
+> **Law** · both · mechanical + review — weight is limited to `400` / `500` /
+> `600`; `700` is rare emphasis, `300` / `800` / `900` are off-system.
 
-Weight is limited to `400` / `500` / `600`. `700` is rare emphasis; `300` /
-`800` / `900` are off-system.
+Weight is limited to `--font-weight-normal` (`400`), `--font-weight-medium`
+(`500`), and `--font-weight-semibold` (`600`). `--font-weight-bold` (`700`) is
+rare emphasis; `300` / `800` / `900` are off-system.
+
+Line-height follows the closed `--line-height-*` ladder (`none`, `tight`,
+`snug`, `compact`, `normal`, `relaxed`) for the same reason: typography rhythm
+is part of the system, not a per-page number.
 
 ### 11b. Data-readable text uses `font-mono` + `tabular-nums`
 

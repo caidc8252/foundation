@@ -43,8 +43,8 @@
   /* Two fields side by side on wider widths. */
   .form-row { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
 
-  .form-title { font-size: var(--text-md); font-weight: 600; color: var(--color-content-primary); }
-  .group-label { font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-content-tertiary); margin-bottom: var(--space-1); }
+  .form-title { font-size: var(--text-md); font-weight: var(--font-weight-semibold); color: var(--color-content-primary); }
+  .group-label { font-size: var(--text-xs); font-weight: var(--font-weight-semibold); text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-content-tertiary); margin-bottom: var(--space-1); }
 
   /* Layout — full-bleed (fills the page-body width, no max-width cap). The form column
      and the summary rail split main:rail = 7:3; the stepper spans the same full width. */
@@ -73,14 +73,14 @@
     .wizard-cols { grid-template-columns: minmax(0, 1fr); }
     .summary-rail { position: static; width: 100%; }
   }
-  .summary-rail__title { font-size: var(--text-sm); font-weight: 600; letter-spacing: -0.01em; color: var(--color-content-primary); }
+  .summary-rail__title { font-size: var(--text-sm); font-weight: var(--font-weight-semibold); letter-spacing: -0.01em; color: var(--color-content-primary); }
   /* dl is a flex column; each row is its own flex div so dt width is per-row. */
   .summary-dl { display: flex; flex-direction: column; gap: var(--space-2); font-size: var(--text-xs); }
   .summary-row { display: flex; gap: var(--space-3); }
   .summary-row dt { width: 5rem; flex-shrink: 0; color: var(--color-content-tertiary);
     text-transform: uppercase;   /* kv-grid recipe: mandatory UPPERCASE */
     letter-spacing: 0.06em;      /* overline tracking */
-    font-weight: 500;            /* kv-grid label weight */
+    font-weight: var(--font-weight-medium);            /* kv-grid label weight */
   }
   .summary-row dd { min-width: 0; flex: 1; word-break: break-word; color: var(--color-content-primary); margin: 0; }
   .summary-row dd.is-empty { color: var(--color-content-tertiary); }
@@ -111,8 +111,8 @@
   .wizard-done { max-width: 28rem; margin-inline: auto; text-align: center; }
   .wizard-done__icon { display: grid; place-items: center; width: var(--space-16); height: var(--space-16); margin-inline: auto; margin-bottom: var(--space-4); border-radius: var(--radius-full); background-color: var(--color-success-bg); color: var(--color-success-strong); }
   .wizard-done__icon svg { width: var(--space-8); height: var(--space-8); }
-  .wizard-done__title { font-size: var(--text-2xl); font-weight: 600; letter-spacing: -0.01em; color: var(--color-content-primary); margin-bottom: var(--space-2); }
-  .wizard-done__text { font-size: var(--text-sm); color: var(--color-content-secondary); line-height: 1.6; margin-bottom: var(--space-6); }
+  .wizard-done__title { font-size: var(--text-2xl); font-weight: var(--font-weight-semibold); letter-spacing: -0.01em; color: var(--color-content-primary); margin-bottom: var(--space-2); }
+  .wizard-done__text { font-size: var(--text-sm); color: var(--color-content-secondary); line-height: var(--line-height-relaxed); margin-bottom: var(--space-6); }
 </style>
 <body>
 

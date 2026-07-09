@@ -8,6 +8,11 @@
 
      ✗ hardcoded color literals   — a token covers every brand color
      ✗ unknown var(--…) refs      — token name not in the set (typo / invented)
+     ✗ hardcoded typography       — font-weight and line-height must reference
+                                    the closed token sets (`--font-weight-*` /
+                                    `--line-height-*`), which makes principle
+                                    11a and the leading scale mechanically
+                                    checkable.
      ✗ native date/time input     — `<input type="date|datetime-local|month|
                                      week">` pops unskinnable native calendar
                                      chrome; the date-picker family (.date-trigger)
@@ -567,6 +572,22 @@ const hardcodedColorsFromAuthored = (text) => {
   return [...new Set(colorLiterals)];
 };
 
+const typographyFindingsFromAuthored = (text) => {
+  const findings = new Set();
+  const expectedPrefix = {
+    "font-weight": "font-weight-",
+    "line-height": "line-height-",
+  };
+  for (const m of stripCssComments(text).matchAll(/\b(font-weight|line-height)\s*:\s*([^;"'}>]+)/g)) {
+    const prop = m[1];
+    const value = m[2].trim().replace(/\s+/g, " ");
+    const token = value.match(/var\(\s*--([A-Za-z_][\w-]*)/)?.[1];
+    if (token && TOKENS.has(token) && token.startsWith(expectedPrefix[prop])) continue;
+    findings.add(`${prop}: ${value}`);
+  }
+  return [...findings].sort();
+};
+
 // Inline style="…padding…/…margin…" layout hacks. Spacing/flush is a composition
 // choice (a token-based class — .stack--N, .card__content--flush, or a page-local
 // class), never an inline reset like style="padding:0". Advisory ONLY — never
@@ -609,11 +630,16 @@ for (const file of files) {
   //    Scan CSS + attributes only — never text content (an order "#10482" is not a color).
   const hardColors = hardcodedColorsFromAuthored(colorScanSurface(markup, pageCss));
 
-  // 4. Inline Lucide icons: unknown names always fail; altered paths fail in
+  // 4. Typography values are tokenized too. `font-weight: 600` and
+  //    `line-height: 1.4` are just as off-token as a raw color literal now that
+  //    typography exposes closed weight/leading sets.
+  const hardTypography = typographyFindingsFromAuthored(colorScanSurface(markup, pageCss));
+
+  // 5. Inline Lucide icons: unknown names always fail; altered paths fail in
   //    strict (warn otherwise); untagged icon-shaped svgs always warn.
   const icons = iconFindingsFromMarkup(markup);
 
-  // 5. Structural table contracts. `.cell-tags` is a flex wrapper inside a cell;
+  // 6. Structural table contracts. `.cell-tags` is a flex wrapper inside a cell;
   // placing it on <td>/<th> changes the browser's table layout and breaks row rules.
   // Scans raw `html` (not stripped markup) so JS-templated rows in <script> count too.
   const structure = structuralFindingsFromHtml(html);
@@ -661,6 +687,7 @@ for (const file of files) {
   const hard =
     unknownTokens.length +
     hardColors.length +
+    hardTypography.length +
     icons.unknown.length +
     structure.cellTagsOnTableCells.length +
     nativeDateInputs.length +
@@ -680,6 +707,8 @@ for (const file of files) {
   if (unknownTokens.length) console.log(`    ✗ not a foundation token: ${unknownTokens.map((t) => "--" + t).join(", ")}`);
   console.log(`  colors:  ${hardColors.length} hardcoded literal(s)`);
   if (hardColors.length) console.log(`    ✗ use a token, not a literal: ${hardColors.join(", ")}`);
+  console.log(`  typography: ${hardTypography.length === 0 ? "ok" : `${hardTypography.length} hardcoded literal(s)`}`);
+  if (hardTypography.length) console.log(`    ✗ use typography tokens, not raw values: ${hardTypography.join(", ")}`);
   const iconBad = icons.unknown.length + icons.mismatch.length + icons.untagged;
   console.log(`  icons:   ${iconBad === 0 ? "ok" : `${iconBad} issue(s)`} (Lucide ${ICON_VERSION})`);
   if (icons.unknown.length)
@@ -721,8 +750,8 @@ for (const file of files) {
   if (fieldFindings.labelOutsideField.length)
     console.log(`  ⚠ review: ${fieldFindings.labelOutsideField.length} .label wired to a control but outside a Field — the hand-rolled form-row escape; the stacked label→control→caption anatomy belongs to the Field primitive (principle 5 · create-form.md · field.md). Wrap it in .field, or confirm this is a standalone label demo: ${fieldFindings.labelOutsideField.join(" · ")}`);
   const passText = strict
-    ? "PASS (strict: no out-of-set tokens, hardcoded colors, or off-set classes)"
-    : "PASS (no out-of-set tokens, no hardcoded colors)";
+    ? "PASS (strict: no out-of-set tokens, hardcoded colors/typography, or off-set classes)"
+    : "PASS (no out-of-set tokens, no hardcoded colors/typography)";
   console.log(`  → ${hard === 0 ? passText : `FAIL (${hard} hard violation(s))`}`);
 }
 
