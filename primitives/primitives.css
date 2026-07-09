@@ -505,6 +505,22 @@ body {
   box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-error) 20%, transparent);
 }
 
+/* Character counter — a sibling rendered below the field (textarea.md §Anatomy).
+   Tabular figures so the count doesn't jitter as digits change. Static skin only:
+   the count text, and which threshold modifier is on, are behavior the consumer
+   owns (React, or the artifact's own script). */
+.textarea__count {
+  display: block;
+  margin-top: var(--space-1);
+  color: var(--color-content-tertiary);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.textarea__count--warning { color: var(--color-warning-strong); }   /* >= 90% of maxLength */
+.textarea__count--error   { color: var(--color-error-strong); }     /* at maxLength */
+
 /* ═══════════════════════════════ Select ═══════════════════════════════ */
 /* @component select */
 /* Styles a native <select> to match the SelectTrigger recipe. A native
