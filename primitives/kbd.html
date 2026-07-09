@@ -1,0 +1,116 @@
+<!--
+  kbd.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Kbd primitive in the foundation design system.
+  Covers:
+    - Single caps (letters, words)
+    - Chords (several caps in a row)
+    - In prose / beside a control
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kbd · foundation primitive</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../release/composites.css">
+  <style>
+    body {
+      margin: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+      color: var(--color-content-primary);
+    }
+    .demo-page {
+      padding: var(--space-6) var(--space-8);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-4);
+      font-size: var(--text-sm);
+    }
+    .demo-chord {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Single caps
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Kbd · single caps</h2>
+      <p class="demo-section__desc">
+        One glyph or word per cap. Single keys read square; multi-character keys grow with padding.
+      </p>
+      <div class="demo-row">
+        <kbd class="kbd">K</kbd>
+        <kbd class="kbd">⌘</kbd>
+        <kbd class="kbd">⇧</kbd>
+        <kbd class="kbd">↵</kbd>
+        <kbd class="kbd">↑</kbd>
+        <kbd class="kbd">↓</kbd>
+        <kbd class="kbd">esc</kbd>
+        <kbd class="kbd">Tab</kbd>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Chords
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Kbd · chords</h2>
+      <p class="demo-section__desc">A chord is several caps in a row — no wrapper class needed.</p>
+      <div class="demo-row">
+        <span class="demo-chord"><kbd class="kbd">⌘</kbd><kbd class="kbd">K</kbd></span>
+        <span class="demo-chord"><kbd class="kbd">⌘</kbd><kbd class="kbd">⇧</kbd><kbd class="kbd">P</kbd></span>
+        <span class="demo-chord"><kbd class="kbd">⌘</kbd><kbd class="kbd">,</kbd></span>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: In prose
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Kbd · in prose</h2>
+      <p class="demo-section__desc">
+        Press <kbd class="kbd">⌘</kbd><kbd class="kbd">K</kbd> to open the command palette, or
+        <kbd class="kbd">esc</kbd> to dismiss.
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>

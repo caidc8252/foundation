@@ -1,0 +1,176 @@
+<!--
+  tags-input.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Tags Input primitive in the foundation design system.
+  Covers:
+    - Default (chips + free-text field)
+    - Invalid
+    - Disabled
+    - In a Field (label + hint)
+  A small script adds a chip on Enter and removes one on ×.
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tags Input · foundation primitive</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../release/composites.css">
+  <style>
+    body {
+      margin: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+      color: var(--color-content-primary);
+    }
+    .demo-page {
+      padding: var(--space-6) var(--space-8);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      max-width: 480px;
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Default
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Tags Input · default</h2>
+      <p class="demo-section__desc">
+        Free-text tokens: type a value and press <kbd>Enter</kbd> to add a chip,
+        click <strong>×</strong> to remove. The container owns the border and focus
+        ring; the inner field is borderless. Use a multi-select
+        <code>combobox</code> instead when values come from a known list.
+      </p>
+      <div class="tags-input" data-tags-input>
+        <span class="tags-input__tag">design
+          <button class="tags-input__remove" type="button" aria-label="Remove design">
+            <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </span>
+        <span class="tags-input__tag">frontend
+          <button class="tags-input__remove" type="button" aria-label="Remove frontend">
+            <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </span>
+        <input class="tags-input__field" type="text" placeholder="Add a tag…" aria-label="Add a tag">
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Invalid
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Tags Input · invalid</h2>
+      <p class="demo-section__desc">
+        <code>.tags-input--invalid</code> + <code>aria-invalid</code> — error border and ring.
+      </p>
+      <div class="tags-input tags-input--invalid" aria-invalid="true" data-tags-input>
+        <span class="tags-input__tag">urgent
+          <button class="tags-input__remove" type="button" aria-label="Remove urgent">
+            <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </span>
+        <input class="tags-input__field" type="text" placeholder="At least 2 tags required" aria-label="Add a tag">
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Disabled
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Tags Input · disabled</h2>
+      <div class="tags-input tags-input--disabled">
+        <span class="tags-input__tag">locked
+          <button class="tags-input__remove" type="button" aria-label="Remove locked" disabled>
+            <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </span>
+        <input class="tags-input__field" type="text" placeholder="Disabled" aria-label="Add a tag" disabled>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 4: In a Field
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Tags Input · in a Field</h2>
+      <div class="field">
+        <label class="label" for="ti-keywords">Keywords</label>
+        <div class="tags-input" data-tags-input>
+          <span class="tags-input__tag">payments
+            <button class="tags-input__remove" type="button" aria-label="Remove payments">
+              <svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+          </span>
+          <input id="ti-keywords" class="tags-input__field" type="text" placeholder="Add a keyword…">
+        </div>
+        <p class="field__hint">Press Enter to add. Used for search and routing.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    (function () {
+      function makeTag(label) {
+        var tag = document.createElement('span');
+        tag.className = 'tags-input__tag';
+        tag.append(label);
+        var btn = document.createElement('button');
+        btn.className = 'tags-input__remove';
+        btn.type = 'button';
+        btn.setAttribute('aria-label', 'Remove ' + label);
+        btn.innerHTML = '<svg data-lucide="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>';
+        tag.append(btn);
+        return tag;
+      }
+      document.querySelectorAll('[data-tags-input]').forEach(function (root) {
+        var field = root.querySelector('.tags-input__field');
+        root.addEventListener('click', function (e) {
+          var rm = e.target.closest('.tags-input__remove');
+          if (rm) { rm.closest('.tags-input__tag').remove(); }
+        });
+        if (!field) return;
+        field.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' && field.value.trim()) {
+            e.preventDefault();
+            root.insertBefore(makeTag(field.value.trim()), field);
+            field.value = '';
+          } else if (e.key === 'Backspace' && !field.value) {
+            var tags = root.querySelectorAll('.tags-input__tag');
+            if (tags.length) { tags[tags.length - 1].remove(); }
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

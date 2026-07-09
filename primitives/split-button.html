@@ -1,0 +1,146 @@
+<!--
+  split-button.html
+  ──────────────────────────────────────────────────────────────────────
+  Demonstrates the Split Button primitive in the foundation design system.
+  Covers:
+    - Primary split button (default action + menu trigger)
+    - Secondary + danger variants (seam handling per variant)
+    - Size pairing (sm ↔ icon-sm, md ↔ icon-lg)
+    - Disabled
+  The trigger's menu (dropdown-menu / popover) is a separate primitive; this
+  example shows the fused control's static skin only.
+  ──────────────────────────────────────────────────────────────────────
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Split Button · foundation primitive</title>
+  <link rel="stylesheet" href="../release/tokens.inline.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="../release/composites.css">
+  <style>
+    body {
+      margin: 0;
+      background-color: var(--color-surface-1);
+      font-family: var(--font-sans);
+      color: var(--color-content-primary);
+    }
+    .demo-page {
+      padding: var(--space-6) var(--space-8);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    @media (max-width: 640px) {
+      .demo-page { padding: var(--space-5) var(--space-4); }
+    }
+    .demo-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .demo-section__title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      margin: 0;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--color-line-subtle);
+    }
+    .demo-section__desc {
+      font-size: var(--text-sm);
+      color: var(--color-content-tertiary);
+      margin: 0;
+    }
+    .demo-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-4);
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 1: Primary (default) + variants
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Split Button · variants</h2>
+      <p class="demo-section__desc">
+        A default action fused with a menu trigger. Both segments share the same
+        <code>.btn--&lt;variant&gt;</code>; the seam is a translucent divider on filled
+        variants (<code>primary</code> / <code>danger</code>) and the trigger's own
+        border on <code>secondary</code>. One primary Split Button per surface.
+      </p>
+      <div class="demo-row">
+        <div class="split-button">
+          <button class="btn btn--primary btn--md" type="button">Save</button>
+          <button class="btn btn--primary btn--icon-lg" type="button" aria-label="More save actions" aria-haspopup="menu" aria-expanded="false">
+            <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+        </div>
+
+        <div class="split-button">
+          <button class="btn btn--secondary btn--md" type="button">Export</button>
+          <button class="btn btn--secondary btn--icon-lg" type="button" aria-label="More export formats" aria-haspopup="menu" aria-expanded="false">
+            <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+        </div>
+
+        <div class="split-button">
+          <button class="btn btn--danger btn--md" type="button">Delete</button>
+          <button class="btn btn--danger btn--icon-lg" type="button" aria-label="More delete options" aria-haspopup="menu" aria-expanded="false">
+            <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 2: Sizes
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Split Button · sizes</h2>
+      <p class="demo-section__desc">
+        Height-match the trigger to the segment: <code>sm</code> pairs with
+        <code>.btn--icon-sm</code>, <code>md</code> with <code>.btn--icon-lg</code>.
+      </p>
+      <div class="demo-row">
+        <div class="split-button">
+          <button class="btn btn--secondary btn--sm" type="button">Actions</button>
+          <button class="btn btn--secondary btn--icon-sm" type="button" aria-label="More actions" aria-haspopup="menu" aria-expanded="false">
+            <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+        </div>
+
+        <div class="split-button">
+          <button class="btn btn--secondary btn--md" type="button">Actions</button>
+          <button class="btn btn--secondary btn--icon-lg" type="button" aria-label="More actions" aria-haspopup="menu" aria-expanded="false">
+            <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Section 3: Disabled
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="demo-section">
+      <h2 class="demo-section__title">Split Button · disabled</h2>
+      <p class="demo-section__desc">Disabling the control disables both segments.</p>
+      <div class="demo-row">
+        <div class="split-button">
+          <button class="btn btn--primary btn--md" type="button" disabled>Save</button>
+          <button class="btn btn--primary btn--icon-lg" type="button" aria-label="More save actions" aria-haspopup="menu" aria-expanded="false" disabled>
+            <svg data-lucide="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

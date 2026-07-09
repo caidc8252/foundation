@@ -511,6 +511,7 @@
     "input",
     "input--filled",
     "input--lg",
+    "input--loading",
     "input--md",
     "input--ok",
     "input--sm",
@@ -533,6 +534,7 @@
     "input-otp__slot",
     "input-otp__slot--active",
     "is-clickable",
+    "kbd",
     "kv-grid",
     "kv-grid__row",
     "label",
@@ -592,16 +594,6 @@
     "modal__header",
     "modal__heading",
     "modal__title",
-    "nav-menu",
-    "nav-menu__content",
-    "nav-menu__indicator",
-    "nav-menu__item",
-    "nav-menu__link",
-    "nav-menu__link--active",
-    "nav-menu__list",
-    "nav-menu__trigger",
-    "nav-menu__trigger--open",
-    "nav-menu__trigger__chevron",
     "object-tile",
     "object-tile--cat-1",
     "object-tile--cat-2",
@@ -659,6 +651,20 @@
     "product-card__sku",
     "product-grid",
     "progress",
+    "progress--lg",
+    "progress--striped",
+    "progress--xs",
+    "progress-ring",
+    "progress-ring--error",
+    "progress-ring--info",
+    "progress-ring--lg",
+    "progress-ring--sm",
+    "progress-ring--success",
+    "progress-ring--warning",
+    "progress-ring__fill",
+    "progress-ring__label",
+    "progress-ring__svg",
+    "progress-ring__track",
     "progress__indicator",
     "progress__indicator--error",
     "progress__indicator--info",
@@ -720,6 +726,7 @@
     "spinner--md",
     "spinner--sm",
     "spinner--xl",
+    "split-button",
     "sr-only",
     "stack",
     "stack--3",
@@ -791,6 +798,12 @@
     "tabs__list--vertical",
     "tabs__trigger",
     "tabs__trigger--active",
+    "tags-input",
+    "tags-input--disabled",
+    "tags-input--invalid",
+    "tags-input__field",
+    "tags-input__remove",
+    "tags-input__tag",
     "textarea",
     "th-sort",
     "th-sort__icon--active",
@@ -1371,10 +1384,22 @@
         ".input",
         ".input--filled",
         ".input--lg",
+        ".input--loading",
         ".input--md",
         ".input--ok",
         ".input--sm",
         ".input--warn"
+      ]
+    },
+    {
+      "layer": "primitive",
+      "name": "kbd",
+      "title": "Kbd",
+      "summary": "A keyboard key cap for shortcut hints — one glyph or word per cap (⌘, K, esc), chained side by side for chords (⌘ ⇧ P).",
+      "contract": "primitives/kbd.md",
+      "example": "primitives/kbd.html",
+      "classes": [
+        ".kbd"
       ]
     },
     {
@@ -1453,6 +1478,27 @@
     },
     {
       "layer": "primitive",
+      "name": "progress-ring",
+      "title": "Progress Ring",
+      "summary": "A circular determinate progress indicator for a single bounded value (0–100%) — battery, quota used, an approval rate, a p95 gauge.",
+      "contract": "primitives/progress-ring.md",
+      "example": "primitives/progress-ring.html",
+      "classes": [
+        ".progress-ring",
+        ".progress-ring--error",
+        ".progress-ring--info",
+        ".progress-ring--lg",
+        ".progress-ring--sm",
+        ".progress-ring--success",
+        ".progress-ring--warning",
+        ".progress-ring__fill",
+        ".progress-ring__label",
+        ".progress-ring__svg",
+        ".progress-ring__track"
+      ]
+    },
+    {
+      "layer": "primitive",
       "name": "progress",
       "title": "Progress",
       "summary": "A horizontal bar showing numeric completion (0–100%).",
@@ -1460,6 +1506,9 @@
       "example": "primitives/progress.html",
       "classes": [
         ".progress",
+        ".progress--lg",
+        ".progress--striped",
+        ".progress--xs",
         ".progress__indicator",
         ".progress__indicator--error",
         ".progress__indicator--info",
@@ -1591,6 +1640,20 @@
     },
     {
       "layer": "primitive",
+      "name": "split-button",
+      "title": "Split Button",
+      "summary": "A primary action fused with an adjacent menu trigger — one control that runs a default action on the left and opens a menu of related actions from a chevron on the right.",
+      "contract": "primitives/split-button.md",
+      "example": "primitives/split-button.html",
+      "classes": [
+        ".btn",
+        ".btn--danger",
+        ".btn--primary",
+        ".split-button"
+      ]
+    },
+    {
+      "layer": "primitive",
       "name": "switch",
       "title": "Switch",
       "summary": "A binary on/off toggle for an immediate state change (enable/disable, light/dark).",
@@ -1619,6 +1682,22 @@
         ".tabs__list--vertical",
         ".tabs__trigger",
         ".tabs__trigger--active"
+      ]
+    },
+    {
+      "layer": "primitive",
+      "name": "tags-input",
+      "title": "Tags Input",
+      "summary": "A free-text token field: the user types arbitrary values that become removable chips, ahead of a bare text input.",
+      "contract": "primitives/tags-input.md",
+      "example": "primitives/tags-input.html",
+      "classes": [
+        ".tags-input",
+        ".tags-input--disabled",
+        ".tags-input--invalid",
+        ".tags-input__field",
+        ".tags-input__remove",
+        ".tags-input__tag"
       ]
     },
     {
