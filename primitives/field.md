@@ -15,14 +15,14 @@ Single structural variant — no variant prop. Field is a vertical flex stack, n
 
 | slot | token recipe |
 |---|---|
-| label | delegated to `Label` — font `font-sans` · `text-sm` · weight 500 · tone `content-secondary` (the form-caption tone Field applies) |
+| label | delegated to `Label` — font `font-sans` · `text-md` · weight 500 · tone `content-secondary` (the form-caption tone Field applies) |
 | required marker `*` | `content` color `error`, decorative (`aria-hidden`) |
 | hint | `text-xs` (12px) · tone `content-tertiary` — muted helper text |
 | error | `text-xs` (12px) · tone `error` · `role="alert"` |
 
 ## Sizes
 
-No size variants. The stack rhythm is fixed at `gap-2` (`--space-2`, 8px) between label, control, and the hint/error line. Caption text is `text-xs`; the label is `text-sm` via the `Label` primitive. The control's own size (Input/Select/Textarea `sm`/`md`/`lg`) is chosen on the control, not on the field.
+No size variants. The stack rhythm is fixed at `gap-2` (`--space-2`, 8px) between label, control, and the hint/error line. Caption text is `text-xs`; the label is `text-md` via the `Label` primitive. The control's own size (Input/Select/Textarea `sm`/`md`/`lg`) is chosen on the control, not on the field.
 
 ## States
 

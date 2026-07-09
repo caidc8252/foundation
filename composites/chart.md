@@ -89,7 +89,7 @@ chart-tooltip (floating, dark)        chart-legend item
   round caps) → text block: name (`font-medium`) over value
   (`content-tertiary tabular-nums`), both mono `text-xs`.
 - **Empty / skeleton** — both fill the `aspect-video` plot box. Empty = icon +
-  `text-sm`/medium/`content-primary` title + `content-tertiary` description,
+  `text-md`/medium/`content-primary` title + `content-tertiary` description,
   centered. Skeleton = `radius-md` shimmer block, `role="status"`/`aria-busy`.
 
 ## States

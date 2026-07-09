@@ -1210,7 +1210,6 @@
   font-weight: var(--font-weight-medium);
   color: var(--color-content-primary);
 }
-.timeline--compact .timeline__title { font-size: var(--text-md); }
 
 .timeline__time {
   font-family: var(--font-mono);

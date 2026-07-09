@@ -21,7 +21,7 @@ Single visual variant — a circular (`radius-full`) chip that clips its content
 |---|---|---|---|
 | `sm` | `spacing-control-xs` (22px) | `text-xs` (12) | dense rows, table cells, comment threads |
 | `md` *(default)* | 28px → use `spacing-control-sm` | `text-xs` (12) | standard inline identity |
-| `lg` | 36px → use `spacing-control-md` | `text-sm` (13) | cards, list leading slot |
+| `lg` | 36px → use `spacing-control-md` | `text-md` (14) | cards, list leading slot |
 | `xl` | 48px → use `--space-12` | `text-lg` (16) | profile headers, account menus |
 
 > The source expresses these as Tailwind `size-control-xs` / `size-7` / `size-9` / `size-12`. The reference CSS pins each to its equivalent token: `sm`→`spacing-control-xs`, `md`→`spacing-control-sm`, `lg`→`spacing-control-md`, `xl`→`--space-12` (raw scale, direct `var()` per token law). The fallback font sizes in the source are `base/sm/xs/xs`; the contract maps them onto the `text-*` ramp.

@@ -18,8 +18,8 @@ Input Group is not a variant family — it is a container plus four addon-shaped
 |---|---|---|
 | `InputGroup` *(container)* | the bordered shell | bg `surface-2` · border `line-default` · radius `radius-md` · height `control-md` (auto when it holds a textarea or a block addon) |
 | `InputGroupInput` / `InputGroupTextarea` | the control | borderless + transparent fill (`flex-1`); inherits group border/ring — never paints its own |
-| `InputGroupAddon` | a slot wrapper for affix/icon/button content | text `content-secondary` · `text-sm` · weight 500 · inline gap `space-2`; cursor `text` (clicking focuses the input) |
-| `InputGroupText` | non-interactive label inside the group (currency symbol, unit suffix) | text `content-secondary` · `text-sm` · inline gap `space-2` |
+| `InputGroupAddon` | a slot wrapper for affix/icon/button content | text `content-secondary` · `text-md` · weight 500 · inline gap `space-2`; cursor `text` (clicking focuses the input) |
+| `InputGroupText` | non-interactive label inside the group (currency symbol, unit suffix) | text `content-secondary` · `text-md` · inline gap `space-2` |
 | `InputGroupButton` | an action button inside the group (clear, reveal, submit) | reuses `.btn`; defaults `variant="ghost"` + `size="xs"`, `shadow-none`, `type="button"` |
 
 ## Addon alignment

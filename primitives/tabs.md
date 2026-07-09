@@ -29,7 +29,7 @@ Mark the list `role="tablist"` `aria-orientation="vertical"`; arrow-key roving f
 
 ## Sizes
 
-No size prop. The trigger is fixed at `text-sm` / `font-medium`. Geometry is variant-driven, not size-driven:
+No size prop. The trigger is fixed at `text-md` / `font-medium`. Geometry is variant-driven, not size-driven:
 
 - `line` trigger — padding `px-cx-sm` (`12px`) both axes, pulled `-1px` down so its underline overlaps the list hairline.
 - `default` list — fixed height `control-sm` (28px); trigger fills it (`calc(100% - 2px)`) with `px-cx-sm`-ish (`12px`) inline padding.

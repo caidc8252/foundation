@@ -50,7 +50,7 @@ one oversized dual-calendar popover.
 | size | trigger recipe | use |
 |---|---|---|
 | `sm` | `control-sm` (28px) · `px-cx-sm` · `text-xs` | dense forms |
-| `md` *(default)* | `control-md` (36px) · `px-cx-md` · `text-sm` | standard form field |
+| `md` *(default)* | `control-md` (36px) · `px-cx-md` · `text-md` | standard form field |
 | `lg` | `control-lg` (44px) · `px-cx-lg` · `text-lg` (16px, source `text-base`) | spacious forms |
 
 Sizes drive the trigger; the time input inside the popover is fixed `sm`.

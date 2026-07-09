@@ -46,7 +46,7 @@ page's job calls for it — most pages render a subset, not the whole band.
   `secondary` / `ghost`. Destructive actions are never a bare primary here —
   behind an overflow menu or a `danger` button.
 - Title is `text-2xl` / weight 600 / tracking-tight / `content-primary`.
-- `description` is `text-sm` / `content-tertiary`, one line, capped to a readable
+- `description` is `text-md` / `content-tertiary`, one line, capped to a readable
   measure — not a paragraph.
 - **Sticky variant** (`.page-header--sticky`) docks the band under the app header
   while the page scrolls — use it on a top-level page whose header actions must

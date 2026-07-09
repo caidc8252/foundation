@@ -8,9 +8,9 @@ A Card is a **slot composition**, not a single element. The root sets the frame;
 
 | part | token recipe |
 |---|---|
-| `Card` (root) | bg `surface-2` · text `content-primary` (`text-sm`) · border `line-default` · radius per `size` · elevation per `elevation` |
+| `Card` (root) | bg `surface-2` · text `content-primary` (`text-md`) · border `line-default` · radius per `size` · elevation per `elevation` |
 | `CardHeader` | bottom rule `line-subtle` · denser vertical padding than content |
-| `CardTitle` | `text-md` `font-semibold` `content-primary` (drops to `text-sm` at `size=sm`) |
+| `CardTitle` | `text-md` `font-semibold` `content-primary` — one size at every `size`; `sm` tightens padding, not type |
 | `CardDescription` | `text-xs` `content-tertiary` |
 | `CardAction` | header-right action slot, always vertically centered against the header content block (title, or title + description) |
 | `CardContent` | size-based slot padding only |

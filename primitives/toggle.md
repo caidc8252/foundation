@@ -43,8 +43,8 @@ A `Toggle` has two **own** variants. A third axis — its look inside a `<Toggle
 | size | height / recipe | use |
 |---|---|---|
 | `sm` | `control-sm` (28px) · `px-cx-sm` · `text-xs` | dense toolbars |
-| `md` *(default)* | `control-md` (36px) · `px-cx-md` · `text-sm` | standard |
-| `auto` | content-driven (`px-cx-md` · `py-2` · `text-sm` · `gap-1.5`) | option cards / tiles |
+| `md` *(default)* | `control-md` (36px) · `px-cx-md` · `text-md` | standard |
+| `auto` | content-driven (`px-cx-md` · `py-2` · `text-md` · `gap-1.5`) | option cards / tiles |
 
 Horizontal padding follows the `cx-*` scale; never an arbitrary px. The `cloud` group look forces its own compact `height:auto` sizing, overriding the size height.
 

@@ -74,7 +74,7 @@ the right** (right-aligned), a hairline between rows.
 ```
 
 - **Left** — the setting's name (`content-primary`) over a one-line description
-  (`text-sm` / `content-tertiary`). The description is optional.
+  (`text-md` / `content-tertiary`). The description is optional.
 - **Right** — exactly one control: a `switch` (binary preference), `select`
   (choose one), `input` (a value), `radio-group` (small mutually-exclusive set),
   or a `button` (opens a sub-flow, "Manage keys"). Right-aligned so controls form

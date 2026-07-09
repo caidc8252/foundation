@@ -41,8 +41,8 @@ There is no size prop on the *group*. Fixed-height comes from each child
 | size | recipe | use |
 |---|---|---|
 | `sm` | `control-sm` (28px) · `px-cx-sm` · `text-xs` | dense toolbars |
-| `md` *(default)* | `control-md` (36px) · `px-cx-md` · `text-sm` | standard |
-| `auto` | content-driven · `px-cx-md` · `py-2` · `text-sm` | option cards / tiles |
+| `md` *(default)* | `control-md` (36px) · `px-cx-md` · `text-md` | standard |
+| `auto` | content-driven · `px-cx-md` · `py-2` · `text-md` | option cards / tiles |
 
 `cloud` items override height to content-driven (`px-cx-sm` + `--space-1` block padding, `text-xs`) regardless of the size prop, so the chip stays compact.
 

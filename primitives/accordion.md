@@ -46,7 +46,7 @@ and whether the arrow shows at all:
 - **Item** — a transparent grouping wrapper; carries the expanded state that the
   trigger arrow reads.
 - **Trigger** — a full-width `<button>` inside the item's header. `flex` with
-  `gap-2`, vertical padding `space-3`, horizontal `space-4`. `text-sm` / 500 /
+  `gap-2`, vertical padding `space-3`, horizontal `space-4`. `text-md` / 500 /
   `content-primary` on a `surface-2` ground. Label is a flex-1 left-aligned
   truncating slot; the chevron is the leading or trailing fixed slot.
 - **Arrow** — a 14px (`size-3.5`) chevron-down in `content-tertiary`,

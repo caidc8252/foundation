@@ -15,11 +15,11 @@ Single visual variant — a portalled popup surface. No tone/style modifiers; it
 
 | part | token recipe |
 |---|---|
-| popup | width fixed `280px` · radius `radius-xl` · bg `surface-2` · 1px border `line-default` · padding `spacing-cx-md` (14px) · text `content-primary` at `text-sm` · `shadow-4` |
+| popup | width fixed `280px` · radius `radius-xl` · bg `surface-2` · 1px border `line-default` · padding `spacing-cx-md` (14px) · text `content-primary` at `text-md` · `shadow-4` |
 
 ## Sizes
 
-No size variants — the popup is a fixed `280px` wide content box. Height is content-driven. Type baseline is `text-sm`; nested content sets its own scale.
+No size variants — the popup is a fixed `280px` wide content box. Height is content-driven. Type baseline is `text-md`; nested content sets its own scale.
 
 ## States
 

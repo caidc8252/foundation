@@ -17,10 +17,10 @@ A combobox is a composed set of slots, not a single element. The trigger lives i
 |---|---|---|
 | `trigger` | the closed control — shows the selected label(s) or placeholder | bg `surface-2` · text `content-primary` (`text-md`) · border `line-default` · radius `radius-md` · hover border `line-strong` · focus border `line-focus` + `shadow-focus` ring · trailing chevron `content-tertiary` · placeholder text `content-tertiary` |
 | `content` (popup) | the floating surface that holds the search box and the list | bg `surface-2` · text `content-primary` · border `line-default` · radius `radius-md` · `shadow-4` · width tracks trigger (`--anchor-width`) with `min-w-36` floor |
-| `search` (input row) | the filter input with a leading search glyph | leading `search` icon `content-tertiary` (`size-3.5`) · borderless `text-sm` input · placeholder `content-tertiary` · bottom hairline `line-subtle` |
+| `search` (input row) | the filter input with a leading search glyph | leading `search` icon `content-tertiary` (`size-3.5`) · borderless `text-md` input · placeholder `content-tertiary` · bottom hairline `line-subtle` |
 | `list` | the scrollable option list | padding `--space-1` · max-height clamp + scroll *(see notes)* |
-| `item` | one option row | radius `radius-md` · `text-sm` · text `content-primary` · highlight bg `surface-hover` · trailing check indicator when selected |
-| `empty` | the "no matches" caption (only when `emptyText` is set) | centered `text-sm` · text `content-tertiary` · vertical pad `--space-4` |
+| `item` | one option row | radius `radius-md` · `text-md` · text `content-primary` · highlight bg `surface-hover` · trailing check indicator when selected |
+| `empty` | the "no matches" caption (only when `emptyText` is set) | centered `text-md` · text `content-tertiary` · vertical pad `--space-4` |
 
 ## Sizes
 

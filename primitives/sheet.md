@@ -12,7 +12,7 @@ An edge-docked side panel that slides in over a dimmed scrim (base-ui `Dialog`),
 
 ## Variants
 
-The single variant axis is **side** (`data-side`) — which edge the panel docks to. It drives the inset, the size axis (height vs width), and which edge gets the divider border. All four share the panel surface recipe: bg `surface-3` · text `content-primary` · `text-sm` · `shadow-4`.
+The single variant axis is **side** (`data-side`) — which edge the panel docks to. It drives the inset, the size axis (height vs width), and which edge gets the divider border. All four share the panel surface recipe: bg `surface-3` · text `content-primary` · `text-md` · `shadow-4`.
 
 | side | use | token recipe |
 |---|---|---|
@@ -49,10 +49,10 @@ Unlike the Modal the Sheet has **square corners** (docks flush to the edge, no r
 ```
 
 - **overlay** — fixed full-viewport scrim behind the panel; sits on the modal z-layer.
-- **sheet (panel)** — the docked surface: `surface-3` on `content-primary`, `text-sm`, `shadow-4`, one divider border on the docked edge. `flex` column, square corners, clipped.
+- **sheet (panel)** — the docked surface: `surface-3` on `content-primary`, `text-md`, `shadow-4`, one divider border on the docked edge. `flex` column, square corners, clipped.
 - **header** — title + description stack, `space-4` padding, tight `gap-0.5` (2px). Present only when there's a title/description.
 - **title** — `text-lg` / 500 / `content-primary`.
-- **description** — `text-sm` / `content-secondary`.
+- **description** — `text-md` / `content-secondary`.
 - **close** — a built-in `ghost` icon button (×, `icon-sm`) pinned `top-3 right-3`; rendered when `showCloseButton` (default true). It is a real `.btn--ghost`, not a bespoke shell element.
 - **body** — children flow between header and footer; the panel scrolls this region.
 - **footer** — action shelf pinned to the panel bottom via `margin-top: auto`; stacks children in a column with `space-2` gaps, `space-4` padding. Holds `.btn` actions (typically `ghost` cancel + `primary`/`danger` confirm).

@@ -33,7 +33,7 @@ space. Also covers no-results-for-filters and (with a different icon/verb) error
   *No-results-for-filters* → offer "clear filters", not "create". Don't show a
   create CTA when the user just over-filtered.
 - Icon is decorative in a `surface-3` disc; title `text-lg`/600/`content-primary`;
-  description `text-sm`/`content-tertiary`, capped to a readable measure.
+  description `text-md`/`content-tertiary`, capped to a readable measure.
 - Lives **in place of table rows**, centered, with generous vertical breathing
   room (`space-16` block padding).
 

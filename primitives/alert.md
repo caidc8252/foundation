@@ -40,7 +40,7 @@ Alert is a static presentational box — it has no hover / active / focus / disa
 ```
 
 - **icon** *(optional)* — a leading status glyph. When present the root switches to a two-column grid (`auto 1fr`) with a `--space-2`-ish gutter; the icon spans both rows, sits `size-3.5` (14px), nudged down a hair to align to the title cap-height, and `shrink-0`. The title and description then start in column 2. With no icon the box is a plain single-column flow.
-- **title** — `text-sm`, `font-semibold`, tight line-height. The primary line.
+- **title** — `text-md`, `font-semibold`, tight line-height. The primary line.
 - **description** *(optional)* — `text-xs`, `content-secondary`, a small top margin below the title. Inherits nothing from the tone color (deliberately dimmer than the title).
 - **action** *(optional)* — a control (typically a `.btn--ghost`) absolutely positioned in the top-right corner. Use it for one inline affordance ("Retry", "Dismiss").
 
