@@ -165,6 +165,17 @@ body {
 }
 .btn--link:hover:not(:disabled) { text-decoration: underline; }
 
+.btn[aria-invalid="true"] {
+  border-color: var(--color-error-strong);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-error) 20%, transparent);
+}
+
+.btn--danger:focus-visible,
+.btn--ghost-danger:focus-visible,
+.btn[aria-invalid="true"]:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-error) 30%, transparent);
+}
+
 .btn--xs {
   height: var(--spacing-control-xs);
   padding-inline: var(--spacing-cx-sm);
