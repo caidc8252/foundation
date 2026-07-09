@@ -15,13 +15,13 @@ Single visual variant — no variant prop. It is an inline-flex text caption.
 
 | token recipe |
 |---|
-| font `font-sans` · size `text-sm` (13px) · weight 500 · line-height 1 · `select-none` · **color inherited** (not set by the primitive) |
+| font `font-sans` · size `text-sm` (14px) · weight 500 · line-height 1 · `select-none` · **color inherited** (not set by the primitive) |
 
 The label sets no color of its own — it inherits the surrounding text color, so it composes inside any field or context. The `Field` wrapper applies `content-secondary` as the standard form-caption tone; the reference `.label` class bakes that same tone in for the artifact side (see Notes).
 
 ## Sizes
 
-No size variants. Fixed `text-sm` (13px), weight 500, line-height 1. Slot gap is `gap-2` (`--space-2`, 8px) between the caption text and any inline adornment (e.g. a required `*` or an inline control).
+No size variants. Fixed `text-sm` (14px), weight 500, line-height 1. Slot gap is `gap-2` (`--space-2`, 8px) between the caption text and any inline adornment (e.g. a required `*` or an inline control).
 
 ## States
 

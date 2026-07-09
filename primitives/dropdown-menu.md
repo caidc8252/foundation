@@ -99,7 +99,7 @@ content (popup surface)
   cap holds whether the popup is absolute-in-wrapper or portalled+`fixed`. Don't
   reintroduce a `%` height here.
 - The source's `bg-border` (separator) and `text-muted-foreground` (shortcut) are shadcn aliases; they resolve to `line-default` and `content-tertiary` in this token system.
-- Action `item` uses `text-xs` (12px) while `checkbox-item` / `radio-item` use `text-sm` (13px) — kept faithfully; do not normalize them.
+- Action `item` uses `text-xs` (12px) while `checkbox-item` / `radio-item` use `text-sm` (14px) — kept faithfully; do not normalize them.
 - The contract documents the static skin only — see Implementations.
 
 ## Implementations
