@@ -14,7 +14,7 @@ import { markerCoverage } from './lib/marker-coverage.mjs';
 export { markerCoverage };
 
 const TIER_FILE = { 30: 'cheatsheet-low.md', 70: 'cheatsheet-mid.md', 100: 'cheatsheet-full.md' };
-const TOKENS_HEADER = `## Tokens (semantic, use \`var(--…)\`)\n\n- content/surface/line/primary/status colors · space · text · radius · font-mono/sans · shadow(card/overlay). (Full list in tokens.inline.css, inlined in the shell.)\n`;
+const TOKENS_HEADER = `## Tokens (semantic, use \`var(--…)\`)\n\n- content/surface/line/primary/status colors · space · text · radius · font-sans · shadow(card/overlay). (Full list in tokens.inline.css, inlined in the shell.)\n`;
 
 export function buildCheatsheet({ tier, registry, catalog, skeletonsDir }) {
   const names = componentsForTier(registry, tier);

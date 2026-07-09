@@ -34,7 +34,7 @@ No size prop — grows with content; minimum height 128px (layout floor, no sizi
 
 - **`__icon`** — generic file glyph; `content-tertiary`, `size-4` (16px).
 - **`__body`** — flexible body column:
-  - **`__name-row`** → `__name` (truncated, `content-primary`) + `__size` (mono `text-xs`, `content-tertiary`).
+  - **`__name-row`** → `__name` (truncated, `content-primary`) + `__size` (`text-xs` tabular, `content-tertiary`).
   - `<progress>` bar shown while `status === "uploading"` (uses the `.progress` primitive).
   - **`__error`** — `text-xs`, `error-strong`; shown while `status === "error"`.
 - **`__status--done`** — trailing success glyph (`success-strong`).

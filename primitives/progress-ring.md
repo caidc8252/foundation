@@ -62,7 +62,7 @@ that moves is the arc length, driven by the `--progress` custom property (0–10
 ├─ svg.progress-ring__svg           rotated -90° so 0% starts at 12 o'clock
 │  ├─ circle.progress-ring__track   full-circle rail, stroke surface-3, pathLength=100
 │  └─ circle.progress-ring__fill    the arc, stroke-dasharray: var(--progress) 100
-└─ span.progress-ring__label        centred % readout (mono, tabular-nums) — optional
+└─ span.progress-ring__label        centred % readout (tabular-nums) — optional
 ```
 
 - Both circles carry `pathLength="100"`, so `--progress` (0–100) maps directly to

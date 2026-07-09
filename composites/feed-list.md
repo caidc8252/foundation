@@ -29,7 +29,7 @@ where order is recency, not a connected sequence, and rows can carry actions.
 - **Icon** — a tonal tile (`--info` / `--success` / `--warning` / `--error` /
   `--neutral`), signalling the event class.
 - **Main** — an optional **overline** head (kind / source, uppercase
-  `content-tertiary`, may hold a mono code), a **title** (`text-md`, weight 600),
+  `content-tertiary`, may hold a `<code>` run), a **title** (`text-md`, weight 600),
   an optional **body** line (`text-xs`, `content-secondary`), and an optional
   **actions** row.
 - **Trailing** — a right-aligned column (`__trailing`) holding the **time**

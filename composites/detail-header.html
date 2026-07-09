@@ -127,7 +127,7 @@
               </span>
             </div>
             <div class="detail-header__meta">
-              <span style="font-family:var(--font-mono);">#C-10293</span>
+              <span style="font-variant-numeric:tabular-nums;">#C-10293</span>
               <span>
                 <svg data-lucide="clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:var(--space-3);height:var(--space-3);vertical-align:-1px;"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
                 <button class="btn btn--ghost btn--xs btn--icon" type="button" aria-label="Copy ID" style="margin-left:var(--space-1);">
@@ -190,7 +190,7 @@
               </span>
             </div>
             <div class="detail-header__meta">
-              <span style="font-family:var(--font-mono);">#C-20481</span>
+              <span style="font-variant-numeric:tabular-nums;">#C-20481</span>
               <span>Customer since 2019</span>
               <span>London · EMEA</span>
             </div>
@@ -251,7 +251,7 @@
               <span class="badge badge--error"><span class="badge__dot"></span>Expired</span>
             </div>
             <div class="detail-header__meta">
-              <span style="font-family:var(--font-mono);">key-prod-abcd1234</span>
+              <span style="font-variant-numeric:tabular-nums;">key-prod-abcd1234</span>
               <span>Created Jan 10, 2024</span>
               <span>Expired Jun 10, 2025</span>
             </div>
@@ -288,7 +288,7 @@
               <span class="badge badge--info"><span class="badge__dot" aria-hidden="true"></span>High priority</span>
             </div>
             <div class="detail-header__meta">
-              <span style="font-family:var(--font-mono);">#TKT-4821</span>
+              <span style="font-variant-numeric:tabular-nums;">#TKT-4821</span>
               <span>Reported 45 min ago</span>
               <span>Assigned to backend-squad</span>
             </div>
@@ -373,7 +373,7 @@
                 <span class="badge badge--success"><span class="badge__dot"></span>Active</span>
               </div>
               <div class="detail-header__meta">
-                <span style="font-family:var(--font-mono);">#S-1001</span>
+                <span style="font-variant-numeric:tabular-nums;">#S-1001</span>
                 <span>Scroll down to see the band stick</span>
               </div>
             </div>
@@ -470,13 +470,13 @@
         document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setOpen(false); });
       });
 
-      // Copy affordance: real clipboard write of the row's mono id + a transient label.
+      // Copy affordance: real clipboard write of the row's tabular id + a transient label.
       document.querySelectorAll('.btn[aria-label^="Copy"]').forEach(function (btn) {
         var meta = btn.closest('.detail-header__meta');
-        var mono = meta && meta.querySelector('[style*="font-mono"]');
+        var idEl = meta && meta.querySelector('[style*="tabular-nums"]');
         var label = btn.getAttribute('aria-label');
         btn.addEventListener('click', function () {
-          var text = mono ? mono.textContent.trim() : '';
+          var text = idEl ? idEl.textContent.trim() : '';
           if (navigator.clipboard) navigator.clipboard.writeText(text).catch(function () {});
           btn.setAttribute('aria-label', 'Copied');
           setTimeout(function () { btn.setAttribute('aria-label', label); }, 1200);

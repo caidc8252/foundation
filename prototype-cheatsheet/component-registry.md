@@ -32,7 +32,7 @@
 | text | 9 | ✅ |
 | radius | 6 | ✅ |
 | shadow | 9 | ✅（card/overlay 档） |
-| font | 4 | ✅（sans/mono） |
+| font | 2 | ✅（sans） |
 | breakpoint | 6 | — |
 | duration / ease | 4 / 2 | —（动效属留白） |
 | container | 1 | — |

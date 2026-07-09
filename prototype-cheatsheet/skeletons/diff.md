@@ -1,5 +1,5 @@
 ### diff — compact before → after comparison (old struck · arrow · new highlighted)
-`.diff` (add `.diff--inline` to collapse the 3-column grid into one mono line for rows/table cells). Columns: `.diff__col.diff__col--old` and `.diff__col.diff__col--new`, each with `.diff__label` (BEFORE/AFTER) + `.diff__value`; an `.diff__arrow` between them. Absence uses `.diff__value.diff__value--empty` (em-dash).
+`.diff` (add `.diff--inline` to collapse the 3-column grid into one compact line for rows/table cells). Columns: `.diff__col.diff__col--old` and `.diff__col.diff__col--new`, each with `.diff__label` (BEFORE/AFTER) + `.diff__value`; an `.diff__arrow` between them. Absence uses `.diff__value.diff__value--empty` (em-dash).
 ```html
 <div class="diff">
   <div class="diff__col diff__col--old">

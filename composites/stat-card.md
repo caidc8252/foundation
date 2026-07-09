@@ -1,6 +1,6 @@
 # Stat card · composite
 
-A single key metric — overline label, big mono value, optional trend / icon /
+A single key metric — overline label, big tabular value, optional trend / icon /
 description — surfaced above a list (style-spec §4). Pure display, or an
 interactive quick-filter synced to the list toolbar's applied state. Composes a
 `card`-like surface + a `label` + a `value` + a `delta`.
@@ -71,7 +71,7 @@ grows with content; it never has a fixed height. Inner padding is fixed at
 │  ACTIVE TERMINALS            ◍  (icon?)    │    radius-xl, surface-2 + shadow-1
 │  __label (overline)          __icon        │
 │                                            │
-│  1,248   ▲ 12%                             │  ← __value (mono 2xl) + __delta (trend?)
+│  1,248   ▲ 12%                             │  ← __value (tabular 2xl) + __delta (trend?)
 │  __value                                   │
 │  Updated 2 min ago                         │  ← __description? (xs tertiary)
 └────────────────────────────────────────────┘
@@ -83,7 +83,7 @@ grows with content; it never has a fixed height. Inner padding is fixed at
   (→ `primary-700` selected). Decorative; size set by the consumer's glyph
   (`space-5` / 20px). The head reserves this height (`min-height: space-5`) so a
   label-only card aligns with an icon card across a grid — values don't stagger.
-- **`__value`** — the metric: `font-mono`, `text-2xl`, weight 600, `tracking-tight`,
+- **`__value`** — the metric: `tabular-nums`, `text-2xl`, weight 600, `tracking-tight`,
   `tabular-nums`. Color = the `tone` recipe (→ `primary-700` selected).
 - **`__delta`** — optional trend chip inline-baseline after the value: `text-xs`
   weight 500. Direction colors: **up** `success-strong` · **down** `error-strong`

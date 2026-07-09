@@ -37,7 +37,7 @@
      provides the layout, label/value typography, and the --inline left-right
      variant (preferred). Page-local: only the reveal helper (inline-flex + gap)
      for the masked field. */
-  .kv__value--mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .kv__value--mono { font-variant-numeric: tabular-nums; }
   .kv__value--reveal { display: inline-flex; align-items: center; gap: var(--space-2); }
 
   /* Overview layout — the main / aside split is the real .detail-split composite
@@ -95,7 +95,7 @@
               <span class="badge badge--neutral">Enterprise</span>
             </div>
             <!-- OPTIONAL — meta row: dot-joined facts (the · separators are inserted by
-                 the composite). ids are mono. Delete the whole .detail-header__meta if
+                 the composite). ids are tabular. Delete the whole .detail-header__meta if
                  there are no at-a-glance facts to show. -->
             <div class="detail-header__meta">
               <span class="meta-item">

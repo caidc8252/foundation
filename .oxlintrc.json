@@ -14,8 +14,8 @@
         "message": "Raw px value — snap to a foundation scale token via var() (--space-*, --text-*, --radius-*, --spacing-control-*). 1px hairline borders are exempt. See governance/principles.md §1 & §4."
       },
       {
-        "selector": "Literal[value=/font-family\\s*:\\s*(?!['\\\"]?(?:Geist|Geist Mono|var\\(--font))/i]",
-        "message": "Font not in the foundation. Use var(--font-sans) / var(--font-mono) (Geist · Geist Mono)."
+        "selector": "Literal[value=/font-family\\s*:\\s*(?!['\\\"]?(?:Geist(?! Mono)|var\\(--font-sans\\)))/i]",
+        "message": "Font not in the foundation. Use var(--font-sans) (Geist) — the foundation ships no monospace face; align digits with font-variant-numeric: tabular-nums. See governance/principles.md §11b."
       }
     ]
   }

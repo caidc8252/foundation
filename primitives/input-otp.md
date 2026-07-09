@@ -21,7 +21,7 @@ not a variant. Each slot is a 40×48 box; the separator is a centered minus glyp
 ## Sizes
 
 No size variants — every slot is a fixed `40px` wide (`--space-10`) × `48px`
-tall (`--space-12`) box with `text-xl` (18px) `font-mono` `font-semibold`
+tall (`--space-12`) box with `text-xl` (18px) `tabular-nums` `font-semibold`
 characters and `radius-md` corners. Slot count equals `maxLength` (one slot per
 character); width comes from slot count, not a size prop.
 
@@ -34,7 +34,7 @@ Per slot:
   `primary-700` + `ring-2` ring `primary-700`/25; raised above neighbours
   (`z-index`) so the ring isn't clipped by the next slot's border.
 - **filled** — same chrome as idle; the typed character renders in
-  `content-primary` `font-mono`. A blinking fake caret (`16px`×`1px`,
+  `content-primary` `tabular-nums`. A blinking fake caret (`16px`×`1px`,
   `content-primary`) shows in the active empty slot.
 
 Group-level:
@@ -60,7 +60,7 @@ Container-level:
 .input-otp                      container — flex row, gap, dims when disabled
   .input-otp__group             a run of slots, each its own rounded box, spaced by a gap; error ring wraps the run
     .input-otp__slot            one character cell (40×48)
-      char                      typed character (content-primary, mono)
+      char                      typed character (content-primary, tabular)
       .input-otp__caret         fake blinking caret (active empty slot only)
     .input-otp__slot  …         one per character
   .input-otp__separator         optional minus glyph between groups (role=separator)

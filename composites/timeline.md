@@ -104,11 +104,11 @@ Badge's `tone`. `primary` maps to the **accent** ramp (not the gray-blue
   `stacked=false`; a plain block (title, then the TimeRow beneath) when
   `stacked=true`.
 - **Title** `text-md` · 500 · `content-primary` — the same size at both densities; `compact` changes rhythm, not type size.
-- **Time** mono · `text-xs` · tabular-nums · `content-tertiary` · nowrap.
+- **Time** `text-xs` · tabular-nums · `content-tertiary` · nowrap.
   Renders as `<time dateTime>`.
 - **Description** `text-md` · normal leading · `content-secondary`, with a small
   top nudge.
-- **Actor** mono · `text-xs` · `content-tertiary`. In a TimeRow it sits inline
+- **Actor** `text-xs` · `content-tertiary`. In a TimeRow it sits inline
   (joined to the time by a `·` separator); outside one it is a block with a top
   margin (sits after the description in time-right mode).
 

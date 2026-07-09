@@ -232,7 +232,7 @@ ${inlineCss}
 ${primitivesCss}
 ${compositesCss}
 html, body { margin: 0; }
-.mono { font-family: var(--font-mono); }
+.mono { font-variant-numeric: tabular-nums; }
 .ov-grid { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: var(--space-4); align-items: start; }
 @media (max-width: 860px) { .ov-grid { grid-template-columns: 1fr; } }
 .rail { display: flex; flex-direction: column; gap: var(--space-3); }
@@ -396,7 +396,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 a { color: inherit; }
-code, .mono { font-family: var(--font-mono); }
+code, .mono { font-family: var(--font-sans); font-variant-numeric: tabular-nums; }
 
 /* layout */
 .shell { display: grid; grid-template-columns: 232px 1fr; min-height: 100vh; }
@@ -453,17 +453,17 @@ h3.group { font-size: var(--text-sm); letter-spacing: 0.02em;
 .swatch .chip { height: 64px; }
 .swatch .meta { padding: var(--space-2) var(--space-3); }
 .swatch .name { font-size: var(--text-sm); font-weight: var(--font-weight-medium); }
-.swatch .val { font-size: var(--text-xs); color: var(--color-content-tertiary); font-family: var(--font-mono); word-break: break-all; }
+.swatch .val { font-size: var(--text-xs); color: var(--color-content-tertiary); font-family: var(--font-sans); word-break: break-all; }
 
 /* ramp row */
 .ramp { display: flex; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--color-line-default); margin-bottom: var(--space-4); box-shadow: var(--shadow-1); }
 .ramp__step { flex: 1; min-width: 0; }
 .ramp__step .bar { height: 56px; }
-.ramp__step .lbl { font-size: var(--text-xs); text-align: center; padding: var(--space-1) 2px; color: var(--color-content-tertiary); font-family: var(--font-mono); }
+.ramp__step .lbl { font-size: var(--text-xs); text-align: center; padding: var(--space-1) 2px; color: var(--color-content-tertiary); font-family: var(--font-sans); }
 
 /* type scale */
 .type-row { display: flex; align-items: baseline; gap: var(--space-5); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-line-subtle); }
-.type-row .tk { width: 188px; flex: none; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-content-tertiary); }
+.type-row .tk { width: 188px; flex: none; font-family: var(--font-sans); font-size: var(--text-xs); color: var(--color-content-tertiary); }
 .type-row .tk b { color: var(--color-content-secondary); font-weight: var(--font-weight-semibold); }
 .type-row .sample { line-height: var(--line-height-tight); letter-spacing: -0.01em; }
 
@@ -472,7 +472,7 @@ h3.group { font-size: var(--text-sm); letter-spacing: 0.02em;
 .font-card .fc-cap { font-size: var(--text-xs); letter-spacing: 0.02em; color: var(--color-content-tertiary); margin-bottom: var(--space-2); }
 .font-card .show { font-size: var(--text-2xl); letter-spacing: -0.01em; }
 .font-card .glyphs { margin-top: var(--space-2); color: var(--color-content-secondary); }
-.font-card .stack { margin-top: var(--space-3); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-content-tertiary); word-break: break-all; }
+.font-card .stack { margin-top: var(--space-3); font-family: var(--font-sans); font-size: var(--text-xs); color: var(--color-content-tertiary); word-break: break-all; }
 
 /* radius / shadow / spacing demos */
 .demo-grid { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
@@ -484,11 +484,11 @@ h3.group { font-size: var(--text-sm); letter-spacing: 0.02em;
 .demo .box { width: 72px; height: 56px; background: var(--color-primary-700); }
 .demo.shadow .box { background: var(--color-surface-2); border: 1px solid var(--color-line-subtle); }
 .demo .name { font-size: var(--text-sm); font-weight: var(--font-weight-medium); }
-.demo .val { font-size: var(--text-xs); font-family: var(--font-mono); color: var(--color-content-tertiary); word-break: break-all; }
+.demo .val { font-size: var(--text-xs); font-family: var(--font-sans); color: var(--color-content-tertiary); word-break: break-all; }
 .space-row { display: flex; align-items: center; gap: var(--space-4); padding: var(--space-2) 0; border-bottom: 1px solid var(--color-line-subtle); }
-.space-row .tk { width: 120px; flex: none; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-content-secondary); }
+.space-row .tk { width: 120px; flex: none; font-family: var(--font-sans); font-size: var(--text-xs); color: var(--color-content-secondary); }
 .space-row .bar { height: 14px; background: var(--color-accent-500); border-radius: var(--radius-sm); }
-.space-row .v { font-size: var(--text-xs); color: var(--color-content-tertiary); font-family: var(--font-mono); }
+.space-row .v { font-size: var(--text-xs); color: var(--color-content-tertiary); font-family: var(--font-sans); }
 
 /* principles */
 .principles { display: grid; gap: var(--space-3); }
@@ -539,7 +539,7 @@ h3.group { font-size: var(--text-sm); letter-spacing: 0.02em;
   background: var(--color-surface-2); color: var(--color-content-primary);
   border: 1px solid var(--color-line-strong); border-radius: var(--radius-lg);
   box-shadow: var(--shadow-4); overflow: hidden;
-  font-family: var(--font-mono); font-size: var(--text-sm);
+  font-family: var(--font-sans); font-size: var(--text-sm);
 }
 #cx-inspector[hidden] { display: none; }
 .cx-inspector__head {
@@ -569,7 +569,7 @@ h3.group { font-size: var(--text-sm); letter-spacing: 0.02em;
   box-shadow: var(--shadow-3);
 }
 #anno-launch:hover { background: var(--color-surface-hover); }
-#anno-launch .n { font-family: var(--font-mono); color: var(--color-content-tertiary); }
+#anno-launch .n { font-family: var(--font-sans); color: var(--color-content-tertiary); }
 
 /* inspect-mode toggle — same fixed pill as #anno-launch, docked one row above it */
 #inspectToggle {
@@ -591,7 +591,7 @@ h3.group { font-size: var(--text-sm); letter-spacing: 0.02em;
   min-width: var(--space-5); height: var(--space-5); padding: 0 4px;
   border: 1.5px solid var(--color-surface-2); border-radius: var(--radius-full);
   background: var(--color-primary-700); color: var(--color-content-on-primary);
-  font-family: var(--font-mono); font-size: var(--text-xs); line-height: var(--line-height-none);
+  font-family: var(--font-sans); font-size: var(--text-xs); line-height: var(--line-height-none);
   display: flex; align-items: center; justify-content: center; cursor: pointer;
   box-shadow: var(--shadow-2);
 }
@@ -611,7 +611,7 @@ body.anno-on main { cursor: crosshair; }
 #anno-panel[hidden] { display: none; }
 .anno-panel__head { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-line-subtle); }
 .anno-panel__head strong { font-size: var(--text-md); }
-#anno-count { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-content-tertiary); }
+#anno-count { font-family: var(--font-sans); font-size: var(--text-xs); color: var(--color-content-tertiary); }
 .anno-mode { margin-inline-start: auto; display: flex; align-items: center; gap: var(--space-1); font-size: var(--text-xs); color: var(--color-content-secondary); cursor: pointer; }
 .anno-x { border: 0; background: transparent; cursor: pointer; color: var(--color-content-tertiary); font-size: var(--text-lg); line-height: var(--line-height-none); font-family: var(--font-sans); padding: 0 var(--space-1); }
 .anno-x:hover { color: var(--color-content-primary); }
@@ -619,9 +619,9 @@ body.anno-on main { cursor: crosshair; }
 .anno-empty { padding: var(--space-5) var(--space-4); text-align: center; color: var(--color-content-tertiary); font-size: var(--text-sm); line-height: var(--line-height-normal); }
 .anno-row { display: grid; grid-template-columns: auto 1fr auto; gap: var(--space-2); align-items: start; padding: var(--space-2); border-radius: var(--radius-md); cursor: pointer; }
 .anno-row:hover { background: var(--color-surface-hover); }
-.anno-row__n { flex-shrink: 0; width: var(--space-5); height: var(--space-5); border-radius: var(--radius-full); background: var(--color-primary-700); color: var(--color-content-on-primary); font-family: var(--font-mono); font-size: var(--text-xs); display: flex; align-items: center; justify-content: center; }
+.anno-row__n { flex-shrink: 0; width: var(--space-5); height: var(--space-5); border-radius: var(--radius-full); background: var(--color-primary-700); color: var(--color-content-on-primary); font-family: var(--font-sans); font-size: var(--text-xs); display: flex; align-items: center; justify-content: center; }
 .anno-list__note { font-size: var(--text-xs); color: var(--color-content-primary); line-height: var(--line-height-compact); white-space: pre-wrap; word-break: break-word; }
-.anno-list__sel { margin-top: 2px; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-content-tertiary); word-break: break-all; }
+.anno-list__sel { margin-top: 2px; font-family: var(--font-sans); font-size: var(--text-xs); color: var(--color-content-tertiary); word-break: break-all; }
 .anno-foot { display: flex; gap: var(--space-2); padding: var(--space-2) var(--space-3); border-top: 1px solid var(--color-line-subtle); }
 
 #anno-composer {
@@ -631,7 +631,7 @@ body.anno-on main { cursor: crosshair; }
   border-radius: var(--radius-lg); box-shadow: var(--shadow-4); font-family: var(--font-sans);
 }
 #anno-composer[hidden] { display: none; }
-.anno-composer__sel { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-primary-500); word-break: break-all; }
+.anno-composer__sel { font-family: var(--font-sans); font-size: var(--text-xs); color: var(--color-primary-500); word-break: break-all; }
 #anno-text { min-height: 64px; }
 .anno-composer__row { display: flex; align-items: center; gap: var(--space-2); }
 
@@ -656,7 +656,7 @@ h6.md-h { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 
 .md-ul { margin: var(--space-2) 0; padding-left: var(--space-5); display: flex; flex-direction: column; gap: var(--space-1); }
 .md-ul li { list-style: disc; font-size: var(--text-sm); line-height: var(--line-height-relaxed); color: var(--color-content-secondary); }
 .md-quote { margin: var(--space-3) 0; padding: var(--space-2) var(--space-4); border-left: 3px solid var(--color-line-strong); background: var(--color-surface-3); border-radius: var(--radius-sm); font-size: var(--text-xs); color: var(--color-content-tertiary); line-height: var(--line-height-relaxed); }
-.contract code { font-family: var(--font-mono); font-size: 0.88em; background: var(--color-surface-3); padding: 1px var(--space-1); border-radius: var(--radius-sm); color: var(--color-content-primary); }
+.contract code { font-family: var(--font-sans); font-size: 0.88em; background: var(--color-surface-3); padding: 1px var(--space-1); border-radius: var(--radius-sm); color: var(--color-content-primary); }
 .md-table { border-collapse: collapse; width: 100%; margin: var(--space-3) 0; font-size: var(--text-xs); display: block; overflow-x: auto; }
 .md-table th, .md-table td { border: 1px solid var(--color-line-default); padding: var(--space-2) var(--space-3); text-align: start; vertical-align: top; }
 .md-table th { background: var(--color-surface-3); color: var(--color-content-secondary); font-weight: var(--font-weight-semibold); white-space: nowrap; }
@@ -665,13 +665,13 @@ h6.md-h { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 
 
 /* fenced code blocks (ASCII anatomy diagrams) */
 .md-pre { margin: var(--space-3) 0; padding: var(--space-3) var(--space-4); background: var(--color-surface-3); border: 1px solid var(--color-line-subtle); border-radius: var(--radius-md); overflow-x: auto; }
-.md-pre code { font-family: var(--font-mono); font-size: var(--text-xs); line-height: var(--line-height-normal); color: var(--color-content-secondary); white-space: pre; background: none; padding: 0; }
+.md-pre code { font-family: var(--font-sans); font-size: var(--text-xs); line-height: var(--line-height-normal); color: var(--color-content-secondary); white-space: pre; background: none; padding: 0; }
 /* pattern (L3) card — renders the full archetype contract */
 .pattern { border: 1px solid var(--color-line-default); border-radius: var(--radius-lg); background: var(--color-surface-2); padding: var(--space-4) var(--space-6) var(--space-6); margin-bottom: var(--space-5); }
 .pattern .md-h:first-child { margin-top: var(--space-2); }
 .pattern a { color: var(--color-primary-500); }
 /* live example frame (the assembled page prototype, isolated in an iframe) */
-.pattern__bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-top: var(--space-4); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-content-tertiary); }
+.pattern__bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-top: var(--space-4); font-family: var(--font-sans); font-size: var(--text-xs); color: var(--color-content-tertiary); }
 .pattern__bar a { color: var(--color-primary-500); text-decoration: none; }
 .pattern__bar a:hover { text-decoration: underline; }
 .pattern-frame { display: block; width: 100%; height: 580px; margin-top: var(--space-2); margin-bottom: var(--space-3); border: 1px solid var(--color-line-default); border-radius: var(--radius-lg); background: var(--color-surface-1); }
@@ -961,7 +961,7 @@ h6.md-h { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 
       <div class="cx-demo">
         <div class="cx-demo__head"><div class="cx-demo__name">AspectRatio / ScrollArea / Resizable <code>.aspect-ratio · .scroll-area · .resizable-group</code></div></div>
         <div class="cx-demo__body" style="display:flex;flex-wrap:wrap;gap:var(--space-5);align-items:flex-start">
-          <div class="aspect-ratio" style="--ratio:16/9;width:200px;display:grid;place-items:center;border:1px solid var(--color-line-default);border-radius:var(--radius-md);background:var(--color-surface-3);color:var(--color-content-tertiary);font-family:var(--font-mono);font-size:var(--text-xs)">16 / 9</div>
+          <div class="aspect-ratio" style="--ratio:16/9;width:200px;display:grid;place-items:center;border:1px solid var(--color-line-default);border-radius:var(--radius-md);background:var(--color-surface-3);color:var(--color-content-tertiary);font-family:var(--font-sans);font-size:var(--text-xs)">16 / 9</div>
           <div class="scroll-area" style="width:220px;height:120px;border:1px solid var(--color-line-default);border-radius:var(--radius-md)">
             <div class="scroll-area__viewport" style="padding:var(--space-3)">
               <p style="font-size:var(--text-sm);color:var(--color-content-secondary);line-height:var(--line-height-relaxed)">细滚动条容器。内容超出高度时出现 4px 细滚动条（line-strong @70%）。一二三四五六七八九十。一二三四五六七八九十。一二三四五六七八九十。一二三四五六七八九十。一二三四五六七八九十。</p>
@@ -1729,19 +1729,19 @@ function renderType(){
 }
 
 function renderFonts(){
-  const sans = val("font-family-sans"), mono = val("font-family-mono");
+  const sans = val("font-family-sans");
   return \`
   <div class="font-card">
-    <div class="fc-cap">无衬线 · --font-sans（Geist Variable）</div>
+    <div class="fc-cap">无衬线 · --font-sans（Geist）</div>
     <div class="show" style="font-family:var(--font-sans)">基础设计系统 Foundation 1234567890</div>
     <div class="glyphs" style="font-family:var(--font-sans)">ABCDEFGHIJKLM abcdefghijklm &amp; ? ! @ # %</div>
     <div class="stack">\${sans}</div>
   </div>
   <div class="font-card">
-    <div class="fc-cap">等宽 · --font-mono（Geist Mono Variable）</div>
-    <div class="show mono">const total = sum(items); // 1234567890</div>
-    <div class="glyphs mono">ABCDEFGHIJKLM abcdefghijklm {} [] () =&gt; !=</div>
-    <div class="stack">\${mono}</div>
+    <div class="fc-cap">数据文本 · font-variant-numeric: tabular-nums（原则 11b）</div>
+    <div class="show mono">1,248.05<br>9,003.71</div>
+    <div class="glyphs mono">TXN-4821-0F3A · 2026-03-04 · 12.5 ms</div>
+    <div class="stack">同一字族 Geist；等宽数字由 tabular-nums 提供，不引入第二套字体。</div>
   </div>\`;
 }
 
@@ -1805,7 +1805,7 @@ function render(){
   </section>
 
   <section id="fonts"><h2>字体</h2>
-    <p class="lede">Geist（无衬线）与 Geist Mono（等宽）。字体文件由各使用方自行引入；token 保持无资源依赖，因此本页在未安装 Geist 时会回退到系统字体栈。</p>
+    <p class="lede">单一字族 Geist（无衬线）；基础层不提供等宽字体，数字对齐由 <code>tabular-nums</code> 承担。字体文件由各使用方自行引入；token 保持无资源依赖，因此本页在未安装 Geist 时会回退到系统字体栈。</p>
     \${renderFonts()}
   </section>
 

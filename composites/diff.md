@@ -22,10 +22,10 @@ block layout (in a confirm modal)            inline layout (in a row / feed)
 └────────────────────────────────────┘
 ```
 
-- **Old column** (`--old`) — the prior value: mono, `content-tertiary`, struck
+- **Old column** (`--old`) — the prior value: tabular, `content-tertiary`, struck
   through.
 - **Arrow** — a `content-tertiary` glyph separating old from new.
-- **New column** (`--new`) — the incoming value: mono, `success-strong`, the one
+- **New column** (`--new`) — the incoming value: tabular, `success-strong`, the one
   the eye should land on.
 - **Labels** (block layout) — optional overline captions ("BEFORE" / "AFTER")
   over each column.
@@ -36,7 +36,7 @@ block layout (in a confirm modal)            inline layout (in a row / feed)
   from styling, not from position alone. New is `success-strong` (an additive
   change reads positive); a *removal* may render the new side as an em-dash in
   `content-tertiary`.
-- **Values are mono + `break-all`** — ids, tokens, scopes, and addresses must not
+- **Values are `tabular-nums` + `break-all`** — ids, tokens, scopes, and addresses must not
   reflow mid-token; long values wrap inside their column.
 - **Two layouts, one recipe** — `block` (three columns: old · arrow · new, in a
   tinted `surface-3` box) for modals; `--inline` (one line: `label old → new`) for
@@ -63,4 +63,4 @@ styling of its column) or an inline colour override on the placeholder.
 - **Artifact** — `.diff` (block) → `.diff__col` `.diff__col--old` / `.diff__arrow` /
   `.diff__col` `.diff__col--new`, each column an optional `.diff__label` over a
   `.diff__value` (an empty side is `.diff__value--empty`); `.diff--inline` collapses to a
-  single mono line. In `composites.css`.
+  single compact line. In `composites.css`.

@@ -29,7 +29,7 @@ kbd.kbd   one cap — a glyph (⌘ ⇧ ↵ ↑ ↓ esc) or a single letter/word
 
 ## Sizes
 
-One size — `text-xs` mono, `space-5` (20px) tall cap. It sits inline with `text-sm`/`text-md` body text.
+One size — `text-xs`, `space-5` (20px) tall cap. It sits inline with `text-sm`/`text-md` body text.
 
 ## States
 

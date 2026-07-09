@@ -20,7 +20,7 @@ the list-level actions (Export, bulk ops). Mirrors @cloud/ui
 - **Fixed height 48px** (`--space-12`). This is load-bearing: when the bar is
   sticky, the table's sticky header docks at exactly this offset so the two tile
   flush. The @cloud/ui constant is `LIST_SUMMARY_BAR_HEIGHT = 48`.
-- **Count is mono + tabular + `content-primary`**; the trailing label — the count
+- **Count is `tabular-nums` + `content-primary`**; the trailing label — the count
   noun alone ("results" / "transactions") — is `content-secondary`. It reports the
   current total only, **not** the sort or filter state. The number must not reflow as
   it updates.
@@ -48,5 +48,5 @@ the list-level actions (Export, bulk ops). Mirrors @cloud/ui
 - **Next / @cloud/ui** — `ListSummaryBar` (`total` / `label` / `actions` / `sticky`)
   + the exported `LIST_SUMMARY_BAR_HEIGHT`. `ui` skill → data-display.
 - **Artifact** — `.summary-bar` (+ `--sticky`) › `.summary-bar__count`
-  (`<strong>` = mono count) + `.summary-bar__actions` (`.btn--*`). Place inside a
+  (`<strong>` = tabular count) + `.summary-bar__actions` (`.btn--*`). Place inside a
   `.table-frame--flush`, directly above `table.data-table`. In `composites.css`.

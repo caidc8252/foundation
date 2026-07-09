@@ -80,7 +80,7 @@ an icon* — never its own column, never a button.
   ambiguity. Past ~2 quick verbs, collapse to the single `⋯` overflow menu (one
   carrier per row).
   (Mirrors [`actions.md`](../patterns/actions.md) and the `list-page` row recipe.)
-- **Numeric / id columns** render mono + tabular (`.cell-num`) and usually
+- **Numeric / id columns** render tabular (`.cell-num`) and usually
   right-align so digits line up.
 - **Sticky header** docks the column header to the scroll root; pair with a
   `--flush` frame and set its top offset to the summary bar's height so they tile.
@@ -113,7 +113,7 @@ off-scale type/color pairing.
 | column | recipe |
 |---|---|
 | **two-line text** (primary + sub, e.g. name + id) | `.cell-2line` (`min-w-0`): main `.cell-2line__main` `text-lg` / `500` / `content-primary` truncate · sub `.cell-2line__sub` `text-xs` / `content-tertiary` truncate. A leading `object-tile` / logo → `gap-3`. |
-| **numeric / date / id** | `font-mono` `tabular-nums` `content-secondary`, right-aligned (`.cell-num` + `.cell-right`) so digits line up. |
+| **numeric / date / id** | `tabular-nums` `content-secondary`, right-aligned (`.cell-num` + `.cell-right`) so digits line up. |
 | **plain text** | table default size + `content-secondary`. |
 | **tag / multi-badge set** | one wrapping row of `badge`s — `flex flex-wrap gap-1` (`.cell-tags`). |
 | **trailing chevron** (row navigates) | a passive `ChevronRight` in `content-tertiary`, `aria-hidden`, that lives **inside the trailing `.row-actions` cell as the last child of `.row-actions__inner`** — never its own `<td>`. `.cell-chevron` sets only the tint + arrow size; the right-alignment comes from `.row-actions`. The **whole row** is the click target (the chevron is not a button). Inline verbs may sit to its left in the same cell — a row can act *and* navigate; when it does, the verbs `event.stopPropagation()` so a verb click doesn't also fire the row's navigate. |
