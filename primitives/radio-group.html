@@ -77,12 +77,12 @@
     <div class="demo-section">
       <h2 class="demo-section__title">Vertical layout</h2>
       <p class="demo-section__desc">
-        A <code>.radio</code> group with three options stacked vertically. Wrap radios in a
-        container using <code>display:grid; gap:var(--space-2)</code> and give them the same
-        <code>name</code> for native single-select behavior.
+        A <code>.radio</code> group with three options stacked vertically. Wrap the radios in
+        <code>.radio-group</code> — a full-width grid with <code>gap-2</code> — and give them
+        the same <code>name</code> for native single-select behavior.
       </p>
 
-      <div style="display:grid;gap:var(--space-2);">
+      <div class="radio-group">
         <label style="display:flex;align-items:center;gap:var(--space-2);cursor:pointer;">
           <input type="radio" name="vertical" class="radio" value="option-1">
           Option one
@@ -157,10 +157,13 @@
     <div class="demo-section">
       <h2 class="demo-section__title">States</h2>
       <p class="demo-section__desc">
-        Default, checked, disabled, disabled+checked, and invalid (<code>aria-invalid="true"</code>).
-        Disabled radios use <code>opacity-50</code> and <code>cursor:not-allowed</code>.
-        Invalid radios get a red border with a 2px error ring. The checked radio fills with
-        <code>primary-700</code> and shows a white dot.
+        Default, checked, disabled, disabled+checked, invalid (<code>aria-invalid="true"</code>),
+        and invalid+checked. Disabled radios use <code>opacity-50</code> and
+        <code>cursor:not-allowed</code>. Invalid radios get a red border with a 2px error ring.
+        The checked radio fills with <code>primary-700</code> and shows a white dot.
+        When a radio is <strong>invalid and checked</strong>, the border returns to
+        <code>primary-700</code> so the selection still reads — the error ring alone carries
+        the invalid signal.
       </p>
 
       <div class="demo-row demo-row--center">
@@ -187,6 +190,13 @@
         <div style="display:flex;align-items:center;gap:var(--space-2);">
           <input type="radio" name="states-invalid" class="radio" id="state-invalid" value="invalid" aria-invalid="true">
           <label for="state-invalid">Invalid</label>
+        </div>
+
+        <!-- Invalid AND checked: border goes back to primary-700 so the selection
+             still reads; the error ring is what says "invalid". -->
+        <div style="display:flex;align-items:center;gap:var(--space-2);">
+          <input type="radio" name="states-invalid-checked" class="radio" id="state-invalid-checked" value="invalid-checked" aria-invalid="true" checked>
+          <label for="state-invalid-checked">Invalid + checked</label>
         </div>
       </div>
     </div>

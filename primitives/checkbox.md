@@ -16,7 +16,7 @@ Single visual variant — a 16px square box. State (unchecked / checked / indete
 
 ## Sizes
 
-No size variants — fixed `size-4` (16px) box with a `size-2.5` (10px) glyph. The hit target is enlarged via an invisible `after` overlay extending the clickable area beyond the visual box.
+No size variants — fixed `size-4` (16px) box with a `size-2.5` (10px) glyph. The hit target is enlarged to **24px** (WCAG 2.5.8 *Target Size (Minimum)*) via an invisible pseudo-element overlay extending the clickable area beyond the visual box. Which pseudo carries it is an implementation detail: React's glyph is an inner element, leaving `after` free; an artifact's `<input>` cannot hold children, so `after` paints the glyph and `before` is the target.
 
 ## States
 
@@ -27,7 +27,7 @@ No size variants — fixed `size-4` (16px) box with a `size-2.5` (10px) glyph. T
 
 ## Anatomy
 
-A square box that renders a single indicator (check or minus). base-ui renders the indicator for checked OR indeterminate; the root's `data-indeterminate` attribute decides which glyph shows. An enlarged invisible hit area (`after` pseudo-element) makes the small box easy to click.
+A square box that renders a single indicator (check or minus). base-ui renders the indicator for checked OR indeterminate; the root's `data-indeterminate` attribute decides which glyph shows. An enlarged invisible hit area (a pseudo-element overlay) makes the small box easy to click.
 
 ## Accessibility
 
