@@ -1139,6 +1139,10 @@ body {
   z-index: var(--z-dialog);
   background-color: var(--color-surface-overlay);
 }
+/* Closed state — same `hidden` convention as Modal/Sheet (consumer removes `hidden`
+   to open). No author display here, so the UA rule already hides it; explicit for
+   convention parity + future-proofing. */
+.alert-dialog-overlay[hidden] { display: none; }
 
 /* Panel — popover surface; a vertical stack with space-4 gap between header
    and footer. Mirrors Modal's panel so both read as one dialog family. */
@@ -2896,6 +2900,11 @@ body {
   padding: var(--space-4);   /* keeps the panel off the edges (≈ source max-w 100%-2rem) */
   background-color: var(--color-surface-overlay);
 }
+/* Closed state — consumers mark the overlay `hidden` to close it (a self-contained
+   artifact has no framework to conditionally render). The author display:flex above
+   otherwise defeats the UA `[hidden]{display:none}`, so re-assert it here. Open =
+   remove the `hidden` attribute; the display:flex above then centers the panel. */
+.modal-overlay[hidden] { display: none; }
 
 /* Panel — popover surface, clipped so slot edges meet the rounded corner. */
 .modal {
@@ -3393,6 +3402,10 @@ body {
   backdrop-filter: blur(2px);   /* source supports-backdrop-filter:backdrop-blur-xs — progressive enhancement, no token */
   transition: opacity 0.15s;
 }
+/* Closed state — same `hidden` convention as Modal/AlertDialog (consumer removes
+   `hidden` to open). No author display here, so the UA rule already hides it; this
+   makes the convention explicit and future-proof if a display is ever added. */
+.sheet-overlay[hidden] { display: none; }
 
 .sheet {
   position: fixed;
