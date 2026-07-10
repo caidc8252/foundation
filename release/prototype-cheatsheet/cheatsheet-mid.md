@@ -205,7 +205,7 @@ example → `composites/page-header.html` (非平凡使用去读、取规范实�
 
 ### detail-header · composite · tier 30
 The header band of a detail screen: an entity's identity (logo / name / status), its metadata, its actions, and the tab strip that switches its sub-views — all on one full-bleed surface that docks flush under the app header.
-class: `.detail-header` `.detail-header--sticky` `.detail-header__actions` `.detail-header__back` `.detail-header__bar` `.detail-header__chips` `.detail-header__description` `.detail-header__logo` `.detail-header__main` `.detail-header__meta` `.detail-header__name` `.detail-header__tabs` `.detail-header__title` `.tabs__list--line`
+class: `.btn` `.detail-header` `.detail-header--sticky` `.detail-header__actions` `.detail-header__back` `.detail-header__bar` `.detail-header__chips` `.detail-header__description` `.detail-header__logo` `.detail-header__main` `.detail-header__meta` `.detail-header__name` `.detail-header__tabs` `.detail-header__title` `.tabs__list--line`
 example → `composites/detail-header.html` (非平凡使用去读、取规范实例)
 
 ### list-filter · composite · tier 30
