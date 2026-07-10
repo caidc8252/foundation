@@ -880,6 +880,8 @@ body {
   background-color: var(--color-surface-overlay);
 }
 
+.alert-dialog-overlay[hidden] { display: none; }
+
 .alert-dialog {
   position: fixed;
   top: 50%;
@@ -2334,6 +2336,8 @@ body {
   background-color: var(--color-surface-overlay);
 }
 
+.modal-overlay[hidden] { display: none; }
+
 .modal {
   display: flex;
   flex-direction: column;
@@ -2735,6 +2739,8 @@ body {
   backdrop-filter: blur(2px);   
   transition: opacity 0.15s;
 }
+
+.sheet-overlay[hidden] { display: none; }
 
 .sheet {
   position: fixed;

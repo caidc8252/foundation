@@ -1958,6 +1958,7 @@
       "contract": "composites/detail-header.md",
       "example": "composites/detail-header.html",
       "classes": [
+        ".btn",
         ".detail-header",
         ".detail-header--sticky",
         ".detail-header__actions",

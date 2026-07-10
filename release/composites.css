@@ -1333,6 +1333,15 @@
   color: var(--color-content-tertiary);
 }
 
+.detail-header__meta > * {
+  display: inline-flex;
+  align-items: center;
+}
+.detail-header__meta .btn {
+  flex-shrink: 0;
+  margin-inline-start: var(--space-1);
+}
+
 .detail-header__chips {
   display: inline-flex;
   align-items: center;
