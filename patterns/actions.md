@@ -1,7 +1,7 @@
 # Pattern · Actions
 
 The recurring **verbs** a portal screen offers — confirm-a-delete, export, bulk-act,
-flip-a-status, relate, edit-in-place, copy-an-id. The page archetypes
+flip-a-status, relate, launch-edit, copy-an-id. The page archetypes
 ([list](./list-page.md), [detail](./detail-page.md), [create-form](./create-form.md))
 fix the *slots*; this reference fixes what lands **in** them. An action is named by
 its intent, and each intent carries a fixed **carrier** (which button variant, and any
@@ -106,7 +106,7 @@ where it lands, and whether it confirms — those are not per-screen choices.
   is decorative (the row itself is the click target) and is `aria-hidden`.
 - **Add-to-list shows one "Add" at a time.** When a flow collects a list of
   sub-entities (line items), an inline add-form commits with a single primary **Add**
-  that appends; a deferred add-form is opened by **Add &lt;item&gt;** and commits *inside*
+  that appends; a modal add-form is opened by **Add &lt;item&gt;** and commits *inside*
   with **Add / Save** — never an "open" button and a "commit" button that both read
   **Add**. The collected items render as an editable/removable list. See
   [`create-wizard.md`](./create-wizard.md).

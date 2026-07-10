@@ -91,7 +91,7 @@ tokens, native date/time inputs (`<input type="date|time|datetime-local|month|
 week">`, which render browser-native chrome that bypasses the token skin — use the
 date-picker family / `.date-trigger` instead), and classes that are neither a
 foundation class nor defined in the file's own page-local `<style>`. It can check the shipped self-contained artifact
-directly: when `release/tokens.inline.css`, `primitives/primitives.css`, and
+directly: when `release/tokens.inline.css`, `release/primitives.css`, and
 `release/composites.css` are inlined, those known layer bodies are ignored so
 their token values do not count as hardcoded artifact colors. In default mode,
 off-set classes are review warnings; `--strict` makes them hard violations and is

@@ -49,5 +49,5 @@ No size prop — grows with content; minimum height 128px (layout floor, no sizi
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Dropzone, FileList, FileRow } from "@cloud/ui"`. `Dropzone` wraps a hidden `<input type="file">`; `FileRow` is presentation-only and requires the host to drive `status`/`progress` via props. API details: the `ui` skill.
+- **Next / @cloud/ui** — `import { Dropzone, FileList, FileRow } from "@cloud/ui"`. `Dropzone` wraps a hidden `<input type="file">`; `FileRow` is presentation-only and requires the host to drive `status`/`progress` via props.
 - **Artifact (self-contained HTML)** — `.dropzone` (+ `.dropzone--drag`, `.dropzone--disabled`) containing a `class="sr-only"` hidden input; `.file-list` + `.file-row` (+ `__icon`, `__body`, `__name-row`, `__name`, `__size`, `__error`, `__status--done|error`) in `primitives/primitives.css` on top of `release/tokens.inline.css`.

@@ -266,5 +266,3 @@ Primitives underneath:
 `Card`, `Badge`, `Tabs`, `Button`, `Separator`, `Avatar`. `@cloud/ui`: `layout/`
 content-header + page-body; an artifact composes the same from `primitives.css` +
 these composites.
-
-> First-draft stub — expand with concrete specs as real detail pages land.

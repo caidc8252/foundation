@@ -6,10 +6,6 @@ into which a pattern drops its composites (condition band, list card, form
 sections, …). Recurs in **every** pattern (list / detail / create), which is
 why it is a shared composite, not re-declared per pattern.
 
-> **Contract scope.** Cross-consumer contract: the gutters, the vertical
-> rhythm, what sits inside vs. full-bleed. NOT the React prop types (`@cloud/ui`
-> + the `ui` skill). When an implementation disagrees with this file, the file wins.
-
 ## Anatomy
 
 ```

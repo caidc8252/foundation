@@ -2,13 +2,6 @@
 
 A press-toggle button with on/off (pressed) state. Used standalone for a single boolean-as-button (bold, mute, pin), or as a child of `<ToggleGroup>` for segmented / chip pickers. This is a button, not a switch — it shares button interaction tokens and the pressed look is `data-pressed`, not a sliding track.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> variant/size vocabulary, the token recipe, states, anatomy, a11y. It is the
-> authority both implementations answer to. It deliberately does NOT document
-> the React prop *types* or base-ui specifics — those live with the Next
-> implementation (`@cloud/ui` + the `ui` skill). When the contract and an
-> implementation disagree, the contract is right and the implementation is a bug.
-
 ## When to use — Toggle vs Toggle Group
 
 Both are **two-state (on/off) buttons** — a `Toggle` is a button that is either on or off.
@@ -68,5 +61,5 @@ Horizontal padding follows the `cx-*` scale; never an arbitrary px. The `cloud` 
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Toggle, ToggleGroup } from "@cloud/ui"`. base-ui `Toggle` / `ToggleGroup` under the hood; **the on/off behavior, roving focus, and single-vs-multiple selection are owned by the React implementation** — the reference CSS expresses the static skin only. Props `variant` (`default`/`outline`) `size` (`sm`/`md`/`auto`); pressed state via `pressed`/`defaultPressed`/`onPressedChange`. Group look comes from `<ToggleGroup variant>` (`outline`/`segmented`/`cloud`/`plain`), surfaced to items as `data-variant`. API details: the `ui` skill. Do not re-skin via `className` — pick a variant or wrap in the right group.
+- **Next / @cloud/ui** — `import { Toggle, ToggleGroup } from "@cloud/ui"`. base-ui `Toggle` / `ToggleGroup` under the hood; **the on/off behavior, roving focus, and single-vs-multiple selection are owned by the React implementation** — the reference CSS expresses the static skin only. Props `variant` (`default`/`outline`) `size` (`sm`/`md`/`auto`); pressed state via `pressed`/`defaultPressed`/`onPressedChange`. Group look comes from `<ToggleGroup variant>` (`outline`/`segmented`/`cloud`/`plain`), surfaced to items as `data-variant`. Do not re-skin via `className` — pick a variant or wrap in the right group.
 - **Artifact (self-contained HTML)** — use `.toggle` + `.toggle--<variant>` + `.toggle--<size>` on a `<button>`, on top of the inlined `release/tokens.inline.css`. The pressed state is `aria-pressed="true"` (the static stand-in for `data-pressed`). This is the **standalone** single toggle. For a set of toggles acting as one control (outline / segmented / cloud looks), use the **`toggle-group`** component instead (`.toggle-group` + `.toggle-group--<variant>` + `.toggle-group__item`) — see [`toggle-group.md`](./toggle-group.md). Same token recipe, same names.

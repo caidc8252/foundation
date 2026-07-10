@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
-import { emitInlineCss, emitTokensJson } from "./build.mjs";
+import { emitCatalog, emitInlineCss, emitTokensJson } from "./build.mjs";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -90,4 +90,34 @@ test("governed composite and docs CSS use logical inline properties", () => {
   }
 
   assert.deepEqual(findings, []);
+});
+
+test("utility classes are closed-set entries, not components", () => {
+  const catalog = emitCatalog(repoRoot);
+
+  const utilityNames = new Set(catalog.utilities.map((item) => item.name));
+  const primitiveNames = new Set(catalog.primitives.map((item) => item.name));
+  const compositeNames = new Set(catalog.composites.map((item) => item.name));
+
+  assert.equal(utilityNames.has("screen-reader-only"), true);
+  assert.equal(utilityNames.has("stack"), true);
+  assert.equal(utilityNames.has("master-detail-grid"), true);
+  assert.equal(catalog.classes.includes("sr-only"), true);
+  assert.equal(catalog.classes.includes("stack--4"), true);
+  assert.equal(primitiveNames.has("sr-only"), false);
+  assert.equal(compositeNames.has("stack"), false);
+
+  const publicNames = [
+    ...catalog.primitives.map((item) => item.name),
+    ...catalog.composites.map((item) => item.name),
+    ...catalog.patterns.map((item) => item.name),
+  ];
+  assert.equal(publicNames.some((name) => utilityNames.has(name)), false);
+
+  for (const utility of catalog.utilities) {
+    const css = readFileSync(join(repoRoot, utility.source), "utf8");
+    for (const className of utility.classes) {
+      assert.match(css, new RegExp(`\\${className}(?![-_\\w])`));
+    }
+  }
 });

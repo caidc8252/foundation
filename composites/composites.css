@@ -5,7 +5,7 @@
    page-header, data-table, the list-filter family (search / chips /
    applied / band / summary bar), pagination, empty-state, skeleton — plus the
    detail-archetype + admin-shell set lifted from the carbon-admin portal:
-   detail-header, kv-grid, section-card, option-card, feed-list, diff,
+   detail-header, kv-grid, option-card, feed-list, diff,
    plus the storefront catalog tile product-card (+ product-grid).
    Atoms live in ../primitives/primitives.css; whole-screen archetypes live in
    ../patterns/*.md. A composite composes primitives + tokens; a pattern
@@ -87,9 +87,9 @@
 }
 
 /* ═══════════════════════════ Form grid ═══════════════════════════ */
-/* Multi-column field layout for forms. A pure layout utility (like Stack and the
-   auto-fit grids above) — NO @component marker, NO contract: it carries only
-   column geometry, no anatomy or semantics. Promotes the page-local .form-row
+/* Multi-column field layout for forms. A cataloged utility (see
+   governance/utility-classes.json): it carries only column geometry, no anatomy
+   or semantics. Promotes the page-local .form-row
    that artifacts kept re-inventing (create-form.html) into the closed set so the
    name stops drifting (.form-row / form-grid--2 / …). Each cell is a .field; the
    gap matches the in-form field rhythm (space-4).
@@ -108,10 +108,9 @@
 }
 
 /* ═══════════════════════════ Detail split ═══════════════════════════ */
-/* Main / aside split for a detail-page tab body. A pure layout utility (like
-   Stack, the auto-fit grids, and Form grid above) — NO @component marker, NO
-   contract: it carries only column geometry, no anatomy or semantics. Promotes
-   the page-local .overview-cols that detail-page.html re-invented into the closed
+/* Main / aside split for a detail-page tab body. A cataloged utility (see
+   governance/utility-classes.json): it carries only column geometry, no anatomy
+   or semantics. Promotes the page-local .overview-cols that detail-page.html re-invented into the closed
    set so every tab body — not just Overview — shares ONE split shape (the tab
    outline stops jumping between 2-col and full-bleed as you switch tabs).
      - main column FLUIDLY fills the row (minmax(0,1fr) so a wide table/kv can't
@@ -135,8 +134,7 @@
 /* ═══════════════════════════ Master–detail ═══════════════════════════ */
 /* The two-pane geometry of the master-detail PATTERN (patterns/master-detail.md):
    a FIXED-width list rail on the LEFT + a FLUID detail/editor pane on the right.
-   A pure layout utility (like Stack / the auto-fit grids / Form grid / Detail split
-   above) — NO @component marker, NO contract: it carries only column geometry. The
+   A cataloged utility (see governance/utility-classes.json): it carries only column geometry. The
    PATTERN contract owns the anatomy + interaction (select a rail row → the pane
    swaps to that record); this class only stops the pattern's screens (firmware
    versions, roles, categories, …) from each hand-rolling the split.
@@ -802,17 +800,6 @@
 }
 /* THE scroll root — full-width, unpadded; pages own padding (full-bleed bands touch edges). */
 .app-frame__main { flex: 1; overflow-y: auto; background-color: var(--color-surface-1); }
-
-/* ═══════════════════════════ Step indicator ═══════════════════════════ */
-/* @component step-indicator */
-/* Mirrors @cloud/ui ui/StepIndicator: a horizontal wizard rail of numbered
-   dots joined by connectors. State (completed / active / upcoming) is DERIVED
-   in the React source from each step's index vs. `current`; the skin can't
-   observe that, so set the per-item modifier by hand. The dot glyph swap
-   (number → step icon → check once completed) and which steps are clickable
-   buttons are React behaviors — out of scope here. Renders bare; wrap it
-/* ===== @cloud/ui coverage expansion (added below) ===== */
-/* Composites: 7 components authored from @cloud/ui, token-only. */
 
 /* ═══════════════════════════ Chart ═══════════════════════════ */
 /* @component chart */
@@ -1640,11 +1627,11 @@
 /* ===== Portal-derived composites (carbon-admin coverage) ===== */
 /* The detail-archetype + admin-shell building blocks the TOMS Customer Admin
    portal assembles its pages from, lifted to the shared layer: detail-header,
-   kv-grid, section-card, option-card, feed-list, diff, product-card. Same law —
+   kv-grid, option-card, feed-list, diff, product-card. Same law —
    every value a var(--token-*); flagged layout literals only. Several REUSE
    existing parts rather than re-skin: detail-header docks a .tabs--line strip,
-   section-card extends .card + collapsible, option-card's indicator reuses the
-   .radio recipe, feed-list empties reuse .empty-state. */
+   option-card's indicator reuses the .radio recipe, feed-list empties reuse
+   .empty-state. */
 
 /* ═══════════════════════════ Detail header ═══════════════════════════ */
 /* @component detail-header */
@@ -1858,9 +1845,6 @@
   overflow-wrap: break-word;
 }
 
-/* ═══════════════════════════ Section card ═══════════════════════════ */
-/* A titled, optionally-collapsible content panel — the block a detail/settings
-   page divides into. Pure composition over .card (surface + header rule + slot
 /* ═══════════════════════════ Option card ═══════════════════════════ */
 /* @component option-card */
 /* A large clickable card that IS a radio/checkbox: the card is a <label> over a
@@ -1984,8 +1968,8 @@
 /* A flat, hairline-separated inbox of event rows (notifications / approvals):
    tone-coded icon | main (overline · title · body · actions) | trailing time.
    The list cousin of the timeline — order is recency, not a connected rail, and
-   rows can carry actions. Sits inside one frame (a section-card's flush content
-   or a table-frame); empties render an .empty-state. Tone lives on the icon only
+   rows can carry actions. Sits inside one frame (a card's flush content or a
+   table-frame); empties render an .empty-state. Tone lives on the icon only
    (same tone tokens as the timeline). */
 
 .feed-list { display: flex; flex-direction: column; }
@@ -2206,7 +2190,7 @@
   top: var(--spacing-cx-md);
   /* The band must be LONG enough (and centred ~29px in from the corner) that,
      once rotated 45°, both ends overshoot the image edges and get clipped into a
-     clean diagonal band across the corner — a short band leaves a clipped stub.
+     clean diagonal band across the corner — a short band leaves a clipped sliver.
      130px width / -36px inline-end offset are the portal-proven geometry; layout measures
      (depend on the rotate math, not a token), same exemption as other dims. */
   inset-inline-end: -2.25rem;
@@ -2390,56 +2374,6 @@
   pointer-events: none;
 }
 
-/* ═══════════════════════════════ Amount summary ═══════════════════════════════ */
-/* Totals block for order/cart/checkout: a hairline separator then a stack of
-   right-aligned label→value rows (subtotal · discount · …) topped by a total
-   row in stronger ink. Values use tabular-nums so amounts align. */
-
-.amount-summary {
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--color-line-subtle);   /* hairline separator */
-}
-
-.amount-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: var(--space-4);
-  padding-block: var(--space-1);
-}
-
-.amount-row__label {
-  font-size: var(--text-md);
-  color: var(--color-content-secondary);
-}
-
-.amount-row__value {
-  font-family: var(--font-sans);
-  font-size: var(--text-md);
-  font-variant-numeric: tabular-nums;
-  color: var(--color-content-primary);
-  text-align: right;
-  white-space: nowrap;
-}
-
-/* Total row — heavier ink + top spacing to lift the grand total above line items */
-.amount-row--total {
-  margin-top: var(--space-2);
-  padding-top: var(--space-2);
-  border-top: 1px solid var(--color-line-subtle);
-}
-
-.amount-row--total .amount-row__label {
-  font-weight: var(--font-weight-semibold);
-  font-size: var(--text-md);
-  color: var(--color-content-primary);
-}
-
-.amount-row--total .amount-row__value {
-  font-weight: var(--font-weight-semibold);
-  font-size: var(--text-md);
-  color: var(--color-content-primary);
-}
 /* ═══════════════════════════ List row ═══════════════════════════ */
 /* @component list-row */
 /* The non-tabular list row: a settings / account / permission / contract /
@@ -2447,7 +2381,7 @@
    NOT a table row (data-table). A 3-column grid — leading visual | main (a title
    line that may carry inline .badge-s + an optional sub) | trailing (a control,
    an action cluster, or a value + chevron). Rows are hairline-separated inside
-   one frame (a section-card's flush content / a card); the last row drops the
+   one frame (a card's flush content); the last row drops the
    rule. Make the whole row a navigation target with --interactive. Lifted from
    the carbon-admin portal's settings / account / contract list rows. */
 

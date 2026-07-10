@@ -8,11 +8,6 @@ list cousin of [`Timeline`](./timeline.md) — `timeline` draws a *chronological
 rail* through dated events; `feed-list` is a *flat, hairline-separated* inbox
 where order is recency, not a connected sequence, and rows can carry actions.
 
-> **Contract scope.** The cross-consumer design contract: anatomy, the row
-> recipe, tone variants, tokens, states. NOT the React prop types — those live
-> with `@cloud/ui` + the `ui` skill. When an implementation disagrees with this
-> file, the file wins.
-
 ## Anatomy
 
 ```
@@ -40,7 +35,7 @@ where order is recency, not a connected sequence, and rows can carry actions.
 ## Rules
 
 - **Rows are hairline-separated, not carded** — the list sits inside one frame
-  (a `section-card`'s flush content or a `table-frame`), rows divide with a
+  (a `.card__content--flush` region or a `table-frame`), rows divide with a
   `line-subtle` rule, last row drops it. Don't box each row.
 - **Tone lives on the icon only** — the row body stays neutral; the icon tile
   carries the success/warning/info hue. (Same tone tokens as `timeline`.)
@@ -65,7 +60,7 @@ where order is recency, not a connected sequence, and rows can carry actions.
 
 - **Next / @cloud/ui** — a list of rows composed from `Badge` / icon tiles +
   `Button` actions inside a `Card` (`flush` content); this contract names the row
-  shape shared with the notifications + approvals screens. See the `ui` skill.
+  shape shared with the notifications + approvals screens.
 - **Artifact** — `.feed-list` → `.feed-item` (3-column grid: icon | main | trailing)
   with `.feed-item__icon` (`--info` / `--success` / `--warning` / `--error` / `--neutral`),
   `.feed-item__main` (`__head` / `__title` / `__body`), and `.feed-item__trailing`

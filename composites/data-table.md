@@ -3,10 +3,6 @@
 The workhorse of the list pattern: rows you scan, sort, select, and act on. A
 config-driven table — columns + rows — not hand-written cell markup.
 
-> **Contract scope.** Cross-consumer contract: anatomy, density, states, the
-> framed appearance, a11y. NOT the React generics/prop types (`@cloud/ui` + `ui`
-> skill). Contract wins over either implementation.
-
 ## Anatomy
 
 ```
@@ -125,7 +121,7 @@ off-scale type/color pairing.
 
 - **Next / @cloud/ui** — `Table<R>` with `columns` / `rows` / `rowKey`; variants
   `density` `striped` `bordered` `stickyHeader` `stickyHeaderTop` `stickyFirstColumn`
-  `rowState`. Prefer the typed config over manual `<table>`. `ui` skill → data-display.
+  `rowState`. Prefer the typed config over manual `<table>`.
 - **Artifact** — `.table-frame` › `.table-scroll` › `table.data-table` with
   `--compact`/`--spacious`, `--sticky-head`, `--sticky-col`, `--striped`; cells
   `.cell-num`/`.cell-right`/`.cell-2line`/`.cell-tags`/`.cell-empty`,

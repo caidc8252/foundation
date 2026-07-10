@@ -2,14 +2,6 @@
 
 A small floating panel anchored to a trigger, portalled above the page. Holds rich content — a header/title/description, a form, or a list of `MenuItem` actions (the dropdown-menu shape).
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> panel's surface/border/radius/shadow/spacing/typography token recipe, the
-> slot anatomy, the `MenuItem` row states, a11y. It is the authority both
-> implementations answer to. It deliberately does NOT document the React prop
-> *types* or base-ui specifics — those live with the Next implementation
-> (`@cloud/ui` + the `ui` skill). When the contract and an implementation
-> disagree, the contract is right and the implementation is a bug.
-
 ## Variants
 
 Single visual variant — one elevated panel. It carries no tone/semantic variants
@@ -97,5 +89,5 @@ panel skin. Child layout is a vertical flex column with `cx-sm` (10px) gap.
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Popover, PopoverTrigger, PopoverContent, PopoverHeader, PopoverTitle, PopoverDescription, MenuItem } from "@cloud/ui"`. base-ui `Popover` under the hood; wrap the trigger in `PopoverTrigger`, content in `PopoverContent` (props `side` `sideOffset` `align` `alignOffset`, default `side="bottom"` / `align="center"` / `sideOffset={4}`). Open/close, portalling, positioning, focus return, and dismissal are **behavior owned by the React implementation** — the reference CSS expresses the static open panel skin only. API details: the `ui` skill.
+- **Next / @cloud/ui** — `import { Popover, PopoverTrigger, PopoverContent, PopoverHeader, PopoverTitle, PopoverDescription, MenuItem } from "@cloud/ui"`. base-ui `Popover` under the hood; wrap the trigger in `PopoverTrigger`, content in `PopoverContent` (props `side` `sideOffset` `align` `alignOffset`, default `side="bottom"` / `align="center"` / `sideOffset={4}`). Open/close, portalling, positioning, focus return, and dismissal are **behavior owned by the React implementation** — the reference CSS expresses the static open panel skin only.
 - **Artifact (self-contained HTML)** — use `.popover` for the panel + `.popover__header` / `.popover__title` / `.popover__description` for the heading slots, and `.menu-item` (+ `.menu-item--destructive`) for action rows, on top of the inlined `release/tokens.inline.css`. The artifact side renders a *static* open panel (positioning/show-hide is the React side's job); same elevated recipe (`surface-1` fill, `shadow-3`, hairline ring).

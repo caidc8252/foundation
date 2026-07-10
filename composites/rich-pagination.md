@@ -58,5 +58,5 @@ buttons (`‹ Prev · 1 2 3 … n · Next ›`); the active page is the highligh
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { RichPagination } from "@cloud/ui"`. Props: `page` `pageCount` `onPageChange` `total` `pageSize` `onPageSizeChange?` `pageSizeOptions?` `siblingCount?` `showFirstLast?` `className`. API details: the `ui` skill.
+- **Next / @cloud/ui** — `import { RichPagination } from "@cloud/ui"`. Props: `page` `pageCount` `onPageChange` `total` `pageSize` `onPageSizeChange?` `pageSizeOptions?` `siblingCount?` `showFirstLast?` `className`.
 - **Artifact (self-contained HTML)** — `.rich-pagination` containing `.rich-pagination__left` (→ `.rich-pagination__rows` + `.rich-pagination__summary`) and a separate `.pagination` block. In `release/composites.css` on top of `release/tokens.inline.css` + `primitives/primitives.css`.

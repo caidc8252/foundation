@@ -23,12 +23,19 @@ four layers maintain comes from here:
 | ③ | **Composites** | `composites/composites.css` → `release/composites.css` (+ `*.md`) | the page-building-block classes (`.page-header`, `.data-table`, `.summary-bar`, …) |
 | ④ | **Patterns** | `patterns/*.md` (+ `.html`) | the named screen archetypes (list / detail / create-form) |
 
+Some cataloged classes are **utilities** rather than components (`.sr-only`,
+`.stack--N`, layout grids). They still live in primitive/composite CSS and are
+listed from `governance/utility-classes.json`; they add no fifth design layer and
+carry no component anatomy.
+
 **The legal names are enumerated in [`release/catalog.md`](release/catalog.md)**
 (human) and **[`release/catalog.json`](release/catalog.json)** (machine). If a
 token name, a class, or a pattern is not in the catalog, **it is not part of this
 system.** Need something the set can't express? That's a **contract gap, not a
-license to improvise** → propose it via [`governance/token-change.md`](governance/token-change.md).
-The design law is [`governance/principles.md`](governance/principles.md); how
+license to improvise** → follow the matching maintenance flow: token changes go
+through [`governance/token-change.md`](governance/token-change.md), while classes
+and patterns are added through the four-layer maintenance guide below. The design
+law is [`governance/principles.md`](governance/principles.md); how
 violations are caught is [`governance/enforcement.md`](governance/enforcement.md).
 
 **Icons** are the one other raw material — inline **Lucide** SVGs, like token

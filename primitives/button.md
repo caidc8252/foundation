@@ -2,13 +2,6 @@
 
 A clickable action. The primary way to trigger a mutation, submit, or navigate-as-action.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> variant/size vocabulary, the token recipe, states, anatomy, a11y. It is the
-> authority both implementations answer to. It deliberately does NOT document
-> the React prop *types* or base-ui specifics — those live with the Next
-> implementation (`@cloud/ui` + the `ui` skill). When the contract and an
-> implementation disagree, the contract is right and the implementation is a bug.
-
 ## Variants
 
 Canonical set — six variants only.
@@ -59,5 +52,5 @@ Horizontal padding follows the `cx-*` scale (`px-cx-sm/md/lg`); never an arbitra
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Button } from "@cloud/ui"`. base-ui `Button` under the hood; props `variant` `size` `loading` `block` `iconLeft` `iconRight`. Prop/API details: the `ui` skill. Do not re-skin via `className`; pick a variant.
+- **Next / @cloud/ui** — `import { Button } from "@cloud/ui"`. base-ui `Button` under the hood; props `variant` `size` `loading` `block` `iconLeft` `iconRight`. Do not re-skin via `className`; pick a variant.
 - **Artifact (self-contained HTML)** — use the `.btn` + `.btn--<variant>` + `.btn--<size>` classes in `../primitives/primitives.css`, on top of the inlined `release/tokens.inline.css`. Same token recipe, same names. The invalid state is the `aria-invalid="true"` attribute (§States), not a class — there is no `.btn--invalid`.

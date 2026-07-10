@@ -108,9 +108,9 @@ catalog's per-component class list is **derived from the CSS** — never hand-wr
    linted by `check:examples`, so keep it inside the closed set (page-local
    composition in its own `<style>` is allowed; new design vocabulary is not).
 
-4. **`pnpm build`** regenerates `dist/catalog.*`: the closed-set class whitelist
-   (from the two CSS files) and the per-component lists (from the markers). Never
-   hand-edit `dist/`.
+4. **`pnpm build`** regenerates `release/catalog.*`: the closed-set class
+   whitelist (from the two CSS files) and the per-component lists (from the
+   markers). Never hand-edit `release/`.
 
 5. **If a pattern uses the new composite**, add it to that pattern's contract
    (its *Building blocks*) and to the matching route's `composites` in
@@ -125,8 +125,8 @@ catalog's per-component class list is **derived from the CSS** — never hand-wr
 ### The guards (run before you open the PR)
 
 ```bash
-pnpm build              # regenerate dist/ from the sources
-node scripts/check-dist.mjs       # dist/ matches a clean rebuild (no hand-edits / stale)
+pnpm build              # regenerate release/ + build/current/ from the sources
+pnpm check:release      # generated snapshots match a clean rebuild
 node scripts/check-examples.mjs   # every example stays inside the closed set
 node scripts/check-pattern-router.mjs   # router ↔ catalog ↔ pattern contracts aligned
 ```

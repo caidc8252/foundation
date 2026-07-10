@@ -7,11 +7,6 @@ permission-change preview, a "you're about to change X" modal. Small, but a real
 shared building block: every "confirm this edit" flow in the portal renders the
 same old/new pair, and nothing in the primitive layer expresses it.
 
-> **Contract scope.** The cross-consumer design contract: anatomy, the
-> old/new recipe, the two layouts, tokens. NOT the React prop types — those live
-> with `@cloud/ui` + the `ui` skill. When an implementation disagrees with this
-> file, the file wins.
-
 ## Anatomy
 
 ```
@@ -59,7 +54,7 @@ styling of its column) or an inline colour override on the placeholder.
 
 - **Next / @cloud/ui** — a small old/new comparison composed inside the confirm
   dialog (`AlertDialog`) and the audit/approval rows; this contract names the
-  shared shape. See the `ui` skill.
+  shared shape.
 - **Artifact** — `.diff` (block) → `.diff__col` `.diff__col--old` / `.diff__arrow` /
   `.diff__col` `.diff__col--new`, each column an optional `.diff__label` over a
   `.diff__value` (an empty side is `.diff__value--empty`); `.diff--inline` collapses to a

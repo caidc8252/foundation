@@ -309,7 +309,7 @@ primitive 是 L2 原子组件。一个组件是**契约优先**（`.md` 是两�
 **清单**：
 
 1. **写契约 `primitives/<name>.md>`**。结构对齐现有契约（如 [`primitives/button.md`](../../primitives/button.md)）：
-   H1 标题 + 首句摘要（catalog 会抓首句作 summary）、**Contract scope**、**Variants**（变体表：
+   H1 标题 + 首句摘要（catalog 会抓首句作 summary）、**Variants**（变体表：
    变体名 / 用途 / token 配方）、**Sizes**、**States**（hover / active / focus-visible / disabled /
    loading / invalid …）、**Anatomy**、**Accessibility**、**Implementations**。`Implementations`
    下两节：`Next / @cloud/ui`（React prop API）与 **Artifact**（自包含 HTML 的 class 配方 —— 根
@@ -334,7 +334,8 @@ primitive 是 L2 原子组件。一个组件是**契约优先**（`.md` 是两�
      `/* @component date-picker date-range-picker date-time-picker */`，
      一次把整段 class 标给三个契约。
    - **纯工具 section 不加 marker**（如 `Baseline`、`.sr-only` 这类行为助手）—— 它们的 class 在
-     闭合集里、但不属于任何 catalog 组件，这是有意为之。
+     闭合集里，但不属于 primitive/composite anatomy；把公开工具类列进
+     `governance/utility-classes.json`，由 catalog 的 Utilities 章节发布。
 3. **可选：HTML 示例 `primitives/<name>.html`** —— 可执行参考，被 `check:examples` lint，必须留在
    闭合集内（页面局部 `<style>` 的组合布局允许，新设计词汇不允许）。
 4. **`pnpm build`** 重新生成 `release/catalog.*`：class 白名单（从两份 CSS）与 per-component 列表
@@ -355,7 +356,7 @@ composite 是 L2.5 页面构建块，流程与 primitive **完全相同**，只�
 **清单**：
 
 1. **写契约 `composites/<name>.md`**。对齐 [`composites/data-table.md`](../../composites/data-table.md)：
-   H1 + 首句摘要、**Contract scope**、**Anatomy**（ASCII 解剖图）、**Density**（如有密度预设）、
+   H1 + 首句摘要、**Anatomy**（ASCII 解剖图）、**Density**（如有密度预设）、
    **Rules**（承重设计决策）、**Column recipes**（如有）、**States**、**Accessibility**、
    **Implementations**（`Next / @cloud/ui` + **Artifact**，Artifact 段直接给根元素层级 + 合法 class
    + 变体/状态 class，例如 data-table 的 `.table-frame › .table-scroll › table.data-table` 加

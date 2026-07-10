@@ -244,12 +244,63 @@ function readComponents(root, layer, dir, componentClasses) {
     });
 }
 
+function readUtilities(root, sourceClasses, reservedNames = new Set()) {
+  const file = "governance/utility-classes.json";
+  const path = join(root, file);
+  if (!existsSync(path)) return [];
+  const data = JSON.parse(readFileSync(path, "utf8"));
+  if (data.version !== 1) throw new Error(`${file}: version must be 1`);
+  if (!Array.isArray(data.utilities)) throw new Error(`${file}: utilities must be an array`);
+
+  const seen = new Set();
+  const utilityNames = new Set();
+  return data.utilities.map((utility) => {
+    if (!utility.name || typeof utility.name !== "string") throw new Error(`${file}: utility name is required`);
+    if (reservedNames.has(utility.name)) throw new Error(`${file}: ${utility.name} collides with a component or pattern name`);
+    if (utilityNames.has(utility.name)) throw new Error(`${file}: duplicate utility name ${utility.name}`);
+    utilityNames.add(utility.name);
+    if (!utility.title || typeof utility.title !== "string") throw new Error(`${file}: ${utility.name}: title is required`);
+    if (!utility.summary || typeof utility.summary !== "string") throw new Error(`${file}: ${utility.name}: summary is required`);
+    if (!sourceClasses.has(utility.source)) throw new Error(`${file}: ${utility.name}: source must be primitives/primitives.css or composites/composites.css`);
+    const declaredClasses = sourceClasses.get(utility.source);
+    if (!Array.isArray(utility.classes) || utility.classes.length === 0) {
+      throw new Error(`${file}: ${utility.name}: classes must be a non-empty array`);
+    }
+    const classes = utility.classes.map((className) => {
+      if (typeof className !== "string" || !/^\.[-A-Za-z_][\w-]*$/.test(className)) {
+        throw new Error(`${file}: ${utility.name}: invalid class ${className}`);
+      }
+      const bare = className.slice(1);
+      if (!declaredClasses.has(bare)) {
+        throw new Error(`${file}: ${utility.name}: ${className} is not defined in ${utility.source}`);
+      }
+      if (seen.has(className)) throw new Error(`${file}: duplicate utility class ${className}`);
+      seen.add(className);
+      return className;
+    });
+    return {
+      layer: "utility",
+      name: utility.name,
+      title: utility.title,
+      summary: utility.summary,
+      source: utility.source,
+      classes,
+    };
+  });
+}
+
 export function emitCatalog(root) {
   const { light } = emitTokensJson(root);
   const primCss = readFileSync(join(root, "primitives", "primitives.css"), "utf8");
   const compCss = readFileSync(join(root, "composites", "composites.css"), "utf8");
+  const primClasses = classNamesFromCss(primCss);
+  const compClasses = classNamesFromCss(compCss);
+  const sourceClasses = new Map([
+    ["primitives/primitives.css", new Set(primClasses)],
+    ["composites/composites.css", new Set(compClasses)],
+  ]);
   const allClasses = [
-    ...new Set([...classNamesFromCss(primCss), ...classNamesFromCss(compCss)]),
+    ...new Set([...primClasses, ...compClasses]),
   ].sort();
   const sectionMaps = {
     primitives: sectionClassMap(primCss),
@@ -265,21 +316,24 @@ export function emitCatalog(root) {
   const primitives = readComponents(root, "primitive", "primitives", componentClasses);
   const composites = readComponents(root, "composite", "composites", componentClasses);
   const patterns = readComponents(root, "pattern", "patterns", componentClasses);
+  const reservedNames = new Set([...primitives, ...composites, ...patterns].map((item) => item.name));
+  const utilities = readUtilities(root, sourceClasses, reservedNames);
   const tokenNames = Object.keys(light).sort();
 
   return {
     generatedBy: "foundation/emit/build.mjs - DO NOT EDIT. Re-run `pnpm build`.",
-    rule: "CLOSED SET for same-brand artifacts. Anything not here -> governance/token-change.md.",
+    rule: "CLOSED SET for same-brand artifacts. Anything not here is a contract gap; follow the relevant governance flow.",
     tokens: tokenNames,
     classes: allClasses,
     primitives,
     composites,
+    utilities,
     patterns,
   };
 }
 
 export function emitCatalogMarkdown(catalog) {
-  const { tokens: tokenNames, classes: allClasses, primitives, composites, patterns } = catalog;
+  const { tokens: tokenNames, classes: allClasses, primitives, composites, utilities = [], patterns } = catalog;
   const esc = (s) => s.replace(/\|/g, "\\|");
   const rows = (list) =>
     list
@@ -289,6 +343,12 @@ export function emitCatalogMarkdown(catalog) {
         return `| \`${c.name}\` | ${esc(c.summary)} | ${esc(cls)} | ${links} |`;
       })
       .join("\n");
+  const utilityRows = utilities
+    .map((u) => {
+      const cls = u.classes.length ? u.classes.map((x) => `\`${x}\``).join(" ") : "-";
+      return `| \`${u.name}\` | ${esc(u.summary)} | ${esc(cls)} | [CSS](../${u.source}) · [allowlist](../governance/utility-classes.json) |`;
+    })
+    .join("\n");
   const tokenGroups = {};
   for (const t of tokenNames) (tokenGroups[t.split("-")[0]] ||= []).push(t);
   const tokenLines = Object.keys(tokenGroups)
@@ -342,6 +402,15 @@ Classes in \`composites.css\` (load after primitives - they reuse \`.btn\`/\`.in
 | component | use | classes (main; full set in \`catalog.json\`) | links |
 |---|---|---|---|
 ${rows(composites)}
+
+## L2.6 · Utilities (${utilities.length}) - legal non-component helpers
+
+Utilities are closed-set classes with no component anatomy. They are legal only
+for the purpose named here; use primitives/composites for UI parts.
+
+| utility | use | classes | source |
+|---|---|---|---|
+${utilityRows}
 
 ## L3 · Patterns (${patterns.length}) - assembled archetypes
 
@@ -467,7 +536,8 @@ if (fileURLToPath(import.meta.url) === process.argv[1]) {
   console.log(
     `foundation: refreshed release/catalog.json + catalog.md ` +
       `(${catalog.primitives.length} primitives, ${catalog.composites.length} composites, ` +
-      `${catalog.patterns.length} patterns, ${catalog.classes.length} classes, ${catalog.tokens.length} tokens)`,
+      `${catalog.utilities.length} utilities, ${catalog.patterns.length} patterns, ` +
+      `${catalog.classes.length} classes, ${catalog.tokens.length} tokens)`,
   );
   console.log(
     `foundation: refreshed release/tokens.json ` +

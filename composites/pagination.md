@@ -3,9 +3,6 @@
 Move through pages of a collection, and set page size. Sits at the foot of the
 list, inside the same frame as the table.
 
-> **Contract scope.** Cross-consumer contract: anatomy, states, tokens. React
-> prop types live with `@cloud/ui`; the contract wins.
-
 ## The shape — numbered pages, `‹ Prev · 1 2 3 … n · Next ›`
 
 Pagination is a **numbered** nav: page numbers are jump targets, the current one is
@@ -89,8 +86,7 @@ pinned above (*Caption strings*) and reused verbatim by `rich-pagination`.
   opaque-cursor data uses `CursorPager` + `useCursorPagination` (Prev/Next only — see
   the `request` skill). `RichPagination` is the list footer: rows-per-page `Select` + a
   localized "Showing X–Y of Z" summary (`ui.pagination`) on the left, the numbered nav on
-  the right. Callers pass only `page`/`pageCount`/`total`/`pageSize`. `ui` skill →
-  data-display. The summary string is the pinned **`Showing X–Y of Z`** (see
+  the right. Callers pass only `page`/`pageCount`/`total`/`pageSize`. The summary string is the pinned **`Showing X–Y of Z`** (see
   *Caption strings* above).
 - **Artifact** — the nav is a `<nav class="pagination">` holding the buttons directly:
   prev `.pagination__page` + `[aria-current="page"]` page buttons + `.pagination__ellipsis`

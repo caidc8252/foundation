@@ -46,5 +46,5 @@ When `showCount` is set and `maxLength` is provided, a right-aligned counter (`c
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Textarea } from "@cloud/ui"`. Native `<textarea>` under the hood; props `showCount` plus standard textarea attrs (`maxLength`, `value`/`defaultValue`, `onChange`). API details: the `ui` skill.
+- **Next / @cloud/ui** — `import { Textarea } from "@cloud/ui"`. Native `<textarea>` under the hood; props `showCount` plus standard textarea attrs (`maxLength`, `value`/`defaultValue`, `onChange`).
 - **Artifact (self-contained HTML)** — use the `.textarea` class in `./primitives.css`, on top of the inlined `release/tokens.inline.css`. Same token recipe. For a counter, add a sibling `<div class="textarea__count">` after the field and swap `--warning` / `--error` onto it from your own script at the thresholds — the CSS paints the three resting appearances, it does not count characters. The invalid state is the `aria-invalid="true"` attribute, not a class.

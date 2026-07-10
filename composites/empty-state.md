@@ -3,9 +3,6 @@
 What a collection shows when it has nothing — a first-class state, not blank
 space. Also covers no-results-for-filters and (with a different icon/verb) error.
 
-> **Contract scope.** Cross-consumer contract: anatomy, the action rule, tokens.
-> React prop types live with `@cloud/ui`; the contract wins.
-
 ## Anatomy
 
 ```
@@ -26,7 +23,7 @@ space. Also covers no-results-for-filters and (with a different icon/verb) error
   and the copy it echoes is the distant page header.** The duplicate reads fine on a
   list page only because the two sit far apart — page top vs. table body. If the
   empty state lives inside a card/section whose *own* header already carries that
-  action (a section-card header, a wizard step card), do **not** render both: keep
+  action (a card header, a wizard step card), do **not** render both: keep
   the action in the header **or** in the empty state, never both. The same verb in
   two buttons inches apart is the failure mode here.
 - **Distinguish the two empties.** *Nothing-yet* (cold start) → invite creation.
@@ -39,8 +36,7 @@ space. Also covers no-results-for-filters and (with a different icon/verb) error
 
 ## Implementations
 
-- **Next / @cloud/ui** — `Empty` (`title` / `description` / `action`). `ui` skill →
-  data-display.
+- **Next / @cloud/ui** — `Empty` (`title` / `description` / `action`).
 - **Artifact** — `.empty-state` › `.empty-state__icon` (svg) + `.empty-state__title`
   + `.empty-state__description` + `.empty-state__action` (a `.btn--primary` or
   `.btn--secondary`; use `primary` when this is the page's sole primary verb, `secondary`

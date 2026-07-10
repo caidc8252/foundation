@@ -2,13 +2,6 @@
 
 A draggable split-pane layout: sibling panels separated by a hairline handle the user drags to redistribute space. Use for app shells with adjustable sidebars/editors, not for general content layout.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> handle/panel anatomy, the token recipe, states, a11y. It is the authority both
-> implementations answer to. It deliberately does NOT document the React prop
-> *types* or the `react-resizable-panels` mechanics — those live with the Next
-> implementation (`@cloud/ui` + the `ui` skill). When the contract and an
-> implementation disagree, the contract is right and the implementation is a bug.
-
 ## Parts
 
 Three pieces; only the handle has a paintable skin. The panel group and panels are pure layout (flex container + flex children), no chrome of their own.
@@ -67,5 +60,5 @@ PanelGroup (row)
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@cloud/ui"`. `react-resizable-panels` under the hood; pass `direction` to the group, `withHandle` to the handle for the grip nub. Prop/API details: the `ui` skill. Do not re-skin the handle via `className`; the track/hover/grip recipe is fixed here.
+- **Next / @cloud/ui** — `import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@cloud/ui"`. `react-resizable-panels` under the hood; pass `direction` to the group, `withHandle` to the handle for the grip nub. Do not re-skin the handle via `className`; the track/hover/grip recipe is fixed here.
 - **Artifact (self-contained HTML)** — compose `.resizable-group` (add `.resizable-group--vertical` for stacked panels) with `.resizable-panel` children and `.resizable-handle` dividers, on top of the inlined `release/tokens.inline.css`. Add `.resizable-handle--horizontal` when the divider runs horizontally, and drop a `.resizable-handle__grip` child for the nub. Static only — no drag.

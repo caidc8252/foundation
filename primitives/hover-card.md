@@ -2,13 +2,6 @@
 
 A rich popover that opens on hover (and keyboard focus) over a trigger — for preview cards and detail popovers. Heavier than a tooltip: it holds laid-out content (avatar, title, body, links), not a one-line hint.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> surface recipe, sizing, states, anatomy, a11y. It is the authority both
-> implementations answer to. It deliberately does NOT document the React prop
-> *types* or base-ui (`PreviewCard`) specifics — those live with the Next
-> implementation (`@cloud/ui` + the `ui` skill). When the contract and an
-> implementation disagree, the contract is right and the implementation is a bug.
-
 ## Variants
 
 Single visual variant — a portalled popup surface. No tone/style modifiers; it is a neutral content container the consumer fills.
@@ -54,5 +47,5 @@ The trigger is whatever element the consumer wraps; this primitive adds no skin 
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { HoverCard, HoverCardTrigger, HoverCardContent } from "@cloud/ui"`. base-ui `PreviewCard` under the hood (`Root` / `Trigger` / `Portal` + `Positioner` + `Popup`). `HoverCardContent` takes `side` `sideOffset` `align` `alignOffset` (defaults bottom / 4 / center / 4). Behavior — hover-intent timing, portalling, side resolution, enter/exit animation — is owned by the React implementation; API details: the `ui` skill.
+- **Next / @cloud/ui** — `import { HoverCard, HoverCardTrigger, HoverCardContent } from "@cloud/ui"`. base-ui `PreviewCard` under the hood (`Root` / `Trigger` / `Portal` + `Positioner` + `Popup`). `HoverCardContent` takes `side` `sideOffset` `align` `alignOffset` (defaults bottom / 4 / center / 4). Behavior — hover-intent timing, portalling, side resolution, enter/exit animation — is owned by the React implementation.
 - **Artifact (self-contained HTML)** — use `.hover-card` for the popup surface (positioned by the consumer's own layout/JS), on top of the inlined `release/tokens.inline.css`. The reference CSS expresses the static skin only (surface, border, radius, shadow, padding, type); open/close and positioning are not reproduced.

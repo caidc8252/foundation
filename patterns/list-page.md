@@ -5,7 +5,7 @@ common portal screen). A pattern is a *named structure*, not an implementation �
 both consumers build it from composites; this file fixes the anatomy, the
 ordering, and the load-bearing decisions so a prototype and the production page
 read as the same screen. Reference implementation: the `@cloud/ui` list-page
-example (the style template — see the `ui` skill).
+example (the style template).
 
 > 📐 **Copyable examples**
 > - [`list-page.html`](./list-page.html) — the `simple` variant: full anatomy assembled

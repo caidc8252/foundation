@@ -16,11 +16,6 @@ flow, which is why it is a shared composite, not duplicated per page. The
 top of its anatomy; [`create-form`](../patterns/create-form.md) and
 [`create-wizard`](../patterns/create-wizard.md) draw its reduced form.
 
-> **Contract scope.** The cross-consumer design contract: anatomy, the action
-> rule, the tab-strip reuse, tokens, states. NOT the React prop types — those
-> live with `@cloud/ui` + the `ui` skill. When an implementation disagrees with
-> this file, the file wins.
-
 ## Anatomy
 
 ```
@@ -155,7 +150,6 @@ Cross-consumer guards:
 - **Next / @cloud/ui** — composed from `layout/` (full-bleed band) + `Card`
   (`flex-row` head), `Badge`, `Avatar`, `Button`, and the `Tabs` primitive for
   the strip; this contract names the shared structure those parts assemble into.
-  See the `ui` skill (layout reference).
 - **Artifact** — `.detail-header` (+ `--sticky`) → `.detail-header__bar`
   (holding `.btn--ghost.btn--icon.btn--md.detail-header__back`, `.detail-header__logo`,
   `.detail-header__main` → `.detail-header__title` [contains `.detail-header__name`

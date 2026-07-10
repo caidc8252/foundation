@@ -3,14 +3,6 @@
 A single-date field. An input-styled trigger that opens a popover holding a
 month-view calendar; the chosen day fills the field as locale-formatted text.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> trigger recipe, sizes, states, the popover/calendar composition, a11y. It is
-> the authority both implementations answer to. It deliberately does NOT document
-> the React prop *types*, the controlled/uncontrolled value plumbing, or the
-> react-day-picker / base-ui specifics — those live with the Next implementation
-> (`@cloud/ui` + the `ui` skill). When the contract and an implementation
-> disagree, the contract is right and the implementation is a bug.
-
 This is one of **four sibling pickers** that share a single trigger skin and the
 same popover-over-calendar composition: `date-picker` (this file),
 `date-range-picker`, `date-time-picker`, `time-picker`. Read the sibling each
@@ -94,8 +86,7 @@ their own states — see `calendar.md`.
   `placeholder`, `name`/`required`/`id`. The popover open/close, portalling,
   positioning, and the month grid are **behavior owned by the React implementation**
   (base-ui + react-day-picker) — the reference CSS expresses the static trigger +
-  open-panel skin only. Locale-aware formatting via `date-fns`. API details: the
-  `ui` skill.
+  open-panel skin only. Locale-aware formatting via `date-fns`.
 - **Artifact (self-contained HTML)** — use `.date-trigger` (+ `.date-trigger--sm`/
   `--lg`, `.date-trigger--invalid`) for the closed control, with
   `.date-trigger__icon`, a value/placeholder `<span>`, and `.date-trigger__clear`;

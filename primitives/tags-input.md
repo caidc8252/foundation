@@ -2,13 +2,6 @@
 
 A free-text token field: the user types arbitrary values that become removable chips, ahead of a bare text input. For labels, keywords, recipients, or any open-ended multi-value entry.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> variant/size vocabulary, the token recipe, states, anatomy, a11y. It is the
-> authority both implementations answer to. It deliberately does NOT document the
-> React prop *types* or library specifics — those live with the Next
-> implementation (`@cloud/ui` + the `ui` skill). When the contract and an
-> implementation disagree, the contract is right and the implementation is a bug.
-
 ## When to use — Tags Input vs Combobox
 
 Both surface chips. Use **Tags Input** when the values are **open-ended free text**
@@ -58,5 +51,5 @@ single-row field reads as a standard `md` control.
 
 ## Implementations
 
-- **Next / @cloud/ui** — not a standalone base-ui primitive: compose an input whose committed values render as chips (Enter/delimiter to add, Backspace/× to remove). Prefer the multi-select `Combobox` when values come from a known list. API details: the `ui` skill.
+- **Next / @cloud/ui** — not a standalone base-ui primitive: compose an input whose committed values render as chips (Enter/delimiter to add, Backspace/× to remove). Prefer the multi-select `Combobox` when values come from a known list.
 - **Artifact (self-contained HTML)** — a `.tags-input` container holding `.tags-input__tag` chips (each with a `.tags-input__remove` `x`-icon button) followed by one `<input class="tags-input__field">`. Put the invalid skin with `.tags-input--invalid` (and `aria-invalid`), disabled with `.tags-input--disabled`. A small script adds a chip on Enter and removes on ×. On top of the inlined `release/tokens.inline.css`.

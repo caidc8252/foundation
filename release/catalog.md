@@ -134,13 +134,27 @@ Classes in `composites.css` (load after primitives - they reuse `.btn`/`.input`/
 | `timeline` | Vertical event log — device history, audit trails, ticket activity. | `.timeline` `.timeline--compact` `.timeline--stacked` `.timeline__actor` `.timeline__content` `.timeline__description` `.timeline__header` `.timeline__item` `.timeline__item--last` `.timeline__marker` `.timeline__marker--dot` `.timeline__marker--error` `.timeline__marker--icon` `.timeline__marker--info` `.timeline__marker--neutral` `.timeline__marker--primary` `.timeline__marker--success` `.timeline__marker--warning` `.timeline__marker-dot` `.timeline__marker-node` `.timeline__rail` `.timeline__time` `.timeline__time-row` `.timeline__title` | [contract](../composites/timeline.md) · [example](../composites/timeline.html) |
 | `toggles` | Inline control-with-label wrappers — pairs a .checkbox, .radio, or .switch primitive with an optional text .label. | `.toggle-checkbox` `.toggle-radio` `.toggle-switch` | [contract](../composites/toggles.md) · [example](../composites/toggles.html) |
 
+## L2.6 · Utilities (6) - legal non-component helpers
+
+Utilities are closed-set classes with no component anatomy. They are legal only
+for the purpose named here; use primitives/composites for UI parts.
+
+| utility | use | classes | source |
+|---|---|---|---|
+| `screen-reader-only` | Visually hides text while keeping it in the accessibility tree. | `.sr-only` | [CSS](../primitives/primitives.css) · [allowlist](../governance/utility-classes.json) |
+| `stack` | Applies closed-set vertical rhythm to hand-composed block groups. | `.stack` `.stack--3` `.stack--4` `.stack--5` `.stack--6` | [CSS](../composites/composites.css) · [allowlist](../governance/utility-classes.json) |
+| `auto-fit-kv-grid` | Creates container-responsive key-value columns for overview facts. | `.grid-auto-fit-kv` | [CSS](../composites/composites.css) · [allowlist](../governance/utility-classes.json) |
+| `form-grid` | Creates token-spaced multi-column field layouts without adding form semantics. | `.form-grid` `.form-grid--2` `.form-grid--3` | [CSS](../composites/composites.css) · [allowlist](../governance/utility-classes.json) |
+| `detail-split` | Creates the main-plus-aside geometry for detail-page bodies. | `.detail-split` | [CSS](../composites/composites.css) · [allowlist](../governance/utility-classes.json) |
+| `master-detail-grid` | Creates the two-pane grid geometry for the master-detail pattern. | `.master-detail` | [CSS](../composites/composites.css) · [allowlist](../governance/utility-classes.json) |
+
 ## L3 · Patterns (9) - assembled archetypes
 
 A pattern is a named structure built from composites; copy its `example` and edit.
 
 | pattern | use | composites used (see contract) | links |
 |---|---|---|---|
-| `actions` | The recurring verbs a portal screen offers — confirm-a-delete, export, bulk-act, flip-a-status, relate, edit-in-place, copy-an-id. | - | [contract](../patterns/actions.md) · [example](../patterns/actions.html) |
+| `actions` | The recurring verbs a portal screen offers — confirm-a-delete, export, bulk-act, flip-a-status, relate, launch-edit, copy-an-id. | - | [contract](../patterns/actions.md) · [example](../patterns/actions.html) |
 | `create-form` | "Capture or change a record." The single-step form — one card of fields, one commit. | - | [contract](../patterns/create-form.md) · [example](../patterns/create-form.html) |
 | `create-wizard` | "多步向导新增页（有阶段依赖/分支/复核）" — a multi-step create flow for records that have stage dependencies, branching, or a review-before-commit step. | - | [contract](../patterns/create-wizard.md) · [example](../patterns/create-wizard.html) |
 | `dashboard` | "The overview home." A read-mostly landing that answers is the fleet healthy, and what needs attention at a glance — a KPI metric strip over optional charts and an activity / alert feed. | - | [contract](../patterns/dashboard.md) · [example](../patterns/dashboard.html) |

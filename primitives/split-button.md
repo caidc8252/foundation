@@ -2,13 +2,6 @@
 
 A primary action fused with an adjacent menu trigger — one control that runs a default action on the left and opens a menu of related actions from a chevron on the right.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> variant/size vocabulary, the token recipe, states, anatomy, a11y. It is the
-> authority both implementations answer to. It deliberately does NOT document the
-> React prop *types* or base-ui specifics — those live with the Next
-> implementation (`@cloud/ui` + the `ui` skill). When the contract and an
-> implementation disagree, the contract is right and the implementation is a bug.
-
 ## When to use
 
 Reach for a Split Button when one action is the obvious default but a small set of
@@ -66,5 +59,5 @@ control disables both segments.
 
 ## Implementations
 
-- **Next / @cloud/ui** — compose from `Button` (the default action) + a `DropdownMenu` whose `DropdownMenuTrigger` is an icon `Button` (`aria-label`, chevron-down), wrapped so the two share the fused seam. No bespoke re-skin; use the button variants/sizes. API details: the `ui` skill.
+- **Next / @cloud/ui** — compose from `Button` (the default action) + a `DropdownMenu` whose `DropdownMenuTrigger` is an icon `Button` (`aria-label`, chevron-down), wrapped so the two share the fused seam. No bespoke re-skin; use the button variants/sizes.
 - **Artifact (self-contained HTML)** — wrap two `.btn`s in `.split-button`: the first is the default action (`.btn--<variant> .btn--<size>`), the last is the trigger (`.btn--<variant> .btn--icon<-size>` with a `chevron-down` icon + `aria-label`). Both segments use the same variant and size. Wire the trigger to a `.dropdown-menu` / `.popover`. On top of the inlined `release/tokens.inline.css`.

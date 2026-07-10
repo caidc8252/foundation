@@ -2972,7 +2972,7 @@ body {
   height: var(--space-4);
   border-radius: var(--radius-full);
   background-color: var(--color-surface-1);
-  box-shadow: var(--shadow-1);   
+  box-shadow: var(--shadow-1);
   transition: transform 0.12s;
   transform: translateX(0);
 }

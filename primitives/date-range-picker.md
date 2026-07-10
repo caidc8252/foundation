@@ -4,14 +4,6 @@ A from→to date range field. Same input-styled trigger as `DatePicker`, but the
 popover pairs a **presets rail** with a **two-month** range calendar, and the field
 renders `from – to`.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> trigger recipe, sizes, states, the presets-rail + range-calendar composition,
-> a11y. It is the authority both implementations answer to. It deliberately does
-> NOT document the React prop *types*, the two-click range plumbing, or the
-> react-day-picker / base-ui specifics — those live with the Next implementation
-> (`@cloud/ui` + the `ui` skill). When the contract and an implementation disagree,
-> the contract is right and the implementation is a bug.
-
 One of **four sibling pickers** that share a single trigger skin and the popover-
 over-calendar composition (see `date-picker.md` for the family). The trigger
 (`.date-trigger`), the clear button, and the presets rail (`.date-presets`) are
@@ -69,7 +61,7 @@ The **trigger** owns interactive states, mirroring `Input`/`Select`:
 
 Preset rows: hover `surface-hover` + `content-primary`. Range cell states (start/
 middle/end/today/disabled/outside): see `calendar.md`. Mid-selection (a `from`
-chosen but not yet a `to`) is internal draft state, never emitted — a behavior owned
+chosen before a `to`) is internal draft state, never emitted — a behavior owned
 by the React implementation.
 
 ## Accessibility
@@ -90,7 +82,7 @@ by the React implementation.
   picked (partial selection held internally). Props mirror `DatePicker` plus
   `presets`. Popover/positioning + the month grid + the two-click range logic are
   **behavior owned by the React implementation** — the reference CSS expresses the
-  static trigger + open-panel skin only. API details: the `ui` skill.
+  static trigger + open-panel skin only.
 - **Artifact (self-contained HTML)** — `.date-trigger` (+ size/`--invalid`) for the
   closed control; a `.popover` containing `.date-presets` › `.date-presets__item`
   rows and the calendar skin (`numberOfMonths={2}` layout). On top of the inlined

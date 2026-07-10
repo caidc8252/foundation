@@ -2,13 +2,6 @@
 
 A horizontally (or vertically) scrollable track of equal-width slides, with optional prev/next buttons and dot indicators. For media galleries, onboarding decks, and feature showcases — not for paginated tables.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> slot anatomy, the token recipe, states, a11y. It is the authority both
-> implementations answer to. It deliberately does NOT document the React prop
-> *types* or the embla-carousel engine — those live with the Next implementation
-> (`@cloud/ui` + the `ui` skill). When the contract and an implementation
-> disagree, the contract is right and the implementation is a bug.
-
 ## Orientation
 
 Not a styled variant — a layout axis the whole assembly mirrors. `horizontal` *(default)* lays slides left→right; `vertical` stacks them top→bottom and rotates the nav chevrons 90°. One token recipe, two axes:
@@ -57,5 +50,5 @@ The negative track margin + per-slide padding produce a consistent `--space-4` (
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext, CarouselDots } from "@cloud/ui"`. **Behavior is owned by the React implementation** (embla-carousel-react): the scroll engine, snap points, `canScroll*` flags, dot count/selection sync, ArrowKey handling, and `orientation` axis swap all live there. `CarouselPrevious`/`CarouselNext` are `Button`s (`variant="secondary"`, `size="icon-sm"`); a `useCarousel()` context wires them and the dots to the engine. The reference CSS below expresses the **static visual skin only** — surface, clipping, gutter, nav placement, dot fill. API details: the `ui` skill.
+- **Next / @cloud/ui** — `import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext, CarouselDots } from "@cloud/ui"`. **Behavior is owned by the React implementation** (embla-carousel-react): the scroll engine, snap points, `canScroll*` flags, dot count/selection sync, ArrowKey handling, and `orientation` axis swap all live there. `CarouselPrevious`/`CarouselNext` are `Button`s (`variant="secondary"`, `size="icon-sm"`); a `useCarousel()` context wires them and the dots to the engine. The reference CSS below expresses the **static visual skin only** — surface, clipping, gutter, nav placement, dot fill.
 - **Artifact (self-contained HTML)** — use `.carousel` › `.carousel__viewport` › `.carousel__track` › `.carousel__item`, with `.carousel__prev` / `.carousel__next` (reuse `.btn .btn--secondary .btn--icon .btn--sm` + `.carousel__nav` for the round + absolute placement) and `.carousel__dots` › `.carousel__dot` (+ `.carousel__dot--active`). Add `.carousel--vertical` on the root to flip the axis. A pure-CSS artifact has no scroll engine — render slides as a horizontally scrollable/overflowing track for the static prototype; mark the current dot with `--active` (the skin can't observe a live snap).

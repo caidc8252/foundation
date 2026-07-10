@@ -2,13 +2,6 @@
 
 A hairline divider that splits content along one axis. Optionally carries a centered label ("OR", a section heading) sitting between two line segments.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> orientation/label vocabulary, the token recipe, anatomy, a11y. It is the
-> authority both implementations answer to. It deliberately does NOT document
-> the React prop *types* or base-ui specifics — those live with the Next
-> implementation (`@cloud/ui` + the `ui` skill). When the contract and an
-> implementation disagree, the contract is right and the implementation is a bug.
-
 ## Variants
 
 A single visual treatment — a 1px hairline in `line-subtle`. There is no variant *prop*; the shape is driven by two orthogonal facts: orientation (`horizontal` *default* / `vertical`) and whether a `label` is present.
@@ -54,5 +47,5 @@ The two line segments each take equal remaining width (`flex-1`); the label is `
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Separator } from "@cloud/ui"`. base-ui `Separator` under the hood for the plain form; pass `orientation="vertical"` for the vertical line, `label` for the captioned form. API details: the `ui` skill. Do not re-skin via `className`.
+- **Next / @cloud/ui** — `import { Separator } from "@cloud/ui"`. base-ui `Separator` under the hood for the plain form; pass `orientation="vertical"` for the vertical line, `label` for the captioned form. Do not re-skin via `className`.
 - **Artifact (self-contained HTML)** — plain: `<div class="separator">` (add `.separator--vertical` for the vertical line), on top of the inlined `release/tokens.inline.css`. Labeled: `<div class="separator-labeled"><span class="separator-labeled__label">OR</span></div>` (the two flanking lines are drawn with `::before`/`::after`). Same `line-subtle` hairline + `content-tertiary` caption recipe, same names.

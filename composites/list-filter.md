@@ -4,9 +4,6 @@ The "quick bar + applied chips" filtering apparatus of a list page. One family
 (shared copy, shared behavior) made of small parts — mirrors @cloud/ui's
 `list-filter/` folder.
 
-> **Contract scope.** Cross-consumer contract for the family's anatomy + rules.
-> React prop types live with `@cloud/ui` + the `ui` skill; the contract wins.
-
 ## Parts
 
 | part | what it is |
@@ -71,7 +68,7 @@ Artifact markup:
 - **Next / @cloud/ui** — `list-filter/`: `ListConditionBand` (`toolbar` + `applied`
   slots), `SearchInput`, `FilterChip`, `AppliedFilters`, `AdvancedFilterButton` +
   `AdvancedFilterSheet`. Copy via the `ui.listFilter` i18n namespace; pair with the
-  `useListFilters` hook. `ui` skill.
+  `useListFilters` hook.
 - **Artifact** — `.condition-band` › `.condition-band__toolbar` (holding
   `.search-input` (› `.search-input__icon` + `.input`), `.select` quick-filters, `btn--secondary` Search button, then
   `.condition-band__spacer`, then the Advanced `btn--secondary`) + `.applied-filters`

@@ -2,14 +2,6 @@
 
 A single-border container that fuses an `Input`/`Textarea` with leading/trailing addons (icons, text affixes, action buttons, keyboard hints). One unified field that owns the border, focus ring, invalid, and disabled treatment so the control and its addons read as one control.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> slot vocabulary, the addon alignment recipe, states, anatomy, a11y. It is the
-> authority both implementations answer to. It deliberately does NOT document
-> the React prop *types* or the click-to-focus / order-swapping behavior — those
-> live with the Next implementation (`@cloud/ui` + the `ui` skill). When the
-> contract and an implementation disagree, the contract is right and the
-> implementation is a bug.
-
 ## Slots
 
 Input Group is not a variant family — it is a container plus four addon-shaped slots. The group is the one bordered surface; every slot inside goes borderless/transparent so a single ring shows.
@@ -101,5 +93,5 @@ InputGroup  ─ role="group", one border + radius + ring
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupTextarea, InputGroupText, InputGroupButton } from "@cloud/ui"`. The group wraps base-ui `Input`/`Textarea`; addon `align`, click-to-focus, `order-*` swapping, and combobox-popover border deferral are owned by the React implementation. API details: the `ui` skill. Do not re-skin via `className`; compose the slots.
+- **Next / @cloud/ui** — `import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupTextarea, InputGroupText, InputGroupButton } from "@cloud/ui"`. The group wraps base-ui `Input`/`Textarea`; addon `align`, click-to-focus, `order-*` swapping, and combobox-popover border deferral are owned by the React implementation. Do not re-skin via `className`; compose the slots.
 - **Artifact (self-contained HTML)** — use `.input-group` as the container, `.input-group__addon` (+ `--inline-start`/`--inline-end`/`--block-start`/`--block-end`) for addons, `.input-group__text` for affixes, and the control wears `.input-group__control`. Action buttons reuse `.btn` (`.btn--ghost` `.btn--xs`/`.btn--icon`). Same token recipe, same names. The borderless control and group-owned focus/invalid rings are reproduced statically; combobox deferral and click-to-focus are JS behaviors and are out of scope for the static skin.

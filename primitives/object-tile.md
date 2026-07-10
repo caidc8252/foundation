@@ -60,5 +60,5 @@ Static only — no interactive state. `aria-hidden` by design; the tile mirrors 
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { ObjectTile } from "@cloud/ui"`. Props: `icon` `name` `label` `tone` `colorSeed` `size` `className`. API details: the `ui` skill.
+- **Next / @cloud/ui** — `import { ObjectTile } from "@cloud/ui"`. Props: `icon` `name` `label` `tone` `colorSeed` `size` `className`.
 - **Artifact (self-contained HTML)** — `.object-tile` + size modifier `.object-tile--sm|md|lg` + tone modifier `.object-tile--neutral` or `.object-tile--cat-1..6`; optional `.object-tile__icon` wrapper for glyph mode. In `primitives/primitives.css` on top of `release/tokens.inline.css`.

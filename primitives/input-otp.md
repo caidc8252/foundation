@@ -2,15 +2,6 @@
 
 A segmented one-time-code / verification-code input: a row of single-character slots the user types a PIN/OTP into, optionally split into groups by a separator.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> anatomy of the compound, the per-slot token recipe, slot states, the
-> group-owned error treatment, a11y. It is the authority both implementations
-> answer to. It deliberately does NOT document the React prop *types* or the
-> `input-otp` library internals (slot activation, fake-caret rendering, focus
-> traversal, `maxLength`/`pattern` handling) — those live with the Next
-> implementation (`@cloud/ui` + the `ui` skill). When the contract and an
-> implementation disagree, the contract is right and the implementation is a bug.
-
 ## Variants
 
 Single visual variant. There is no `variant` prop — the compound is a fixed
@@ -201,5 +192,5 @@ progressive-enhancement snippet (CSP-safe, no deps). The skin renders without JS
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from "@cloud/ui"`. Compound built on the `input-otp` library (`OTPInput` + `OTPInputContext`); `InputOTP` takes `maxLength` / `value` / `onChange` (controlled, `onChange` returns the whole string) plus `pattern`. Slot activation, the fake caret, and focus traversal are owned by that library; the reference CSS expresses the static skin only. Presentation + per-slot entry only — no resend / countdown / auto-submit / validation. API details: the `ui` skill. Do not re-skin via `className`; the slot/group recipe is fixed.
+- **Next / @cloud/ui** — `import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from "@cloud/ui"`. Compound built on the `input-otp` library (`OTPInput` + `OTPInputContext`); `InputOTP` takes `maxLength` / `value` / `onChange` (controlled, `onChange` returns the whole string) plus `pattern`. Slot activation, the fake caret, and focus traversal are owned by that library; the reference CSS expresses the static skin only. Presentation + per-slot entry only — no resend / countdown / auto-submit / validation. Do not re-skin via `className`; the slot/group recipe is fixed.
 - **Artifact (self-contained HTML)** — use `.input-otp` (container) › `.input-otp__group` › `.input-otp__slot` (with `.input-otp__slot--active` to show the active highlight and `.input-otp__caret` for the static caret), and `.input-otp__separator` between groups, on top of the inlined `release/tokens.inline.css`. Mark error by adding `aria-invalid="true"` to a slot inside a group — the group's `:has()` rule draws the unified error ring. Same slot/active/error recipe, same token names.

@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "utilities": [
+    {
+      "name": "screen-reader-only",
+      "title": "Screen-reader only",
+      "summary": "Visually hides text while keeping it in the accessibility tree.",
+      "source": "primitives/primitives.css",
+      "classes": [".sr-only"]
+    },
+    {
+      "name": "stack",
+      "title": "Stack",
+      "summary": "Applies closed-set vertical rhythm to hand-composed block groups.",
+      "source": "composites/composites.css",
+      "classes": [".stack", ".stack--3", ".stack--4", ".stack--5", ".stack--6"]
+    },
+    {
+      "name": "auto-fit-kv-grid",
+      "title": "Auto-fit KV grid",
+      "summary": "Creates container-responsive key-value columns for overview facts.",
+      "source": "composites/composites.css",
+      "classes": [".grid-auto-fit-kv"]
+    },
+    {
+      "name": "form-grid",
+      "title": "Form grid",
+      "summary": "Creates token-spaced multi-column field layouts without adding form semantics.",
+      "source": "composites/composites.css",
+      "classes": [".form-grid", ".form-grid--2", ".form-grid--3"]
+    },
+    {
+      "name": "detail-split",
+      "title": "Detail split",
+      "summary": "Creates the main-plus-aside geometry for detail-page bodies.",
+      "source": "composites/composites.css",
+      "classes": [".detail-split"]
+    },
+    {
+      "name": "master-detail-grid",
+      "title": "Master-detail split",
+      "summary": "Creates the two-pane grid geometry for the master-detail pattern.",
+      "source": "composites/composites.css",
+      "classes": [".master-detail"]
+    }
+  ]
+}

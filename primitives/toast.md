@@ -2,13 +2,6 @@
 
 A transient, auto-dismissing notification (sonner). Fired imperatively from anywhere via `toast()` to confirm an action, surface a background result, or report an error — never to ask a question (that's a dialog).
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> tone vocabulary, the token recipe, anatomy, position, a11y. It is the authority
-> both implementations answer to. It deliberately does NOT document the React
-> prop *types* or sonner specifics — those live with the Next implementation
-> (`@cloud/ui` + the `ui` skill). When the contract and an implementation
-> disagree, the contract is right and the implementation is a bug.
-
 ## Tones
 
 One neutral surface in every tone — the toast card is always `surface-2` / `content-primary` text on a `line-default` hairline. The **tone lives in the leading icon only** (default sonner, no `richColors`): the surface never tints. Tone is chosen by which `toast.*` method fires, not a variant prop.
@@ -58,5 +51,5 @@ Container-level, not per-toast: the `Toaster` is placed once in the root layout 
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Toaster, toast } from "@cloud/ui"`. Mount `<Toaster />` once in the root layout; call `toast()` / `toast.success|info|warning|error|loading|promise` anywhere. Built on `sonner`; **all show/stack/dismiss/position/aria-live/timer behavior is owned by the React implementation** — the reference CSS below expresses the static toast *skin* only (surface, border, radius, shadow, spacing, type, tone icon color, countdown bar). API details: the `ui` skill.
+- **Next / @cloud/ui** — `import { Toaster, toast } from "@cloud/ui"`. Mount `<Toaster />` once in the root layout; call `toast()` / `toast.success|info|warning|error|loading|promise` anywhere. Built on `sonner`; **all show/stack/dismiss/position/aria-live/timer behavior is owned by the React implementation** — the reference CSS below expresses the static toast *skin* only (surface, border, radius, shadow, spacing, type, tone icon color, countdown bar).
 - **Artifact (self-contained HTML)** — render one resting toast with `.toast` (add `.toast--with-icon` when a leading glyph is present), inner `.toast__icon` + `.toast__content` ( `.toast__title` + `.toast__description` ) + optional `.toast__close`. Tone via `.toast__icon--success|info|warning|error|loading`. The countdown bar is the `.toast--countdown::after` element, fed by a `--toast-duration` custom property on the toast. On top of the inlined `release/tokens.inline.css`. Same neutral-surface / tone-icon recipe.

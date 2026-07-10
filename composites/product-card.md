@@ -9,11 +9,6 @@ the carbon-admin portal's `shop-browse` screen. (The admin-side product
 *management* list is a `data-table`, already covered — this is specifically the
 shopping catalog.)
 
-> **Contract scope.** The cross-consumer design contract: anatomy, the
-> click-target rule, the grid, tokens, states. NOT the React prop types — those
-> live with `@cloud/ui` + the `ui` skill. When an implementation disagrees with
-> this file, the file wins.
-
 ## Anatomy
 
 ```
@@ -82,7 +77,7 @@ Cross-consumer guards. Most values are tokens, but this composite carries the
   `width: 8.125rem` (130px, `w-[8.125rem]`) · `inset-inline-end: -2.25rem` (`-right-9`) ·
   `top: cx-md` (14px) · `rotate(45deg)` · `transform-origin: center`, inside an
   `overflow-hidden` image box. These are tuned so both ends overshoot the edges
-  and clip into a clean band; **shrinking the width leaves a clipped stub** (a
+  and clip into a clean band; **shrinking the width leaves a clipped sliver** (a
   real bug we hit). Copy the values verbatim — or implement the ribbon as a
   corner-box + inner span to avoid the magic numbers entirely.
 - **Other non-token measures** (Tailwind arbitrary values): image height
@@ -100,8 +95,7 @@ Cross-consumer guards. Most values are tokens, but this composite carries the
 
 - **Next / @cloud/ui** — an `interactive` `Card` composing an image slot,
   `Badge` (ribbon), price typography, and `Button`s for the CTA, tiled by a
-  `grid-auto-fit` utility; this contract names the catalog-tile structure. See
-  the `ui` skill.
+  `grid-auto-fit` utility; this contract names the catalog-tile structure.
 - **Artifact** — `.product-card` → `.product-card__image` (with
   `.product-card__placeholder` / `__glyph` fallback and an optional
   `.product-card__ribbon--<tone>`), `.product-card__body` (`__name` / `__sku` /

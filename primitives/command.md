@@ -2,15 +2,6 @@
 
 A keyboard-driven command palette: a search input over a filtered, grouped list of runnable items. The `Command` shell renders standalone (embedded panel); `CommandDialog` mounts the same shell inside a centered modal popup.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> slot vocabulary, the token recipe, states, anatomy, a11y. It is the authority
-> both implementations answer to. It deliberately does NOT document the React
-> prop *types* or the `cmdk` / base-ui specifics — fuzzy filtering, the
-> keyboard-roving `data-selected` highlight, the dialog open/close lifecycle,
-> portalling, and focus trap all live with the Next implementation (`@cloud/ui` +
-> the `ui` skill). When the contract and an implementation disagree, the contract
-> is right and the implementation is a bug.
-
 ## Slots
 
 Command is not a variant family — it is a fixed shell plus a set of structural slots. There is one visual shell; state (the active row, the empty result) drives appearance, not a variant prop.
@@ -64,5 +55,5 @@ Command  (shell: bordered, rounded-xl, shadow-5 surface; column)
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Command, CommandDialog, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem, CommandShortcut, CommandSeparator } from "@cloud/ui"`. **Behavior is owned by the React implementation** (`cmdk` for filtering + roving selection, base-ui `Dialog` for the modal); the reference CSS expresses the static skin only. `CommandInput` composes the `InputGroup` primitive. API details: the `ui` skill. Do not re-skin via `className`; the slots own the recipe.
+- **Next / @cloud/ui** — `import { Command, CommandDialog, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem, CommandShortcut, CommandSeparator } from "@cloud/ui"`. **Behavior is owned by the React implementation** (`cmdk` for filtering + roving selection, base-ui `Dialog` for the modal); the reference CSS expresses the static skin only. `CommandInput` composes the `InputGroup` primitive. Do not re-skin via `className`; the slots own the recipe.
 - **Artifact (self-contained HTML)** — use `.command` shell with `.command__input` / `.command__list` / `.command__empty` / `.command__group` (heading `.command__group-heading`) / `.command__separator` / `.command__item` (`.command__item--active` for the highlighted row, `.command__shortcut` for the trailing hint), on top of the inlined `release/tokens.inline.css`. For the modal form add `.command-dialog__backdrop` + `.command-dialog` around the shell. The input row reuses the `.input-group` skin (chromeless, bottom hairline). Same token recipe, same names. Fuzzy filtering and the live `--active` roving are JS the artifact mocks statically.
