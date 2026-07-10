@@ -75,10 +75,7 @@ no `.app-frame__col`:
 
 `248 / 56 / 56` mirror `Layout`'s constants (`SIDEBAR_WIDTH`,
 `SIDEBAR_WIDTH_COLLAPSED`, header `h-14`) in the consumer's `Layout` component.
-They live as `--app-frame-*`
-custom properties on `.app-frame` today; the single-source fix is to promote
-them to foundation layout tokens and have `Layout` consume them (currently
-hardcoded → one duplication to resolve). See the README proposal.
+They live as `--app-frame-*` custom properties on `.app-frame`.
 
 ## Implementations
 

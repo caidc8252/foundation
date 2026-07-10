@@ -58,12 +58,13 @@ artifact 渲染出的一切只能来自这 **4 层闭合集 + 图标**，没有�
 | ② Primitives（原子类） | `.btn` `.input` `.badge` `.card` `.field` … | `primitives/primitives.css` |
 | ③ Composites（构建块类） | `.page-header` `.data-table` `.summary-bar` … | `composites/composites.css` |
 | ④ Patterns（页面原型） | list / detail / create-form / create-wizard / actions | `patterns/*.md` + `.html` |
+| Utilities（公开工具类） | `.sr-only` `.stack--N` layout grids | `governance/utility-classes.json` + source CSS |
 | ＋ Icons（原料，非类层） | 内联 Lucide `<svg>`（带 `data-lucide`） | `scripts/icon/icon.mjs` |
 
 **去哪查合法名字**：
 
-- 人读 → [`release/catalog.md`](../../release/catalog.md)：每个 token 前缀分组、每个 primitive/composite 一行（用途 + 类名 + 契约/样例链接）。**先看它**。
-- 机器读 / 校验依据 → [`release/catalog.json`](../../release/catalog.json)：`tokens` / `primitives` / `composites` / `patterns` + 扁平的 `classes` 集合（`check-artifact.mjs` 即以此为准）。
+- 人读 → [`release/catalog.md`](../../release/catalog.md)：每个 token 前缀分组、每个 primitive/composite/utility 一行（用途 + 类名 + 契约/样例或 allowlist 链接）。**先看它**。
+- 机器读 / 校验依据 → [`release/catalog.json`](../../release/catalog.json)：`tokens` / `primitives` / `composites` / `utilities` / `patterns` + 扁平的 `classes` 集合（`check-artifact.mjs` 即以此为准）。
 
 > 在 catalog 里找不到的 token / class / pattern = **不属于本系统**。`release/` 完全由 `pnpm build`
 > （= `node emit/build.mjs`）从 `tokens/`、各 `.md`、两份 `.css` 生成，**永不手编**；

@@ -68,7 +68,7 @@ bubble skin.
 
 ## Notes
 
-- The block padding is `space-1.5` (6px) and the arrow is `size-2.5` (10px) — both half-steps. The raw space scale has `--space-1` (4px) and `--space-2` (8px) but no 1.5/2.5; the reference CSS uses `calc()` over those raw steps to hit 6px / 10px rather than inventing a token. No new token is proposed — it is a one-component half-step, not a reusable rhythm.
+- The block padding is `space-1.5` (6px) and the arrow is `size-2.5` (10px) — both half-steps. The raw space scale has `--space-1` (4px) and `--space-2` (8px) but no 1.5/2.5; the reference CSS uses `calc()` over those raw steps to hit 6px / 10px. This is a tooltip-specific half-step, not a reusable rhythm.
 - Inverted-bubble pair: this is the only primitive that paints on `content-primary` as a *surface*. No dedicated `--bg-tooltip` / `--bg-inverse-surface` token exists; `content-primary` is the correct theme-aware value (it flips with `[data-theme]`, keeping the bubble readable in both modes). If inverted overlays proliferate, propose an `--bg-inverse` surface token then.
 
 ## Implementations

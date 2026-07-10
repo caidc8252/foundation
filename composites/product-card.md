@@ -82,7 +82,7 @@ Cross-consumer guards. Most values are tokens, but this composite carries the
   `width: 8.125rem` (130px, `w-[8.125rem]`) · `inset-inline-end: -2.25rem` (`-right-9`) ·
   `top: cx-md` (14px) · `rotate(45deg)` · `transform-origin: center`, inside an
   `overflow-hidden` image box. These are tuned so both ends overshoot the edges
-  and clip into a clean band; **shrinking the width leaves a clipped stub** (a
+  and clip into a clean band; **shrinking the width leaves a clipped sliver** (a
   real bug we hit). Copy the values verbatim — or implement the ribbon as a
   corner-box + inner span to avoid the magic numbers entirely.
 - **Other non-token measures** (Tailwind arbitrary values): image height

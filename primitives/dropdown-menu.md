@@ -95,7 +95,7 @@ content (popup surface)
   percentage `max-height` resolves against the *containing block*, so the taught
   detail-header pattern — a kebab trigger with the popup `position:absolute` inside a
   trigger-sized `.overflow-wrap` — makes `100%` collapse to the **trigger's height**
-  (~36px), clipping the menu to a stub. `vh` is containing-block-independent, so the
+  (~36px), clipping the menu to a sliver. `vh` is containing-block-independent, so the
   cap holds whether the popup is absolute-in-wrapper or portalled+`fixed`. Don't
   reintroduce a `%` height here.
 - The source's `bg-border` (separator) and `text-muted-foreground` (shortcut) are shadcn aliases; they resolve to `line-default` and `content-tertiary` in this token system.

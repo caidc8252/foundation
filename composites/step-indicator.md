@@ -98,7 +98,7 @@ Use the same completed / active / upcoming states:
 
 - **completed** — stages already passed (green dot + connector).
 - **active** — the record's current stage (primary dot).
-- **upcoming** — stages not yet reached (muted dot).
+- **upcoming** — stages after the current stage (muted dot).
 
 **When to use as a status pipeline vs. a wizard rail:**
 

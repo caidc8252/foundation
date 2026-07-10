@@ -57,7 +57,8 @@ function runBuild(sourceGit) {
   console.log(
     `foundation: refreshed release/catalog.json + catalog.md ` +
       `(${catalog.primitives.length} primitives, ${catalog.composites.length} composites, ` +
-      `${catalog.patterns.length} patterns, ${catalog.classes.length} classes, ${catalog.tokens.length} tokens)`,
+      `${catalog.utilities.length} utilities, ${catalog.patterns.length} patterns, ` +
+      `${catalog.classes.length} classes, ${catalog.tokens.length} tokens)`,
   );
   console.log(
     `foundation: refreshed release/tokens.json ` +

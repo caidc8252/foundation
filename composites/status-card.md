@@ -16,7 +16,7 @@ status-card ( = .card , no .card__header ; add .card--interactive when clickable
 │      └─ .status-card__description    optional · all content below the heading
 └─ .card__footer               reused slot — top hairline
     ├─ .status-card__footer-start      left cluster (switch + label …)
-    └─ .status-card__footer-end        right cluster (icon button + count; future actions)
+    └─ .status-card__footer-end        right cluster (icon button + count; additional actions)
 ```
 
 ## Slots — required vs. optional
@@ -68,7 +68,7 @@ No new state class. Status is expressed by the `badge` variant (`--warning` / `-
 ## Notes
 
 - `card__content` owns padding; do not pad the root. Wrap the content blocks in `.stack.stack--3` (base `.stack` supplies `display:flex`; `--3` the gap) for vertical rhythm.
-- Footer left/right split is provided by `__footer-start` / `__footer-end`; future action buttons go in a cluster as a `btn` group — no new slot needed.
+- Footer left/right split is provided by `__footer-start` / `__footer-end`; additional action buttons go in a cluster as a `btn` group — no new slot needed.
 
 ## Implementations
 

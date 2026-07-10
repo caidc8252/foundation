@@ -58,8 +58,8 @@ Two slots: the pill **track** (root) and the circular **thumb**. The thumb is `p
 
 ## Notes
 
-- **Token gaps (geometry).** The track width `36px` (default), the track height `14px` (sm), and the `10px` sm thumb travel have no `--space-*` token — they are switch-specific dimensions. The reference CSS uses the literal px for these three values; proposal: either accept them as component constants or add a switch sizing token group. The 20px height, both thumb diameters, and the 16px default travel DO map cleanly (`--space-5` / `--space-4` / `--space-3` / `--space-4`).
-- **Token gap (thumb shadow).** The implementation gives the thumb a bespoke two-layer shadow (`0 1px 2px …/0.18, 0 0 0 0.5px …/0.08`) with no matching shadow token. `--shadow-1` is the nearest existing token and is what the reference CSS uses; proposal: a dedicated `--shadow-thumb` if exactness matters.
+- **Switch-specific geometry.** The track width `36px` (default), the track height `14px` (sm), and the `10px` sm thumb travel are component constants. The 20px height, both thumb diameters, and the 16px default travel map to existing tokens (`--space-5` / `--space-4` / `--space-3` / `--space-4`).
+- **Thumb shadow.** The thumb uses `--shadow-1`.
 - The implementation's `bg-background` thumb maps to `surface-1`; `bg-primary` maps to the `primary-700` CTA color; `border-destructive` / `ring-destructive` map to `error`. The `dark:*` classes are theme overrides that resolve automatically via the flipped tokens — the reference layer needs no dark handling.
 
 ## Artifact behavior (vanilla JS — paste, don't improvise)

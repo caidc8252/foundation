@@ -90,5 +90,5 @@ that moves is the arc length, driven by the `--progress` custom property (0–10
 
 ## Implementations
 
-- **Next / @cloud/ui** — not yet a standalone base-ui primitive: render the two-circle SVG (`pathLength=100`, `strokeDasharray = value 100`) with the token strokes, or wrap a small component. Pass `value` (0–100), optional `tone` and `size`. API details: the `ui` skill.
+- **Next / @cloud/ui** — render the two-circle SVG (`pathLength=100`, `strokeDasharray = value 100`) with the token strokes. Pass `value` (0–100), optional `tone` and `size`. API details: the `ui` skill.
 - **Artifact (self-contained HTML)** — a `.progress-ring` grid holding a `.progress-ring__svg` (viewBox `0 0 36 36`) with `.progress-ring__track` + `.progress-ring__fill` circles (both `pathLength="100"`, `r="16"`, `cx="18"`, `cy="18"`), the fill carrying inline `style="--progress: <n>"`, plus an optional `.progress-ring__label`. Add `.progress-ring--<tone>` and `.progress-ring--sm/--lg`. Set `role="progressbar"` + `aria-valuenow`. On top of the inlined `release/tokens.inline.css`.

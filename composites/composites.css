@@ -87,9 +87,9 @@
 }
 
 /* ═══════════════════════════ Form grid ═══════════════════════════ */
-/* Multi-column field layout for forms. A pure layout utility (like Stack and the
-   auto-fit grids above) — NO @component marker, NO contract: it carries only
-   column geometry, no anatomy or semantics. Promotes the page-local .form-row
+/* Multi-column field layout for forms. A cataloged utility (see
+   governance/utility-classes.json): it carries only column geometry, no anatomy
+   or semantics. Promotes the page-local .form-row
    that artifacts kept re-inventing (create-form.html) into the closed set so the
    name stops drifting (.form-row / form-grid--2 / …). Each cell is a .field; the
    gap matches the in-form field rhythm (space-4).
@@ -108,10 +108,9 @@
 }
 
 /* ═══════════════════════════ Detail split ═══════════════════════════ */
-/* Main / aside split for a detail-page tab body. A pure layout utility (like
-   Stack, the auto-fit grids, and Form grid above) — NO @component marker, NO
-   contract: it carries only column geometry, no anatomy or semantics. Promotes
-   the page-local .overview-cols that detail-page.html re-invented into the closed
+/* Main / aside split for a detail-page tab body. A cataloged utility (see
+   governance/utility-classes.json): it carries only column geometry, no anatomy
+   or semantics. Promotes the page-local .overview-cols that detail-page.html re-invented into the closed
    set so every tab body — not just Overview — shares ONE split shape (the tab
    outline stops jumping between 2-col and full-bleed as you switch tabs).
      - main column FLUIDLY fills the row (minmax(0,1fr) so a wide table/kv can't
@@ -135,8 +134,7 @@
 /* ═══════════════════════════ Master–detail ═══════════════════════════ */
 /* The two-pane geometry of the master-detail PATTERN (patterns/master-detail.md):
    a FIXED-width list rail on the LEFT + a FLUID detail/editor pane on the right.
-   A pure layout utility (like Stack / the auto-fit grids / Form grid / Detail split
-   above) — NO @component marker, NO contract: it carries only column geometry. The
+   A cataloged utility (see governance/utility-classes.json): it carries only column geometry. The
    PATTERN contract owns the anatomy + interaction (select a rail row → the pane
    swaps to that record); this class only stops the pattern's screens (firmware
    versions, roles, categories, …) from each hand-rolling the split.
@@ -2192,7 +2190,7 @@
   top: var(--spacing-cx-md);
   /* The band must be LONG enough (and centred ~29px in from the corner) that,
      once rotated 45°, both ends overshoot the image edges and get clipped into a
-     clean diagonal band across the corner — a short band leaves a clipped stub.
+     clean diagonal band across the corner — a short band leaves a clipped sliver.
      130px width / -36px inline-end offset are the portal-proven geometry; layout measures
      (depend on the rotate math, not a token), same exemption as other dims. */
   inset-inline-end: -2.25rem;
@@ -2376,56 +2374,6 @@
   pointer-events: none;
 }
 
-/* ═══════════════════════════════ Amount summary ═══════════════════════════════ */
-/* Totals block for order/cart/checkout: a hairline separator then a stack of
-   right-aligned label→value rows (subtotal · discount · …) topped by a total
-   row in stronger ink. Values use tabular-nums so amounts align. */
-
-.amount-summary {
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--color-line-subtle);   /* hairline separator */
-}
-
-.amount-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: var(--space-4);
-  padding-block: var(--space-1);
-}
-
-.amount-row__label {
-  font-size: var(--text-md);
-  color: var(--color-content-secondary);
-}
-
-.amount-row__value {
-  font-family: var(--font-sans);
-  font-size: var(--text-md);
-  font-variant-numeric: tabular-nums;
-  color: var(--color-content-primary);
-  text-align: right;
-  white-space: nowrap;
-}
-
-/* Total row — heavier ink + top spacing to lift the grand total above line items */
-.amount-row--total {
-  margin-top: var(--space-2);
-  padding-top: var(--space-2);
-  border-top: 1px solid var(--color-line-subtle);
-}
-
-.amount-row--total .amount-row__label {
-  font-weight: var(--font-weight-semibold);
-  font-size: var(--text-md);
-  color: var(--color-content-primary);
-}
-
-.amount-row--total .amount-row__value {
-  font-weight: var(--font-weight-semibold);
-  font-size: var(--text-md);
-  color: var(--color-content-primary);
-}
 /* ═══════════════════════════ List row ═══════════════════════════ */
 /* @component list-row */
 /* The non-tabular list row: a settings / account / permission / contract /

@@ -41,7 +41,7 @@ Every icon carries `data-lucide="<name>"` as its first attribute. The checker
 rejects unknown names and altered paths; that same attribute is the Next.js
 `lucide-react` bridge. Rules + React mapping: [`primitives/icon.md`](../primitives/icon.md).
 
-## L2 · Primitives (52) - atoms
+## L2 · Primitives (51) - atoms
 
 Classes in `primitives/primitives.css` (on top of the inlined tokens).
 
@@ -89,7 +89,6 @@ Classes in `primitives/primitives.css` (on top of the inlined tokens).
 | `slider` | A draggable track-and-thumb input for selecting a numeric value, or a range (two thumbs) along a continuous scale. | `.slider` `.slider--vertical` `.slider__indicator` `.slider__thumb` `.slider__track` | [contract](../primitives/slider.md) · [example](../primitives/slider.html) |
 | `spinner` | A circular, indeterminate loading indicator — a spinning ring shown while content or an action is in flight (in-button loading, inline "fetching", small section busy state). | `.spinner` `.spinner--lg` `.spinner--md` `.spinner--sm` `.spinner--xl` | [contract](../primitives/spinner.md) · [example](../primitives/spinner.html) |
 | `split-button` | A primary action fused with an adjacent menu trigger — one control that runs a default action on the left and opens a menu of related actions from a chevron on the right. | `.btn` `.btn--danger` `.btn--primary` `.split-button` | [contract](../primitives/split-button.md) · [example](../primitives/split-button.html) |
-| `sr-only` | Visually hides text while keeping it in the accessibility tree. | `.sr-only` | [contract](../primitives/sr-only.md) |
 | `switch` | A binary on/off toggle for an immediate state change (enable/disable, light/dark). | `.switch` `.switch--sm` `.switch__thumb` | [contract](../primitives/switch.md) · [example](../primitives/switch.html) |
 | `tabs` | A tabbed control: a horizontal bar of triggers that switch which content panel is shown. | `.tabs` `.tabs--vertical` `.tabs__content` `.tabs__list` `.tabs__list--default` `.tabs__list--line` `.tabs__list--vertical` `.tabs__trigger` `.tabs__trigger--active` | [contract](../primitives/tabs.md) · [example](../primitives/tabs.html) |
 | `tags-input` | A free-text token field: the user types arbitrary values that become removable chips, ahead of a bare text input. | `.tags-input` `.tags-input--disabled` `.tags-input--invalid` `.tags-input__field` `.tags-input__remove` `.tags-input__tag` | [contract](../primitives/tags-input.md) · [example](../primitives/tags-input.html) |
@@ -134,6 +133,20 @@ Classes in `composites.css` (load after primitives - they reuse `.btn`/`.input`/
 | `theme-toggle` | An icon-only button that flips the app between light and dark. | `.theme-toggle` | [contract](../composites/theme-toggle.md) · [example](../composites/theme-toggle.html) |
 | `timeline` | Vertical event log — device history, audit trails, ticket activity. | `.timeline` `.timeline--compact` `.timeline--stacked` `.timeline__actor` `.timeline__content` `.timeline__description` `.timeline__header` `.timeline__item` `.timeline__item--last` `.timeline__marker` `.timeline__marker--dot` `.timeline__marker--error` `.timeline__marker--icon` `.timeline__marker--info` `.timeline__marker--neutral` `.timeline__marker--primary` `.timeline__marker--success` `.timeline__marker--warning` `.timeline__marker-dot` `.timeline__marker-node` `.timeline__rail` `.timeline__time` `.timeline__time-row` `.timeline__title` | [contract](../composites/timeline.md) · [example](../composites/timeline.html) |
 | `toggles` | Inline control-with-label wrappers — pairs a .checkbox, .radio, or .switch primitive with an optional text .label. | `.toggle-checkbox` `.toggle-radio` `.toggle-switch` | [contract](../composites/toggles.md) · [example](../composites/toggles.html) |
+
+## L2.6 · Utilities (6) - legal non-component helpers
+
+Utilities are closed-set classes with no component anatomy. They are legal only
+for the purpose named here; use primitives/composites for UI parts.
+
+| utility | use | classes | source |
+|---|---|---|---|
+| `screen-reader-only` | Visually hides text while keeping it in the accessibility tree. | `.sr-only` | [CSS](../primitives/primitives.css) · [allowlist](../governance/utility-classes.json) |
+| `stack` | Applies closed-set vertical rhythm to hand-composed block groups. | `.stack` `.stack--3` `.stack--4` `.stack--5` `.stack--6` | [CSS](../composites/composites.css) · [allowlist](../governance/utility-classes.json) |
+| `auto-fit-kv-grid` | Creates container-responsive key-value columns for overview facts. | `.grid-auto-fit-kv` | [CSS](../composites/composites.css) · [allowlist](../governance/utility-classes.json) |
+| `form-grid` | Creates token-spaced multi-column field layouts without adding form semantics. | `.form-grid` `.form-grid--2` `.form-grid--3` | [CSS](../composites/composites.css) · [allowlist](../governance/utility-classes.json) |
+| `detail-split` | Creates the main-plus-aside geometry for detail-page bodies. | `.detail-split` | [CSS](../composites/composites.css) · [allowlist](../governance/utility-classes.json) |
+| `master-detail-grid` | Creates the two-pane grid geometry for the master-detail pattern. | `.master-detail` | [CSS](../composites/composites.css) · [allowlist](../governance/utility-classes.json) |
 
 ## L3 · Patterns (9) - assembled archetypes
 

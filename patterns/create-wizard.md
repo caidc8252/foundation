@@ -96,7 +96,7 @@ summary rail and the done state are **optional**, included per business need.
   (≤ ~8 fields, no branching) → an **inline add-form**; many fields / conditional
   sub-config → a `Modal` (or its own sub-step). **Never two "Add" buttons:** an
   inline add-form commits with a single primary **Add** that appends to the list —
-  there is no separate "open" button; a deferred form is opened by **Add &lt;item&gt;**
+  there is no separate "open" button; a modal add-form is opened by **Add &lt;item&gt;**
   and commits *inside* with **Add / Save** — the opener is not also shown. Conditional
   fields (e.g. billing that appears only for one type) live **inside** the add-form,
   revealed by the type control. Adding an item is **not** "Continue" — the wizard's
@@ -142,5 +142,3 @@ Those composites lean on primitives (`Button`, `Input`, `Field`, `Card`, `Checkb
 `RadioGroup`). In `@cloud/ui` they are the `step-indicator` + form families; an
 artifact composes the same anatomy from `composites.css` (on top of `primitives.css`
 + `release/tokens.inline.css`). Same parts, same names, both sides.
-
-> First-draft stub — expand with per-step transition + summary-rail specs as real wizards land.

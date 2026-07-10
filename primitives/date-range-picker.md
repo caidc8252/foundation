@@ -69,7 +69,7 @@ The **trigger** owns interactive states, mirroring `Input`/`Select`:
 
 Preset rows: hover `surface-hover` + `content-primary`. Range cell states (start/
 middle/end/today/disabled/outside): see `calendar.md`. Mid-selection (a `from`
-chosen but not yet a `to`) is internal draft state, never emitted — a behavior owned
+chosen before a `to`) is internal draft state, never emitted — a behavior owned
 by the React implementation.
 
 ## Accessibility

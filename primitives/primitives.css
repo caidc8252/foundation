@@ -172,7 +172,6 @@ body {
 :where(p, h1, h2, h3, h4, h5, h6) { overflow-wrap: break-word; }
 
 /* ═══════════════════════════ Screen-reader only ═══════════════════════════ */
-/* @component sr-only */
 /* Hides an element visually while keeping it in the accessibility tree: the
    accessible name for an icon-only control, chart title/description, or a label
    whose text should be announced but not drawn. */
@@ -3628,7 +3627,7 @@ body {
   align-items: center;
   flex-shrink: 0;
   height: var(--space-5);   /* 20px */
-  width: 36px;              /* token gap: no --space-9; switch-specific */
+  width: 36px;              /* switch-specific track width */
   padding: 2px;
   border: 1px solid transparent;
   border-radius: var(--radius-full);
@@ -3670,7 +3669,7 @@ body {
   height: var(--space-4);
   border-radius: var(--radius-full);
   background-color: var(--color-surface-1);
-  box-shadow: var(--shadow-1);   /* token gap: bespoke 2-layer thumb shadow in impl */
+  box-shadow: var(--shadow-1);
   transition: transform 0.12s;
   transform: translateX(0);
 }
@@ -3681,7 +3680,7 @@ body {
 
 /* ── Switch · sm size ── */
 .switch--sm {
-  height: 14px;             /* token gap: no --space-3-5; switch-specific */
+  height: 14px;             /* switch-specific compact track height */
   width: var(--space-6);    /* 24px */
 }
 .switch--sm .switch__thumb {
@@ -3690,7 +3689,7 @@ body {
 }
 .switch--sm[data-checked] .switch__thumb,
 .switch--sm[aria-checked="true"] .switch__thumb {
-  transform: translateX(10px);   /* token gap: no --space-2-5; switch-specific */
+  transform: translateX(10px);   /* switch-specific compact thumb travel */
 }
 
 /* ═══════════════════════════════ Tabs ═══════════════════════════════ */

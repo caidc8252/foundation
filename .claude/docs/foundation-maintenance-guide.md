@@ -334,7 +334,8 @@ primitive 是 L2 原子组件。一个组件是**契约优先**（`.md` 是两�
      `/* @component date-picker date-range-picker date-time-picker */`，
      一次把整段 class 标给三个契约。
    - **纯工具 section 不加 marker**（如 `Baseline`、`.sr-only` 这类行为助手）—— 它们的 class 在
-     闭合集里、但不属于任何 catalog 组件，这是有意为之。
+     闭合集里，但不属于 primitive/composite anatomy；把公开工具类列进
+     `governance/utility-classes.json`，由 catalog 的 Utilities 章节发布。
 3. **可选：HTML 示例 `primitives/<name>.html`** —— 可执行参考，被 `check:examples` lint，必须留在
    闭合集内（页面局部 `<style>` 的组合布局允许，新设计词汇不允许）。
 4. **`pnpm build`** 重新生成 `release/catalog.*`：class 白名单（从两份 CSS）与 per-component 列表

@@ -58,7 +58,7 @@ Single visual variant — a circular (`radius-full`) chip that clips its content
 
 ## Notes
 
-- **Fallback ground.** The fallback paints the `avatar-bg` / `avatar-fg` semantic pair (`avatar-bg`→`surface-3`, `avatar-fg`→`content-secondary`) — a neutral, lower-emphasis ground. This resolves an earlier gap where the reference CSS and the React source disagreed: `@cloud/ui` still paints `bg-[var(--color-brand-mono)]` + `text-content-inverse` (a higher-contrast brand ground). That is now an implementation bug against this contract, pending sync; `brand-mono` is not an avatar token.
+- **Fallback ground.** The fallback paints the `avatar-bg` / `avatar-fg` semantic pair (`avatar-bg`→`surface-3`, `avatar-fg`→`content-secondary`) — a neutral, lower-emphasis ground. `brand-mono` is not an avatar token.
 - **Group ring** uses `ring-background`; `background` resolves to `surface-1` in this token system — the ring is the page ground punched between overlapping chips, theme-aware via the token.
 
 ## Implementations

@@ -47,9 +47,9 @@ filled (governance [principle #9](../governance/principles.md) — *patterns are
 frameworks*). The required core below is the few slots without which this stops
 being a create/edit form; everything else is included per business need. The
 [`create-form.html`](./create-form.html) example shows the **required core live**;
-the optional slots appear only as labelled, removable stubs/comments — the
+the optional slots appear only as labelled, removable placeholders/comments — the
 status `banner`, the extra section card, and the file-upload block (a `dropzone`
-primitive stub) are commented stubs, and the
+primitive placeholder) are commented placeholders, and the
 preview/summary rail is **full-page-only** and not shown in this example. Copying
 the example does **not** mean filling every slot.
 
@@ -138,5 +138,3 @@ Primitives: `Field`, `Label`, `Input`/`Textarea`/`Select`/`Checkbox`/`RadioGroup
 `Button`, `Modal`/`Sheet`, `Card` (the form card and per-concern section cards),
 `Dropzone` (the optional file-upload block).
 `@cloud/ui` realizes these; an artifact composes from `primitives.css`.
-
-> First-draft stub — expand with field-spacing and section specs as real forms land.
