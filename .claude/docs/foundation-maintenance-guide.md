@@ -513,7 +513,8 @@ source 打架。
 **怎么跑**（在 foundation 仓库根目录）：
 
 ```bash
-node scripts/export-maintain-assets.mjs ../foundation-maintain/carbon
+pnpm export:maintain                 # 默认写到平级 checkout ../foundation-maintain/carbon
+pnpm export:maintain <out-dir>       # 目录布局不同时显式给路径
 ```
 
 它往 maintain 仓的 `carbon/` 写三样，然后**到 `foundation-maintain` 仓库把它们 commit + push**：
@@ -576,7 +577,7 @@ governance/
 ### 一句话记牢
 
 > 改源 → `pnpm build` → 跑 `pnpm check:all` → 提交含重生成的 `release/` → 闭合集变了再
-> `node scripts/export-maintain-assets.mjs ../foundation-maintain/carbon` 同步 editor（§10）→ 加是 minor、
+> `pnpm export:maintain` 同步 editor（§10）→ 加是 minor、
 > 改值/破坏是 major、契约永远赢。**永不手编 `release/`，永不在消费者侧分叉一份值。**
 </content>
 </invoke>

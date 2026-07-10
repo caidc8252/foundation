@@ -39,7 +39,8 @@ pnpm release      <vN>  # publish the finalized version into release/
 The editor previews against version snapshots + a catalog shipped as static assets in `foundation-maintain`. Regenerate them from this repo whenever versions or the catalog change:
 
 ```
-node scripts/export-maintain-assets.mjs ../foundation-maintain/carbon
+pnpm export:maintain                 # → ../foundation-maintain/carbon (sibling checkout)
+pnpm export:maintain <out-dir>       # explicit target, if the layout differs
 ```
 
 This writes `versions.json`, `catalog.json`, and per-version CSS into the maintain repo's `carbon/`; commit them there.

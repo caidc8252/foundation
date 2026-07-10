@@ -10,7 +10,13 @@
      <out>/versions/<vN>/composites.css
 
    Usage:
-     node scripts/export-maintain-assets.mjs ../foundation-maintain/carbon
+     pnpm export:maintain                     # → ../foundation-maintain/carbon
+     node scripts/export-maintain-assets.mjs <out-dir>
+
+   <out-dir> defaults to the sibling checkout ../foundation-maintain/carbon (the
+   layout governance/release-workflow.md §3 assumes). The default is only taken
+   when that repo is actually checked out — otherwise we'd silently mkdir a stray
+   tree instead of telling you the repo is missing.
    --------------------------------------------------------------------------- */
 import {
   copyFileSync,
@@ -31,12 +37,17 @@ import {
   RELEASE_ROOT,
 } from "./release-lib.mjs";
 
+const DEFAULT_OUT = resolve(ROOT, "..", "foundation-maintain", "carbon");
+
 const outArg = process.argv.slice(2).filter((a) => a !== "--")[0];
-if (!outArg) {
+if (!outArg && !existsSync(resolve(DEFAULT_OUT, ".."))) {
   console.error("Usage: node scripts/export-maintain-assets.mjs <out-dir>");
+  console.error(`\n✗ foundation-maintain is not checked out next to foundation.`);
+  console.error(`  expected: ${resolve(DEFAULT_OUT, "..")}`);
+  console.error(`  clone it there, or pass an explicit <out-dir>.`);
   process.exit(1);
 }
-const outDir = resolve(outArg);
+const outDir = outArg ? resolve(outArg) : DEFAULT_OUT;
 mkdirSync(outDir, { recursive: true });
 
 ensureCurrentVersion(ROOT);

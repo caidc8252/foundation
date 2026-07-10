@@ -31,7 +31,7 @@ description: |
 
 ### 步骤 2 · 跑 refresh
 ```bash
-node scripts/prototype-cheatsheet/refresh.mjs
+pnpm cheatsheet
 ```
 - 从 `component-registry.md`(档位) + `catalog.json`(组件事实) 生成三档索引 `cheatsheet-{low,mid,full}.md` + `tier-components.json` 到 `release/prototype-cheatsheet/`。
 - refresh 报 **marker-coverage error**(某档组件 CSS 只落在更高档 `@component` 标记块内)→ **升级维护者**:需在 `primitives|composites` CSS 补 `/* @component <name> */` 标记(foundation 源修),再重跑。`warn(markerless but safe)` → 放行。

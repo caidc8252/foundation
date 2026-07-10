@@ -10,7 +10,7 @@
 ## 怎么跑（打 tag 前,catalog 重建之后）
 ```bash
 # 从 foundation 仓库根,release 构建(pnpm build,生成 catalog.json)之后：
-node scripts/prototype-cheatsheet/refresh.mjs
+pnpm cheatsheet
 ```
 > 前置:`release/catalog.json` 已是最新(refresh 从它取每个组件的 summary/classes/example/layer)。refresh 不重建 release,只读 catalog + registry 拼索引。
 
