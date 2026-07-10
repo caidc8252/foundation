@@ -68,5 +68,5 @@ Body text is `text-md`; the `lg` size bumps to `text-lg`. Horizontal padding fol
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Input } from "@cloud/ui"`. base-ui `Input` under the hood; props `inputSize` `variant` `invalid` `validation` `prefix` `suffix`. API details: the `ui` skill. Do not re-skin via `className`; pick a variant/size.
+- **Next / @cloud/ui** — `import { Input } from "@cloud/ui"`. base-ui `Input` under the hood; props `inputSize` `variant` `invalid` `validation` `prefix` `suffix`. Do not re-skin via `className`; pick a variant/size.
 - **Artifact (self-contained HTML)** — use the `.input` class (plus size/state modifiers `.input--sm/--md/--lg`, `.input--filled`, `.input--warn/--ok`, `.input--loading`) in `./primitives.css`, on top of the inlined `release/tokens.inline.css`. Invalid is `aria-invalid="true"`; read-only/disabled are the native attributes. Same token recipe, same names. For a `prefix`/`suffix` adornment there is no `Input` class — compose `.input-group` (§Anatomy).

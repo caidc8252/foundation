@@ -4,13 +4,6 @@ Horizontal progress rail for a multi-step flow (wizard): a row of numbered dots
 joined by connectors, each with a caption + title, showing what's done, where you
 are, and what's left. Display-only by default; opt-in click-to-jump-back.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> per-state token recipe, anatomy, the navigation rule, a11y. React prop *types*
-> (`steps` / `current` / `onStepClick` / `maxNavigableStep`) live with `@cloud/ui`
-> + the `ui` skill. When the contract and an implementation disagree, the contract
-> is right and the implementation is the bug. Not to be confused with `Stepper`
-> (the numeric +/- spinbutton) — different component, similar name.
-
 ## States
 
 There is no `variant` prop — a step's appearance is derived from its index vs.
@@ -118,7 +111,7 @@ Use captions to show stage dates or IDs where available.
   `steps` (`{ label, caption?, icon? }[]`), `current`, optional `onStepClick` /
   `maxNavigableStep`. State derivation, the icon-vs-check glyph swap, and which
   steps are buttons are owned by the React implementation. Also exports
-  `stepDotVariants` for the dot recipe. API details: the `ui` skill.
+  `stepDotVariants` for the dot recipe.
 - **Artifact (self-contained HTML)** — `.step-indicator` (an `<ol>`) › `.step` per
   item, modified by `.step--completed` / `.step--active` / `.step--upcoming` /
   `.step--error` (a step that failed validation). Each

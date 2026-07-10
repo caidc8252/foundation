@@ -2,13 +2,6 @@
 
 A triggered overlay of grouped actions. The menu that drops from a button — actions, checkbox/radio toggles, sub-menus, labels, separators, and keyboard navigation.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> part vocabulary, the token recipe, item states, anatomy, a11y. It is the
-> authority both implementations answer to. It deliberately does NOT document
-> the React prop *types* or base-ui specifics — those live with the Next
-> implementation (`@cloud/ui` + the `ui` skill). When the contract and an
-> implementation disagree, the contract is right and the implementation is a bug.
-
 ## Parts
 
 A dropdown menu is a composed set of slots, not a single element. The popup is the surface; everything else is a row inside it.
@@ -104,5 +97,5 @@ content (popup surface)
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuCheckboxItem, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuGroup, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent, DropdownMenuShortcut } from "@cloud/ui"`. **Behavior is owned by the React implementation** (base-ui `Menu`): triggering, portalling, positioning (`side`/`align`/offsets), open/close animation, roaming focus, type-ahead, checkbox/radio state, and sub-menu open are all base-ui. `DropdownMenuItem` takes `variant="default" | "destructive"`. API details: the `ui` skill. Do not re-skin via `className`.
+- **Next / @cloud/ui** — `import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuCheckboxItem, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuGroup, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent, DropdownMenuShortcut } from "@cloud/ui"`. **Behavior is owned by the React implementation** (base-ui `Menu`): triggering, portalling, positioning (`side`/`align`/offsets), open/close animation, roaming focus, type-ahead, checkbox/radio state, and sub-menu open are all base-ui. `DropdownMenuItem` takes `variant="default" | "destructive"`. Do not re-skin via `className`.
 - **Artifact (self-contained HTML)** — use the `.dropdown-menu` block classes in `./primitives.css`, on top of the inlined `release/tokens.inline.css`. The reference CSS expresses the **static skin only** — the resting open popup and its rows. There is no portalling, positioning, open/close keyframes, or interactive highlight tracking; render one open popup and mark the active row with `.dropdown-menu__item--active`. Same token recipe, same names.

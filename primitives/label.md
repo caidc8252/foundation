@@ -2,13 +2,6 @@
 
 The caption for a form control. Names an input and, via `htmlFor`, makes its text a click-to-focus target for that control.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> typography recipe, layout, states, anatomy, a11y. It is the authority both
-> implementations answer to. It deliberately does NOT document the React prop
-> *types* — those live with the Next implementation (`@cloud/ui` + the `ui`
-> skill). When the contract and an implementation disagree, the contract is
-> right and the implementation is a bug.
-
 ## Variants
 
 Single visual variant — no variant prop. It is an inline-flex text caption.
@@ -45,5 +38,5 @@ There is no hover, active, focus, invalid, or selected styling on the label itse
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Label } from "@cloud/ui"`. A plain `<label>` (no base-ui dependency); pass `htmlFor` + children. The disabled dimming is driven by Tailwind `group-data-[disabled=true]:*` / `peer-disabled:*` variants reading state off the surrounding group or paired control. For the standard stacked form field (label → control → hint/error) use `Field`, which wraps `Label` and applies the `content-secondary` tone plus the required `*`. Prop/API details: the `ui` skill.
+- **Next / @cloud/ui** — `import { Label } from "@cloud/ui"`. A plain `<label>` (no base-ui dependency); pass `htmlFor` + children. The disabled dimming is driven by Tailwind `group-data-[disabled=true]:*` / `peer-disabled:*` variants reading state off the surrounding group or paired control. For the standard stacked form field (label → control → hint/error) use `Field`, which wraps `Label` and applies the `content-secondary` tone plus the required `*`.
 - **Artifact (self-contained HTML)** — use `<label class="label">` in `../primitives/primitives.css`, on top of the inlined `release/tokens.inline.css`. Same `font-sans` / `text-md` / weight-500 / `select-none` recipe. Disabled dimming is expressed via `.label--disabled` (static stand-in for the React group/peer variants, which need live control state). For the full stacked field, compose with `.field` / `.field__required` / `.field__hint` / `.field__error`.

@@ -2,14 +2,6 @@
 
 A centered dialog over a dimmed scrim. The default container for a focused task — a form, a confirmation, a detail — that must own the screen until it's resolved.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> size vocabulary, the token recipe, states, anatomy, a11y. It is the authority
-> both implementations answer to. It deliberately does NOT document the React
-> prop *types* or base-ui specifics (open/close lifecycle, focus trap, portal,
-> Escape/overlay dismissal, animation) — those live with the Next implementation
-> (`@cloud/ui` + the `ui` skill). When the contract and an implementation
-> disagree, the contract is right and the implementation is a bug.
-
 ## Sizes
 
 Width presets only — height is content-driven and capped (see States · overflow). Every preset still floors to `calc(100% - 2rem)` on a narrow viewport.
@@ -105,5 +97,5 @@ Map the content's shape to the width:
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Modal } from "@cloud/ui"`. base-ui `Dialog` under the hood; props `open` `onClose` `title` `description` `footer` `size` `showCloseButton` `closeOnOverlay` `closeOnEscape` `className`. Prop/API details: the `ui` skill. For a confirm that forbids casual dismissal, reach for `AlertDialog`, not a hardened `Modal`.
+- **Next / @cloud/ui** — `import { Modal } from "@cloud/ui"`. base-ui `Dialog` under the hood; props `open` `onClose` `title` `description` `footer` `size` `showCloseButton` `closeOnOverlay` `closeOnEscape` `className`. For a confirm that forbids casual dismissal, reach for `AlertDialog`, not a hardened `Modal`.
 - **Artifact (self-contained HTML)** — `.modal-overlay` wrapping `.modal` (+ `.modal--<size>`), with `.modal__header` › `.modal__heading` (grouping `.modal__title` + `.modal__description`) + `.modal__close`, then `.modal__body`, then `.modal__footer` (holds `.btn`s). In `../primitives/primitives.css`, on top of the inlined `release/tokens.inline.css`. Same token recipe, same names. The skin renders the resting OPEN dialog; the consumer drives visibility.

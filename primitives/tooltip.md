@@ -2,13 +2,6 @@
 
 A short text hint shown on hover/focus of a trigger. A small inverted bubble with a directional arrow, portalled above the page.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> bubble's surface/typography/spacing token recipe, sides, anatomy, a11y. It is
-> the authority both implementations answer to. It deliberately does NOT document
-> the React prop *types* or base-ui specifics — those live with the Next
-> implementation (`@cloud/ui` + the `ui` skill). When the contract and an
-> implementation disagree, the contract is right and the implementation is a bug.
-
 ## Variants
 
 Single visual variant — one inverted bubble. It does NOT carry tone/semantic
@@ -73,5 +66,5 @@ bubble skin.
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@cloud/ui"`. base-ui `Tooltip` under the hood; wrap the trigger in `TooltipTrigger`, text in `TooltipContent` (props `side` `sideOffset` `align` `alignOffset`). Open/close, portalling, positioning, and the arrow placement are **behavior owned by the React implementation** — the reference CSS expresses the static bubble skin only. API details: the `ui` skill.
+- **Next / @cloud/ui** — `import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@cloud/ui"`. base-ui `Tooltip` under the hood; wrap the trigger in `TooltipTrigger`, text in `TooltipContent` (props `side` `sideOffset` `align` `alignOffset`). Open/close, portalling, positioning, and the arrow placement are **behavior owned by the React implementation** — the reference CSS expresses the static bubble skin only.
 - **Artifact (self-contained HTML)** — use `.tooltip` for the bubble + `.tooltip__arrow` for the pointer, on top of the inlined `release/tokens.inline.css`. The artifact side renders a *static* open bubble (positioning/show-hide is the React side's job); same inverted recipe (`content-primary` fill, `content-inverse` text).

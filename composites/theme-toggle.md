@@ -4,11 +4,6 @@ An icon-only button that flips the app between light and dark. Lives in the app
 header / chrome; shows a moon in light mode (tap → go dark), a sun in dark mode
 (tap → go light).
 
-> **Contract scope.** Cross-consumer contract: the visual shell (it is a ghost
-> icon button), its one state vocabulary, anatomy, a11y. React prop types and
-> the theme state machine live with `@cloud/ui`; the contract wins. An
-> implementation that diverges is the bug.
-
 ## Variants
 
 Single visual form — no variant prop. It is a **ghost icon button**: the
@@ -63,7 +58,7 @@ when the resolved theme is light, sun when it is dark.
   theme via the `useTheme` hook (resolved theme + `toggle`), so it must sit
   under a `ThemeProvider`. The light/dark resolution, the toggle, and the
   glyph swap are owned by the React implementation — the reference CSS expresses
-  the static ghost-icon skin only. API details: the `ui` skill.
+  the static ghost-icon skin only.
 - **Artifact (self-contained HTML)** — reuse the primitive ghost icon button:
   `<button class="btn btn--ghost btn--icon theme-toggle">` with a single inline
   sun/moon svg. The `.theme-toggle` modifier only quiets the resting text to

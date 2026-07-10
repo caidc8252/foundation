@@ -2,13 +2,6 @@
 
 The base month grid — a weekday header over a 6×7 day matrix with month navigation. The static surface every date picker (DatePicker, range, date-time) builds its popup on; on its own it's a bare month view, not a field.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> anatomy, the token recipe, day/cell states, a11y. It is the authority both
-> implementations answer to. It deliberately does NOT document the React prop
-> *types* or `react-day-picker` specifics — those live with the Next
-> implementation (`@cloud/ui` + the `ui` skill). When the contract and an
-> implementation disagree, the contract is right and the implementation is a bug.
-
 ## Anatomy
 
 ```
@@ -65,5 +58,5 @@ Nav buttons: `--cell-size` (32px) **ghost** icon buttons — no border/fill unti
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Calendar } from "@cloud/ui"`. Wraps `react-day-picker`'s `DayPicker`; props pass through (`mode`, `selected`, `month`, `disabled`, `captionLayout`, `showOutsideDays`, `locale`, `buttonVariant` — default `ghost`). Day cells render via `CalendarDayButton` (a `Button variant="ghost" size="icon"`); nav uses `buttonVariants`. **Behavior — month/range/dropdown/roving-focus/RTL — is owned by `react-day-picker`; the reference CSS expresses the static skin only** (surface, cell grid, weekday/caption type, the selected/range/today/outside/disabled/focused day fills). Locale-aware date formatting comes from `_date-shared` (`useDateFormat`, `combineDisabledDays`) in the picker composites, not the bare Calendar. API details: the `ui` skill.
+- **Next / @cloud/ui** — `import { Calendar } from "@cloud/ui"`. Wraps `react-day-picker`'s `DayPicker`; props pass through (`mode`, `selected`, `month`, `disabled`, `captionLayout`, `showOutsideDays`, `locale`, `buttonVariant` — default `ghost`). Day cells render via `CalendarDayButton` (a `Button variant="ghost" size="icon"`); nav uses `buttonVariants`. **Behavior — month/range/dropdown/roving-focus/RTL — is owned by `react-day-picker`; the reference CSS expresses the static skin only** (surface, cell grid, weekday/caption type, the selected/range/today/outside/disabled/focused day fills). Locale-aware date formatting comes from `_date-shared` (`useDateFormat`, `combineDisabledDays`) in the picker composites, not the bare Calendar.
 - **Artifact (self-contained HTML)** — use `.calendar` › `.calendar__header` (`.calendar__nav-btn` × 2 flanking `.calendar__caption`) + `.calendar__grid` (seven `.calendar__weekday` then 42 `.calendar__day`, all direct grid children) + optional `.calendar__footer` (`.calendar__link` × 2), on top of the inlined `release/tokens.inline.css`. Mark day state with `.calendar__day--today` / `--selected` / `--range-start` / `--range-end` / `--range-middle` / `--outside` / `--disabled` / `--focused` (the skin can't observe live selection/focus). Same `--cell-size`/`--cell-radius` (rounded-square, 10px) customs; `today` is a subtle `surface-3` fill, `selected` the `primary-700` fill, and `--range-middle` the `surface-3` track. The root is bare (no border/shadow/background) — drop it inside a host `.popover`, or wrap a standalone view in a `.popover` (or bordered box) so it reads as a card.

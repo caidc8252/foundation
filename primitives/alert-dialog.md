@@ -2,15 +2,6 @@
 
 A forced-action confirm. A centered dialog that owns the screen until the user picks Cancel or Confirm — a destructive-or-consequential variant of `Modal` with no casual escape.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> anatomy, the token recipe, states, a11y. It is the authority both
-> implementations answer to. It deliberately does NOT document the React prop
-> *types* or base-ui specifics (open/close lifecycle, focus trap, portal,
-> the deliberate *absence* of Escape/overlay dismissal, animation) — those live
-> with the Next implementation (`@cloud/ui` + the `ui` skill). When the contract
-> and an implementation disagree, the contract is right and the implementation
-> is a bug.
-
 ## Variants
 
 One shell, no shell variant. The only choice is the **confirm action's** button variant — it borrows the [Button](./button.md) vocabulary:
@@ -77,5 +68,5 @@ No size vocabulary — a single content-driven width. It floors to `calc(100% - 
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, AlertDialogTitle, AlertDialogDescription, AlertDialogAction, AlertDialogCancel } from "@cloud/ui"`. base-ui `AlertDialog` under the hood; `AlertDialogAction` takes a `variant` (Button variant, default `default`/primary — pass `destructive` for the dangerous path), `AlertDialogCancel` is fixed to `ghost`. Prop/API details and the open/close lifecycle: the `ui` skill. For a dismissible task or a form, use `Modal` instead.
+- **Next / @cloud/ui** — `import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, AlertDialogTitle, AlertDialogDescription, AlertDialogAction, AlertDialogCancel } from "@cloud/ui"`. base-ui `AlertDialog` under the hood; `AlertDialogAction` takes a `variant` (Button variant, default `default`/primary — pass `destructive` for the dangerous path), `AlertDialogCancel` is fixed to `ghost`. For a dismissible task or a form, use `Modal` instead.
 - **Artifact (self-contained HTML)** — `.alert-dialog-overlay` wrapping `.alert-dialog`, with `.alert-dialog__header` › `.alert-dialog__title` + `.alert-dialog__description`, then `.alert-dialog__footer` holding two `.btn`s (`.btn .btn--ghost` Cancel + `.btn .btn--primary` or `.btn .btn--danger` Confirm). In `../primitives/primitives.css`, on top of the inlined `release/tokens.inline.css`. Same token recipe, same names. The skin renders the resting OPEN dialog; the consumer drives visibility. The no-dismiss rule is behavioral and lives with the React side.

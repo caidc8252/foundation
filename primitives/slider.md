@@ -2,14 +2,6 @@
 
 A draggable track-and-thumb input for selecting a numeric value, or a range (two thumbs) along a continuous scale.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> anatomy, the token recipe, states, a11y. It is the authority both
-> implementations answer to. It deliberately does NOT document the React prop
-> *types* or base-ui specifics (drag, keyboard stepping, value mapping,
-> range/multi-thumb, orientation switching) — those live with the Next
-> implementation (`@cloud/ui` + the `ui` skill). When the contract and an
-> implementation disagree, the contract is right and the implementation is a bug.
-
 ## Variants
 
 Single visual variant. There is no `variant` prop — the only structural choice
@@ -128,7 +120,7 @@ The `.slider__thumb` must be `position:absolute` (or positioned relative to `.sl
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Slider } from "@cloud/ui"`. base-ui `Slider` under the hood (`Root`/`Control`/`Track`/`Indicator`/`Thumb`); props include `value`/`defaultValue` (array — one entry per thumb), `min`/`max`, orientation via base-ui. API details: the `ui` skill. Do not re-skin via `className`.
+- **Next / @cloud/ui** — `import { Slider } from "@cloud/ui"`. base-ui `Slider` under the hood (`Root`/`Control`/`Track`/`Indicator`/`Thumb`); props include `value`/`defaultValue` (array — one entry per thumb), `min`/`max`, orientation via base-ui. Do not re-skin via `className`.
 - **Artifact (self-contained HTML)** — use `.slider` on the root with `.slider__track` · `.slider__indicator` · `.slider__thumb` elements, on top of the inlined `release/tokens.inline.css`. Two forms:
   - **Static** — depict a fixed value by setting the indicator width and thumb `left` inline; no driver, no JS.
   - **Draggable** — overlay the hidden native range driver (`<input class="range-input" type="range">`) inside the `.slider` and sync the skin from its value with the paste-in snippet in *Artifact behavior* above. **Never put `.slider` on the native range itself, and never drop in a bare `<input type="range">`** — the range is the *driver*, the `.slider__*` divs are the *skin* (the checker flags a native range that is not the `.range-input` driver).

@@ -5,12 +5,6 @@ single bounded number (quantity, page size, retry count). Composes
 `InputGroup` — it adds value clamping, keyboard arithmetic, and per-button
 boundary state on top of that shell; it invents no new surface of its own.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> anatomy, the boundary/disabled rule, states, tokens. React prop *types* and
-> the value/clamp/keyboard *behavior* live with the Next implementation
-> (`@cloud/ui` + the `ui` skill). The contract wins; an implementation that
-> diverges is the bug.
-
 ## Variants
 
 None. Stepper is a single composition — there is no variant prop. Tone and

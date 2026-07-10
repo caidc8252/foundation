@@ -2,12 +2,6 @@
 
 An inline [Lucide](https://lucide.dev) SVG used as a glyph inside another control or beside text. The only icon vocabulary in this system.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: which
-> icon set, the canonical markup, how to choose and obtain one, sizing, a11y.
-> The artifact inlines the SVG; the Next implementation imports from
-> `lucide-react`. When the contract and an implementation disagree, the contract
-> is right and the implementation is a bug.
-
 ## The set
 
 Icons are **Lucide** — the exact set vendored under `scripts/icon/data`

@@ -14,11 +14,6 @@ render as kv rows (or a lead fact in the identity band), **not** promoted to
 [`stat-card`](./stat-card.md) KPI tiles. Reserve `stat-card` for an aggregate the
 screen is *about* (see its "Metric vs attribute").
 
-> **Contract scope.** The cross-consumer design contract: anatomy, the
-> label/value recipe, the column rule, tokens. NOT the React prop types — those
-> live with `@cloud/ui` + the `ui` skill. When an implementation disagrees with
-> this file, the file wins.
-
 ## Anatomy
 
 ```
@@ -79,7 +74,7 @@ screen is *about* (see its "Metric vs attribute").
 
 - **Next / @cloud/ui** — the detail-page Overview: a `<dl>` of label → value
   pairs, labels `content-tertiary` / values `content-primary` (see the
-  detail-page pattern + the `ui` skill). This contract names the pair recipe.
+  detail-page pattern). This contract names the pair recipe.
 - **Artifact** — `.kv-grid` (a `<dl>`) → `.kv-grid__row` each holding a `dt`
   (label) + `dd` (value), laid out left-right (subgrid-aligned two columns). A
   long / multi-line value wraps inside its value column — no special row class.

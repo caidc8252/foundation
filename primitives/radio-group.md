@@ -44,5 +44,5 @@ A horizontal or multi-column arrangement is **the consumer's own layout**, not a
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { RadioGroup, RadioGroupItem } from "@cloud/ui"`. base-ui radio under the hood. API details: the `ui` skill. For labeled options use `ToggleRadioGroup`/`ToggleRadio`.
+- **Next / @cloud/ui** — `import { RadioGroup, RadioGroupItem } from "@cloud/ui"`. base-ui radio under the hood. For labeled options use `ToggleRadioGroup`/`ToggleRadio`.
 - **Artifact (self-contained HTML)** — wrap the options in `<div class="radio-group">` and use `<input type="radio" class="radio">` for each, styled by `./primitives.css`, on top of the inlined `release/tokens.inline.css`. Same checked recipe (`primary-700` fill, `content-on-primary` dot). The invalid state is the `aria-invalid="true"` attribute, not a class. Bare radios carry no label — supply your own label row.

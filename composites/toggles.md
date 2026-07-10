@@ -43,5 +43,5 @@ The wrapper is typically a `<label>` element (so clicking the text label activat
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { ToggleCheckbox, ToggleRadio, ToggleSwitch } from "@cloud/ui"`. Each component wires the label + control relationship automatically. Props: `label` `checked` / `defaultChecked` `disabled` `onCheckedChange` (+ `value`/`name` for radio). API details: the `ui` skill.
+- **Next / @cloud/ui** — `import { ToggleCheckbox, ToggleRadio, ToggleSwitch } from "@cloud/ui"`. Each component wires the label + control relationship automatically. Props: `label` `checked` / `defaultChecked` `disabled` `onCheckedChange` (+ `value`/`name` for radio).
 - **Artifact (self-contained HTML)** — `.toggle-checkbox`, `.toggle-radio`, or `.toggle-switch` wrapping a `.checkbox` / `.radio` / `.switch` primitive + a `.label` element. In `release/composites.css` on top of `release/tokens.inline.css` + `primitives/primitives.css`.

@@ -2,13 +2,6 @@
 
 A searchable single- or multi-select dropdown. A trigger that opens a portalled popup with a search box that filters a long option list by label text. Prefer over `Select` when the option set is long enough to benefit from a search box.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> part/slot vocabulary, the token recipe, states, anatomy, a11y. It is the
-> authority both implementations answer to. It deliberately does NOT document
-> the React prop *types* or base-ui specifics — those live with the Next
-> implementation (`@cloud/ui` + the `ui` skill). When the contract and an
-> implementation disagree, the contract is right and the implementation is a bug.
-
 ## Parts
 
 A combobox is a composed set of slots, not a single element. The trigger lives in the layout; the popup is portalled and holds the search box and the filtered list.
@@ -82,5 +75,5 @@ content (popup surface)
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Combobox } from "@cloud/ui"` (`ComboboxOption`, `ComboboxProps` types ship alongside). **Behavior is owned by the React implementation** (base-ui `Combobox`): triggering, portalling, positioning (`side="bottom"` / `sideOffset` / `align="start"`), open/close animation, label-text filtering, roaming focus, single-vs-multi selection state, and the empty-state swap are all base-ui. Props: `options` `value` `onValueChange` `placeholder` `searchPlaceholder` `emptyText` `disabled` `size="sm"|"md"` `invalid` `multiple`. API details: the `ui` skill. Do not re-skin via `className`; pick `size`/`invalid`.
+- **Next / @cloud/ui** — `import { Combobox } from "@cloud/ui"` (`ComboboxOption`, `ComboboxProps` types ship alongside). **Behavior is owned by the React implementation** (base-ui `Combobox`): triggering, portalling, positioning (`side="bottom"` / `sideOffset` / `align="start"`), open/close animation, label-text filtering, roaming focus, single-vs-multi selection state, and the empty-state swap are all base-ui. Props: `options` `value` `onValueChange` `placeholder` `searchPlaceholder` `emptyText` `disabled` `size="sm"|"md"` `invalid` `multiple`. Do not re-skin via `className`; pick `size`/`invalid`.
 - **Artifact (self-contained HTML)** — use the `.combobox` block classes in `./primitives.css`, on top of the inlined `release/tokens.inline.css`. The reference CSS expresses the **static skin only**: the resting trigger plus one open popup (search row + list). There is no portalling, positioning, open/close keyframes, label filtering, or live highlight tracking — render one open popup, mark the active row with `.combobox__item--highlighted` and selected rows with `.combobox__item--selected`. Same token recipe, same names.

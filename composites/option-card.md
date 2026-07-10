@@ -9,11 +9,6 @@ surface with [`RadioGroup`](../primitives/radio-group.md) / `Checkbox` semantics
 the card *is* the label of a hidden control, so keyboard and AT users get real
 radio/checkbox behavior, not a `cursor-pointer` div.
 
-> **Contract scope.** The cross-consumer design contract: anatomy, the selection
-> recipe, single- vs multi-select, tokens, states, a11y. NOT the React prop
-> types — those live with `@cloud/ui` + the `ui` skill. When an implementation
-> disagrees with this file, the file wins.
-
 ## Anatomy
 
 ```
@@ -90,7 +85,7 @@ structural, not numeric**:
 
 - **Next / @cloud/ui** — a `Card` (`interactive`) wrapping `RadioGroupItem` /
   `Checkbox` with a `Label`; the selected/focus styling keys off the control's
-  `data-state`. See the `ui` skill.
+  `data-state`.
 - **Artifact** — `.option-card` (a `<label>`, `--selected` / `[data-selected]`)
   wrapping a visually-hidden input (`type="radio"` or `type="checkbox"`), with
   `.option-card__check` **(leading, first child)**, `.option-card__icon` (optional),

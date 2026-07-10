@@ -2,13 +2,6 @@
 
 An inline, in-flow status message box. Highlights feedback (a result, a warning, an error, contextual info) at the point in the layout where it's relevant. Not a transient toast and not a modal — it sits in the page and stays.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> tone vocabulary, the token recipe, the slot anatomy, a11y. It is the
-> authority both implementations answer to. It deliberately does NOT document
-> the React prop *types* — those live with the Next implementation (`@cloud/ui`
-> + the `ui` skill). When the contract and an implementation disagree, the
-> contract is right and the implementation is a bug.
-
 ## Variants
 
 Alert is colored by **tone** (semantic status), not by visual form — there is one form (a tonal filled box) and the `variant` prop selects the status hue. Each tone uses the matching semantic `*-bg` surface, a hairline border mixed from the base semantic color at 25% opacity, and `*-strong` text (which the leading icon inherits). **Every alert carries a semantic tone — there is no neutral/un-toned variant; if a note has no status, it isn't an Alert.**
@@ -52,5 +45,5 @@ Alert is a static presentational box — it has no hover / active / focus / disa
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Alert, AlertTitle, AlertDescription, AlertAction } from "@cloud/ui"`. `Alert` takes `variant`; compose the `AlertTitle` / `AlertDescription` / `AlertAction` slots inside. The two-column icon layout is auto-applied when a direct `<svg>` child is present (`has-[>svg]`). Prop/API details: the `ui` skill. Don't re-skin via `className`; pick a `variant`.
+- **Next / @cloud/ui** — `import { Alert, AlertTitle, AlertDescription, AlertAction } from "@cloud/ui"`. `Alert` takes `variant`; compose the `AlertTitle` / `AlertDescription` / `AlertAction` slots inside. The two-column icon layout is auto-applied when a direct `<svg>` child is present (`has-[>svg]`). Don't re-skin via `className`; pick a `variant`.
 - **Artifact (self-contained HTML)** — use `.alert` + `.alert--<tone>` on the box, with `.alert__icon` / `.alert__title` / `.alert__description` / `.alert__action` slots, on top of the inlined `release/tokens.inline.css`. The `.alert--with-icon` modifier opts the box into the two-column grid (the static skin can't observe a child `<svg>` the way the React `has-[>svg]` selector does, so it's an explicit class). Same tone recipe, same names. Reuse `.btn` (e.g. `.btn--ghost .btn--xs`) inside `.alert__action`.

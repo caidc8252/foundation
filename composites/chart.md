@@ -6,18 +6,6 @@ categorical palette. A chart is a framed region whose *geometry* is drawn by
 Recharts SVG; this contract owns the **skin** (palette, grid/axis hairlines,
 legend, tooltip, states) every chart wears.
 
-> **Contract scope.** Cross-consumer contract: the palette assignment rule,
-> the chrome anatomy, the static skin tokens, a11y. React prop types
-> (`ChartConfig`, `ChartBarProps`, the `Chart*` Recharts re-exports) live with
-> `@cloud/ui/components/chart` + the `ui` skill. **SVG geometry and all
-> interaction — responsive sizing, stacking math, pie-callout elbow geometry,
-> tooltip/legend payload wiring, keyboard stepping, brush/zoom — is owned by
-> the React (Recharts) implementation.** The reference CSS expresses only the
-> static skin (surface, grid/axis hairlines, curve caps, legend swatch,
-> tooltip card, empty/skeleton states). When the contract and an
-> implementation disagree, the contract is right and the implementation is a
-> bug.
-
 ## Family
 
 | member | what it is | use |
@@ -141,7 +129,7 @@ Recharts forwards onto the SVG primitive):
   `ChartConfig` (explicit `color`, per-theme `{light,dark}`, or ordinal
   fallback). The SVG skin is applied to Recharts' own classes
   (`.recharts-cartesian-grid`, `.recharts-curve`, …) under `[data-slot="chart"]`
-  in `component-defaults.css`. API details: the `ui` skill. **Do not** depend on
+  in `component-defaults.css`. **Do not** depend on
   `recharts` directly or hand-pick palette steps.
 - **Artifact (self-contained HTML)** — geometry must be drawn as **hand-authored
   SVG** (no Recharts); apply the `.chart` skin classes from `composites.css` on

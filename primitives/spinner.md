@@ -2,13 +2,6 @@
 
 A circular, indeterminate loading indicator — a spinning ring shown while content or an action is in flight (in-button `loading`, inline "fetching", small section busy state). For known-shape page/section/table loads prefer a Skeleton; reserve the Spinner for unknown-duration, unknown-shape waits.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> size vocabulary, the token recipe, anatomy, motion, a11y. It is the authority
-> both implementations answer to. It deliberately does NOT document the React
-> prop *types* — those live with the Next implementation (`@cloud/ui` + the `ui`
-> skill). When the contract and an implementation disagree, the contract is right
-> and the implementation is a bug.
-
 ## Variants
 
 Single visual variant — a circular ring (`rounded-full`) drawn as a 2px border where three edges read as the neutral track and the top edge reads as the accent, then spun. State is not a variant: the spinner is always indeterminate. The only knob is `size`.
@@ -60,5 +53,5 @@ A single circular element — no children, no label slot. The visible ring is it
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Spinner } from "@cloud/ui"`. Plain `<div role="status">` (no base-ui); props `size` (`sm` | `md` | `lg` | `xl`, default `md`) plus pass-through `div` props / `className`. API details: the `ui` skill. The animation (continuous rotate, 750ms) is owned by the implementation/CSS, not configurable per the contract.
+- **Next / @cloud/ui** — `import { Spinner } from "@cloud/ui"`. Plain `<div role="status">` (no base-ui); props `size` (`sm` | `md` | `lg` | `xl`, default `md`) plus pass-through `div` props / `className`. The animation (continuous rotate, 750ms) is owned by the implementation/CSS, not configurable per the contract.
 - **Artifact (self-contained HTML)** — use `<div class="spinner spinner--<size>" role="status" aria-label="Loading"></div>` styled by `./primitives.css`, on top of the inlined `release/tokens.inline.css`. Same ring recipe (`line-default` track + `primary-700` head), same diameters, same 750ms spin.

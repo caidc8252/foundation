@@ -2,13 +2,6 @@
 
 A layout box that locks its content to a fixed width:height ratio (16/9 video thumbnails, 1/1 avatars-in-cards, 4/3 media tiles). The box sets no width of its own (it inherits its width from flow / the call site); height is computed from the ratio.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> structural recipe, the one knob (`ratio`), anatomy, a11y. It is the authority
-> both implementations answer to. It deliberately does NOT document the React
-> prop *types* — those live with the Next implementation (`@cloud/ui` + the `ui`
-> skill). When the contract and an implementation disagree, the contract is right
-> and the implementation is a bug.
-
 ## Variants
 
 None. A single structural form with no visual skin — no surface, border, radius, shadow, color, or typography of its own. The only knob is the numeric `ratio` (a unitless number such as `16/9`, `4/3`, `1`), passed at the call site; it is data, not a variant. The box paints nothing itself; whatever you nest inside it (an `<img>`, a `.card`, a video) supplies the visible surface and clips to the box.
@@ -42,5 +35,5 @@ A single positioned block. `position: relative` establishes a containing block s
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { AspectRatio } from "@cloud/ui"`. A plain `<div>` (no base-ui dependency); pass the required `ratio` number (e.g. `ratio={16/9}`); extra `className`/props pass through. API details: the `ui` skill.
+- **Next / @cloud/ui** — `import { AspectRatio } from "@cloud/ui"`. A plain `<div>` (no base-ui dependency); pass the required `ratio` number (e.g. `ratio={16/9}`); extra `className`/props pass through.
 - **Artifact (self-contained HTML)** — wrap the content in `<div class="aspect-ratio" style="--ratio: 16/9">…</div>` styled by `./primitives.css`, on top of the inlined `release/tokens.inline.css`. Same recipe: `position: relative` + `aspect-ratio: var(--ratio)`. Set `--ratio` inline per use; the child fills the box.

@@ -2,12 +2,6 @@
 
 A keyboard key cap for shortcut hints — one glyph or word per cap (`⌘`, `K`, `esc`), chained side by side for chords (`⌘ ⇧ P`).
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the token
-> recipe, anatomy, a11y. It is the authority both implementations answer to. It
-> deliberately does NOT document React prop *types* — those live with the Next
-> implementation (`@cloud/ui` + the `ui` skill). When the contract and an
-> implementation disagree, the contract is right and the implementation is a bug.
-
 ## When to use
 
 Show a keyboard shortcut in prose, a tooltip, an empty state, or beside a control
@@ -43,5 +37,5 @@ None — `.kbd` is presentational and non-interactive (a `<kbd>` element, not a 
 
 ## Implementations
 
-- **Next / @cloud/ui** — a thin `Kbd` wrapper over the `<kbd>` element with the token recipe; chords are sibling `Kbd`s. API details: the `ui` skill.
+- **Next / @cloud/ui** — a thin `Kbd` wrapper over the `<kbd>` element with the token recipe; chords are sibling `Kbd`s.
 - **Artifact (self-contained HTML)** — a `<kbd class="kbd">` per cap; place several in a row for a chord. Styled by `./primitives.css` on top of the inlined `release/tokens.inline.css`.

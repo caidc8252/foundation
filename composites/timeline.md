@@ -5,11 +5,6 @@ tone-coded markers joined by a connecting rail, each beside a content block of
 title + timestamp + description + actor. Display-only: no interactivity, no data
 fetching.
 
-> **Contract scope.** Cross-consumer contract: the marker/tone vocabulary, the
-> two layout axes (density, stacked), anatomy, the token recipe. React prop
-> *types* and the `items`-shortcut shape live with `@cloud/ui` + the `ui` skill;
-> the contract wins. An implementation that diverges is the bug.
-
 ## Choosing a form
 
 Timeline has four independent axes — **marker** (`dot` / `icon`), **density**
@@ -126,7 +121,7 @@ Badge's `tone`. `primary` maps to the **accent** ramp (not the gray-blue
   TimelineContent, TimelineHeader, TimelineTitle, TimelineTime, TimelineTimeRow,
   TimelineDescription, TimelineActor } from "@cloud/ui"`. Root props `density`
   `stacked` `items`; an `items={entries}` shortcut renders plain event lists
-  through the same slots. API details: the `ui` skill. The `dot`/`icon` marker
+  through the same slots. The `dot`/`icon` marker
   split and the `time · actor` separator interspersing are React behaviors; pick
   a `tone`, don't re-skin via `className`.
 - **Artifact (self-contained HTML)** — `.timeline` (ul) › `.timeline__item` (li)

@@ -2,13 +2,6 @@
 
 A binary on/off toggle for an immediate state change (enable/disable, light/dark). A pill track with a sliding thumb. Prefer `ToggleSwitch` when the control needs an inline label.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> size vocabulary, the token recipe, states, anatomy, a11y. It is the authority
-> both implementations answer to. It deliberately does NOT document the React
-> prop *types* or base-ui specifics — those live with the Next implementation
-> (`@cloud/ui` + the `ui` skill). When the contract and an implementation
-> disagree, the contract is right and the implementation is a bug.
-
 ## Variants
 
 Single visual variant — a `radius-full` pill track with a circular thumb. There is no variant prop; the checked/unchecked *state* drives the track fill and thumb position, not a variant.
@@ -124,5 +117,5 @@ The CSS drives the track fill and thumb translate from `[aria-checked="true"]` /
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Switch } from "@cloud/ui"`. base-ui `Switch` (Root + Thumb) under the hood; prop `size` (`"sm" | "default"`). Toggle behavior (checked state, keyboard, `aria-checked`) is owned by the React/base-ui implementation; the contract and reference CSS express the static skin only. API details: the `ui` skill. For a labeled field use `ToggleSwitch`.
+- **Next / @cloud/ui** — `import { Switch } from "@cloud/ui"`. base-ui `Switch` (Root + Thumb) under the hood; prop `size` (`"sm" | "default"`). Toggle behavior (checked state, keyboard, `aria-checked`) is owned by the React/base-ui implementation; the contract and reference CSS express the static skin only. For a labeled field use `ToggleSwitch`.
 - **Artifact (self-contained HTML)** — use `.switch` (+ `.switch--sm`) on the track with a `.switch__thumb` child, toggled via a `[data-checked]` / `[aria-checked="true"]` attribute, on top of the inlined `release/tokens.inline.css`. Same fill recipe (`line-strong` ↔ `primary-700` + `shadow-cta`) and travel. There is no native HTML switch element, so the artifact drives state via the attribute rather than `:checked`.

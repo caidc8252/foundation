@@ -3,9 +3,6 @@
 What a collection shows when it has nothing — a first-class state, not blank
 space. Also covers no-results-for-filters and (with a different icon/verb) error.
 
-> **Contract scope.** Cross-consumer contract: anatomy, the action rule, tokens.
-> React prop types live with `@cloud/ui`; the contract wins.
-
 ## Anatomy
 
 ```
@@ -39,8 +36,7 @@ space. Also covers no-results-for-filters and (with a different icon/verb) error
 
 ## Implementations
 
-- **Next / @cloud/ui** — `Empty` (`title` / `description` / `action`). `ui` skill →
-  data-display.
+- **Next / @cloud/ui** — `Empty` (`title` / `description` / `action`).
 - **Artifact** — `.empty-state` › `.empty-state__icon` (svg) + `.empty-state__title`
   + `.empty-state__description` + `.empty-state__action` (a `.btn--primary` or
   `.btn--secondary`; use `primary` when this is the page's sole primary verb, `secondary`

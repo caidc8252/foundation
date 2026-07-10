@@ -2,13 +2,6 @@
 
 A tabbed control: a horizontal bar of triggers that switch which content panel is shown. Use for in-page section switching (detail tabs, settings groups) — not for page navigation.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> variant/size vocabulary, the token recipe, states, anatomy, a11y. It is the
-> authority both implementations answer to. It deliberately does NOT document
-> the React prop *types* or base-ui specifics — those live with the Next
-> implementation (`@cloud/ui` + the `ui` skill). When the contract and an
-> implementation disagree, the contract is right and the implementation is a bug.
-
 ## Variants
 
 Variant lives on the **list** (`TabsList`); the **trigger** adapts its active/hover skin automatically from the parent list's `data-variant`.
@@ -153,5 +146,5 @@ The `hidden` attribute on inactive panels sets `display:none`; the CSS `.tabs__c
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Tabs, TabsList, TabsTrigger, TabsContent } from "@cloud/ui"`. base-ui `Tabs` under the hood; `TabsList` takes `variant` (`line` | `default`). **Behavior — selection, roving focus, keyboard, panel wiring — is owned by the React/base-ui implementation; the reference CSS expresses the static skin only.** API details: the `ui` skill. Do not re-skin via `className`; pick a list variant.
+- **Next / @cloud/ui** — `import { Tabs, TabsList, TabsTrigger, TabsContent } from "@cloud/ui"`. base-ui `Tabs` under the hood; `TabsList` takes `variant` (`line` | `default`). **Behavior — selection, roving focus, keyboard, panel wiring — is owned by the React/base-ui implementation; the reference CSS expresses the static skin only.** Do not re-skin via `className`; pick a list variant.
 - **Artifact (self-contained HTML)** — use `.tabs` > `.tabs__list` (+ `.tabs__list--line` / `.tabs__list--default`) > `.tabs__trigger` (mark the open one `.tabs__trigger--active`, the skin can't observe live selection) and `.tabs__content`, on top of the inlined `release/tokens.inline.css`. Same variant names, same token recipe.

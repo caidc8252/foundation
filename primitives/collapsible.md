@@ -5,14 +5,6 @@ content. Use for a lone expandable section — "show more", an inline detail
 panel, a filter drawer body. For a stack of grouped disclosure sections that
 divide and frame themselves, use **Accordion** instead.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> anatomy, the (minimal) token recipe, states, a11y. It is the authority both
-> implementations answer to. It deliberately does NOT document the React prop
-> *types* or base-ui specifics (controlled `open`, `keepMounted` /
-> `hiddenUntilFound`, the panel height/width animation) — those live with the
-> Next implementation (`@cloud/ui` + the `ui` skill). When the contract and an
-> implementation disagree, the contract is right and the implementation is a bug.
-
 ## Variants
 
 **No visual variant — this is a headless behavior primitive.** The `@cloud/ui`
@@ -131,7 +123,7 @@ filter sections):
   skin only (the open/closed visibility toggle + optional chevron rotation), not
   the height transition. The wrapper is headless: style the trigger by composing
   a control (e.g. wrap a `Button` or pass button classes), not by re-skinning
-  the primitive. API details: the `ui` skill.
+  the primitive.
 - **Artifact (self-contained HTML)** — compose `.collapsible` ›
   (`.collapsible__trigger` — typically also a `.btn` variant — optionally
   holding a `.collapsible__chevron` span) + `.collapsible__content`, on top of

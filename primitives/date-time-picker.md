@@ -4,14 +4,6 @@ A single date **+ time** field. Same input-styled trigger as `DatePicker`, but t
 popover stacks a single-month calendar over a **time row** (a native time input + an
 *OK* button), and the field renders `date HH:mm`.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> trigger recipe, sizes, states, the calendar + time-row composition, a11y. It is
-> the authority both implementations answer to. It deliberately does NOT document
-> the React prop *types*, the date↔time merge plumbing, or the react-day-picker /
-> base-ui specifics — those live with the Next implementation (`@cloud/ui` + the
-> `ui` skill). When the contract and an implementation disagree, the contract is
-> right and the implementation is a bug.
-
 One of **four sibling pickers** sharing a trigger skin and popover-over-calendar
 composition (see `date-picker.md`). The trigger (`.date-trigger`), the clear
 button, and the time row (`.date-time-row`) are defined once and reused across the
@@ -88,7 +80,7 @@ states: see `calendar.md`.
   `DatePicker` (note: no `disabledDays` — only `minDate`/`maxDate`). The popover,
   the month grid, and the date↔time merge are **behavior owned by the React
   implementation** — the reference CSS expresses the static trigger + open-panel skin
-  only. API details: the `ui` skill.
+  only.
 - **Artifact (self-contained HTML)** — `.date-trigger` (+ size/`--invalid`) for the
   closed control; a `.popover` containing the calendar skin and a `.date-time-row`
   with an `<input type="time" class="input input--sm">` and a `.btn--sm` *OK*. On top

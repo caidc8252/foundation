@@ -8,10 +8,6 @@ back" header kind** for any page you reach *into* (detail / create / edit /
 wizard). Between the two, every screen's header is covered — which is why each is
 a shared composite, not duplicated inside each pattern.
 
-> **Contract scope.** The cross-consumer design contract: anatomy, the action
-> rule, tokens, states. NOT the React prop types — those live with `@cloud/ui` +
-> the `ui` skill. When an implementation disagrees with this file, the file wins.
-
 ## Anatomy
 
 ```
@@ -64,7 +60,7 @@ page's job calls for it — most pages render a subset, not the whole band.
 - **Next / @cloud/ui** — `layout/PageHeader` (full-bleed band) or `ContentHeader`
   (in-content title). Props `title` `description` `actions` `titleAdornment`
   `sticky`. Detail-page header (logo + status + meta in a row) wraps a `Card`
-  with `flex-row`. See the `ui` skill (layout reference).
+  with `flex-row`.
 - **Artifact** — `.page-header` (+ `--sticky`) → `.page-header__bar` →
   `.page-header__titles` (`.page-header__heading` holding `.page-header__title`
   + a `.badge`, then `.page-header__description`) +

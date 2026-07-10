@@ -2,14 +2,6 @@
 
 An edge-docked side panel that slides in over a dimmed scrim (base-ui `Dialog`), docked to right (default), left, top, or bottom — for filters, detail/inspector views, and form panels. Dismissal is the close button, scrim click, or Escape (no drag-to-dismiss).
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> side vocabulary, the token recipe, states, anatomy, a11y. It is the authority
-> both implementations answer to. It deliberately does NOT document the React
-> prop *types* or base-ui `Dialog` specifics (open/close lifecycle, focus trap,
-> portal, Escape/overlay dismissal, the enter/exit slide) — those live with the
-> Next implementation (`@cloud/ui` + the `ui` skill). When the contract and an
-> implementation disagree, the contract is right and the implementation is a bug.
-
 ## Variants
 
 The single variant axis is **side** (`data-side`) — which edge the panel docks to. It drives the inset, the size axis (height vs width), and which edge gets the divider border. All four share the panel surface recipe: bg `surface-3` · text `content-primary` · `text-md` · `shadow-4`.
@@ -76,5 +68,5 @@ Unlike the Modal the Sheet has **square corners** (docks flush to the edge, no r
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Sheet, SheetTrigger, SheetClose, SheetPortal, SheetOverlay, SheetContent, SheetHeader, SheetFooter, SheetTitle, SheetDescription } from "@cloud/ui"`. **Behavior owned by the base-ui `Dialog` React implementation** (open/close, edge slide, focus trap, portalling, Escape/scrim dismissal); pass `side` (`right` default) for the docked edge and `showCloseButton` to toggle the × . Prop/API details: the `ui` skill. Do not re-skin via `className`; the reference CSS expresses the static skin only. For a centered task dialog use `Modal`.
+- **Next / @cloud/ui** — `import { Sheet, SheetTrigger, SheetClose, SheetPortal, SheetOverlay, SheetContent, SheetHeader, SheetFooter, SheetTitle, SheetDescription } from "@cloud/ui"`. **Behavior owned by the base-ui `Dialog` React implementation** (open/close, edge slide, focus trap, portalling, Escape/scrim dismissal); pass `side` (`right` default) for the docked edge and `showCloseButton` to toggle the × . Do not re-skin via `className`; the reference CSS expresses the static skin only. For a centered task dialog use `Modal`.
 - **Artifact (self-contained HTML)** — use `.sheet-overlay` wrapping `.sheet` (+ `.sheet--right` / `--left` / `--top` / `--bottom`) with `.sheet__header` › `.sheet__title` + `.sheet__description`, the close as a `.btn .btn--ghost .btn--icon .btn--sm .sheet__close`, and `.sheet__footer` (holding `.btn` actions), on top of the inlined `release/tokens.inline.css`. The reference CSS paints the resting OPEN panel; the consumer drives visibility and the slide is out of scope. Same surface recipe and side vocabulary as the source.

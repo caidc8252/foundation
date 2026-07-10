@@ -5,14 +5,6 @@ trigger that expands/collapses one panel of content. Use for grouped, scannable
 detail that doesn't all need to be open at once (FAQ, settings groups, nested
 detail panels).
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> anatomy, token recipe, states, a11y. It is the authority both implementations
-> answer to. It deliberately does NOT document React prop *types* or base-ui
-> specifics (single vs. multiple open, controlled value, the panel height
-> animation) — those live with the Next implementation (`@cloud/ui` + the `ui`
-> skill). When the contract and an implementation disagree, the contract is
-> right and the implementation is a bug.
-
 ## Variants
 
 Single visual form. No variant prop — the only authored axis is arrow placement
@@ -172,7 +164,7 @@ CSS shows `.accordion__content` when the parent `.accordion__item--open` is set,
   (surface, border, radius, divider, padding, type, arrow rotation, states),
   not the height transition. `AccordionTrigger` props `arrowPosition`
   (`"left" | "right"`), `showArrow`, and a custom `arrow` node tune the chevron
-  slot. API details: the `ui` skill. Don't re-skin via `className`.
+  slot. Don't re-skin via `className`.
 - **Artifact (self-contained HTML)** — compose `.accordion` › `.accordion__item`
   › (`.accordion__trigger` with an `.accordion__arrow` span) + `.accordion__content`,
   on top of the inlined `release/tokens.inline.css`. Mark an open item with

@@ -2,14 +2,6 @@
 
 A horizontal bar showing numeric completion (0–100%). Determinate only — the filled indicator width maps to `value`.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> tone vocabulary, the token recipe, anatomy, a11y. It is the authority both
-> implementations answer to. It deliberately does NOT document the React prop
-> *types* or base-ui specifics (value clamping, the `Root`/`Track`/`Indicator`/
-> `Label`/`Value` compound, indeterminate rendering) — those live with the Next
-> implementation (`@cloud/ui` + the `ui` skill). When the contract and an
-> implementation disagree, the contract is right and the implementation is a bug.
-
 ## Tones
 
 No `variant` axis (no form/emphasis choice — the bar has one shape). The only
@@ -110,8 +102,7 @@ itself to the row end with `ml-auto`. The track always clips its indicator
   base-ui `Progress` under the hood — value clamping, valuenow aria, and the
   compound slots are owned there. Pass `value` (0–100) and optional `tone`
   (`success`|`warning`|`error`|`info`; omit for brand). Behavior owned by the
-  React implementation; do not re-skin via `className` — pick a `tone`. API
-  details: the `ui` skill.
+  React implementation; do not re-skin via `className` — pick a `tone`.
 - **Artifact (self-contained HTML)** — use `.progress` (root) wrapping a
   `.progress__track` whose child `.progress__indicator` has an inline
   `width: <n>%`; add `.progress__indicator--<tone>` to swap the fill, `.progress--xs`

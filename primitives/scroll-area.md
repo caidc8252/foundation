@@ -2,13 +2,6 @@
 
 A styled overflow container that swaps the OS scrollbar for a thin, token-skinned one that matches the design system. Wrap any region that can overflow (long lists, panels, code blocks) when you want a consistent, unobtrusive scrollbar instead of the platform default.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> anatomy, the scrollbar/thumb token recipe, states, a11y. It is the authority
-> both implementations answer to. It deliberately does NOT document the React
-> prop *types* or base-ui specifics — those live with the Next implementation
-> (`@cloud/ui` + the `ui` skill). When the contract and an implementation
-> disagree, the contract is right and the implementation is a bug.
-
 ## Variants
 
 No visual variants. A single skin; the only axis is scrollbar **orientation** (`vertical` *(default)* / `horizontal`), which swaps which edge the thin track hugs. The viewport itself is unstyled chrome — it inherits the host's `border-radius` and adds nothing but clip + scroll.
@@ -56,5 +49,5 @@ The implementation paints the thumb in `bg-line-strong` (resolves to the `--colo
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { ScrollArea, ScrollBar } from "@cloud/ui"`. base-ui `ScrollArea` (`Root` / `Viewport` / `Scrollbar` / `Thumb` / `Corner`) under the hood; `ScrollBar` takes `orientation`. **Scroll detection, scrollbar fade-in/out, pointer-drag, and corner placement are owned by the React/base-ui implementation; the reference CSS expresses the static skin only** (track + thumb surface, radius, gutter, focus ring). API details: the `ui` skill.
+- **Next / @cloud/ui** — `import { ScrollArea, ScrollBar } from "@cloud/ui"`. base-ui `ScrollArea` (`Root` / `Viewport` / `Scrollbar` / `Thumb` / `Corner`) under the hood; `ScrollBar` takes `orientation`. **Scroll detection, scrollbar fade-in/out, pointer-drag, and corner placement are owned by the React/base-ui implementation; the reference CSS expresses the static skin only** (track + thumb surface, radius, gutter, focus ring).
 - **Artifact (self-contained HTML)** — wrap content in `.scroll-area > .scroll-area__viewport` and skin native scrollbars with the `.scroll-area__scrollbar` / `.scroll-area__thumb` recipe via `::-webkit-scrollbar` in `./primitives.css`, on top of the inlined `release/tokens.inline.css`. A native scrollbar can't reproduce base-ui's fade-on-interaction; the reference paints the resting thin thumb. Same `line-strong` / `opacity-70` recipe, same `4px` track.

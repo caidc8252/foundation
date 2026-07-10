@@ -15,13 +15,6 @@ attributes (the giveaway: an "Images 2/3" tile) is the mark of a *cloned*
 Overview, not a *designed* one — see [`detail-page`](../patterns/detail-page.md)
 → "Derive the body, don't port it".
 
-> **Contract scope.** Cross-consumer contract: the surface recipe, the
-> rest/selected/hover states, the value tone + trend vocabulary, anatomy, a11y.
-> React prop *types* (`label` / `value` / `description` / `trend` / `icon` /
-> `tone` / `selected` / `onClick`) live with `@cloud/ui` + the `ui` skill. When
-> the contract and an implementation disagree, the contract is right and the
-> implementation is a bug.
-
 ## Variants
 
 Not a structural variant axis — one card shape. Two orthogonal selectors drive
@@ -113,8 +106,7 @@ filter-sync live in the consuming page — the card is a presentational leaf.
   presentational `<div>` (interactive when `onClick` is passed); props
   `label` `value` `description` `trend` `icon` `tone` `selected` `onClick`
   `children`. Keyboard activation + `role="button"`/`aria-pressed` are owned by
-  the React implementation; the reference CSS expresses the static skin only.
-  Prop/API details: the `ui` skill. Don't re-skin via `className` — pick `tone` /
+  the React implementation; the reference CSS expresses the static skin only. Don't re-skin via `className` — pick `tone` /
   `selected`.
 - **Artifact (self-contained HTML)** — `.stat-card` (+ `.stat-card--selected`,
   `.stat-card--interactive`) wrapping `.stat-card__head` ›

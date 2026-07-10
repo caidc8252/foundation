@@ -5,13 +5,6 @@ date-picker family: it has **no popover and no calendar** — the browser's own 
 control does the entry. A leading clock icon and trailing clear button match the
 family's chrome.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the field
-> recipe (it is an `Input` with affix slots), sizes, states, a11y. It is the
-> authority both implementations answer to. It deliberately does NOT document the
-> React prop *types* or the `Input`/base-ui specifics — those live with the Next
-> implementation (`@cloud/ui` + the `ui` skill). When the contract and an
-> implementation disagree, the contract is right and the implementation is a bug.
-
 One of **five sibling pickers** (see `date-picker.md`), but the only one that is
 **not** a popover-over-calendar: it is a thin wrapper over the `Input` primitive's
 prefix/suffix slots. It therefore defines no new block — it reuses `.input` (with the
@@ -88,7 +81,6 @@ implies `step=1`); these are browser behaviors, not skin.
   `onValueChange`, `size`, `disabled`, `withSeconds`, `step`, `min`, `max`,
   `placeholder`, `name`/`required`/`id`. The native time UI (spinners, locale
   rendering) is **behavior owned by the browser**; there is no base-ui overlay here.
-  API details: the `ui` skill.
 - **Artifact (self-contained HTML)** — an `<input type="time" class="input">` (add a
   size modifier), with a leading clock glyph and a trailing `.date-trigger__clear`;
   for the affix layout reuse the input-group shape (`.input-group` +

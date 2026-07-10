@@ -2,14 +2,6 @@
 
 A set of press-toggle buttons that act as one control. The container variant picks the **look** (outline / segmented / cloud / plain); the `type` sets the **select mode** (single / multiple) — independently, so any look works with either mode. Child `Toggle` items inherit the look.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> variant/size vocabulary, token recipe, states, anatomy, a11y. It is the
-> authority both implementations answer to. It deliberately does NOT document
-> the React prop *types* (`type="single"`/`"multiple"`, `value`/`onValueChange`)
-> or base-ui specifics — those live with the Next implementation (`@cloud/ui` +
-> the `ui` skill). When the contract and an implementation disagree, the contract
-> is right and the implementation is a bug.
-
 ## When to use — Toggle Group vs Toggle
 
 Both are **two-state (on/off) buttons**. Use a **Toggle Group** when several act as one control (shared container + coordinated selection); use a single [`Toggle`](./toggle.md) for one standalone on/off button — independent toggles in a row are separate `Toggle`s, not a group.
@@ -84,5 +76,5 @@ Each item is a `Toggle` (press-toggle button). Inline icons follow the `Toggle`/
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { ToggleGroup, Toggle } from "@cloud/ui"`. base-ui `ToggleGroup` + `Toggle` under the hood; group props `type` (`"single"`/`"multiple"`), `variant`, `value`/`defaultValue`/`onValueChange`, `disabled`; item props `value`, `size`, `pressed`. **Roving focus, selection, and keyboard nav are owned by the React/base-ui implementation; the reference CSS expresses the static skin only** (track surface, item border/divider/radius, pressed fill, typography, states). API details: the `ui` skill. Do not re-skin via `className`; pick a group `variant`.
+- **Next / @cloud/ui** — `import { ToggleGroup, Toggle } from "@cloud/ui"`. base-ui `ToggleGroup` + `Toggle` under the hood; group props `type` (`"single"`/`"multiple"`), `variant`, `value`/`defaultValue`/`onValueChange`, `disabled`; item props `value`, `size`, `pressed`. **Roving focus, selection, and keyboard nav are owned by the React/base-ui implementation; the reference CSS expresses the static skin only** (track surface, item border/divider/radius, pressed fill, typography, states). Do not re-skin via `className`; pick a group `variant`.
 - **Artifact (self-contained HTML)** — use `.toggle-group` + `.toggle-group--<variant>` on the container and `.toggle-group__item` (+ `.toggle-group__item--sm`/`--md`/`--auto`) on each item, on top of the inlined `release/tokens.inline.css`. Mark the selected item with `aria-pressed="true"`. Same per-variant token recipe and names as the React side. **Declare the select mode explicitly on the container with `data-type="single"` (default, radio-like) or `data-type="multiple"` (independent toggles, plus `aria-multiselectable="true"`)** — this is the group's `type`, so the toggle script must key off it, never off the visual variant. Inferring multi-select from a variant class (e.g. treating `cloud` as multi and `segmented` as single) is the bug this contract forbids: a `segmented` group can be multi-select and a `cloud` group can be single-select.

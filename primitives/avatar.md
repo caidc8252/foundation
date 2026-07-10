@@ -2,13 +2,6 @@
 
 A user/entity identity chip: a circular image that falls back to initials when the image is missing or fails to load.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> size vocabulary, the token recipe, the image→fallback structure, a11y. It is
-> the authority both implementations answer to. It deliberately does NOT
-> document the React prop *types* or base-ui specifics — those live with the
-> Next implementation (`@cloud/ui` + the `ui` skill). When the contract and an
-> implementation disagree, the contract is right and the implementation is a bug.
-
 ## Variants
 
 Single visual variant — a circular (`radius-full`) chip that clips its content (`overflow:hidden`). There is no variant prop; what fills the circle is decided by the two content slots (image vs. initials fallback), not a variant.
@@ -63,5 +56,5 @@ Single visual variant — a circular (`radius-full`) chip that clips its content
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Avatar, AvatarImage, AvatarFallback, AvatarGroup } from "@cloud/ui"`. base-ui `Avatar` under the hood; the image-load detection and image→fallback swap are **behavior owned by the React implementation** — the reference CSS expresses the static skin only (circle, size, clip, fallback ground/initials, group overlap+ring). Prop/API details: the `ui` skill. Do not re-skin via `className`; pick a `size`.
+- **Next / @cloud/ui** — `import { Avatar, AvatarImage, AvatarFallback, AvatarGroup } from "@cloud/ui"`. base-ui `Avatar` under the hood; the image-load detection and image→fallback swap are **behavior owned by the React implementation** — the reference CSS expresses the static skin only (circle, size, clip, fallback ground/initials, group overlap+ring). Do not re-skin via `className`; pick a `size`.
 - **Artifact (self-contained HTML)** — use `.avatar` + `.avatar--<size>` with an `<img class="avatar__image">` and/or a `<span class="avatar__fallback">` child, on top of the inlined `release/tokens.inline.css`. For overlapped lists wrap them in `.avatar-group`. A static artifact has no load-detection: render the `__image` when you have a URL, otherwise the `__fallback` — both can coexist (image clips over fallback). Same circle + `avatar-bg`/`avatar-fg` fallback recipe, same names.

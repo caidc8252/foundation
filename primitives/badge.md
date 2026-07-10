@@ -93,5 +93,5 @@ v5.2.14         ← tag   : a verbatim token (boxy, tabular; no dot, no icon)
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Badge } from "@cloud/ui"`. Renders a `<span>` (or any element via `render`); props `tone` `shape` `dot`. API details: the `ui` skill. Color is set entirely by `tone`; there is no `variant` prop.
+- **Next / @cloud/ui** — `import { Badge } from "@cloud/ui"`. Renders a `<span>` (or any element via `render`); props `tone` `shape` `dot`. Color is set entirely by `tone`; there is no `variant` prop.
 - **Artifact (self-contained HTML)** — use `.badge` + `.badge--<tone>` (5 tones), optionally `.badge--tag` for the tag shape, and for the leading slot **either** `.badge__dot` (status dot) **or** `.badge__icon` (identity glyph — put it on the `<svg>` itself; it sizes the glyph to 12px and tightens the leading padding), in `./primitives.css`, on top of the inlined `release/tokens.inline.css`. Same tonal recipe and names.

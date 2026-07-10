@@ -81,5 +81,5 @@ Card (card--collapsible)
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Card, CardHeader, CardTitle, CardDescription, CardAction, CardContent, CardFooter } from "@cloud/ui"`. Root props `size` `elevation` `interactive`; slot props include `flush`. API details: the `ui` skill. Compose slots; do not hand-pad the root.
+- **Next / @cloud/ui** — `import { Card, CardHeader, CardTitle, CardDescription, CardAction, CardContent, CardFooter } from "@cloud/ui"`. Root props `size` `elevation` `interactive`; slot props include `flush`. Compose slots; do not hand-pad the root.
 - **Artifact (self-contained HTML)** — use `.card` + `.card__header` / `.card__content` / `.card__footer` in `./primitives.css`, on top of the inlined `release/tokens.inline.css`. Padding lives on the slot classes, matching the contract. For collapsible: add `.card--collapsible` on the root; replace the header content with a `card__toggle` `<button>` (carries `aria-expanded` / `aria-controls`) containing the `card__title` and a `card__chevron` `<span>` wrapping the chevron SVG; toggle `data-open="false"` on the root to collapse.

@@ -4,9 +4,6 @@ The strip between the list card's top edge and the table: how many results, and
 the list-level actions (Export, bulk ops). Mirrors @cloud/ui
 `list-filter/ListSummaryBar`.
 
-> **Contract scope.** Cross-consumer contract: anatomy, the sticky contract,
-> tokens. React prop types live with `@cloud/ui`; the contract wins.
-
 ## Anatomy
 
 ```
@@ -46,7 +43,7 @@ the list-level actions (Export, bulk ops). Mirrors @cloud/ui
 ## Implementations
 
 - **Next / @cloud/ui** — `ListSummaryBar` (`total` / `label` / `actions` / `sticky`)
-  + the exported `LIST_SUMMARY_BAR_HEIGHT`. `ui` skill → data-display.
+  + the exported `LIST_SUMMARY_BAR_HEIGHT`.
 - **Artifact** — `.summary-bar` (+ `--sticky`) › `.summary-bar__count`
   (`<strong>` = tabular count) + `.summary-bar__actions` (`.btn--*`). Place inside a
   `.table-frame--flush`, directly above `table.data-table`. In `composites.css`.

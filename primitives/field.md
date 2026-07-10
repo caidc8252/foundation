@@ -2,13 +2,6 @@
 
 The form-row wrapper. Stacks a `Label` → control → hint/error caption, owns the required marker, and routes invalidity to a `role="alert"` error line.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> layout/anatomy, the token recipe, the hint↔error precedence, the invalid
-> wiring, a11y. It is the authority both implementations answer to. It
-> deliberately does NOT document the React prop *types* — those live with the
-> Next implementation (`@cloud/ui` + the `ui` skill). When the contract and an
-> implementation disagree, the contract is right and the implementation is a bug.
-
 ## Variants
 
 Single structural variant — no variant prop. Field is a vertical flex stack, not a styled surface: it draws no border, background, or shadow of its own. It is pure layout plus the caption tones below.
@@ -59,5 +52,5 @@ The label is rendered only when `label` is provided. `htmlFor` wires the label t
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { Field } from "@cloud/ui"`. A plain `<div>` wrapper (no base-ui dependency) composing the `Label` primitive; props `label` `hint` `error` `required` `htmlFor`. `error` takes precedence over `hint`; the error renders as `role="alert"`. Prop/API details: the `ui` skill. Do not hand-roll the label→control→hint stack — use `Field`.
+- **Next / @cloud/ui** — `import { Field } from "@cloud/ui"`. A plain `<div>` wrapper (no base-ui dependency) composing the `Label` primitive; props `label` `hint` `error` `required` `htmlFor`. `error` takes precedence over `hint`; the error renders as `role="alert"`. Do not hand-roll the label→control→hint stack — use `Field`.
 - **Artifact (self-contained HTML)** — use `<div class="field">` with a `<label class="label">` (+ `.field__required` for the `*`) and a trailing `<p class="field__hint">` **or** `<p class="field__error">` in `../primitives/primitives.css`, on top of the inlined `release/tokens.inline.css`. Same `gap-2` rhythm and the same `content-tertiary` hint / `error` error tones. Render only one of hint/error. The control between them carries its own `aria-invalid` for the invalid skin.

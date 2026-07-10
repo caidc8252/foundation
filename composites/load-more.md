@@ -6,10 +6,6 @@ bar. Purely presentational — all copy is passed in, so it stays i18n-agnostic.
 Pair it with a windowed/plain table above; for scroll-driven loading use the
 table's own `onReachEnd` instead.
 
-> **Contract scope.** Cross-consumer contract: anatomy, the two terminal
-> states (more / done), tokens. React prop types live with `@cloud/ui`; the
-> contract wins — an implementation that diverges is the bug.
-
 ## Anatomy
 
 **The default is the button alone.** Reach for the minimal form first — a centered
@@ -73,5 +69,5 @@ State is driven by the `done` / `loading` flags, not a variant:
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { LoadMore } from "@cloud/ui"`. Props: `loading` `done` `onLoadMore` `progress` (0–1 ratio) `summary` `endContent` `children` (button label). Composes `Button` (`variant="secondary"` `size="lg"`) + `Progress`. All copy is passed in. API details: the `ui` skill.
+- **Next / @cloud/ui** — `import { LoadMore } from "@cloud/ui"`. Props: `loading` `done` `onLoadMore` `progress` (0–1 ratio) `summary` `endContent` `children` (button label). Composes `Button` (`variant="secondary"` `size="lg"`) + `Progress`. All copy is passed in.
 - **Artifact (self-contained HTML)** — `.load-more` › optional `.load-more__summary`, then EITHER a `.btn.btn--secondary.btn--lg` (more/loading) OR `.load-more__end` (done) in the action slot, then an optional `.progress` (reuse the progress primitive's classes for the bar, sized via `.load-more__progress`). On top of the inlined `release/tokens.inline.css` + `primitives.css`. In `composites.css`.

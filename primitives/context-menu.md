@@ -2,14 +2,6 @@
 
 A right-click contextual action menu. Wrap any element as a trigger; the menu opens at the pointer with grouped action rows (plain, checkbox, radio, submenu). Shares the menu-row anatomy with dropdown-menu — same row recipe, different trigger gesture.
 
-> **Contract scope.** This file is the cross-consumer *design contract*: the
-> panel surface/border/radius/shadow/spacing token recipe, the row anatomy and
-> states, a11y. It is the authority both implementations answer to. It
-> deliberately does NOT document the React prop *types* or base-ui specifics —
-> those live with the Next implementation (`@cloud/ui` + the `ui` skill). When
-> the contract and an implementation disagree, the contract is right and the
-> implementation is a bug.
-
 ## Variants
 
 One elevated panel; no tone/semantic variant on the panel itself (status belongs to `Alert`/`Badge`). The only per-row variant is the item tone:
@@ -85,5 +77,5 @@ The trigger is whatever element the consumer wraps; it is NOT part of the panel 
 
 ## Implementations
 
-- **Next / @cloud/ui** — `import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, ContextMenuCheckboxItem, ContextMenuRadioItem, ContextMenuRadioGroup, ContextMenuLabel, ContextMenuSeparator, ContextMenuShortcut, ContextMenuGroup, ContextMenuSub, ContextMenuSubTrigger, ContextMenuSubContent } from "@cloud/ui"`. base-ui `ContextMenu` under the hood; `ContextMenuContent` defaults to `side="right"` / `align="start"` / `alignOffset={4}` / `sideOffset={0}`. `ContextMenuItem` takes `variant?: "default" | "destructive"` and `inset?: boolean`. Open/close, pointer anchoring, positioning, roving focus, submenus, and dismissal are **behavior owned by the React implementation** — the reference CSS expresses the static open panel skin only. API details: the `ui` skill.
+- **Next / @cloud/ui** — `import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, ContextMenuCheckboxItem, ContextMenuRadioItem, ContextMenuRadioGroup, ContextMenuLabel, ContextMenuSeparator, ContextMenuShortcut, ContextMenuGroup, ContextMenuSub, ContextMenuSubTrigger, ContextMenuSubContent } from "@cloud/ui"`. base-ui `ContextMenu` under the hood; `ContextMenuContent` defaults to `side="right"` / `align="start"` / `alignOffset={4}` / `sideOffset={0}`. `ContextMenuItem` takes `variant?: "default" | "destructive"` and `inset?: boolean`. Open/close, pointer anchoring, positioning, roving focus, submenus, and dismissal are **behavior owned by the React implementation** — the reference CSS expresses the static open panel skin only.
 - **Artifact (self-contained HTML)** — use `.context-menu__content` for the panel + `.context-menu__item` (`--destructive` / `--inset`), `.context-menu__item--checkbox` / `--radio`, `.context-menu__sub-trigger`, `.context-menu__label`, `.context-menu__separator`, `.context-menu__shortcut`, on top of the inlined `release/tokens.inline.css`. The artifact renders a *static* open panel (positioning / show-hide / roving is the React side's job); same elevated recipe (`surface-2` fill, `line-default` border, `shadow-4`).

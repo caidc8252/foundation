@@ -4,9 +4,6 @@ The loading placeholder. A pulsing surface shape standing in for content that
 hasn't arrived — preferred over a spinner for page/section/table loads because it
 preserves layout and reduces perceived wait.
 
-> **Contract scope.** Cross-consumer contract: the shape vocabulary, the motion
-> rule, tokens. React prop types live with `@cloud/ui`; the contract wins.
-
 ## Shapes
 
 | shape | stands in for |
@@ -36,7 +33,6 @@ as the loaded one.
 ## Implementations
 
 - **Next / @cloud/ui** — use the team's loading affordances (Button `loading` for
-  in-button spinners; skeleton/placeholder blocks for sections). `ui` skill →
-  data-display.
+  in-button spinners; skeleton/placeholder blocks for sections).
 - **Artifact** — `.skeleton` + `--line`/`--text`/`--title`/`--block`/`--circle`,
   and `.skeleton-row` for table loads. In `composites.css`.
