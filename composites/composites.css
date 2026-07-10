@@ -1740,6 +1740,20 @@
   margin-inline-end: var(--space-3);
   color: var(--color-content-tertiary);
 }
+/* Each fact is its own inline flex line, so a fact can carry a trailing
+   affordance — the copy-an-id button beside a tabular id (patterns/actions.md,
+   "copy"). Without this the button is an inline-flex box sitting on the text
+   baseline: it hangs off the id instead of centring against it. The dot
+   separator is the fact's own ::before, so it stays *between* facts and never
+   splits an id from its copy button. */
+.detail-header__meta > * {
+  display: inline-flex;
+  align-items: center;
+}
+.detail-header__meta .btn {
+  flex-shrink: 0;
+  margin-inline-start: var(--space-1);
+}
 /* Category chips ride the title line (inline group), not a stacked third row —
    the identity is capped at two lines (title+badges+chips, then meta). Place
    .detail-header__chips INSIDE .detail-header__title, after the status badges. */

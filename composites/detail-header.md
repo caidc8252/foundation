@@ -33,10 +33,11 @@ top of its anatomy; [`create-form`](../patterns/create-form.md) and
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-- **Back** — small icon-only ghost button (`.btn--ghost.btn--icon.btn--sm`; its
-  `chevron-left` glyph is **16px** / `--space-4`, one step over the 14px button default
-  so the page-level back reads with a little more weight — matches `@cloud/ui`'s detail
-  back), first in the bar. Returns to the place it was reached from. On a **detail** screen it is
+- **Back** — icon-only ghost button at the standard control height
+  (`.btn--ghost.btn--icon.btn--md` — 36px square, matching the header's other
+  controls; its `chevron-left` glyph is **16px** / `--space-4`, one step over the
+  14px button default so the page-level back reads with a little more weight —
+  matches `@cloud/ui`'s detail back), first in the bar. Returns to the place it was reached from. On a **detail** screen it is
   optional (present when the record was reached from a list); on a **create / edit
   / wizard** page it is **required** and is an **exit-without-committing**
   affordance. Neither a **wizard** nor a single-step **create / edit** page carries a
@@ -135,6 +136,12 @@ Cross-consumer guards:
   trailing status badges stay on the title line instead of being pushed off.
 - **Meta row uses dot separators** (`·`) *between* facts (inserted between items,
   never trailing the last); ids render tabular.
+- **A copy affordance lives inside the fact it copies**, not beside it as a fact of
+  its own — the id and its button are one meta child, so no `·` ever falls between
+  them. It is the standard `copy` action (`patterns/actions.md`): a ghost icon-sm
+  button (`.btn--ghost.btn--sm.btn--icon`) carrying the `copy` glyph at the button's
+  own default size. Each meta fact is an `inline-flex` line, so the button centres
+  against the text rather than hanging off its baseline.
 - **Full-bleed band**, like `page-header`: render it OUTSIDE `page-body` so it
   spans edge-to-edge and draws its hairline corner-to-corner; the tab *content*
   below gets `page-body`'s gutters.
@@ -150,7 +157,7 @@ Cross-consumer guards:
   the strip; this contract names the shared structure those parts assemble into.
   See the `ui` skill (layout reference).
 - **Artifact** — `.detail-header` (+ `--sticky`) → `.detail-header__bar`
-  (holding `.btn--ghost.btn--icon.btn--sm.detail-header__back`, `.detail-header__logo`,
+  (holding `.btn--ghost.btn--icon.btn--md.detail-header__back`, `.detail-header__logo`,
   `.detail-header__main` → `.detail-header__title` [contains `.detail-header__name`
   + status `.badge`(s) + `.detail-header__chips`] / `.detail-header__meta`
   (or, in the reduced form, `.detail-header__description`), then
